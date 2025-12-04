@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Liu"
+    given-names: "Yushu"
+  - family-names: "Wang"
+    given-names: "Longbiao"
+  - family-names: "Du"
+    given-names: "Chenglin"
+  - family-names: "Zhai"
+    given-names: "Haixiao"
+title: "SkyNetUAM-RWA: Tokenizing Low-Altitude Urban Air Mobility Operations"
+version: 1.0.0
+date-released: 2025-11-01
+url: "https://github.com/liuyushugreat/SkyNetUamPlatform"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Liu"
+      given-names: "Yushu"
+    - family-names: "Wang"
+      given-names: "Longbiao"
+    - family-names: "Du"
+      given-names: "Chenglin"
+    - family-names: "Zhai"
+      given-names: "Haixiao"
+  journal: "Submitted to IEEE Transactions"
+  title: "SkyNetUAM-RWA: Tokenizing Low-Altitude Urban Air Mobility Operations as Real-World Assets"
+  year: 2025

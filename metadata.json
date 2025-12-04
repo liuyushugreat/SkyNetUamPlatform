@@ -1,0 +1,7 @@
+{
+  "name": "SkyNet UAM Platform",
+  "description": "A comprehensive Urban Air Mobility (UAM) platform connecting citizens, operators, and regulators with RWA data asset integration.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
