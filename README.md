@@ -1,10 +1,12 @@
-# SkyNetUAM-RWA: Tokenizing Low-Altitude Urban Air Mobility Operations
+# SkyNetUAM: A Low-Altitude Urban Air Mobility Operations
+Platform with Mission Lifecycle Assetization
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![DOI](https://img.shields.io/badge/DOI-10.1109%2FXXX.2025.XXXXXXX-blue)](https://doi.org/)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
 
-> **Official Implementation** of the paper: *"SkyNetUAM-RWA: Tokenizing Low-Altitude Urban Air Mobility Operations as Real-World Assets"* (Under Review, 2025).
+> **Official Implementation** of the paper: *"A Low-Altitude Urban Air Mobility Operations
+Platform with Mission Lifecycle Assetization"* (Under Review, 2025).
 
 ## 📖 Overview
 
