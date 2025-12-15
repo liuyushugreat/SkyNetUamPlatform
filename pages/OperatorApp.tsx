@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Aircraft, InsuranceClaim, Route, RWAToken } from '../types';
+import { Aircraft, InsuranceClaim, Route, RWAToken, Mission } from '../types';
 import { AIRCRAFT, ROUTES, INSURANCE_CLAIMS } from '../services/mockData';
 import { playTextToSpeech } from '../services/geminiService';
 import { smartContractService } from '../services/smartContractService';
+import { opsApi } from '../services/opsApi';
 import MapVisualization from '../components/MapVisualization';
 import { Activity, Battery, Power, Volume2, Bell, ShieldAlert, FileText, Coins, Camera, Wallet, Plus, Loader2, Briefcase, TrendingUp, TrendingDown, ExternalLink, CheckCircle, AlertCircle, Wifi, Fuel, Percent, Map as MapIcon, Signal, ChevronDown, ChevronUp, Home } from 'lucide-react';
 
@@ -26,6 +27,23 @@ const OperatorApp: React.FC<OperatorAppProps> = ({ onBackToHome }) => {
   const [issuedTokens, setIssuedTokens] = useState<RWAToken[]>([]);
   const [expandedTokenId, setExpandedTokenId] = useState<string | null>(null);
   const [projectedApy, setProjectedApy] = useState<string>('—');
+
+  // Mission lifecycle feed (from backend ops service)
+  const [missions, setMissions] = useState<Mission[]>([]);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await opsApi.listMissions();
+        setMissions(data);
+      } catch (e) {
+        // Backend is optional for UI demo; ignore if not running
+      }
+    };
+    load();
+    const id = setInterval(load, 2000);
+    return () => clearInterval(id);
+  }, []);
 
   // Real-time Telemetry Simulation
   useEffect(() => {
@@ -479,21 +497,48 @@ const OperatorApp: React.FC<OperatorAppProps> = ({ onBackToHome }) => {
                             <tr>
                                 <th className="p-4 font-medium">Route</th>
                                 <th className="p-4 font-medium">Aircraft</th>
-                                <th className="p-4 font-medium text-right">Income</th>
-                                <th className="p-4 font-medium text-right">Status</th>
+                                <th className="p-4 font-medium">Lifecycle</th>
+                                <th className="p-4 font-medium text-right">Persistence</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-700">
-                            {[1, 2, 3].map(i => (
-                                <tr key={i} className="hover:bg-slate-700/50 transition-colors">
-                                    <td className="p-4">{ROUTES[i-1]?.name || 'Custom Charter'}</td>
-                                    <td className="p-4 font-mono text-slate-300">{AIRCRAFT[i-1]?.regNumber}</td>
-                                    <td className="p-4 text-right font-mono text-green-400">+$120.00</td>
-                                    <td className="p-4 text-right">
-                                        <span className="text-xs bg-green-900/30 text-green-400 border border-green-800 px-2 py-1 rounded">Completed</span>
-                                    </td>
-                                </tr>
-                            ))}
+                            {missions.length === 0 ? (
+                              <tr>
+                                <td className="p-4 text-slate-500" colSpan={4}>
+                                  No missions yet (start the ops backend to see live lifecycle updates).
+                                </td>
+                              </tr>
+                            ) : (
+                              missions
+                                .slice(0, 12)
+                                .map((m) => {
+                                  const route = ROUTES.find((r) => r.id === m.routeId);
+                                  const ac = AIRCRAFT.find((a) => a.id === m.aircraftId);
+                                  return (
+                                    <tr key={m.id} className="hover:bg-slate-700/50 transition-colors">
+                                      <td className="p-4">{route?.name || m.routeId}</td>
+                                      <td className="p-4 font-mono text-slate-300">{ac?.regNumber || m.aircraftId || '—'}</td>
+                                      <td className="p-4">
+                                        <span className="text-xs bg-slate-900/40 text-slate-200 border border-slate-700 px-2 py-1 rounded font-mono">
+                                          {m.state}
+                                        </span>
+                                        <span className="text-[10px] text-slate-500 font-mono ml-2">{m.id}</span>
+                                      </td>
+                                      <td className="p-4 text-right">
+                                        {m.persistence?.mode && m.persistence.mode !== 'off' ? (
+                                          <span className="text-xs bg-indigo-900/30 text-indigo-300 border border-indigo-800 px-2 py-1 rounded font-mono">
+                                            {m.persistence.mode.toUpperCase()} • {m.persistence.lastFinalitySeconds ?? '—'}s
+                                          </span>
+                                        ) : (
+                                          <span className="text-xs bg-slate-900/30 text-slate-400 border border-slate-700 px-2 py-1 rounded font-mono">
+                                            OFF-CHAIN
+                                          </span>
+                                        )}
+                                      </td>
+                                    </tr>
+                                  );
+                                })
+                            )}
                         </tbody>
                      </table>
                 </div>

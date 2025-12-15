@@ -5,6 +5,7 @@ import MapVisualization from '../components/MapVisualization';
 import RWAMarket from '../components/RWAMarket';
 import { playTextToSpeech } from '../services/geminiService';
 import { smartContractService } from '../services/smartContractService';
+import { opsApi } from '../services/opsApi';
 import { Loader2, Volume2, MapPin, Clock, CheckCircle, DollarSign, Plane, LayoutDashboard, Home } from 'lucide-react';
 
 interface CitizenAppProps {
@@ -37,6 +38,38 @@ const CitizenApp: React.FC<CitizenAppProps> = ({ onBackToHome }) => {
       setIsProcessing(false);
       setActiveTab('trips');
       setSelectedRoute(null);
+
+      // Mission lifecycle (paper-aligned): create -> schedule -> start -> complete
+      try {
+        const operatorId = 'SkyHigh Ops';
+        const aircraftId = 'ac-001';
+        const created = await opsApi.createMission({ userId: 'u-1', routeId: newOrder.routeId, operatorId });
+        const scheduled = await opsApi.sendMissionEvent(created.id, 'MISSION_SCHEDULED', { operatorId, aircraftId });
+        setOrders((prev) =>
+          prev.map((o) => (o.id === newOrder.id ? { ...o, missionId: scheduled.id, missionState: scheduled.state, aircraftId } : o))
+        );
+
+        // Simulate execution timeline
+        setTimeout(async () => {
+          try {
+            const active = await opsApi.sendMissionEvent(created.id, 'MISSION_STARTED', { operatorId, aircraftId });
+            setOrders((prev) =>
+              prev.map((o) => (o.id === newOrder.id ? { ...o, missionState: active.state, status: OrderStatus.IN_PROGRESS } : o))
+            );
+          } catch {}
+        }, 800);
+
+        setTimeout(async () => {
+          try {
+            const done = await opsApi.sendMissionEvent(created.id, 'MISSION_COMPLETED', { operatorId, aircraftId });
+            setOrders((prev) =>
+              prev.map((o) => (o.id === newOrder.id ? { ...o, missionState: done.state, status: OrderStatus.COMPLETED } : o))
+            );
+          } catch {}
+        }, Math.max(1200, selectedRoute.durationMinutes * 120)); // scale down for demo
+      } catch (e) {
+        console.warn('Ops service unavailable, running in standalone demo mode.', e);
+      }
 
       // Trigger RWA Logic: Record revenue on-chain
       // This links the flight data (booking) to the token value
@@ -148,6 +181,11 @@ const CitizenApp: React.FC<CitizenAppProps> = ({ onBackToHome }) => {
                     <div>
                       <h3 className="font-semibold text-slate-800">{route?.name || 'Unknown Route'}</h3>
                       <p className="text-xs text-slate-500">{new Date(order.timestamp).toLocaleDateString()} • {new Date(order.timestamp).toLocaleTimeString()}</p>
+                      {order.missionId && (
+                        <p className="text-[10px] text-slate-400 font-mono mt-1">
+                          Mission: {order.missionId} • State: {order.missionState || '—'}
+                        </p>
+                      )}
                     </div>
                     <span className={`text-xs px-2 py-1 rounded-full font-medium ${order.status === 'COMPLETED' ? 'bg-slate-100 text-slate-600' : 'bg-blue-100 text-blue-600'}`}>
                       {order.status}

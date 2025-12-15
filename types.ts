@@ -13,6 +13,23 @@ export enum OrderStatus {
   CANCELLED = 'CANCELLED'
 }
 
+// Mission lifecycle (paper-aligned)
+export type MissionState =
+  | 'Created'
+  | 'Scheduled'
+  | 'Active'
+  | 'Completed'
+  | 'Delayed'
+  | 'Failed';
+
+export type MissionEventType =
+  | 'MISSION_CREATED'
+  | 'MISSION_SCHEDULED'
+  | 'MISSION_STARTED'
+  | 'MISSION_DELAYED'
+  | 'MISSION_FAILED'
+  | 'MISSION_COMPLETED';
+
 export interface Coordinate {
   x: number;
   y: number;
@@ -52,6 +69,31 @@ export interface Order {
   timestamp: number;
   amount: number;
   txHash?: string;
+  missionId?: string;
+  missionState?: MissionState;
+}
+
+export interface Mission {
+  id: string;
+  userId: string;
+  routeId: string;
+  operatorId?: string;
+  aircraftId?: string;
+  state: MissionState;
+  timestamps: {
+    createdAt: number;
+    scheduledAt?: number;
+    startedAt?: number;
+    endedAt?: number;
+    lastUpdatedAt: number;
+  };
+  riskScore: number;
+  valueScore: number;
+  persistence?: {
+    mode: 'off' | 'devnet' | 'l2' | 'l1';
+    lastTxHash?: string;
+    lastFinalitySeconds?: number;
+  };
 }
 
 export interface Alert {
