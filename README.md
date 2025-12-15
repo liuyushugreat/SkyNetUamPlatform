@@ -1,89 +1,75 @@
-# SkyNetUAM: A Low-Altitude Urban Air Mobility Operations
-Platform with Mission Lifecycle Assetization
+# SkyNetUAM: Lifecycle-Aware Low-Altitude UAM Operations Platform
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![DOI](https://img.shields.io/badge/DOI-10.1109%2FXXX.2025.XXXXXXX-blue)](https://doi.org/)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
 
-> **Official Implementation** of the paper: *"A Low-Altitude Urban Air Mobility Operations
-Platform with Mission Lifecycle Assetization"* (Under Review, 2025).
+> **Official implementation** of our Drones submission (2025): a mission-lifecycle-aware operational platform for scalable low-altitude UAM/drone operations.  
+> Note: on-chain components are treated as an **optional audit/settlement extension** and do not change the core operational logic.
 
 ## 📖 Overview
 
-**SkyNetUAM-RWA** is a cyber-physical financial framework designed to bridge the "Assetization Gap" in the low-altitude economy. By integrating a high-fidelity UAM operational platform with an RWA (Real-World Asset) tokenization layer, this system enables the real-time transformation of flight missions, service packages, and airspace slots into collateralizable financial instruments.
+**SkyNetUAM** is a lifecycle-aware operations platform for low-altitude UAM/drone missions. It models missions as first-class operational entities (Created → Scheduled → Active → Completed/Failed/Delayed), enabling consistent state propagation across scheduling, monitoring, reporting, and (optionally) durable state persistence for audit/settlement.
 
 ### Key Features
-*   **Cyber-Physical Operational Layer**: A modular microservices architecture (Node.js/NestJS) for handling high-frequency telemetry and mission control.
-*   **Dynamic Risk Valuation**: Implements a stochastic DCF model with real-time environmental risk adjustment ($\rho_{env}$).
-*   **Smart Contract FSM**: A Finite State Machine governing the token lifecycle from `Pending` $\to$ `Active` $\to$ `Locked` $\to$ `Settled`.
-*   **Hybrid Ledger Support**: Compatible with Local Emulation (Hardhat) and Public Testnets (Sepolia, Polygon Amoy).
+*   **Mission lifecycle management**: deterministic state machine with event-driven transitions and timestamped records.
+*   **Operational dashboards (frontend demo)**: citizen booking, operator monitoring, and regulator oversight views.
+*   **Operational State Service (backend)**: NestJS service that ingests mission events and maintains consistent lifecycle state.
+*   **Optional persistence adapter**: can be enabled as an asynchronous extension for auditability/settlement-style workflows (kept out of the critical operational path).
 
 ## 🏗️ System Architecture
 
-The system follows a **Domain-Driven Design (DDD)** approach, separating the operational core from the financial settlement layer.
+The system is designed around a lifecycle-aware operational core, with optional persistence as a non-blocking extension.
 
 ```mermaid
 graph TD
     A[UAM Operator] -->|Booking Request| B(SkyNet Platform Frontend)
-    B -->|Mission Event| C{RWA Service Layer}
-    C -->|Risk Scoring| D[Valuation Engine]
-    C -->|Mint/Lock| E[Smart Contracts]
-    E -->|Settlement| F[Liquidity Pool]
+    B -->|Mission Events| C[Operational State Service (NestJS)]
+    C -->|State Updates| B
+    C -->|Optional Async Persistence| D[(Persistence Adapter)]
 ```
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 *   Node.js v18+
-*   Docker & Docker Compose
-*   Ethereum Wallet (MetaMask) or Local Node (Hardhat)
+*   (Optional) Python 3.10+ for reproducible experiments
 
 ### Installation
 
 1.  **Clone the repository**
     ```bash
-    git clone https://github.com/liuyushugreat/SkyNetUamPlatformV1.git
-    cd SkyNetUamPlatformV1
+    git clone https://github.com/liuyushugreat/SkyNetUamPlatform.git
+    cd SkyNetUamPlatform
     ```
 
 2.  **Install dependencies**
     ```bash
-    # Install backend dependencies
+    npm install
     cd backend && npm install
-    
-    # Install frontend dependencies
-    cd ../frontend && npm install
     ```
 
-3.  **Configure Environment**
-    Copy `.env.example` to `.env` and set your RPC endpoints and private keys.
+3.  **Run the backend Operational State Service (optional but recommended)**
     ```bash
-    cp .env.example .env
+    cd backend
+    npm run dev
     ```
 
-4.  **Run the Simulation**
+4.  **Run the frontend**
     ```bash
-    npm run start:dev
+    cd ..
+    npm run dev
     ```
 
 ## 🧪 Experiments & Reproduction
 
-To reproduce the experimental results (Figure 6, 7, 8) presented in the paper:
+To reproduce the daily 100k-mission workload (used to stress lifecycle management under congestion and permission constraints):
 
-1.  **Run the Traffic Generator**
-    ```bash
-    python3 scripts/generate_traffic.py --rate 1000 --dist lognormal
-    ```
+```bash
+python experiments/simulate_100k_day.py
+```
 
-2.  **Execute Benchmarks**
-    ```bash
-    npm run benchmark:throughput
-    ```
-
-3.  **Generate Plots**
-    ```bash
-    python3 generate_figures.py
-    ```
+Outputs are written to `experiments/outputs/` (CSV + publication-ready plots).
 
 ## 📚 Citation
 
@@ -91,7 +77,7 @@ If you use this code or framework in your research, please cite our paper:
 
 ```bibtex
 @article{Liu2025SkyNetUAM,
-  title={SkyNetUAM-RWA: Tokenizing Low-Altitude Urban Air Mobility Operations as Real-World Assets},
+  title={SkyNetUAM: A Lifecycle-Aware Low-Altitude UAM Operations Platform},
   author={Liu, Yushu and Wang, Longbiao and Du, Chenglin and Zhai, Haixiao},
   journal={arXiv preprint arXiv:25XX.XXXXX},
   year={2025}

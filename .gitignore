@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Paper sources (do not commit)
+myscipaper/
+
+# Experiment outputs (generated artifacts)
+experiments/outputs/
