@@ -9,6 +9,8 @@ interface MapProps {
   className?: string;
   showLabels?: boolean;
   onMapClick?: (coord: Coordinate) => void;
+  onAircraftClick?: (aircraft: Aircraft) => void;
+  selectedAircraftId?: string;
 }
 
 const MapVisualization: React.FC<MapProps> = ({ 
@@ -18,7 +20,9 @@ const MapVisualization: React.FC<MapProps> = ({
   plannedPath,
   className, 
   showLabels = true,
-  onMapClick 
+  onMapClick,
+  onAircraftClick,
+  selectedAircraftId
 }) => {
   
   const handleSvgClick = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -32,12 +36,12 @@ const MapVisualization: React.FC<MapProps> = ({
   return (
     <div className={`relative bg-slate-100 rounded-xl overflow-hidden border border-slate-300 ${className}`}>
       {/* Grid Background */}
-      <div className="absolute inset-0" style={{ 
+      <div className="absolute inset-0 pointer-events-none" style={{ 
         backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 1px)', 
         backgroundSize: '20px 20px' 
       }}></div>
       
-      <svg className="w-full h-full cursor-crosshair" viewBox="0 0 100 100" preserveAspectRatio="none" onClick={handleSvgClick}>
+      <svg className="relative z-10 w-full h-full cursor-crosshair" viewBox="0 0 100 100" preserveAspectRatio="none" onClick={handleSvgClick}>
         
         {/* No Fly Zones */}
         {noFlyZones.map(zone => (
@@ -86,13 +90,43 @@ const MapVisualization: React.FC<MapProps> = ({
             if (ac.status === 'EMERGENCY') color = '#ef4444'; // Emergency - Red
 
             return (
-              <g key={ac.id}>
+              <g
+                key={ac.id}
+                onClick={(e) => {
+                  if (!onAircraftClick) return;
+                  e.stopPropagation(); // avoid triggering onMapClick
+                  onAircraftClick(ac);
+                }}
+                style={{ cursor: onAircraftClick ? 'pointer' : 'default' }}
+              >
+                {/* Click hit target (invisible but large) */}
+                <circle
+                  cx={ac.currentLocation.x}
+                  cy={ac.currentLocation.y}
+                  r="4.5"
+                  fill="transparent"
+                  pointerEvents="all"
+                />
+
                 {/* Pulse effect for active aircraft */}
                 {(ac.status === 'AVAILABLE' || ac.status === 'BUSY' || ac.status === 'EMERGENCY') && (
                    <circle cx={ac.currentLocation.x} cy={ac.currentLocation.y} r={ac.status === 'EMERGENCY' ? "5" : "3"} fill={color} opacity="0.2">
                       <animate attributeName="r" from="1" to={ac.status === 'EMERGENCY' ? "5" : "3"} dur={ac.status === 'EMERGENCY' ? "0.5s" : "1.5s"} repeatCount="indefinite" />
                       <animate attributeName="opacity" from="0.6" to="0" dur={ac.status === 'EMERGENCY' ? "0.5s" : "1.5s"} repeatCount="indefinite" />
                    </circle>
+                )}
+
+                {/* Selected highlight ring */}
+                {selectedAircraftId && ac.id === selectedAircraftId && (
+                  <circle
+                    cx={ac.currentLocation.x}
+                    cy={ac.currentLocation.y}
+                    r="2.8"
+                    fill="none"
+                    stroke="#0f172a"
+                    strokeWidth="0.5"
+                    opacity="0.95"
+                  />
                 )}
                 
                 {/* Drone Icon Representation */}

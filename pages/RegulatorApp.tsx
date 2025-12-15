@@ -11,13 +11,316 @@ interface RegulatorAppProps {
   onBackToHome: () => void;
 }
 
+// Deterministic PRNG for reproducible "busy airspace" visuals
+function mulberry32(seed: number) {
+  return function () {
+    let t = (seed += 0x6d2b79f5);
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function randomBetween(rng: () => number, min: number, max: number) {
+  return min + (max - min) * rng();
+}
+
+function svgToDataUrl(svg: string) {
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
+function makeSyntheticVideoFrame(regNumber: string, seed: number) {
+  const rng = mulberry32(seed);
+
+  // Daytime-only virtual city viewpoints (different "angles"/landmarks)
+  const views = [
+    { name: 'Downtown Highrise', skyA: '#7dd3fc', skyB: '#e0f2fe', accent: '#0ea5e9' },
+    { name: 'Riverfront', skyA: '#93c5fd', skyB: '#eff6ff', accent: '#2563eb' },
+    { name: 'Harbor District', skyA: '#67e8f9', skyB: '#ecfeff', accent: '#06b6d4' },
+    { name: 'Business Avenue', skyA: '#a5b4fc', skyB: '#f5f3ff', accent: '#6366f1' },
+    { name: 'Park & Suburb', skyA: '#86efac', skyB: '#f0fdf4', accent: '#22c55e' },
+    { name: 'Industrial Yard', skyA: '#fde68a', skyB: '#fff7ed', accent: '#f59e0b' },
+    { name: 'Bridge Approach', skyA: '#bae6fd', skyB: '#f8fafc', accent: '#0284c7' },
+    { name: 'Stadium Quarter', skyA: '#fecaca', skyB: '#fff1f2', accent: '#ef4444' }
+  ];
+
+  const v = views[Math.floor(rng() * views.length)];
+  const w = 800;
+  const h = 450;
+
+  // "Camera" parameters (angle + horizon + vanishing point) for different city angles
+  const tiltDeg = randomBetween(rng, -3.5, 3.5);
+  const horizonY = Math.floor(randomBetween(rng, h * 0.46, h * 0.68));
+  const vanishingX = Math.floor(randomBetween(rng, w * 0.35, w * 0.65));
+
+  const boxCount = 2 + Math.floor(rng() * 4);
+  const boxes = Array.from({ length: boxCount }).map(() => {
+    const x = Math.floor(randomBetween(rng, 60, w - 180));
+    const y = Math.floor(randomBetween(rng, 70, h - 160));
+    const bw = Math.floor(randomBetween(rng, 60, 160));
+    const bh = Math.floor(randomBetween(rng, 50, 140));
+    const label = rng() > 0.5 ? 'OBST' : 'VEH';
+    return { x, y, bw, bh, label };
+  });
+
+  const skylineCount = 10 + Math.floor(rng() * 14);
+  const skyline = Array.from({ length: skylineCount }).map((_, i) => {
+    const x = Math.floor((i / skylineCount) * w);
+    const bw = Math.floor(randomBetween(rng, 30, 120));
+    const bh = Math.floor(randomBetween(rng, 40, 240));
+    const y = Math.max(34, horizonY - bh);
+    return { x, y, bw, bh };
+  });
+
+  // Sun + clouds
+  const sunX = Math.floor(randomBetween(rng, 80, w - 120));
+  const sunY = Math.floor(randomBetween(rng, 55, Math.max(70, horizonY - 90)));
+  const sunR = Math.floor(randomBetween(rng, 18, 34));
+
+  const cloudCount = 3 + Math.floor(rng() * 6);
+  const clouds = Array.from({ length: cloudCount }).map(() => {
+    const cx = Math.floor(randomBetween(rng, 40, w - 60));
+    const cy = Math.floor(randomBetween(rng, 40, Math.max(70, horizonY - 40)));
+    const r = Math.floor(randomBetween(rng, 14, 32));
+    return { cx, cy, r };
+  });
+
+  // Ground features (road / river / park) for different scenes
+  const groundVariant = Math.floor(rng() * 3);
+  const roadWidth = Math.floor(randomBetween(rng, 40, 70));
+  const roadX = Math.floor(randomBetween(rng, w * 0.15, w * 0.7));
+
+  const svg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="${v.skyA}"/>
+      <stop offset="100%" stop-color="${v.skyB}"/>
+    </linearGradient>
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />
+      <feColorMatrix type="matrix" values="
+        0 0 0 0 0
+        0 0 0 0 0
+        0 0 0 0 0
+        0 0 0 .05 0"/>
+    </filter>
+    <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Daytime sky -->
+  <rect width="${w}" height="${h}" fill="url(#bg)"/>
+  <circle cx="${sunX}" cy="${sunY}" r="${sunR}" fill="rgba(253,224,71,0.95)"/>
+  <circle cx="${sunX}" cy="${sunY}" r="${sunR + 22}" fill="rgba(253,224,71,0.18)"/>
+  ${clouds
+    .map(
+      (c) => `
+  <g opacity="0.78">
+    <circle cx="${c.cx}" cy="${c.cy}" r="${c.r}" fill="rgba(255,255,255,0.95)"/>
+    <circle cx="${c.cx + Math.floor(c.r * 0.9)}" cy="${c.cy + 4}" r="${Math.floor(c.r * 0.85)}" fill="rgba(255,255,255,0.92)"/>
+    <circle cx="${c.cx - Math.floor(c.r * 0.8)}" cy="${c.cy + 6}" r="${Math.floor(c.r * 0.75)}" fill="rgba(255,255,255,0.90)"/>
+  </g>
+`
+    )
+    .join('\n')}
+
+  <rect width="${w}" height="${h}" filter="url(#noise)"/>
+  <rect width="${w}" height="${h}" fill="url(#haze)"/>
+
+  <!-- Scene group (tilt gives different city angles) -->
+  <g transform="rotate(${tiltDeg.toFixed(2)} ${Math.floor(w / 2)} ${Math.floor(h / 2)})">
+    <!-- Ground -->
+    <rect y="${horizonY}" width="${w}" height="${h - horizonY}" fill="rgba(148,163,184,0.50)"/>
+    <rect y="${horizonY}" width="${w}" height="${h - horizonY}" fill="rgba(15,23,42,0.10)"/>
+
+    ${
+      groundVariant === 0
+        ? `
+    <!-- Road -->
+    <rect x="${roadX}" y="${horizonY}" width="${roadWidth}" height="${h - horizonY}" fill="rgba(51,65,85,0.30)"/>
+    <line x1="${roadX + Math.floor(roadWidth / 2)}" y1="${horizonY}" x2="${vanishingX}" y2="${horizonY - 60}" stroke="rgba(255,255,255,0.28)" stroke-width="3"/>
+    <line x1="${roadX + Math.floor(roadWidth / 2)}" y1="${horizonY + 40}" x2="${vanishingX}" y2="${horizonY - 60}" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+`
+        : groundVariant === 1
+          ? `
+    <!-- River -->
+    <path d="M ${Math.floor(w * 0.08)} ${h} C ${Math.floor(w * 0.25)} ${Math.floor(h * 0.78)}, ${Math.floor(w * 0.55)} ${Math.floor(h * 0.72)}, ${Math.floor(w * 0.82)} ${h}" fill="rgba(37,99,235,0.20)"/>
+    <path d="M ${Math.floor(w * 0.10)} ${h} C ${Math.floor(w * 0.28)} ${Math.floor(h * 0.80)}, ${Math.floor(w * 0.56)} ${Math.floor(h * 0.74)}, ${Math.floor(w * 0.84)} ${h}" fill="rgba(59,130,246,0.12)"/>
+`
+          : `
+    <!-- Park -->
+    <rect x="${Math.floor(w * 0.08)}" y="${horizonY + 22}" width="${Math.floor(w * 0.30)}" height="${Math.floor(h * 0.22)}" rx="18" fill="rgba(34,197,94,0.20)"/>
+    <circle cx="${Math.floor(w * 0.22)}" cy="${horizonY + 70}" r="18" fill="rgba(34,197,94,0.16)"/>
+    <circle cx="${Math.floor(w * 0.16)}" cy="${horizonY + 110}" r="14" fill="rgba(34,197,94,0.14)"/>
+`
+    }
+
+    <!-- Skyline -->
+    ${skyline
+      .map(
+        (b) =>
+          `<rect x="${b.x}" y="${b.y}" width="${b.bw}" height="${Math.floor(horizonY - b.y + randomBetween(rng, 80, 220))}" fill="rgba(15,23,42,0.26)"/>`
+      )
+      .join('\n')}
+  </g>
+
+  <!-- HUD (brighter for daytime) -->
+  <rect x="14" y="14" width="320" height="66" rx="10" fill="rgba(255,255,255,0.60)" stroke="rgba(2,132,199,0.30)"/>
+  <text x="30" y="40" fill="${v.accent}" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="16">CAM • ${v.name}</text>
+  <text x="30" y="62" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="14">${regNumber} • 1080p</text>
+
+  <!-- Center reticle -->
+  <circle cx="${Math.floor(w / 2)}" cy="${Math.floor(h / 2)}" r="42" fill="none" stroke="rgba(15,23,42,0.24)" stroke-width="2"/>
+  <line x1="${Math.floor(w / 2) - 60}" y1="${Math.floor(h / 2)}" x2="${Math.floor(w / 2) + 60}" y2="${Math.floor(h / 2)}" stroke="rgba(15,23,42,0.16)" stroke-width="2"/>
+  <line x1="${Math.floor(w / 2)}" y1="${Math.floor(h / 2) - 60}" x2="${Math.floor(w / 2)}" y2="${Math.floor(h / 2) + 60}" stroke="rgba(15,23,42,0.16)" stroke-width="2"/>
+
+  <!-- AI boxes -->
+  ${boxes
+    .map(
+      (b) => `
+    <rect x="${b.x}" y="${b.y}" width="${b.bw}" height="${b.bh}" fill="none" stroke="rgba(250,204,21,0.85)" stroke-width="3"/>
+    <rect x="${b.x}" y="${b.y - 22}" width="70" height="18" fill="rgba(250,204,21,0.85)"/>
+    <text x="${b.x + 6}" y="${b.y - 9}" fill="#111827" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="12" font-weight="700">${b.label}</text>
+  `
+    )
+    .join('\n')}
+
+  <!-- Bottom telemetry strip -->
+  <rect x="14" y="${h - 68}" width="${w - 28}" height="54" rx="10" fill="rgba(255,255,255,0.60)" stroke="rgba(2,132,199,0.20)"/>
+  <text x="30" y="${h - 40}" fill="#0f172a" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="14">CITY ZONE A • LIVE</text>
+  <text x="30" y="${h - 22}" fill="#334155" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="13">Uplink OK • AI tracking engaged</text>
+</svg>
+`.trim();
+
+  return svgToDataUrl(svg);
+}
+
+function generateSyntheticFleet(count: number, seed = 1337): AircraftType[] {
+  const rng = mulberry32(seed);
+  const models = ['DJI Matrice 30', 'Skydio X10', 'Autel EVO Max', 'Wingcopter 198', 'Zipline P2'];
+  const operators = ['MetroOps', 'AeroGrid', 'CityLogistics', 'SkyCourier', 'UrbanMed'];
+
+  const fleet: AircraftType[] = [];
+  for (let i = 0; i < count; i++) {
+    // Keep positions mostly inside the map bounds and outside restricted circles (simple retry)
+    let x = 50;
+    let y = 50;
+    for (let tries = 0; tries < 25; tries++) {
+      const candidate = { x: randomBetween(rng, 6, 94), y: randomBetween(rng, 6, 94) };
+      const isInsideRestricted = NO_FLY_ZONES.some((z) => {
+        const dx = candidate.x - z.x;
+        const dy = candidate.y - z.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        return dist < z.radius + 2;
+      });
+      if (!isInsideRestricted) {
+        x = candidate.x;
+        y = candidate.y;
+        break;
+      }
+    }
+
+    // Bias towards BUSY to make the airspace look active
+    const p = rng();
+    const status: AircraftType['status'] = p < 0.78 ? 'BUSY' : p < 0.98 ? 'AVAILABLE' : 'MAINTENANCE';
+
+    const regNumber = `UAM-ZA-${String(i + 1).padStart(3, '0')}`;
+
+    fleet.push({
+      id: `sim-${String(i + 1).padStart(3, '0')}`,
+      model: models[Math.floor(rng() * models.length)],
+      regNumber,
+      status,
+      operator: operators[Math.floor(rng() * operators.length)],
+      batteryLevel: Math.floor(randomBetween(rng, 35, 100)),
+      currentLocation: { x, y },
+      // Unique per-aircraft "scene" (offline, deterministic)
+      videoFeedUrl: makeSyntheticVideoFrame(regNumber, seed * 1000 + i + 1),
+      speed: status === 'BUSY' ? randomBetween(rng, 110, 210) : status === 'AVAILABLE' ? randomBetween(rng, 30, 80) : 0,
+      altitude: status === 'BUSY' ? randomBetween(rng, 280, 520) : status === 'AVAILABLE' ? randomBetween(rng, 80, 200) : 0
+    });
+  }
+
+  return fleet;
+}
+
 const RegulatorApp: React.FC<RegulatorAppProps> = ({ onBackToHome }) => {
   // Simulate live data updates
-  const [aircraftPos, setAircraftPos] = useState(AIRCRAFT);
+  const [aircraftPos, setAircraftPos] = useState<AircraftType[]>(() => [
+    // Apply daytime virtual-city scenes to the original aircraft as well (keep regNumber stable)
+    ...AIRCRAFT.map((a, idx) => ({
+      ...a,
+      videoFeedUrl: makeSyntheticVideoFrame(a.regNumber, 910000 + idx)
+    })),
+    ...generateSyntheticFleet(100)
+  ]);
+  const [selectedAircraftId, setSelectedAircraftId] = useState<string>(() => AIRCRAFT[0]?.id || 'sim-001');
   const [selectedAlert, setSelectedAlert] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'monitor' | 'compliance' | 'planning'>('monitor');
   const [emergencyMode, setEmergencyMode] = useState(false);
   const [simulationEnabled, setSimulationEnabled] = useState(true); // New: Control random failure injection
+  const [isMonitorHoverPaused, setIsMonitorHoverPaused] = useState(false);
+  const [selectionFlashNonce, setSelectionFlashNonce] = useState(0);
+  const flashTimeoutRef = useRef<number | null>(null);
+
+  const playSelectBeep = () => {
+    // User-gesture initiated click -> safe to start/resume AudioContext
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx: AudioContext = new AudioCtx();
+      if (ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
+
+      const now = ctx.currentTime;
+
+      const beep = (start: number, duration: number, freq: number) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, start);
+
+        // Quick envelope to avoid clicking artifacts
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(0.14, start + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(start);
+        osc.stop(start + duration + 0.02);
+      };
+
+      // "Doot-doot" confirmation (2 short beeps)
+      beep(now + 0.00, 0.07, 880);
+      beep(now + 0.10, 0.07, 660);
+
+      // Close context shortly after to free resources
+      window.setTimeout(() => {
+        ctx.close().catch(() => {});
+      }, 400);
+    } catch {
+      // ignore audio errors
+    }
+  };
+
+  const triggerSelectionFlash = () => {
+    setSelectionFlashNonce((n) => n + 1);
+    if (flashTimeoutRef.current) window.clearTimeout(flashTimeoutRef.current);
+    flashTimeoutRef.current = window.setTimeout(() => {
+      // no-op; key remount handles the one-shot animation
+    }, 250);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (flashTimeoutRef.current) window.clearTimeout(flashTimeoutRef.current);
+    };
+  }, []);
   
   // Path Planning State
   const [planningStart, setPlanningStart] = useState<Coordinate | null>(null);
@@ -30,6 +333,9 @@ const RegulatorApp: React.FC<RegulatorAppProps> = ({ onBackToHome }) => {
         const now = Date.now();
         
         setAircraftPos(prev => {
+            // Pause motion when hovering over the monitor map (freeze the scene)
+            if (isMonitorHoverPaused) return prev;
+
             // Pre-calculate if we should trigger a new random emergency event
             // We only trigger one if:
             // 1. Simulation is enabled
@@ -180,7 +486,7 @@ const RegulatorApp: React.FC<RegulatorAppProps> = ({ onBackToHome }) => {
         });
     }, 1000); // 1Hz update
     return () => clearInterval(interval);
-  }, [emergencyMode, simulationEnabled]);
+  }, [emergencyMode, simulationEnabled, isMonitorHoverPaused]);
 
   // Watch for new emergencies to announce
   const prevStatusRef = useRef<Record<string, string>>({});
@@ -230,6 +536,13 @@ const RegulatorApp: React.FC<RegulatorAppProps> = ({ onBackToHome }) => {
           setGeneratedPath(undefined);
       }
   };
+
+  const activeFlightsCount = aircraftPos.filter(
+    (a) => a.status === 'AVAILABLE' || a.status === 'BUSY' || a.status === 'EMERGENCY'
+  ).length;
+
+  const selectedAircraft =
+    aircraftPos.find((a) => a.id === selectedAircraftId) || aircraftPos[0] || null;
 
   return (
     <div className="flex h-screen bg-slate-100 overflow-hidden font-sans">
@@ -330,7 +643,7 @@ const RegulatorApp: React.FC<RegulatorAppProps> = ({ onBackToHome }) => {
                 )}
                 <div className="text-right">
                     <p className="text-xs text-slate-500">Active Flights</p>
-                    <p className="font-bold text-slate-800 text-lg leading-none">3</p>
+                    <p className="font-bold text-slate-800 text-lg leading-none">{activeFlightsCount}</p>
                 </div>
                 <div className="text-right">
                     <p className="text-xs text-slate-500">Violations (24h)</p>
@@ -348,11 +661,29 @@ const RegulatorApp: React.FC<RegulatorAppProps> = ({ onBackToHome }) => {
                 {activeTab === 'monitor' && (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
                         {/* Map takes up 2 columns */}
-                        <div className={`lg:col-span-2 bg-white rounded-2xl shadow-xl overflow-hidden h-96 lg:h-full border relative ${emergencyMode ? 'border-red-400' : 'border-slate-300'}`}>
+                        <div
+                          className={`lg:col-span-2 bg-white rounded-2xl shadow-xl overflow-hidden h-96 lg:h-full border relative ${emergencyMode ? 'border-red-400' : 'border-slate-300'}`}
+                          onMouseEnter={() => setIsMonitorHoverPaused(true)}
+                          onMouseLeave={() => setIsMonitorHoverPaused(false)}
+                        >
+                            <style>{`
+                              @keyframes skynetFlashOnce {
+                                0% { opacity: 0; }
+                                15% { opacity: 0.85; }
+                                100% { opacity: 0; }
+                              }
+                            `}</style>
                             <MapVisualization 
                                 routes={ROUTES} 
                                 aircraft={aircraftPos} 
                                 noFlyZones={NO_FLY_ZONES}
+                                showLabels={false}
+                                selectedAircraftId={selectedAircraftId}
+                                onAircraftClick={(ac) => {
+                                  setSelectedAircraftId(ac.id);
+                                  playSelectBeep();
+                                  triggerSelectionFlash();
+                                }}
                                 className="h-full w-full" 
                             />
                              {emergencyMode && (
@@ -369,15 +700,42 @@ const RegulatorApp: React.FC<RegulatorAppProps> = ({ onBackToHome }) => {
                             <h3 className="font-semibold text-slate-700 flex items-center gap-2 sticky top-0 bg-slate-200 py-2 z-10">
                                 <Video size={18} /> AI Surveillance
                             </h3>
-                            {aircraftPos.map(ac => (
-                                <div key={ac.id} className="transform transition-all duration-300">
-                                    <div className="flex justify-between items-end mb-1">
-                                        <p className="text-xs font-semibold text-slate-500">{ac.regNumber} ({ac.model})</p>
-                                        {ac.status === 'EMERGENCY' && <span className="text-[10px] bg-red-600 text-white px-2 rounded animate-pulse">CRITICAL FAULT</span>}
-                                    </div>
-                                    <VideoFeed aircraft={ac} />
+                            {selectedAircraft ? (
+                              <div className="transform transition-all duration-300">
+                                <div className="flex justify-between items-end mb-1">
+                                  <p className="text-xs font-semibold text-slate-500">
+                                    {selectedAircraft.regNumber} ({selectedAircraft.model})
+                                  </p>
+                                  {selectedAircraft.status === 'EMERGENCY' && (
+                                    <span className="text-[10px] bg-red-600 text-white px-2 rounded animate-pulse">
+                                      CRITICAL FAULT
+                                    </span>
+                                  )}
                                 </div>
-                            ))}
+                                <div className="mb-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[11px] text-slate-600 bg-white/60 border border-slate-200 rounded-lg p-2">
+                                  <div><span className="font-semibold text-slate-700">ID:</span> {selectedAircraft.id}</div>
+                                  <div><span className="font-semibold text-slate-700">Status:</span> {selectedAircraft.status}</div>
+                                  <div><span className="font-semibold text-slate-700">Operator:</span> {selectedAircraft.operator}</div>
+                                  <div><span className="font-semibold text-slate-700">Battery:</span> {selectedAircraft.batteryLevel.toFixed(0)}%</div>
+                                  <div><span className="font-semibold text-slate-700">Alt:</span> {(selectedAircraft.altitude ?? 0).toFixed(0)}m</div>
+                                  <div><span className="font-semibold text-slate-700">Spd:</span> {(selectedAircraft.speed ?? 0).toFixed(1)}km/h</div>
+                                </div>
+                                <div key={selectionFlashNonce} className="relative rounded-lg overflow-hidden">
+                                  <VideoFeed aircraft={selectedAircraft} />
+                                  <div
+                                    className="absolute inset-0 pointer-events-none bg-white"
+                                    style={{ opacity: 0, animation: 'skynetFlashOnce 220ms ease-out 1' }}
+                                  />
+                                </div>
+                                <div className="mt-2 text-[11px] text-slate-500">
+                                  Tip: click any aircraft dot on the map to inspect it here.
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="text-sm text-slate-500">
+                                Click an aircraft dot on the map to view its surveillance feed.
+                              </div>
+                            )}
                         </div>
                     </div>
                 )}
