@@ -22,11 +22,11 @@
 The system is designed around a lifecycle-aware operational core, with optional persistence as a non-blocking extension.
 
 ```mermaid
-graph TD
-    A[UAM Operator] -->|Booking Request| B(SkyNet Platform Frontend)
-    B -->|Mission Events| C[Operational State Service (NestJS)]
-    C -->|State Updates| B
-    C -->|Optional Async Persistence| D[(Persistence Adapter)]
+graph TD;
+  A[UAM Operator] -->|Booking Request| B(SkyNet Platform Frontend);
+  B -->|Mission Events| C[Operational State Service (NestJS)];
+  C -->|State Updates| B;
+  C -->|Optional Async Persistence| D[(Persistence Adapter)];
 ```
 
 ## 🚀 Getting Started
