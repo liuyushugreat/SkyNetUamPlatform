@@ -524,7 +524,7 @@ const OperatorApp: React.FC<OperatorAppProps> = ({ onBackToHome }) => {
                                         </span>
                                         <span className="text-[10px] text-slate-500 font-mono ml-2">{m.id}</span>
                                       </td>
-                                      <td className="p-4 text-right">
+                                    <td className="p-4 text-right">
                                         {m.persistence?.mode && m.persistence.mode !== 'off' ? (
                                           <span className="text-xs bg-indigo-900/30 text-indigo-300 border border-indigo-800 px-2 py-1 rounded font-mono">
                                             {m.persistence.mode.toUpperCase()} • {m.persistence.lastFinalitySeconds ?? '—'}s
@@ -534,8 +534,8 @@ const OperatorApp: React.FC<OperatorAppProps> = ({ onBackToHome }) => {
                                             OFF-CHAIN
                                           </span>
                                         )}
-                                      </td>
-                                    </tr>
+                                    </td>
+                                </tr>
                                   );
                                 })
                             )}
