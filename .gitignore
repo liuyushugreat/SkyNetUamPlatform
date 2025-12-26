@@ -28,3 +28,19 @@ myscipaper/
 
 # Experiment outputs (generated artifacts)
 experiments/outputs/
+
+# Paper files and figures (do not commit to GitHub)
+paper.md
+paper.html
+fig*.png
+
+# Archive files
+*.zip
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Generated LaTeX files
+main.tex
