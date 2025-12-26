@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SkyNet-RWA-Nexus Architecture Diagram</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    </script>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        h1 { color: #2c3e50; }
+        .diagram-container { width: 100%; max-width: 1200px; border: 1px solid #ddd; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <h1>SkyNet-RWA-Nexus System Architecture</h1>
+    <p>Layer 1 (Infra) -> Layer 2 (MAS/AI) -> Layer 3 (Blockchain/RWA) -> Layer 4 (Governance)</p>
+    
+    <div class="diagram-container">
+        <pre class="mermaid">
+graph TD
+    %% --- Styles ---
+    classDef l1 fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef l2 fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
+    classDef l3 fill:#fff8e1,stroke:#ff6f00,stroke-width:2px;
+    classDef l4 fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px;
+    classDef ext fill:#eceff1,stroke:#607d8b,stroke-width:1px,stroke-dasharray: 5 5;
+
+    %% --- External Users ---
+    subgraph Users [User Access Layer]
+        OP[Operator]:::ext
+        REG[Regulator]:::ext
+        CIT[Citizen]:::ext
+    end
+
+    %% --- Layer 1: Infrastructure ---
+    subgraph L1 [Layer 1: Infrastructure Adapter]
+        Adapter[SkyNetInterface]:::l1
+        Sync[Clock Sync]:::l1
+        SimEngine[Physical Sim Engine]:::l1
+    end
+
+    %% --- Layer 2: MAS Core ---
+    subgraph L2 [Layer 2: MAS & Economics Core]
+        direction TB
+        subgraph Agents [Actor Model]
+            UAV[UAV Agent<br/>(L4 Decision)]:::l2
+            Voxel[Voxel Agent<br/>(Space Unit)]:::l2
+        end
+        
+        subgraph Brain [Decision Engine]
+            MADDPG[MADDPG Network]:::l2
+            Pricing[Congestion Pricing]:::l2
+            Auction[Vickrey Auction]:::l2
+        end
+    end
+
+    %% --- Layer 4: Data Fabric ---
+    subgraph L4 [Layer 4: Data Fabric & Governance]
+        DLG[Data Lineage Graph<br/>(PROV-O)]:::l4
+        FedServer[Federated Server]:::l4
+        DP[Diff Privacy]:::l4
+    end
+
+    %% --- Layer 3: RWA Protocol ---
+    subgraph L3 [Layer 3: RWA Protocol]
+        Oracle[Proof-of-Flight Oracle]:::l3
+        SmartContracts[Smart Contracts]:::l3
+        
+        subgraph OnChain [Blockchain Layer]
+            NFT[SkyRouteNFT (ERC721)]:::l3
+            Token[SkyToken (ERC20)]:::l3
+        end
+    end
+
+    %% --- Connections ---
+    
+    %% User Interactions
+    OP -->|Fleet Cmd| Adapter
+    REG -->|Audit| DLG
+    CIT -->|Service| Token
+
+    %% L1 <-> Sim
+    Adapter <==>|UDP Stream| SimEngine
+    Adapter -->|State Vector| UAV
+    
+    %% L2 Internal
+    UAV -->|Obs| MADDPG
+    MADDPG -->|Action| UAV
+    UAV -->|Bids| Auction
+    Voxel -->|Capacity| Pricing
+    Pricing -->|Price| Auction
+    
+    %% L2 -> L3 (Assetization)
+    Auction -->|Winner| SmartContracts
+    SmartContracts -->|Mint| NFT
+    
+    %% L4 Data Governance
+    UAV -.->|Gradient| DP
+    DP -.->|Secure Update| FedServer
+    Adapter -.->|Telemetry| DLG
+    
+    %% L3 <-> L4 (Oracle Verification)
+    Oracle -->|Query Trace| DLG
+    DLG -->|Verified| Oracle
+    Oracle -->|Callback| SmartContracts
+
+    %% Feedback Loop
+    NFT -.->|Right-of-Way| Adapter
+        </pre>
+    </div>
+</body>
+</html>
