@@ -1,7 +1,9 @@
 import gym
 import numpy as np
+import uuid
 from gym import spaces
 from typing import List, Tuple, Dict, Optional
+from nexus_core.assetization.event_bus import AssetEventBus, TelemetryEvent
 
 class KinematicsEngine:
     """
@@ -59,6 +61,10 @@ class SkyNetMultiAgentEnv(gym.Env):
         self.render_mode = render_mode
         self.dim_p = 3 
         
+        # Assetization Event Bus
+        self.event_bus = AssetEventBus.get_instance()
+        self.mission_id = uuid.uuid4().hex
+
         self.physics = KinematicsEngine(dt=0.1, max_speed=15.0, world_size=500.0)
 
         # 动作空间: [vx, vy, vz]
@@ -110,6 +116,20 @@ class SkyNetMultiAgentEnv(gym.Env):
                 self.agents_vel[i], 
                 actions[i]
             )
+            
+            # --- [ASSETIZATION] Publish Telemetry Event ---
+            # Decoupled via EventBus. The AssetPipeline will listen and process.
+            event = TelemetryEvent(
+                event_id=uuid.uuid4().hex,
+                event_type="TELEMETRY_UPDATE",
+                source_id=f"uav_{i}",
+                payload={
+                    "pos": self.agents_pos[i].tolist(),
+                    "vel": self.agents_vel[i].tolist()
+                }
+            )
+            self.event_bus.publish(event)
+            # ----------------------------------------------
 
         # 2. 碰撞检测
         crashed_indices = self.physics.check_collisions(self.agents_pos)
@@ -142,6 +162,18 @@ class SkyNetMultiAgentEnv(gym.Env):
         # 全局 Done
         if self.steps >= self.max_steps:
             dones = [True] * self.num_agents
+
+        # --- [ASSETIZATION] Trigger Mission Complete ---
+        # If any agent finishes (or all finish), trigger asset creation
+        for i, done in enumerate(dones):
+            if done:
+                self.event_bus.publish(TelemetryEvent(
+                    event_id=self.mission_id,
+                    event_type="MISSION_COMPLETE",
+                    source_id=f"uav_{i}",
+                    payload={"status": "COMPLETED", "final_step": self.steps}
+                ))
+        # -----------------------------------------------
 
         if self.render_mode == 'human':
             self.render()

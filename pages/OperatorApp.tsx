@@ -5,7 +5,10 @@ import { playTextToSpeech } from '../services/geminiService';
 import { smartContractService } from '../services/smartContractService';
 import { opsApi } from '../services/opsApi';
 import MapVisualization from '../components/MapVisualization';
-import { Activity, Battery, Power, Volume2, Bell, ShieldAlert, FileText, Coins, Camera, Wallet, Plus, Loader2, Briefcase, TrendingUp, TrendingDown, ExternalLink, CheckCircle, AlertCircle, Wifi, Fuel, Percent, Map as MapIcon, Signal, ChevronDown, ChevronUp, Home } from 'lucide-react';
+import AssetInsight from '../components/AssetInsight/index';
+import { Activity, Battery, Power, Volume2, Bell, ShieldAlert, FileText, Coins, Camera, Wallet, Plus, Loader2, Briefcase, TrendingUp, TrendingDown, ExternalLink, CheckCircle, AlertCircle, Wifi, Fuel, Percent, Map as MapIcon, Signal, ChevronDown, ChevronUp, Home, Database } from 'lucide-react';
+
+import FullScreenButton from '../components/FullScreenButton';
 
 interface OperatorAppProps {
   onBackToHome: () => void;
@@ -14,7 +17,7 @@ interface OperatorAppProps {
 const OperatorApp: React.FC<OperatorAppProps> = ({ onBackToHome }) => {
   const [myAircraft, setMyAircraft] = useState<Aircraft[]>(AIRCRAFT.filter(a => a.operator === 'SkyHigh Ops'));
   const [isOnline, setIsOnline] = useState(true);
-  const [activeTab, setActiveTab] = useState<'fleet' | 'risk' | 'finance'>('fleet');
+  const [activeTab, setActiveTab] = useState<'fleet' | 'risk' | 'finance' | 'asset'>('fleet');
   const [claims, setClaims] = useState<InsuranceClaim[]>(INSURANCE_CLAIMS);
   
   // Tokenization State
@@ -327,6 +330,7 @@ const OperatorApp: React.FC<OperatorAppProps> = ({ onBackToHome }) => {
            </div>
         </div>
         <div className="flex gap-3 items-center">
+            <FullScreenButton className="text-slate-400 hover:text-white" />
             <button 
               onClick={() => setActiveTab('fleet')}
               className={`px-3 py-1 rounded text-sm ${activeTab === 'fleet' ? 'bg-slate-700 text-white' : 'text-slate-400'}`}
@@ -344,6 +348,12 @@ const OperatorApp: React.FC<OperatorAppProps> = ({ onBackToHome }) => {
               className={`px-3 py-1 rounded text-sm ${activeTab === 'finance' ? 'bg-slate-700 text-white' : 'text-slate-400'}`}
             >
               Finance
+            </button>
+             <button 
+              onClick={() => setActiveTab('asset')}
+              className={`px-3 py-1 rounded text-sm flex items-center gap-2 ${activeTab === 'asset' ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/50' : 'text-slate-400'}`}
+            >
+              <Database size={14} /> Data Assets
             </button>
             <div className="h-6 w-px bg-slate-600 mx-2"></div>
             <button className="p-2 bg-slate-700 rounded-full hover:bg-slate-600 relative">
@@ -902,6 +912,12 @@ const OperatorApp: React.FC<OperatorAppProps> = ({ onBackToHome }) => {
                 </div>
              </div>
           </div>
+        )}
+
+        {activeTab === 'asset' && (
+            <div className="h-[calc(100vh-200px)]">
+                <AssetInsight filterOperator="SkyHigh Ops" className="h-full" />
+            </div>
         )}
 
       </main>

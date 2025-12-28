@@ -32,6 +32,7 @@ experiments/outputs/
 # Paper files and figures (do not commit to GitHub)
 paper.md
 paper.html
+paper2.md
 fig*.png
 
 # Archive files
@@ -43,4 +44,4 @@ __pycache__/
 *.pyo
 
 # Generated LaTeX files
-main.tex
+main.tex*

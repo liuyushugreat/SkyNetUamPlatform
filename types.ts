@@ -2,7 +2,8 @@
 export enum UserRole {
   CITIZEN = 'CITIZEN',
   OPERATOR = 'OPERATOR',
-  REGULATOR = 'REGULATOR'
+  REGULATOR = 'REGULATOR',
+  ASSET_INSIGHT = 'ASSET_INSIGHT'
 }
 
 export enum OrderStatus {
