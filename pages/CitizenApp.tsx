@@ -7,6 +7,7 @@ import { playTextToSpeech } from '../services/geminiService';
 import { smartContractService } from '../services/smartContractService';
 import { opsApi } from '../services/opsApi';
 import { Loader2, Volume2, MapPin, Clock, CheckCircle, DollarSign, Plane, LayoutDashboard, Home } from 'lucide-react';
+import FullScreenButton from '../components/FullScreenButton';
 
 interface CitizenAppProps {
   onBackToHome: () => void;
@@ -103,8 +104,11 @@ const CitizenApp: React.FC<CitizenAppProps> = ({ onBackToHome }) => {
             <p className="text-xs opacity-80">Citizen Access</p>
           </div>
         </div>
-        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold border border-blue-400">
-          ME
+        <div className="flex items-center gap-2">
+            <FullScreenButton className="hover:bg-blue-500 text-white" />
+            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold border border-blue-400">
+              ME
+            </div>
         </div>
       </header>
 

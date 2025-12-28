@@ -3,9 +3,10 @@ import MapVisualization from '../components/MapVisualization';
 import VideoFeed from '../components/VideoFeed';
 import { ROUTES, AIRCRAFT, ALERTS, NO_FLY_ZONES } from '../services/mockData';
 import { findOptimalPath } from '../services/pathUtils';
-import { AlertTriangle, Shield, Database, Radio, Map as MapIcon, Video, Siren, Navigation, Zap, Activity, Home } from 'lucide-react';
+import { AlertTriangle, Shield, Database, Radio, Map as MapIcon, Video, Siren, Navigation, Zap, Activity, Home, LogOut } from 'lucide-react';
 import { playTextToSpeech } from '../services/geminiService';
 import { Aircraft as AircraftType, Coordinate } from '../types';
+import FullScreenButton from '../components/FullScreenButton';
 
 interface RegulatorAppProps {
   onBackToHome: () => void;
@@ -246,6 +247,7 @@ function generateSyntheticFleet(count: number, seed = 1337): AircraftType[] {
 
   return fleet;
 }
+
 
 const RegulatorApp: React.FC<RegulatorAppProps> = ({ onBackToHome }) => {
   // Simulate live data updates
@@ -558,12 +560,15 @@ const RegulatorApp: React.FC<RegulatorAppProps> = ({ onBackToHome }) => {
         </div>
         
         <nav className="flex-1 p-4 space-y-2">
-            <button 
+           <div className="flex gap-2">
+               <FullScreenButton className="flex-1 bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white" />
+               <button 
                 onClick={onBackToHome}
-                className="w-full px-4 py-3 rounded-lg flex items-center gap-3 transition-colors hover:bg-slate-800 text-slate-400 hover:text-white"
-            >
-                <Home size={18} /> Return Home
-            </button>
+                className="flex-1 flex items-center justify-center gap-2 p-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-all border border-slate-700 hover:border-slate-600 group"
+               >
+                <Home size={18} /> Home
+               </button>
+           </div>
             
             <div className="my-2 border-b border-slate-800"></div>
 
