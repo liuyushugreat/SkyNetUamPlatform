@@ -35,6 +35,10 @@ paper.html
 paper2.md
 fig*.png
 
+# Paper folders (do not commit to GitHub)
+paperBigdata/
+paperMADDPG/
+
 # Archive files
 *.zip
 
