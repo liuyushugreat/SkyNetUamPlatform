@@ -1,0 +1,9 @@
+metric,value
+Missions/day,100000.0
+Approval rate,0.93712
+Delay rate (approved),0.306726993341301
+Failure rate (approved),0.01536622844459621
+Violation rate (approved),0.004396448693870582
+Median scheduling latency (min),3.672497130773195
+P95 scheduling latency (min),23.24127135482694
+Median settlement finality (s),2.3001852670612295
