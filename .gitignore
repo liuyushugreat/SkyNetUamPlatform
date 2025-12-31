@@ -39,6 +39,9 @@ fig*.png
 /paperBigdata/
 /paperMADDPG/
 
+# Research paper assets (keep local by default)
+/research/papers/
+
 # Archive files
 *.zip
 
@@ -53,9 +56,9 @@ main.tex*
 # Large data files (too large for GitHub)
 # Note: trajectories.npy is excluded due to size (280MB+)
 # Users should generate it locally using generate_trajectory_data.py
-PaperExperiments/experimentsMADDPG/trajectories.npy
+research/experiments/maddpg/trajectories.npy
 
 # Large video files
 # Note: swarm_demo.mp4 is excluded due to size (~8MB)
 # Users should generate it locally using visualize_swarm.py
-PaperExperiments/experimentsMADDPG/swarm_demo.mp4
+research/experiments/maddpg/swarm_demo.mp4

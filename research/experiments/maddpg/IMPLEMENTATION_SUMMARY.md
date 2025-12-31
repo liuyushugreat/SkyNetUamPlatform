@@ -125,7 +125,7 @@ nexus_core/mas/
 
 ### New Structure
 ```
-PaperExperiments/experimentsMADDPG/
+research/experiments/maddpg/
   ├── mappo.py           # NEW: MAPPO implementation
   ├── networks.py        # NEW: Attention-based networks
   ├── emergence_metrics.py  # NEW: Emergence quantification
@@ -145,7 +145,7 @@ PaperExperiments/experimentsMADDPG/
 ### Example 1: Training MAPPO with Emergence Metrics
 
 ```python
-from PaperExperiments.experimentsMADDPG.train import train_mappo
+from research.experiments.maddpg.train import train_mappo
 
 results = train_mappo(
     num_agents=10000,
@@ -158,8 +158,8 @@ results = train_mappo(
 ### Example 2: Adding Emergence Metrics to Existing Code
 
 ```python
-from PaperExperiments.experimentsMADDPG.emergence_metrics import calculate_emergence_metrics
-from PaperExperiments.experimentsMADDPG.metrics_logger import MetricsLogger
+from research.experiments.maddpg.emergence_metrics import calculate_emergence_metrics
+from research.experiments.maddpg.metrics_logger import MetricsLogger
 
 # In your evaluation loop
 states = extract_states(observations)  # Shape: (N, state_dim)
@@ -175,7 +175,7 @@ logger.log_emergence_metrics(metrics, step=episode)
 ### Example 3: Vectorized Training for 50k Agents
 
 ```python
-from PaperExperiments.experimentsMADDPG.vectorized_env import VectorizedEnv
+from research.experiments.maddpg.vectorized_env import VectorizedEnv
 
 # Create 10 parallel environments with 5000 agents each
 env = VectorizedEnv(

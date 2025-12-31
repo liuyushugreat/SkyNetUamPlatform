@@ -16,7 +16,7 @@ pip install tensorboard  # Optional but recommended
 
 ### Step 2: Test MAPPO on Small Scale
 ```bash
-cd PaperExperiments/experimentsMADDPG
+cd research/experiments/maddpg
 python train.py --algorithm MAPPO --num_agents 100 --num_episodes 100
 ```
 
@@ -55,7 +55,7 @@ logs/
 ### Option 1: Minimal Integration (5 lines)
 
 ```python
-from PaperExperiments.experimentsMADDPG.emergence_metrics import calculate_emergence_metrics
+from research.experiments.maddpg.emergence_metrics import calculate_emergence_metrics
 
 # In your evaluation loop, after collecting states:
 states = np.array([[x, y, z, vx, vy, vz, ...] for agent in agents])
@@ -68,8 +68,8 @@ print(f"Emergence: Order={metrics['order_parameter']:.3f}, "
 ### Option 2: Full Integration with Logging
 
 ```python
-from PaperExperiments.experimentsMADDPG.emergence_metrics import calculate_emergence_metrics
-from PaperExperiments.experimentsMADDPG.metrics_logger import MetricsLogger
+from research.experiments.maddpg.emergence_metrics import calculate_emergence_metrics
+from research.experiments.maddpg.metrics_logger import MetricsLogger
 
 logger = MetricsLogger(log_dir='./logs')
 
@@ -176,7 +176,7 @@ print(f"AP-MADDPG: {ap_maddpg_df['order_parameter'].mean():.3f}")
 ```python
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))  # repo root
 ```
 
 ### Issue: "Out of memory"

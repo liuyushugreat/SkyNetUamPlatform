@@ -66,10 +66,14 @@ graph TD;
 To reproduce the daily 100k-mission workload (used to stress lifecycle management under congestion and permission constraints):
 
 ```bash
-python PaperExperiments/experimentsMADDPG/simulate_100k_day.py
+python research/experiments/maddpg/simulate_100k_day.py
 ```
 
-Outputs are written to `PaperExperiments/experimentsMADDPG/outputs/` (CSV + publication-ready plots).
+Outputs are written to `research/experiments/maddpg/outputs/` (CSV + publication-ready plots).
+
+## 🗂️ Repository Structure
+
+See `docs/REPO_STRUCTURE.md` for the target directory layout and separation between production code and research assets.
 
 ## 📚 Citation
 

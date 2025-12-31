@@ -208,7 +208,7 @@ def plot_results(results):
     df['num_agents'] = num_agents
     df.to_csv(os.path.join(OUT_DIR, 'massive_sim_collision.csv'), index=False)
     
-    print("Simulation completed. Results saved to 'PaperExperiments/experimentsMADDPG/outputs/'.")
+    print("Simulation completed. Results saved to 'research/experiments/maddpg/outputs/'.")
     
     # Perform t-test for statistical significance (Example: AP-MADDPG vs MADDPG at N=100k)
     # Simulate sample data

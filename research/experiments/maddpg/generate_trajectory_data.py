@@ -15,12 +15,12 @@ import os
 from typing import Tuple
 
 # Add repo root directory to sys.path for imports.
-# This script lives at: <repo_root>/PaperExperiments/experimentsMADDPG/generate_trajectory_data.py
-repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# This script lives at: <repo_root>/research/experiments/maddpg/generate_trajectory_data.py
+repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 sys.path.append(repo_root)
 
 from nexus_core.mas.environment import SkyNetEnv
-from PaperExperiments.experimentsMADDPG.emergence_metrics import calculate_cluster_entropy
+from research.experiments.maddpg.emergence_metrics import calculate_cluster_entropy
 
 
 def simulate_and_save_trajectories(num_agents: int = 1000,

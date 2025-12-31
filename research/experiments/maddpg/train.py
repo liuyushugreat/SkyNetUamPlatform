@@ -19,15 +19,15 @@ from typing import Dict, List
 import sys
 
 # Add repo root directory to sys.path for imports.
-# This script lives at: <repo_root>/PaperExperiments/experimentsMADDPG/train.py
-# We need repo_root on sys.path so that `import PaperExperiments.experimentsMADDPG.*` works.
-repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# This script lives at: <repo_root>/research/experiments/maddpg/train.py
+# We need <repo_root> on sys.path so that `import research.experiments.maddpg.*` works.
+repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 sys.path.append(repo_root)
 
-from PaperExperiments.experimentsMADDPG.mappo import MAPPOAgent, MAPPOTrainer
-from PaperExperiments.experimentsMADDPG.emergence_metrics import calculate_emergence_metrics
-from PaperExperiments.experimentsMADDPG.metrics_logger import MetricsLogger
-from PaperExperiments.experimentsMADDPG.vectorized_env import VectorizedEnv, BatchedVectorizedEnv
+from research.experiments.maddpg.mappo import MAPPOAgent, MAPPOTrainer
+from research.experiments.maddpg.emergence_metrics import calculate_emergence_metrics
+from research.experiments.maddpg.metrics_logger import MetricsLogger
+from research.experiments.maddpg.vectorized_env import VectorizedEnv, BatchedVectorizedEnv
 from nexus_core.mas.environment import SkyNetEnv
 
 
