@@ -75,6 +75,10 @@ Outputs are written to `research/experiments/maddpg/outputs/` (CSV + publication
 
 See `docs/REPO_STRUCTURE.md` for the target directory layout and separation between production code and research assets.
 
+## 🧩 Neo4j Integration
+
+See `docs/neo4j.md` for how to start Neo4j via Docker and how to use it from the NestJS backend and Python utilities.
+
 ## 📚 Citation
 
 If you use this code or framework in your research, please cite our paper:
