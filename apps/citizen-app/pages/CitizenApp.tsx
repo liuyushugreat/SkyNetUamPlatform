@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { Route, Order, OrderStatus } from '../types';
-import { ROUTES, INITIAL_ORDERS } from '../services/mockData';
-import MapVisualization from '../components/MapVisualization';
-import RWAMarket from '../components/RWAMarket';
-import { playTextToSpeech } from '../services/geminiService';
-import { smartContractService } from '../services/smartContractService';
-import { opsApi } from '../services/opsApi';
+import { Route, Order, OrderStatus } from '../../../types';
+import { ROUTES, INITIAL_ORDERS } from '../../../services/mockData';
+import MapVisualization from '../../../components/MapVisualization';
+import RWAMarket from '../../../components/RWAMarket';
+import { playTextToSpeech } from '../../../services/geminiService';
+import { smartContractService } from '../../../services/smartContractService';
+import { opsApi } from '../../../services/opsApi';
 import { Loader2, Volume2, MapPin, Clock, CheckCircle, DollarSign, Plane, LayoutDashboard, Home } from 'lucide-react';
-import FullScreenButton from '../components/FullScreenButton';
+import FullScreenButton from '../../../components/FullScreenButton';
 
 interface CitizenAppProps {
   onBackToHome: () => void;
