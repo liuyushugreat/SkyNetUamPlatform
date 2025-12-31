@@ -49,3 +49,13 @@ __pycache__/
 
 # Generated LaTeX files
 main.tex*
+
+# Large data files (too large for GitHub)
+# Note: trajectories.npy is excluded due to size (280MB+)
+# Users should generate it locally using generate_trajectory_data.py
+experimentsMADDPG/trajectories.npy
+
+# Large video files
+# Note: swarm_demo.mp4 is excluded due to size (~8MB)
+# Users should generate it locally using visualize_swarm.py
+experimentsMADDPG/swarm_demo.mp4
