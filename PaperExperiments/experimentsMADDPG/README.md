@@ -22,7 +22,7 @@ This directory contains an upgraded experimental framework for large-scale multi
 ## 📁 File Structure
 
 ```
-experimentsMADDPG/
+PaperExperiments/experimentsMADDPG/
 ├── networks.py              # Neural network architectures
 │   ├── ActorNetwork         # Policy network (shared)
 │   ├── AttentionCriticNetwork  # Attention-based critic (AP-MADDPG & MAPPO)
@@ -120,8 +120,8 @@ Metrics are automatically saved to `logs/metrics_YYYYMMDD_HHMMSS.csv` with colum
 
 ```python
 from nexus_core.mas.maddpg import MADDPGTrainer, MADDPGAgent
-from experimentsMADDPG.emergence_metrics import calculate_emergence_metrics
-from experimentsMADDPG.metrics_logger import MetricsLogger
+from PaperExperiments.experimentsMADDPG.emergence_metrics import calculate_emergence_metrics
+from PaperExperiments.experimentsMADDPG.metrics_logger import MetricsLogger
 
 # Your existing MADDPG training loop
 # ... collect states during evaluation ...

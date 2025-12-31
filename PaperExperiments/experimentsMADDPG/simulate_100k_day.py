@@ -6,7 +6,7 @@ This script generates a reproducible synthetic workload for low-altitude UAM/dro
 operations with mission lifecycle outcomes (approved/delayed/completed/failed/denied)
 under corridor-capacity and regulatory-permission constraints.
 
-Outputs (written under experiments/outputs/):
+Outputs (written under PaperExperiments/experimentsMADDPG/outputs/):
 - flights_day.csv: per-mission dataset (100,000 rows)
 - events_day.csv: lifecycle events (Created/Scheduled/Active/Completed/Failed)
 - kpi_summary.csv: summary KPI table
@@ -16,7 +16,7 @@ Outputs (written under experiments/outputs/):
 - fig_outcomes.png: mission outcomes distribution
 
 Run:
-  python experiments/simulate_100k_day.py
+  python PaperExperiments/experimentsMADDPG/simulate_100k_day.py
 
 Dependencies:
   numpy, pandas, matplotlib, seaborn

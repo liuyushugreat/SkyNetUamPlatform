@@ -66,10 +66,10 @@ graph TD;
 To reproduce the daily 100k-mission workload (used to stress lifecycle management under congestion and permission constraints):
 
 ```bash
-python experiments/simulate_100k_day.py
+python PaperExperiments/experimentsMADDPG/simulate_100k_day.py
 ```
 
-Outputs are written to `experiments/outputs/` (CSV + publication-ready plots).
+Outputs are written to `PaperExperiments/experimentsMADDPG/outputs/` (CSV + publication-ready plots).
 
 ## 📚 Citation
 
