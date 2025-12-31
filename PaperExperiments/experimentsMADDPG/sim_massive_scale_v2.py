@@ -142,7 +142,7 @@ def plot_results(results):
     df['num_agents'] = num_agents
     df.to_csv(os.path.join(OUT_DIR, 'massive_sim_collision.csv'), index=False)
     
-    print("Simulation completed. Results saved to 'experiments/outputs/'.")
+    print("Simulation completed. Results saved to 'PaperExperiments/experimentsMADDPG/outputs/'.")
 
 if __name__ == "__main__":
     scales = [50000, 60000, 70000, 80000, 90000, 100000]
