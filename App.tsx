@@ -1,21 +1,42 @@
 import React, { useState } from 'react';
-import CitizenApp from './pages/CitizenApp';
-import OperatorApp from './pages/OperatorApp';
-import RegulatorApp from './pages/RegulatorApp';
+import CitizenApp from './apps/citizen-app';
+import OperatorApp from './apps/operator-ops';
+import RegulatorApp from './apps/regulator-app';
 import AssetInsightDashboard from './components/AssetInsight/index';
 import FullScreenButton from './components/FullScreenButton';
 import { UserRole } from './types';
 import { ArrowRight, Smartphone, Briefcase, ShieldCheck, Database } from 'lucide-react';
+import { AppShell } from './packages/ui-shell';
 
 const App: React.FC = () => {
   const [currentRole, setCurrentRole] = useState<UserRole | null>(null);
 
   const handleBackToHome = () => setCurrentRole(null);
 
-  if (currentRole === UserRole.CITIZEN) return <CitizenApp onBackToHome={handleBackToHome} />;
-  if (currentRole === UserRole.OPERATOR) return <OperatorApp onBackToHome={handleBackToHome} />;
-  if (currentRole === UserRole.REGULATOR) return <RegulatorApp onBackToHome={handleBackToHome} />;
-  if (currentRole === UserRole.ASSET_INSIGHT) return <AssetInsightDashboard onBackToHome={handleBackToHome} />;
+  if (currentRole === UserRole.CITIZEN)
+    return (
+      <AppShell role={String(currentRole)}>
+        <CitizenApp onBackToHome={handleBackToHome} />
+      </AppShell>
+    );
+  if (currentRole === UserRole.OPERATOR)
+    return (
+      <AppShell role={String(currentRole)}>
+        <OperatorApp onBackToHome={handleBackToHome} />
+      </AppShell>
+    );
+  if (currentRole === UserRole.REGULATOR)
+    return (
+      <AppShell role={String(currentRole)}>
+        <RegulatorApp onBackToHome={handleBackToHome} />
+      </AppShell>
+    );
+  if (currentRole === UserRole.ASSET_INSIGHT)
+    return (
+      <AppShell role={String(currentRole)}>
+        <AssetInsightDashboard onBackToHome={handleBackToHome} />
+      </AppShell>
+    );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center p-6">

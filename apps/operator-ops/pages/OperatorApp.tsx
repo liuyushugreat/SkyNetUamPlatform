@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Aircraft, InsuranceClaim, Route, RWAToken, Mission } from '../types';
-import { AIRCRAFT, ROUTES, INSURANCE_CLAIMS } from '../services/mockData';
-import { playTextToSpeech } from '../services/geminiService';
-import { smartContractService } from '../services/smartContractService';
-import { opsApi } from '../services/opsApi';
-import MapVisualization from '../components/MapVisualization';
-import AssetInsight from '../components/AssetInsight/index';
+import { Aircraft, InsuranceClaim, Route, RWAToken, Mission } from '../../../types';
+import { AIRCRAFT, ROUTES, INSURANCE_CLAIMS } from '../../../services/mockData';
+import { playTextToSpeech } from '../../../services/geminiService';
+import { smartContractService } from '../../../services/smartContractService';
+import { opsApi } from '../../../services/opsApi';
+import MapVisualization from '../../../components/MapVisualization';
+import AssetInsight from '../../../components/AssetInsight/index';
 import { Activity, Battery, Power, Volume2, Bell, ShieldAlert, FileText, Coins, Camera, Wallet, Plus, Loader2, Briefcase, TrendingUp, TrendingDown, ExternalLink, CheckCircle, AlertCircle, Wifi, Fuel, Percent, Map as MapIcon, Signal, ChevronDown, ChevronUp, Home, Database } from 'lucide-react';
 
-import FullScreenButton from '../components/FullScreenButton';
+import FullScreenButton from '../../../components/FullScreenButton';
 
 interface OperatorAppProps {
   onBackToHome: () => void;

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import MapVisualization from '../components/MapVisualization';
-import VideoFeed from '../components/VideoFeed';
-import { ROUTES, AIRCRAFT, ALERTS, NO_FLY_ZONES } from '../services/mockData';
-import { findOptimalPath } from '../services/pathUtils';
+import MapVisualization from '../../../components/MapVisualization';
+import VideoFeed from '../../../components/VideoFeed';
+import { ROUTES, AIRCRAFT, ALERTS, NO_FLY_ZONES } from '../../../services/mockData';
+import { findOptimalPath } from '../../../services/pathUtils';
 import { AlertTriangle, Shield, Database, Radio, Map as MapIcon, Video, Siren, Navigation, Zap, Activity, Home, LogOut } from 'lucide-react';
-import { playTextToSpeech } from '../services/geminiService';
-import { Aircraft as AircraftType, Coordinate } from '../types';
-import FullScreenButton from '../components/FullScreenButton';
+import { playTextToSpeech } from '../../../services/geminiService';
+import { Aircraft as AircraftType, Coordinate } from '../../../types';
+import FullScreenButton from '../../../components/FullScreenButton';
 
 interface RegulatorAppProps {
   onBackToHome: () => void;
