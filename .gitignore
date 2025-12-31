@@ -23,6 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 
+# Env files (keep secrets local)
+.env
+infra/.env
+backend/.env
+
 # Paper sources (do not commit)
 myscipaper/
 
