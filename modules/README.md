@@ -25,9 +25,9 @@ Real-World Assetization (RWA) and financial primitives:
 **Migration Note**: This module was migrated from `nexus_core/assetization/` and `nexus_core/economics/` in Phase-1. Backward compatibility is maintained via re-export shims in the old paths.
 
 ### 3. `reasoning_engine/`
-**Status**: ⚠️ Empty directory (not yet implemented)
+**Status**: ✅ Synced to GitHub (placeholder)
 
-Future module for AI reasoning and decision-making capabilities.
+Future module for AI reasoning and decision-making capabilities. Currently contains only placeholder files (`__init__.py` and `README.md`) to reserve the namespace.
 
 ## Git Sync Status
 
