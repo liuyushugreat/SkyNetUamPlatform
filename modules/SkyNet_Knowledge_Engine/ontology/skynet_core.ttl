@@ -1,0 +1,122 @@
+@prefix : <http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#> .
+@prefix skynet: <http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://github.com/liuyushugreat/SkyNetUamPlatform/ontology> rdf:type owl:Ontology ;
+                                                              rdfs:comment "Core Ontology for SkyNet Urban Air Mobility Platform. Defines the semantic structure for UAVs, airspace resources, and dynamic events."@en .
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#Entity
+skynet:Entity rdf:type owl:Class ;
+              rdfs:comment "Root class representing any identifiable object within the SkyNet UAM ecosystem."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#UAV
+skynet:UAV rdf:type owl:Class ;
+           rdfs:subClassOf skynet:Entity ;
+           rdfs:comment "Unmanned Aerial Vehicle. A powered, aerial vehicle that does not carry a human operator."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#RotaryWing
+skynet:RotaryWing rdf:type owl:Class ;
+                  rdfs:subClassOf skynet:UAV ;
+                  rdfs:comment "A UAV that generates lift via rotor blades revolving around a central mast (e.g., multicopters)."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#FixedWing
+skynet:FixedWing rdf:type owl:Class ;
+                 rdfs:subClassOf skynet:UAV ;
+                 rdfs:comment "A UAV that uses a wing that is fixed in relation to the fuselage to generate lift."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#AirspaceResource
+skynet:AirspaceResource rdf:type owl:Class ;
+                        rdfs:subClassOf skynet:Entity ;
+                        rdfs:comment "A defined volume of airspace or ground infrastructure used for UAM operations."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#RestrictedZone
+skynet:RestrictedZone rdf:type owl:Class ;
+                      rdfs:subClassOf skynet:AirspaceResource ;
+                      rdfs:comment "A designated area where UAV flight is limited or prohibited due to safety or security reasons."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#Vertiport
+skynet:Vertiport rdf:type owl:Class ;
+                 rdfs:subClassOf skynet:AirspaceResource ;
+                 rdfs:comment "A designated facility for the take-off and landing of VTOL (Vertical Take-Off and Landing) aircraft."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#DynamicEvent
+skynet:DynamicEvent rdf:type owl:Class ;
+                    rdfs:subClassOf skynet:Entity ;
+                    rdfs:comment "An occurrence or phenomenon that happens at a specific time and place within the UAM environment."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#RiskAlert
+skynet:RiskAlert rdf:type owl:Class ;
+                 rdfs:subClassOf skynet:DynamicEvent ;
+                 rdfs:comment "A notification indicating a potential hazard or conflict involving a UAV or airspace."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#TrajectorySegment
+skynet:TrajectorySegment rdf:type owl:Class ;
+                         rdfs:subClassOf skynet:DynamicEvent ;
+                         rdfs:comment "A spatiotemporal part of a UAV's planned or flown path."@en .
+
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#is_approaching
+skynet:is_approaching rdf:type owl:ObjectProperty , owl:TransitiveProperty ;
+                      rdfs:domain skynet:UAV ;
+                      rdfs:range skynet:AirspaceResource ;
+                      rdfs:comment "Relates a UAV to an Airspace Resource it is moving towards. Defined as transitive for high-level reasoning."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#temporally_overlaps
+skynet:temporally_overlaps rdf:type owl:ObjectProperty ;
+                           rdfs:domain skynet:DynamicEvent ;
+                           rdfs:range skynet:DynamicEvent ;
+                           rdfs:comment "Indicates that two dynamic events occur during intersecting time intervals, creating potential conflict."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#occupies_space
+skynet:occupies_space rdf:type owl:ObjectProperty ;
+                      rdfs:domain skynet:TrajectorySegment ;
+                      rdfs:range skynet:AirspaceResource ;
+                      rdfs:comment "Defines the spatial volume or resource that a specific trajectory segment utilizes."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#triggers_rule
+skynet:triggers_rule rdf:type owl:ObjectProperty ;
+                     rdfs:domain skynet:DynamicEvent ;
+                     rdfs:range skynet:Entity ;
+                     rdfs:comment "Links an event (like a risk alert or violation) to the specific regulation or rule it activates."@en .
+
+
+#################################################################
+#    Data Properties
+#################################################################
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#maxWindResistance
+skynet:maxWindResistance rdf:type owl:DatatypeProperty ;
+                         rdfs:domain skynet:UAV ;
+                         rdfs:range xsd:integer ;
+                         rdfs:comment "The maximum wind speed level (e.g., Beaufort scale) the UAV can safely withstand."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#currentBattery
+skynet:currentBattery rdf:type owl:DatatypeProperty ;
+                      rdfs:domain skynet:UAV ;
+                      rdfs:range xsd:integer ;
+                      rdfs:comment "The current battery level of the UAV, typically expressed as a percentage (0-100)."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#geoWKT
+skynet:geoWKT rdf:type owl:DatatypeProperty ;
+              rdfs:domain skynet:Entity ;
+              rdfs:range xsd:string ;
+              rdfs:comment "The geographical coordinates of the entity defined in Well-Known Text (WKT) format."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#timestamp
+skynet:timestamp rdf:type owl:DatatypeProperty ;
+                 rdfs:domain skynet:DynamicEvent ;
+                 rdfs:range xsd:dateTime ;
+                 rdfs:comment "The specific date and time associated with an event or observation."@en .
+

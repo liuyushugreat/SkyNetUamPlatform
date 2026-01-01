@@ -1,0 +1,6 @@
+rdflib>=6.0.0
+owlready2
+networkx
+langchain
+neo4j
+
