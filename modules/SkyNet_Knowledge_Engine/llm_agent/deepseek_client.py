@@ -1,9 +1,20 @@
 from openai import OpenAI
 import os
+from pathlib import Path
+
+# 尝试加载 .env 文件（如果存在）
+try:
+    from dotenv import load_dotenv
+    # 从项目根目录查找 .env 文件
+    env_path = Path(__file__).parent.parent.parent.parent / ".env"
+    if env_path.exists():
+        load_dotenv(env_path)
+except ImportError:
+    pass  # python-dotenv 未安装时忽略
 
 class SkyNetExplainer:
     def __init__(self, api_key=None):
-        # 优先从环境变量读取，如果没有则使用 mock 模式
+        # 优先级：参数 > 环境变量 > .env 文件
         self.api_key = api_key or os.getenv("DEEPSEEK_API_KEY")
         if self.api_key:
             self.client = OpenAI(api_key=self.api_key, base_url="https://api.deepseek.com")

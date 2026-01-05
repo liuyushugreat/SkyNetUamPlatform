@@ -3,4 +3,5 @@ owlready2
 networkx
 langchain
 neo4j
+python-dotenv>=1.0.0
 
