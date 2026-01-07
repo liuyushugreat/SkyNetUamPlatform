@@ -25,6 +25,9 @@ dist-ssr
 
 # Env files (keep secrets local)
 .env
+.env.*
+!.env.example
+*.env
 infra/.env
 backend/.env
 
