@@ -11,12 +11,15 @@
   },
   "dependencies": {
     "@google/genai": "^1.30.0",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
     "echarts": "^6.0.0",
     "echarts-for-react": "^3.0.5",
     "framer-motion": "^12.23.26",
     "lucide-react": "^0.554.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "three": "^0.182.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

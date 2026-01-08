@@ -1,0 +1,802 @@
+[
+  {
+    "id": "TEST-001",
+    "timestamp": "2026-01-08T00:15:18.081589",
+    "scenario_type": "A",
+    "uav": {
+      "max_wind_resistance": 11
+    },
+    "environment": {
+      "wind_speed": 12.29
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "High Risk",
+    "description": "Semantic Risk: Wind exceeds resistance"
+  },
+  {
+    "id": "TEST-002",
+    "timestamp": "2026-01-08T00:15:18.081625",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 12
+    },
+    "environment": {
+      "wind_speed": 9.71
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-003",
+    "timestamp": "2026-01-08T00:15:18.081635",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 9
+    },
+    "environment": {
+      "wind_speed": 4.6
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-004",
+    "timestamp": "2026-01-08T00:15:18.081642",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 10
+    },
+    "environment": {
+      "wind_speed": 7.41
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-005",
+    "timestamp": "2026-01-08T00:15:18.081649",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 9
+    },
+    "environment": {
+      "wind_speed": 5.72
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-006",
+    "timestamp": "2026-01-08T00:15:18.081655",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 8
+    },
+    "environment": {
+      "wind_speed": 6.96
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-007",
+    "timestamp": "2026-01-08T00:15:18.081660",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 12
+    },
+    "environment": {
+      "wind_speed": 9.99
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-008",
+    "timestamp": "2026-01-08T00:15:18.081664",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 11
+    },
+    "environment": {
+      "wind_speed": 9.48
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-009",
+    "timestamp": "2026-01-08T00:15:18.081669",
+    "scenario_type": "A",
+    "uav": {
+      "max_wind_resistance": 11
+    },
+    "environment": {
+      "wind_speed": 12.79
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "High Risk",
+    "description": "Semantic Risk: Wind exceeds resistance"
+  },
+  {
+    "id": "TEST-010",
+    "timestamp": "2026-01-08T00:15:18.081674",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 11
+    },
+    "environment": {
+      "wind_speed": 7.07
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-011",
+    "timestamp": "2026-01-08T00:15:18.081678",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 12
+    },
+    "environment": {
+      "wind_speed": 10.1
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-012",
+    "timestamp": "2026-01-08T00:15:18.081686",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 8
+    },
+    "environment": {
+      "wind_speed": 3.65
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-013",
+    "timestamp": "2026-01-08T00:15:18.081690",
+    "scenario_type": "A",
+    "uav": {
+      "max_wind_resistance": 11
+    },
+    "environment": {
+      "wind_speed": 14.72
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "High Risk",
+    "description": "Semantic Risk: Wind exceeds resistance"
+  },
+  {
+    "id": "TEST-014",
+    "timestamp": "2026-01-08T00:15:18.081696",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 10
+    },
+    "environment": {
+      "wind_speed": 8.14
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-015",
+    "timestamp": "2026-01-08T00:15:18.081700",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 8
+    },
+    "environment": {
+      "wind_speed": 6.44
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-016",
+    "timestamp": "2026-01-08T00:15:18.081704",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 10
+    },
+    "environment": {
+      "wind_speed": 8.52
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-017",
+    "timestamp": "2026-01-08T00:15:18.081708",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 12
+    },
+    "environment": {
+      "wind_speed": 9.71
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-018",
+    "timestamp": "2026-01-08T00:15:18.081712",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 10
+    },
+    "environment": {
+      "wind_speed": 5.24
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-019",
+    "timestamp": "2026-01-08T00:15:18.081716",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 9
+    },
+    "environment": {
+      "wind_speed": 7.29
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-020",
+    "timestamp": "2026-01-08T00:15:18.081719",
+    "scenario_type": "A",
+    "uav": {
+      "max_wind_resistance": 11
+    },
+    "environment": {
+      "wind_speed": 12.95
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "High Risk",
+    "description": "Semantic Risk: Wind exceeds resistance"
+  },
+  {
+    "id": "TEST-021",
+    "timestamp": "2026-01-08T00:15:18.081723",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 9
+    },
+    "environment": {
+      "wind_speed": 6.25
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-022",
+    "timestamp": "2026-01-08T00:15:18.081727",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 12
+    },
+    "environment": {
+      "wind_speed": 7.58
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-023",
+    "timestamp": "2026-01-08T00:15:18.081732",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 10
+    },
+    "environment": {
+      "wind_speed": 7.96
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-024",
+    "timestamp": "2026-01-08T00:15:18.081736",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 8
+    },
+    "environment": {
+      "wind_speed": 5.29
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-025",
+    "timestamp": "2026-01-08T00:15:18.081740",
+    "scenario_type": "A",
+    "uav": {
+      "max_wind_resistance": 9
+    },
+    "environment": {
+      "wind_speed": 10.56
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "High Risk",
+    "description": "Semantic Risk: Wind exceeds resistance"
+  },
+  {
+    "id": "TEST-026",
+    "timestamp": "2026-01-08T00:15:18.081743",
+    "scenario_type": "A",
+    "uav": {
+      "max_wind_resistance": 10
+    },
+    "environment": {
+      "wind_speed": 13.98
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "High Risk",
+    "description": "Semantic Risk: Wind exceeds resistance"
+  },
+  {
+    "id": "TEST-027",
+    "timestamp": "2026-01-08T00:15:18.081749",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 12
+    },
+    "environment": {
+      "wind_speed": 9.56
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-028",
+    "timestamp": "2026-01-08T00:15:18.081753",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 12
+    },
+    "environment": {
+      "wind_speed": 7.61
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-029",
+    "timestamp": "2026-01-08T00:15:18.081757",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 8
+    },
+    "environment": {
+      "wind_speed": 6.92
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-030",
+    "timestamp": "2026-01-08T00:15:18.081763",
+    "scenario_type": "A",
+    "uav": {
+      "max_wind_resistance": 10
+    },
+    "environment": {
+      "wind_speed": 11.92
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "High Risk",
+    "description": "Semantic Risk: Wind exceeds resistance"
+  },
+  {
+    "id": "TEST-031",
+    "timestamp": "2026-01-08T00:15:18.081768",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 10
+    },
+    "environment": {
+      "wind_speed": 6.63
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-032",
+    "timestamp": "2026-01-08T00:15:18.081772",
+    "scenario_type": "A",
+    "uav": {
+      "max_wind_resistance": 12
+    },
+    "environment": {
+      "wind_speed": 16.36
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "High Risk",
+    "description": "Semantic Risk: Wind exceeds resistance"
+  },
+  {
+    "id": "TEST-033",
+    "timestamp": "2026-01-08T00:15:18.081776",
+    "scenario_type": "A",
+    "uav": {
+      "max_wind_resistance": 11
+    },
+    "environment": {
+      "wind_speed": 13.39
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "High Risk",
+    "description": "Semantic Risk: Wind exceeds resistance"
+  },
+  {
+    "id": "TEST-034",
+    "timestamp": "2026-01-08T00:15:18.081781",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 8
+    },
+    "environment": {
+      "wind_speed": 4.85
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-035",
+    "timestamp": "2026-01-08T00:15:18.081785",
+    "scenario_type": "A",
+    "uav": {
+      "max_wind_resistance": 12
+    },
+    "environment": {
+      "wind_speed": 15.95
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "High Risk",
+    "description": "Semantic Risk: Wind exceeds resistance"
+  },
+  {
+    "id": "TEST-036",
+    "timestamp": "2026-01-08T00:15:18.081789",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 10
+    },
+    "environment": {
+      "wind_speed": 8.01
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-037",
+    "timestamp": "2026-01-08T00:15:18.081792",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 10
+    },
+    "environment": {
+      "wind_speed": 8.35
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-038",
+    "timestamp": "2026-01-08T00:15:18.081796",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 11
+    },
+    "environment": {
+      "wind_speed": 7.64
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-039",
+    "timestamp": "2026-01-08T00:15:18.081800",
+    "scenario_type": "A",
+    "uav": {
+      "max_wind_resistance": 12
+    },
+    "environment": {
+      "wind_speed": 15.32
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "High Risk",
+    "description": "Semantic Risk: Wind exceeds resistance"
+  },
+  {
+    "id": "TEST-040",
+    "timestamp": "2026-01-08T00:15:18.081809",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 12
+    },
+    "environment": {
+      "wind_speed": 8.79
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-041",
+    "timestamp": "2026-01-08T00:15:18.081813",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 10
+    },
+    "environment": {
+      "wind_speed": 7.59
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-042",
+    "timestamp": "2026-01-08T00:15:18.081817",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 9
+    },
+    "environment": {
+      "wind_speed": 7.96
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-043",
+    "timestamp": "2026-01-08T00:15:18.081820",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 12
+    },
+    "environment": {
+      "wind_speed": 10.39
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-044",
+    "timestamp": "2026-01-08T00:15:18.081826",
+    "scenario_type": "C",
+    "uav": {
+      "max_wind_resistance": 11
+    },
+    "environment": {
+      "wind_speed": 8.16
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "Low Risk",
+    "description": "Safe operation"
+  },
+  {
+    "id": "TEST-045",
+    "timestamp": "2026-01-08T00:15:18.081830",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 10
+    },
+    "environment": {
+      "wind_speed": 8.92
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-046",
+    "timestamp": "2026-01-08T00:15:18.081833",
+    "scenario_type": "A",
+    "uav": {
+      "max_wind_resistance": 11
+    },
+    "environment": {
+      "wind_speed": 12.99
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "High Risk",
+    "description": "Semantic Risk: Wind exceeds resistance"
+  },
+  {
+    "id": "TEST-047",
+    "timestamp": "2026-01-08T00:15:18.081837",
+    "scenario_type": "A",
+    "uav": {
+      "max_wind_resistance": 8
+    },
+    "environment": {
+      "wind_speed": 11.56
+    },
+    "zone": {
+      "is_no_fly": false
+    },
+    "ground_truth": "High Risk",
+    "description": "Semantic Risk: Wind exceeds resistance"
+  },
+  {
+    "id": "TEST-048",
+    "timestamp": "2026-01-08T00:15:18.081840",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 10
+    },
+    "environment": {
+      "wind_speed": 8.07
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-049",
+    "timestamp": "2026-01-08T00:15:18.081844",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 8
+    },
+    "environment": {
+      "wind_speed": 6.56
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  },
+  {
+    "id": "TEST-050",
+    "timestamp": "2026-01-08T00:15:18.081848",
+    "scenario_type": "B",
+    "uav": {
+      "max_wind_resistance": 8
+    },
+    "environment": {
+      "wind_speed": 6.27
+    },
+    "zone": {
+      "is_no_fly": true
+    },
+    "ground_truth": "High Risk",
+    "description": "Hard Rule: No-fly zone violation"
+  }
+]

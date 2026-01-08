@@ -4,6 +4,7 @@ import { RWAToken } from '../types';
 import { smartContractService } from '../services/smartContractService';
 import { TrendingUp, TrendingDown, DollarSign, PieChart, Loader2, RefreshCw } from 'lucide-react';
 import { playTextToSpeech } from '../services/geminiService';
+import MarketTopologyMonitor from './MarketTopologyMonitor';
 
 const RWAMarket: React.FC = () => {
   const [tokens, setTokens] = useState<RWAToken[]>([]);
@@ -77,6 +78,9 @@ const RWAMarket: React.FC = () => {
         </div>
         <PieChart className="absolute right-4 bottom-4 text-slate-700 opacity-20" size={100} />
       </div>
+
+      {/* Market Topology Monitor */}
+      <MarketTopologyMonitor />
 
       {/* Market List */}
       <div>

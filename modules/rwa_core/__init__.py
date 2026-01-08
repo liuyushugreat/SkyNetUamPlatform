@@ -14,6 +14,7 @@ re-exports from the old `nexus_core` paths.
 from .valuation import AbstractValuationEngine, DataPacket, ValuationResult
 from .pricing_engine import PricingEngine
 from .economics.pricing import CongestionPricingModel, VoxelParams
+from .neural_pricing import PizzaPricingModel, TorusPricingModel, CyclicEmbedding
 
 __all__ = [
     "AbstractValuationEngine",
@@ -22,5 +23,7 @@ __all__ = [
     "PricingEngine",
     "CongestionPricingModel",
     "VoxelParams",
+    "PizzaPricingModel",
+    "TorusPricingModel",
+    "CyclicEmbedding",
 ]
-

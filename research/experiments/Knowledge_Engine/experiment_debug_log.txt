@@ -1,0 +1,93 @@
+Experiment Debug Log
+====================
+
+[Case TEST-001] Semantic Risk Detection
+Description: Semantic Risk: Wind exceeds resistance
+Data: {"id": "TEST-001", "timestamp": "2026-01-08T00:15:18.081589", "scenario_type": "A", "uav": {"max_wind_resistance": 11}, "environment": {"wind_speed": 12.29}, "zone": {"is_no_fly": false}, "ground_truth": "High Risk", "description": "Semantic Risk: Wind exceeds resistance"}
+Rule Prediction: Low Risk (Wrong)
+SkyKG Prediction: High Risk (Correct)
+----------------------------------------
+
+[Case TEST-009] Semantic Risk Detection
+Description: Semantic Risk: Wind exceeds resistance
+Data: {"id": "TEST-009", "timestamp": "2026-01-08T00:15:18.081669", "scenario_type": "A", "uav": {"max_wind_resistance": 11}, "environment": {"wind_speed": 12.79}, "zone": {"is_no_fly": false}, "ground_truth": "High Risk", "description": "Semantic Risk: Wind exceeds resistance"}
+Rule Prediction: Low Risk (Wrong)
+SkyKG Prediction: High Risk (Correct)
+----------------------------------------
+
+[Case TEST-013] Semantic Risk Detection
+Description: Semantic Risk: Wind exceeds resistance
+Data: {"id": "TEST-013", "timestamp": "2026-01-08T00:15:18.081690", "scenario_type": "A", "uav": {"max_wind_resistance": 11}, "environment": {"wind_speed": 14.72}, "zone": {"is_no_fly": false}, "ground_truth": "High Risk", "description": "Semantic Risk: Wind exceeds resistance"}
+Rule Prediction: Low Risk (Wrong)
+SkyKG Prediction: High Risk (Correct)
+----------------------------------------
+
+[Case TEST-020] Semantic Risk Detection
+Description: Semantic Risk: Wind exceeds resistance
+Data: {"id": "TEST-020", "timestamp": "2026-01-08T00:15:18.081719", "scenario_type": "A", "uav": {"max_wind_resistance": 11}, "environment": {"wind_speed": 12.95}, "zone": {"is_no_fly": false}, "ground_truth": "High Risk", "description": "Semantic Risk: Wind exceeds resistance"}
+Rule Prediction: Low Risk (Wrong)
+SkyKG Prediction: High Risk (Correct)
+----------------------------------------
+
+[Case TEST-025] Semantic Risk Detection
+Description: Semantic Risk: Wind exceeds resistance
+Data: {"id": "TEST-025", "timestamp": "2026-01-08T00:15:18.081740", "scenario_type": "A", "uav": {"max_wind_resistance": 9}, "environment": {"wind_speed": 10.56}, "zone": {"is_no_fly": false}, "ground_truth": "High Risk", "description": "Semantic Risk: Wind exceeds resistance"}
+Rule Prediction: Low Risk (Wrong)
+SkyKG Prediction: High Risk (Correct)
+----------------------------------------
+
+[Case TEST-026] Semantic Risk Detection
+Description: Semantic Risk: Wind exceeds resistance
+Data: {"id": "TEST-026", "timestamp": "2026-01-08T00:15:18.081743", "scenario_type": "A", "uav": {"max_wind_resistance": 10}, "environment": {"wind_speed": 13.98}, "zone": {"is_no_fly": false}, "ground_truth": "High Risk", "description": "Semantic Risk: Wind exceeds resistance"}
+Rule Prediction: Low Risk (Wrong)
+SkyKG Prediction: High Risk (Correct)
+----------------------------------------
+
+[Case TEST-030] Semantic Risk Detection
+Description: Semantic Risk: Wind exceeds resistance
+Data: {"id": "TEST-030", "timestamp": "2026-01-08T00:15:18.081763", "scenario_type": "A", "uav": {"max_wind_resistance": 10}, "environment": {"wind_speed": 11.92}, "zone": {"is_no_fly": false}, "ground_truth": "High Risk", "description": "Semantic Risk: Wind exceeds resistance"}
+Rule Prediction: Low Risk (Wrong)
+SkyKG Prediction: High Risk (Correct)
+----------------------------------------
+
+[Case TEST-032] Semantic Risk Detection
+Description: Semantic Risk: Wind exceeds resistance
+Data: {"id": "TEST-032", "timestamp": "2026-01-08T00:15:18.081772", "scenario_type": "A", "uav": {"max_wind_resistance": 12}, "environment": {"wind_speed": 16.36}, "zone": {"is_no_fly": false}, "ground_truth": "High Risk", "description": "Semantic Risk: Wind exceeds resistance"}
+Rule Prediction: Low Risk (Wrong)
+SkyKG Prediction: High Risk (Correct)
+----------------------------------------
+
+[Case TEST-033] Semantic Risk Detection
+Description: Semantic Risk: Wind exceeds resistance
+Data: {"id": "TEST-033", "timestamp": "2026-01-08T00:15:18.081776", "scenario_type": "A", "uav": {"max_wind_resistance": 11}, "environment": {"wind_speed": 13.39}, "zone": {"is_no_fly": false}, "ground_truth": "High Risk", "description": "Semantic Risk: Wind exceeds resistance"}
+Rule Prediction: Low Risk (Wrong)
+SkyKG Prediction: High Risk (Correct)
+----------------------------------------
+
+[Case TEST-035] Semantic Risk Detection
+Description: Semantic Risk: Wind exceeds resistance
+Data: {"id": "TEST-035", "timestamp": "2026-01-08T00:15:18.081785", "scenario_type": "A", "uav": {"max_wind_resistance": 12}, "environment": {"wind_speed": 15.95}, "zone": {"is_no_fly": false}, "ground_truth": "High Risk", "description": "Semantic Risk: Wind exceeds resistance"}
+Rule Prediction: Low Risk (Wrong)
+SkyKG Prediction: High Risk (Correct)
+----------------------------------------
+
+[Case TEST-039] Semantic Risk Detection
+Description: Semantic Risk: Wind exceeds resistance
+Data: {"id": "TEST-039", "timestamp": "2026-01-08T00:15:18.081800", "scenario_type": "A", "uav": {"max_wind_resistance": 12}, "environment": {"wind_speed": 15.32}, "zone": {"is_no_fly": false}, "ground_truth": "High Risk", "description": "Semantic Risk: Wind exceeds resistance"}
+Rule Prediction: Low Risk (Wrong)
+SkyKG Prediction: High Risk (Correct)
+----------------------------------------
+
+[Case TEST-046] Semantic Risk Detection
+Description: Semantic Risk: Wind exceeds resistance
+Data: {"id": "TEST-046", "timestamp": "2026-01-08T00:15:18.081833", "scenario_type": "A", "uav": {"max_wind_resistance": 11}, "environment": {"wind_speed": 12.99}, "zone": {"is_no_fly": false}, "ground_truth": "High Risk", "description": "Semantic Risk: Wind exceeds resistance"}
+Rule Prediction: Low Risk (Wrong)
+SkyKG Prediction: High Risk (Correct)
+----------------------------------------
+
+[Case TEST-047] Semantic Risk Detection
+Description: Semantic Risk: Wind exceeds resistance
+Data: {"id": "TEST-047", "timestamp": "2026-01-08T00:15:18.081837", "scenario_type": "A", "uav": {"max_wind_resistance": 8}, "environment": {"wind_speed": 11.56}, "zone": {"is_no_fly": false}, "ground_truth": "High Risk", "description": "Semantic Risk: Wind exceeds resistance"}
+Rule Prediction: Low Risk (Wrong)
+SkyKG Prediction: High Risk (Correct)
+----------------------------------------
