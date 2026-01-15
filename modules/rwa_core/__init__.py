@@ -15,6 +15,8 @@ from .valuation import AbstractValuationEngine, DataPacket, ValuationResult
 from .pricing_engine import PricingEngine
 from .economics.pricing import CongestionPricingModel, VoxelParams
 from .neural_pricing import PizzaPricingModel, TorusPricingModel, CyclicEmbedding
+from .adversarial import ArbitrageInjector
+from .topology_metrics import calculate_integrity_score, get_betti_numbers
 
 __all__ = [
     "AbstractValuationEngine",
@@ -26,4 +28,7 @@ __all__ = [
     "PizzaPricingModel",
     "TorusPricingModel",
     "CyclicEmbedding",
+    "ArbitrageInjector",
+    "calculate_integrity_score",
+    "get_betti_numbers",
 ]

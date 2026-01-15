@@ -19,14 +19,27 @@
 
 ## 🏗️ System Architecture
 
-The system is designed around a lifecycle-aware operational core, with optional persistence as a non-blocking extension.
+The system is designed around a **Cloud-Edge-End** architecture as described in the "System Architecture" section of the paper, ensuring scalable and low-latency operations for UAM missions.
+
+### Architecture Mapping
+
+*   **`/cloud-core` (Cloud Layer)**: Hosts the **Operational State Service** (NestJS). Responsible for global management, mission scheduling, and state persistence.
+*   **`/edge-node` (Edge Layer)**: Handles localized computing and storage logic (simulating DGX/GP Spark interaction). Features a high-performance storage engine interface.
+*   **`/terminal-uav` (End/Terminal Layer)**: Simulates UAV data collection and telemetry generation.
+
+This hierarchical design allows for:
+1.  **Global Consistency**: Maintained by the cloud core.
+2.  **Low Latency**: Achieved by edge processing.
+3.  **Real-time Data**: Ingested from the terminal layer.
 
 ```mermaid
 graph TD;
   A[UAM Operator] -->|Booking Request| B[SkyNet Platform Frontend];
-  B -->|Mission Events| C[Operational State Service - NestJS];
+  B -->|Mission Events| C[Cloud Core (NestJS)];
   C -->|State Updates| B;
   C -->|Optional Async Persistence| D[(Persistence Adapter)];
+  E[Terminal UAV] -->|Telemetry| F[Edge Node];
+  F -->|Aggregated Data| C;
 ```
 
 ## 🚀 Getting Started
@@ -46,12 +59,12 @@ graph TD;
 2.  **Install dependencies**
     ```bash
     npm install
-    cd backend && npm install
+    cd cloud-core && npm install
     ```
 
 3.  **Run the backend Operational State Service (optional but recommended)**
     ```bash
-    cd backend
+    cd cloud-core
     npm run dev
     ```
 

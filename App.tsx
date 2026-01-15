@@ -124,7 +124,7 @@ const App: React.FC = () => {
 
         <div className="mt-16 text-center border-t border-white/5 pt-8 relative">
             <p className="text-slate-500 text-xs">
-                Powered by Google Gemini 2.5 Flash TTS • React • Tailwind CSS
+                中关村软联·北京中扬天成科技有限公司
             </p>
             <div className="absolute right-0 top-8">
                <FullScreenButton className="bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white" />
