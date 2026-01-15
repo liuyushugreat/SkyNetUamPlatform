@@ -76,6 +76,17 @@ graph TD;
 
 ## 🧪 Experiments & Reproduction
 
+This repository includes the source code and simulation environment for our research on Low-Altitude Intelligent Internet storage architectures.
+
+**Paper:** *Cloud-Edge-End Collaborative Data Storage Architecture*
+**Simulation Module:** [`research/simulation/spark_simulation`](./research/simulation/spark_simulation)
+
+### Reproducible Experiments
+The following scripts generate the data and figures (Fig. 2-4) presented in the paper:
+- **Experiment 1 (Throughput):** [Data Loading Simulation](./research/simulation/spark_simulation/exp1_throughput)
+- **Experiment 2 (Latency):** [KV Cache Offloading Simulation](./research/simulation/spark_simulation/exp2_kv_cache)
+- **Experiment 3 (Security):** [RWA Hardware Acceleration](./research/simulation/spark_simulation/exp3_rwa_security)
+
 To reproduce the daily 100k-mission workload (used to stress lifecycle management under congestion and permission constraints):
 
 ```bash
