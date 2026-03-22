@@ -35,7 +35,7 @@ This hierarchical design allows for:
 ```mermaid
 graph TD;
   A[UAM Operator] -->|Booking Request| B[SkyNet Platform Frontend];
-  B -->|Mission Events| C[Cloud Core (NestJS)];
+  B -->|Mission Events| C["Cloud Core (NestJS)"];
   C -->|State Updates| B;
   C -->|Optional Async Persistence| D[(Persistence Adapter)];
   E[Terminal UAV] -->|Telemetry| F[Edge Node];
