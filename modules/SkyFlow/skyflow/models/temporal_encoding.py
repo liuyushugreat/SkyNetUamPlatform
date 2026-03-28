@@ -1,8 +1,15 @@
-"""Sinusoidal temporal encoding φ(δ) for elapsed-time edge features.
+"""Sinusoidal temporal encoding φ(δ) — Equation (2) in the paper.
 
-Analogous to positional encoding in Transformers (Vaswani et al., 2017)
-but applied to elapsed time since edge last observed, enabling TR-GAT
-to discount stale relational edges without explicit graph surgery.
+Implements:
+  φ(δ)_{2k}   = sin(δ / T^{2k/d_φ})
+  φ(δ)_{2k+1} = cos(δ / T^{2k/d_φ})
+
+where δ is the elapsed time (seconds) since an edge was last observed,
+d_φ = 32 is the encoding dimension, and T = 300 s is the maximum period.
+This allows TR-GAT to smoothly discount stale relational edges without
+hard graph surgery, analogous to positional encoding in Transformers.
+
+Reference: Section 4.1, Equation (2) in the paper.
 """
 
 from __future__ import annotations

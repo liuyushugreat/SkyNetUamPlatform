@@ -1,8 +1,21 @@
-"""Temporal Knowledge Graph construction from multi-source airspace telemetry.
+"""Temporal Knowledge Graph construction — Algorithm 1 in the paper.
 
-Constructs typed entity-relation-time graphs from four parallel data
-streams: ADS-B telemetry, flight plans, weather grid, and corridor
-reservation log. Designed to execute in < 12 ms on benchmark hardware.
+Constructs typed entity-relation-time graphs G_t = (V_t, E_t, R, τ)
+from four parallel data streams (Section 3.1):
+  - ADS-B telemetry → UAV nodes with 23-dim state vector (Eq. 1)
+  - Flight plans → corridor reservation edges (shares_corridor)
+  - Weather grid → downwind influence edges (is_downwind_of)
+  - Corridor log → restricted zone proximity edges (is_restricted_by)
+
+Six relation types R (Section 3.2): approaches, conflicts_with,
+shares_corridor, is_downwind_of, has_reserved, is_restricted_by.
+
+Each edge carries elapsed time δ since last observation, fed to
+the sinusoidal temporal encoding φ(δ) in Eq. (2).
+
+Designed to execute in < 12 ms on benchmark hardware (Table 7).
+
+Reference: Section 3 and Algorithm 1 in the paper.
 """
 
 from __future__ import annotations
@@ -41,6 +54,12 @@ class AirspaceState:
     restricted_zones: np.ndarray    # (N_rz, 8)
     corridor_reservations: List[Tuple[int, int, float, float]]
     epoch_time: float
+    uav_heading_rates: Optional[np.ndarray] = None    # (N_uav,) rad/s
+    uav_accelerations: Optional[np.ndarray] = None    # (N_uav, 3) m/s²
+    uav_battery_rates: Optional[np.ndarray] = None    # (N_uav,) discharge rate
+    uav_corridor_ids: Optional[np.ndarray] = None     # (N_uav,) corridor assignment
+    uav_local_wind: Optional[np.ndarray] = None       # (N_uav, 3) local wind estimate
+    uav_gps_dop: Optional[np.ndarray] = None          # (N_uav,) GPS dilution of precision
 
 
 @dataclass
@@ -125,37 +144,69 @@ class TKGBuilder:
         n_wx: int,
         n_rz: int,
     ) -> np.ndarray:
+        """Build the 23-dim UAV feature vector per Eq. (1) in the paper:
+        [x,y,z, vx,vy,vz, ψ,ψ̇, ax,ay,az, b,ḃ, p, c_id,
+         wx,wy,wz, σ_gps, n_nbr, d_min, t_cpa, f_avoid]
+        """
         feat = np.zeros((n_total, self.feature_dim), dtype=np.float32)
 
+        heading_rates = state.uav_heading_rates if state.uav_heading_rates is not None else np.zeros(n_uav, dtype=np.float32)
+        accelerations = state.uav_accelerations if state.uav_accelerations is not None else np.zeros((n_uav, 3), dtype=np.float32)
+        battery_rates = state.uav_battery_rates if state.uav_battery_rates is not None else np.full(n_uav, -0.0001, dtype=np.float32)
+        corridor_ids = state.uav_corridor_ids if state.uav_corridor_ids is not None else np.zeros(n_uav, dtype=np.float32)
+        local_wind = state.uav_local_wind if state.uav_local_wind is not None else np.zeros((n_uav, 3), dtype=np.float32)
+        gps_dop = state.uav_gps_dop if state.uav_gps_dop is not None else np.full(n_uav, 2.5, dtype=np.float32)
+
         for i in range(n_uav):
-            feat[i, 0:3] = state.uav_positions[i]
-            feat[i, 3:6] = state.uav_velocities[i]
-            feat[i, 6] = state.uav_headings[i]
-            feat[i, 7] = state.uav_battery[i]
-            feat[i, 8] = state.uav_priority[i]
-            feat[i, 9] = float(state.uav_avoiding[i])
-            speed = np.linalg.norm(state.uav_velocities[i])
-            feat[i, 10] = speed
-            feat[i, 11] = state.uav_positions[i][2] / 200.0
-            feat[i, 12:15] = state.uav_velocities[i] / (speed + 1e-8)
+            feat[i, 0:3] = state.uav_positions[i]                # x, y, z
+            feat[i, 3:6] = state.uav_velocities[i]               # vx, vy, vz
+            feat[i, 6] = state.uav_headings[i]                   # ψ
+            feat[i, 7] = heading_rates[i]                         # ψ̇
+            feat[i, 8:11] = accelerations[i]                      # ax, ay, az
+            feat[i, 11] = state.uav_battery[i]                   # b
+            feat[i, 12] = battery_rates[i]                        # ḃ
+            feat[i, 13] = state.uav_priority[i]                  # p
+            feat[i, 14] = corridor_ids[i]                         # c_id
+            feat[i, 15:18] = local_wind[i]                        # wx, wy, wz
+            feat[i, 18] = gps_dop[i]                              # σ_gps
+
+        if n_uav > 0:
+            positions = state.uav_positions[:n_uav]
+            for i in range(n_uav):
+                diffs = positions - positions[i]
+                dists = np.sqrt((diffs[:, 0] ** 2) + (diffs[:, 1] ** 2) + 1e-12)
+                dists[i] = np.inf
+                nbr_count = np.sum(dists < self.approach_cpa_h)
+                feat[i, 19] = nbr_count                          # n_nbr
+                nearest = np.argmin(dists)
+                feat[i, 20] = dists[nearest]                      # d_min
+                dp = diffs[nearest]
+                dv = state.uav_velocities[nearest] - state.uav_velocities[i]
+                dvdv = np.dot(dv, dv)
+                if dvdv > 1e-8:
+                    t_cpa = max(0.0, -np.dot(dp, dv) / dvdv)
+                else:
+                    t_cpa = 0.0
+                feat[i, 21] = t_cpa                               # t_cpa
+            feat[:n_uav, 22] = state.uav_avoiding.astype(np.float32)  # f_avoid
 
         offset = n_uav
         for i in range(n_sec):
             sec = state.sector_occupancy[i]
-            end = min(len(sec), self.feature_dim - 15)
-            feat[offset + i, 15 : 15 + end] = sec[:end]
+            end = min(len(sec), self.feature_dim)
+            feat[offset + i, :end] = sec[:end]
 
         offset += n_sec
         for i in range(n_wx):
             wx = state.weather_cells[i]
-            end = min(len(wx), self.feature_dim - 15)
-            feat[offset + i, 15 : 15 + end] = wx[:end]
+            end = min(len(wx), self.feature_dim)
+            feat[offset + i, :end] = wx[:end]
 
         offset += n_wx
         for i in range(n_rz):
             rz = state.restricted_zones[i]
-            end = min(len(rz), self.feature_dim - 15)
-            feat[offset + i, 15 : 15 + end] = rz[:end]
+            end = min(len(rz), self.feature_dim)
+            feat[offset + i, :end] = rz[:end]
 
         return feat
 

@@ -1,8 +1,13 @@
-"""Focal loss for conflict detection with severe class imbalance.
+"""Focal loss for conflict detection — Section 5.3 in the paper.
 
-Genuine conflicts constitute ~3.1% of all UAV pairs. Focal reweighting
-with γ=2 down-weights easy negatives and focuses model capacity on
-ambiguous near-miss cases.
+Genuine conflicts constitute ~3.1% of all UAV pairs (Table 1).
+Focal reweighting (Lin et al., 2017) with γ=2 and α=0.75
+down-weights easy negatives and focuses model capacity on
+ambiguous near-miss cases:
+
+  FL(p_t) = -α_t · (1 - p_t)^γ · log(p_t)
+
+Reference: Section 5.3 in the paper.
 """
 
 from __future__ import annotations

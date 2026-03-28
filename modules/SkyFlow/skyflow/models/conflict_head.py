@@ -1,7 +1,14 @@
-"""Pairwise conflict scoring head.
+"""Pairwise conflict scoring head — Equation (6) in the paper.
 
-Takes final-layer TR-GAT embeddings, recurrent state, and optional
-direct edge features to produce conflict probability for each UAV pair.
+Implements:
+  p_ij = σ( MLP( [h_i^L ‖ h_j^L ‖ s_i ‖ s_j ‖ e_ij] ) )
+
+where h_i^L are final-layer TR-GAT embeddings (d=128), s_i are GRU
+recurrent states (d_s=64), and e_ij is a direct proximity edge feature
+(or a learned no-edge token for UAV pairs without an explicit edge).
+A pair is flagged as a conflict when p_ij >= τ (τ=0.42).
+
+Reference: Section 4.2, Equation (6) in the paper.
 """
 
 from __future__ import annotations
@@ -33,10 +40,7 @@ class ConflictScoringHead(nn.Module):
             nn.Linear(in_dim, hidden_dim),
             nn.ReLU(),
             nn.Dropout(dropout),
-            nn.Linear(hidden_dim, hidden_dim // 2),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-            nn.Linear(hidden_dim // 2, 1),
+            nn.Linear(hidden_dim, 1),
         )
         self.no_edge_token = nn.Parameter(torch.randn(edge_feature_dim) * 0.01)
 

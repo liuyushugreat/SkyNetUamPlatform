@@ -77,26 +77,27 @@ graph TD;
     npm run dev
     ```
 
-## 🛩️ SkyFlow: Temporal Knowledge Graph Reasoning for Multi-UAV Conflict Detection
+## 🛩️ SkyFlow: Temporal Relational Graph Attention for Real-Time UAV Conflict Detection
 
-**SkyFlow** ([`modules/SkyFlow`](./modules/SkyFlow)) is a self-contained research module that implements **TR-GAT** (Temporal Relational Graph Attention Network) for anticipatory conflict detection in dense low-altitude urban airspace. It models airspace dynamics as an evolving **Temporal Knowledge Graph (TKG)** and performs multi-hop relational reasoning over UAV trajectories, flight intents, and environmental constraints.
+**SkyFlow** ([`modules/SkyFlow`](./modules/SkyFlow)) is a self-contained research module implementing **TR-GAT** (Temporally-conditioned Relational Graph Attention Network), an edge-assisted real-time conflict detection and resolution system for dense Urban Air Mobility (UAM) and Flying Ad Hoc Networks (FANETs). It models airspace dynamics as an evolving **Temporal Knowledge Graph (TKG)** and performs multi-hop relational reasoning over UAV trajectories, flight intents, and environmental constraints.
 
 ### Architecture
 
 ```
 ADS-B Telemetry ─┐
-Flight Plans ────┤
-Weather Grid ────┼──► TKG Builder ──► TR-GAT (L=4) ──► Conflict Head ──► Resolution
-Corridor Log ────┘       │                  │                │
-                   Typed Nodes         Temporal           Pairwise
-                   & Edges          Attention +         Probabilities
-                                  Relation Gating
+Flight Plans ────┤                         ┌──────────────┐
+Weather Grid ────┼──► TKG Builder (Alg.1) ─┤  TR-GAT      ├──► Conflict Head ──► PGD Resolution
+Corridor Log ────┘    (< 12 ms)            │  L=4 layers  │    (Eq. 6, 2-MLP)   (Alg. 3, 20 steps)
+                                           │  K=10 window  │
+                   6 relation types        │  GRU recur.   │    Pairwise p_ij
+                   + temporal encoding     └──────────────┘    + avoidance Δp_i
+                     φ(δ) (Eq. 2)
 ```
 
-### Key Results (UrbanAir-500 Benchmark)
+### Key Results (UrbanAir-500 Benchmark, 500 simultaneous UAVs)
 
-| Method | CDR ↑ | FAR ↓ | F1 ↑ | Latency (ms) ↓ |
-|--------|-------|-------|------|-----------------|
+| Method | CDR | FAR | F1 | Latency (ms) |
+|--------|:---:|:---:|:--:|:------------:|
 | Velocity Obstacle | 0.6012 | 0.4231 | 0.5847 | 8.4 |
 | LSTM-Pair | 0.7856 | 0.1923 | 0.7724 | 23.7 |
 | Transformer-Pair | 0.8367 | 0.1547 | 0.8241 | 41.2 |
@@ -109,31 +110,28 @@ Corridor Log ────┘       │                  │                │
 
 | Component | Description |
 |-----------|-------------|
-| **TR-GAT Model** (`skyflow/models/tr_gat.py`) | 4-layer temporally-conditioned relational graph attention with sinusoidal temporal encoding φ(δ) and multi-relation gating (4.2M parameters) |
-| **Temporal Knowledge Graph Builder** (`skyflow/data/tkg_builder.py`) | Constructs typed entity-relation-time graphs from ADS-B telemetry, flight plans, weather grids, and corridor reservations at 10 Hz |
+| **TR-GAT Model** (`skyflow/models/tr_gat.py`) | 4-layer temporally-conditioned relational graph attention with sinusoidal temporal encoding φ(δ) and multi-relation gating |
+| **TKG Builder** (`skyflow/data/tkg_builder.py`) | Constructs typed entity-relation-time graphs from ADS-B telemetry, flight plans, weather grids, and corridor reservations at 10 Hz |
 | **UrbanAir-500 Simulator** (`skyflow/data/urbanair500.py`) | Physics-accurate benchmark with 500 concurrent UAVs over a 5 km × 5 km urban grid, stochastic wind field, GPS noise (CEP 2.5 m), and ADS-B latency |
 | **Conflict Scoring Head** (`skyflow/models/conflict_head.py`) | 2-layer MLP producing pairwise conflict probability from concatenated TR-GAT embeddings and recurrent states |
-| **Resolution Module** (`skyflow/models/resolution.py`) | Coordinated avoidance waypoint generation via projected gradient descent for conflict clusters up to 12 aircraft |
-| **6 Baselines** (`skyflow/baselines/`) | Velocity Obstacle, LSTM-Pair, Transformer-Pair, STGCN, GAT-Static, TR-GAT-NoTemp — all parameter-matched for fair comparison |
-| **Focal Loss Training** (`skyflow/training/`) | Handles 3.1% positive rate class imbalance with γ=2 focal reweighting, cosine annealing, and 5-seed multi-run evaluation |
+| **Resolution Module** (`skyflow/models/resolution.py`) | Coordinated avoidance waypoint generation via Projected Gradient Descent for conflict clusters up to 12 aircraft |
+| **6 Baselines** (`skyflow/baselines/`) | VO, LSTM-Pair, Transformer-Pair, STGCN, GAT-Static, TR-GAT-NoTemp — all parameter-matched |
+| **Training Pipeline** (`skyflow/training/`) | AdamW + warmup + cosine annealing, focal loss (γ=2), observation window K=10, 5-seed evaluation with Bonferroni significance tests |
 
-### Quick Start — SkyFlow
+### 1-Click Reproducibility
 
 ```bash
 cd modules/SkyFlow
-pip install -e ".[dev]"
 
-# Full paper reproduction (training + all baselines + figures)
-python scripts/reproduce_paper.py
+# Full reproduction — all tables and figures (~14h on A100)
+bash run.sh
 
 # Quick verification (~5 min on CPU)
-python scripts/reproduce_paper.py --quick --device cpu
+bash run.sh --quick
 
-# Train TR-GAT only
-python scripts/train.py --config configs/default.yaml
-
-# Run all baselines
-python scripts/run_baselines.py
+# Individual tables
+bash scripts/reproduce_table3.sh      # Table 3
+bash scripts/reproduce_table7.sh      # Table 7
 ```
 
 ## 🧪 Experiments & Reproduction
@@ -169,13 +167,13 @@ SkyNetUamPlatform/
 │   ├── voxel_airspace_core/ # 3D spatial indexing & A* pathfinding
 │   ├── rwa_core/            # Real-World Assetization & pricing
 │   ├── SkyNet_Knowledge_Engine/  # Ontology + neuro-symbolic reasoning
-│   └── SkyFlow/             # ★ TR-GAT conflict detection (NEW)
-│       ├── skyflow/models/  #   TR-GAT, temporal encoding, conflict head, resolution
+│   └── SkyFlow/             # TR-GAT conflict detection (MobiHoc 2026)
+│       ├── skyflow/models/  #   TR-GAT, temporal encoding, conflict head, PGD resolution
 │       ├── skyflow/data/    #   TKG builder, UrbanAir-500 simulator, SDD adapter
-│       ├── skyflow/baselines/  # 6 comparison methods
-│       ├── skyflow/training/#   Focal loss, metrics, multi-seed trainer
-│       ├── scripts/         #   train, evaluate, run_baselines, reproduce_paper
-│       ├── configs/         #   Hyperparameter YAML
+│       ├── skyflow/baselines/  # 6 comparison methods (parameter-matched)
+│       ├── skyflow/training/#   AdamW + warmup + cosine, focal loss, regime metrics
+│       ├── scripts/         #   1-click bash scripts, train, evaluate, reproduce
+│       ├── configs/         #   Hyperparameter YAML (Table 2)
 │       └── tests/           #   23 unit tests
 ├── nexus_core/              # Python core: MARL, economics, data fabric
 ├── packages/                # Shared TS packages (auth, ui, utils)
@@ -206,13 +204,13 @@ If you use this code or framework in your research, please cite our papers:
 If you use the SkyFlow conflict detection module specifically, please also cite:
 
 ```bibtex
-@inproceedings{SkyFlow2026MobiHoc,
-  title={SkyFlow: Temporal Knowledge Graph Reasoning with Graph Neural Networks
-         for Real-Time Multi-UAV Conflict Detection in Low-Altitude Airspace},
-  author={Liu, Yushu and Wang, Longbiao and Du, Chenglin and Zhai, Haixiao},
-  booktitle={Proceedings of the 27th ACM International Symposium on Mobile Ad Hoc
-             Networking and Computing (MobiHoc)},
-  year={2026}
+@inproceedings{liu2026skyflow,
+  title     = {SkyFlow: Temporal Relational Graph Attention for Real-Time
+               UAV Conflict Detection},
+  author    = {Liu, Yushu and Wang, Longbiao and Du, Chenglin and Zhai, Haixiao},
+  booktitle = {Proceedings of the Twenty-seventh ACM International Symposium
+               on Mobile Ad Hoc Networking and Computing (MobiHoc)},
+  year      = {2026}
 }
 ```
 

@@ -1,4 +1,4 @@
-"""SkyFlow training loop with cosine annealing and multi-seed evaluation."""
+"""SkyFlow training loop with warmup + cosine annealing and multi-seed evaluation."""
 
 from __future__ import annotations
 
@@ -12,8 +12,8 @@ from typing import Dict, List, Optional, Tuple
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.optim import Adam
-from torch.optim.lr_scheduler import CosineAnnealingLR
+from torch.optim import AdamW
+from torch.optim.lr_scheduler import CosineAnnealingLR, LambdaLR, SequentialLR
 
 from skyflow.config import SkyFlowConfig
 from skyflow.models.tr_gat import TRGAT
@@ -23,6 +23,18 @@ from skyflow.training.losses import FocalLoss
 from skyflow.training.metrics import ConflictMetrics, LatencyTimer
 
 logger = logging.getLogger(__name__)
+
+
+def _build_warmup_cosine_scheduler(optimizer, warmup_steps: int, total_steps: int):
+    """Linear warmup for `warmup_steps`, then cosine decay to zero."""
+    def warmup_fn(step):
+        if step < warmup_steps:
+            return float(step) / max(warmup_steps, 1)
+        return 1.0
+
+    warmup = LambdaLR(optimizer, lr_lambda=warmup_fn)
+    cosine = CosineAnnealingLR(optimizer, T_max=max(total_steps - warmup_steps, 1))
+    return SequentialLR(optimizer, schedulers=[warmup, cosine], milestones=[warmup_steps])
 
 
 class SkyFlowTrainer:
@@ -66,6 +78,21 @@ class SkyFlowTrainer:
         logger.info(f"Model parameters: {total_params:,} ({total_params/1e6:.2f}M)")
         return self.model, self.head
 
+    def _group_into_windows(
+        self,
+        data: List[Tuple[TKGSnapshot, torch.Tensor]],
+        K: int,
+    ) -> List[List[Tuple[TKGSnapshot, torch.Tensor]]]:
+        """Group consecutive snapshots into observation windows of size K."""
+        windows = []
+        for start in range(0, len(data) - K + 1, K):
+            windows.append(data[start : start + K])
+        if len(data) >= K and len(data) % K != 0:
+            windows.append(data[-K:])
+        if not windows and data:
+            windows.append(data)
+        return windows
+
     def train(
         self,
         train_data: List[Tuple[TKGSnapshot, torch.Tensor]],
@@ -80,9 +107,14 @@ class SkyFlowTrainer:
             self.build_model()
 
         tc = self.cfg.training
+        K = self.cfg.data.observation_window
         params = list(self.model.parameters()) + list(self.head.parameters())
-        optimizer = Adam(params, lr=tc.learning_rate, weight_decay=tc.weight_decay)
-        scheduler = CosineAnnealingLR(optimizer, T_max=tc.epochs)
+        optimizer = AdamW(params, lr=tc.learning_rate, weight_decay=tc.weight_decay)
+
+        total_steps = tc.epochs * max(len(train_data) // K, 1)
+        scheduler = _build_warmup_cosine_scheduler(
+            optimizer, warmup_steps=tc.warmup_steps, total_steps=total_steps
+        )
         criterion = FocalLoss(gamma=tc.focal_gamma)
 
         best_f1 = -1.0
@@ -99,6 +131,7 @@ class SkyFlowTrainer:
                 "config": self.cfg,
             }, output_dir / "best_model.pt")
 
+        global_step = 0
         for epoch in range(tc.epochs):
             self.model.train()
             self.head.train()
@@ -106,39 +139,52 @@ class SkyFlowTrainer:
             n_batches = 0
 
             np.random.shuffle(train_data)
+            windows = self._group_into_windows(train_data, K)
+            np.random.shuffle(windows)
 
-            for snapshot, labels in train_data:
-                snapshot = self._to_device(snapshot)
-                labels = labels.to(self.device)
-
+            for window in windows:
                 optimizer.zero_grad()
+                window_loss = 0.0
+                valid_steps = 0
+                rec_state = None
 
-                node_emb, rec_state = self.model(
-                    snapshot.node_features,
-                    snapshot.edge_indices,
-                    snapshot.edge_deltas,
-                )
+                for snapshot, labels in window:
+                    snapshot = self._to_device(snapshot)
+                    labels = labels.to(self.device)
 
-                pairs = snapshot.conflict_pairs
-                if pairs is None or pairs.size(1) == 0:
-                    continue
+                    node_emb, rec_state = self.model(
+                        snapshot.node_features,
+                        snapshot.edge_indices,
+                        snapshot.edge_deltas,
+                        recurrent_state=rec_state,
+                    )
 
-                h_i = node_emb[pairs[0]]
-                h_j = node_emb[pairs[1]]
-                s_i = rec_state[pairs[0]]
-                s_j = rec_state[pairs[1]]
+                    pairs = snapshot.conflict_pairs
+                    if pairs is None or pairs.size(1) == 0:
+                        rec_state = rec_state.detach()
+                        continue
 
-                preds = self.head(h_i, h_j, s_i, s_j)
-                loss = criterion(preds, labels)
+                    h_i = node_emb[pairs[0]]
+                    h_j = node_emb[pairs[1]]
+                    s_i = rec_state[pairs[0]]
+                    s_j = rec_state[pairs[1]]
 
-                loss.backward()
-                nn.utils.clip_grad_norm_(params, tc.gradient_clip_norm)
-                optimizer.step()
+                    preds = self.head(h_i, h_j, s_i, s_j)
+                    step_loss = criterion(preds, labels)
+                    window_loss = window_loss + step_loss
+                    valid_steps += 1
 
-                epoch_loss += loss.item()
-                n_batches += 1
+                    rec_state = rec_state.detach()
 
-            scheduler.step()
+                if valid_steps > 0:
+                    (window_loss / valid_steps).backward()
+                    nn.utils.clip_grad_norm_(params, tc.gradient_clip_norm)
+                    optimizer.step()
+                    scheduler.step()
+                    global_step += 1
+                    epoch_loss += (window_loss / valid_steps).item()
+                    n_batches += 1
+
             avg_loss = epoch_loss / max(n_batches, 1)
 
             if (epoch + 1) % 10 == 0 or epoch == 0:
@@ -180,32 +226,37 @@ class SkyFlowTrainer:
 
         self.model.eval()
         self.head.eval()
+        K = self.cfg.data.observation_window
         metrics = ConflictMetrics(threshold=self.cfg.training.conflict_threshold)
 
-        for snapshot, labels in data:
-            snapshot = self._to_device(snapshot)
-            labels = labels.to(self.device)
+        windows = self._group_into_windows(data, K)
+        for window in windows:
+            rec_state = None
+            for snapshot, labels in window:
+                snapshot = self._to_device(snapshot)
+                labels = labels.to(self.device)
 
-            timer = LatencyTimer()
-            with timer:
-                node_emb, rec_state = self.model(
-                    snapshot.node_features,
-                    snapshot.edge_indices,
-                    snapshot.edge_deltas,
-                )
+                timer = LatencyTimer()
+                with timer:
+                    node_emb, rec_state = self.model(
+                        snapshot.node_features,
+                        snapshot.edge_indices,
+                        snapshot.edge_deltas,
+                        recurrent_state=rec_state,
+                    )
 
-                pairs = snapshot.conflict_pairs
-                if pairs is None or pairs.size(1) == 0:
-                    continue
+                    pairs = snapshot.conflict_pairs
+                    if pairs is None or pairs.size(1) == 0:
+                        continue
 
-                h_i = node_emb[pairs[0]]
-                h_j = node_emb[pairs[1]]
-                s_i = rec_state[pairs[0]]
-                s_j = rec_state[pairs[1]]
+                    h_i = node_emb[pairs[0]]
+                    h_j = node_emb[pairs[1]]
+                    s_i = rec_state[pairs[0]]
+                    s_j = rec_state[pairs[1]]
 
-                preds = self.head(h_i, h_j, s_i, s_j)
+                    preds = self.head(h_i, h_j, s_i, s_j)
 
-            metrics.update(preds, labels, latency_ms=timer.elapsed_ms)
+                metrics.update(preds, labels, latency_ms=timer.elapsed_ms)
 
         return metrics.compute()
 
@@ -215,13 +266,12 @@ class SkyFlowTrainer:
         val_data: List[Tuple[TKGSnapshot, torch.Tensor]],
         test_data: List[Tuple[TKGSnapshot, torch.Tensor]],
     ) -> Dict:
-        """Train across multiple seeds and report mean ± std."""
+        """Train across multiple seeds and report mean +/- std."""
         all_results = []
-        base_seed = self.cfg.training.seed
+        seeds = self.cfg.training.seeds[:self.cfg.training.num_seeds]
 
-        for seed_idx in range(self.cfg.training.num_seeds):
-            seed = base_seed + seed_idx
-            logger.info(f"\n{'='*60}\nSeed {seed_idx+1}/{self.cfg.training.num_seeds} (seed={seed})\n{'='*60}")
+        for seed_idx, seed in enumerate(seeds):
+            logger.info(f"\n{'='*60}\nSeed {seed_idx+1}/{len(seeds)} (seed={seed})\n{'='*60}")
 
             self.model = None
             self.head = None

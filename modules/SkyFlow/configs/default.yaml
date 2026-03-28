@@ -36,6 +36,7 @@ training:
   warmup_steps: 1000
   seed: 42
   num_seeds: 5
+  seeds: [42, 123, 456, 789, 1024]
   device: auto
 
 output_dir: outputs

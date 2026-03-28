@@ -158,7 +158,9 @@ class UrbanAir500:
 
         positions = np.zeros((self.num_uavs, 3), dtype=np.float32)
         velocities = np.zeros((self.num_uavs, 3), dtype=np.float32)
+        prev_velocities = np.zeros((self.num_uavs, 3), dtype=np.float32)
         headings = np.zeros(self.num_uavs, dtype=np.float32)
+        prev_headings = np.zeros(self.num_uavs, dtype=np.float32)
         battery = np.ones(self.num_uavs, dtype=np.float32)
         priorities = np.zeros(self.num_uavs, dtype=np.int32)
         avoiding = np.zeros(self.num_uavs, dtype=bool)
@@ -214,11 +216,27 @@ class UrbanAir500:
             battery -= self.rng.uniform(0.00001, 0.00005, self.num_uavs).astype(np.float32)
             battery = np.clip(battery, 0, 1)
 
-            conflicts = self._detect_ground_truth_conflicts(positions, velocities, epoch, t)
+            accelerations = (velocities - prev_velocities) / self.dt
+            heading_rates = (headings - prev_headings) / self.dt
+            battery_discharge = self.rng.uniform(0.00001, 0.00005, self.num_uavs).astype(np.float32)
+            prev_velocities[:] = velocities
+            prev_headings[:] = headings
 
+            corridor_res = self._compute_corridor_reservations(plans, t)
+            corridor_ids = np.zeros(self.num_uavs, dtype=np.float32)
+            for ua, ub, _, _ in corridor_res:
+                if ua < self.num_uavs:
+                    corridor_ids[ua] = 1.0
+                if ub < self.num_uavs:
+                    corridor_ids[ub] = 1.0
+
+            local_wind = np.tile(wind, (self.num_uavs, 1)).astype(np.float32)
+            local_wind += self.rng.randn(self.num_uavs, 3).astype(np.float32) * 0.3
+            gps_dop = self.gps_cep + self.rng.exponential(0.5, self.num_uavs).astype(np.float32)
+
+            conflicts = self._detect_ground_truth_conflicts(positions, velocities, epoch, t)
             sector_occ = self._compute_sector_occupancy(positions)
             weather_data = self._compute_weather_state(t, wind)
-            corridor_res = self._compute_corridor_reservations(plans, t)
 
             state = AirspaceState(
                 uav_positions=positions.copy(),
@@ -232,6 +250,12 @@ class UrbanAir500:
                 restricted_zones=self.restricted_zones.copy(),
                 corridor_reservations=corridor_res,
                 epoch_time=t,
+                uav_heading_rates=heading_rates.copy(),
+                uav_accelerations=accelerations.copy(),
+                uav_battery_rates=-battery_discharge,
+                uav_corridor_ids=corridor_ids,
+                uav_local_wind=local_wind,
+                uav_gps_dop=gps_dop,
             )
             yield state, conflicts
 

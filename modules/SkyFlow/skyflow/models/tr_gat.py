@@ -1,9 +1,22 @@
-"""TR-GAT: Temporal Relational Graph Attention Network.
+"""TR-GAT: Temporally-conditioned Relational Graph Attention Network.
 
-Core architecture of SkyFlow. Each TR-GAT layer performs
-temporally-conditioned multi-head attention over typed neighborhoods,
-fusing per-relation aggregations via a learned gating vector.
-A GRU-based recurrent summary captures trajectory trend across epochs.
+Core architecture of SkyFlow (Section 4 / Algorithm 2 in the paper).
+Each TR-GAT layer computes multi-head attention conditioned on both
+relation type r and sinusoidal temporal encoding φ(δ):
+
+  Attention (Eq. 3):
+    α_{ij}^{r,m} = softmax_j( LeakyReLU( a_r^m · [W_Q^r h_i || W_K^r h_j || φ(δ_{ij})] ) )
+
+  Message aggregation (Eq. 4):
+    z_i^r = Σ_j α_{ij}^{r,m} · W_V^r h_j
+
+  Multi-relation gating (Eq. 5):
+    h_i' = LayerNorm( h_i + Σ_r g_r(h_i) · z_i^r )
+    where g_r = softmax(W_gate · [z_i^1 || ... || z_i^R])
+
+A GRUCell produces recurrent state s_i across K=10 observation epochs.
+
+Reference: Section 4.1–4.3 and Algorithm 2 in the paper.
 """
 
 from __future__ import annotations
@@ -28,7 +41,13 @@ RELATION_TYPES = [
 
 
 class TRGATLayer(nn.Module):
-    """Single TR-GAT layer with multi-head, multi-relation attention."""
+    """Single TR-GAT layer implementing Equations (3)–(5).
+
+    Per-relation attention (Eq. 3): for each relation r ∈ {1..R},
+    computes temporally-conditioned attention coefficients using
+    per-relation Q/K/V projections and the sinusoidal encoding φ(δ).
+    Relation outputs are fused via a learned softmax gate (Eq. 5).
+    """
 
     def __init__(
         self,
@@ -131,7 +150,12 @@ class TRGATLayer(nn.Module):
 
 
 class TRGAT(nn.Module):
-    """Full TR-GAT model: L stacked layers + GRU temporal summary."""
+    """Full TR-GAT model (Algorithm 2): L stacked layers + GRU temporal summary.
+
+    Architecture: input_proj → L × TRGATLayer → GRUCell
+    The GRU carries recurrent state s_i across K consecutive TKG snapshots
+    within each observation window (K=10 by default, i.e., 1 second at 10 Hz).
+    """
 
     def __init__(
         self,

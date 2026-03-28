@@ -1,9 +1,22 @@
-"""Coordinated conflict resolution module.
+"""Coordinated conflict resolution module — Algorithm 3 in the paper.
 
-Given a conflict cluster (maximal connected subgraph of UAVs with
-pairwise conflict scores > τ), generates avoidance waypoint offsets
-that maximize minimum separation while minimizing path deviation.
-Uses projected gradient descent warm-started from TR-GAT embeddings.
+Given a conflict cluster K = {u_1, ..., u_M} (maximal connected subgraph
+of UAV nodes with pairwise conflict scores > τ), generates avoidance
+waypoint offsets Δp_i ∈ R^3 via Projected Gradient Descent (PGD):
+
+  Objective (Section 4.3):
+    L = λ₁ · L_sep + λ₂ · L_dev
+    L_sep = Σ_{i<j} [ ReLU(d_h - ||p'_i - p'_j||_h) + ReLU(d_v - |z'_i - z'_j|) ]
+    L_dev = (1/M) Σ_i ||Δp_i||²
+
+  PGD update:
+    Δp ← Proj_{[-δ_max, δ_max]}( Δp - η ∇_Δp L )
+
+Parameters: λ₁=10, λ₂=1, δ_max=50 m, η=0.5, K_pgd=20 steps.
+Warm-started from f_init(H) where H are TR-GAT embeddings.
+Output: 12 bytes per UAV (3 × float32), fits in a single 5G packet.
+
+Reference: Section 4.3 and Algorithm 3 in the paper.
 """
 
 from __future__ import annotations
@@ -16,7 +29,11 @@ import torch.nn.functional as F
 
 
 class ResolutionModule(nn.Module):
-    """Waypoint offset generator for conflict clusters up to size 12."""
+    """PGD-based waypoint offset generator for conflict clusters (M ≤ 12).
+
+    The init_net provides a warm-start from TR-GAT embeddings, reducing
+    convergence from 80+ iterations (random init) to 20 (Section 4.3).
+    """
 
     MAX_CLUSTER_SIZE = 12
 
@@ -48,6 +65,8 @@ class ResolutionModule(nn.Module):
         v_sep: float = 3.0,
     ) -> Tuple[torch.Tensor, dict]:
         """
+        Projected gradient descent per Algorithm 3 in the paper.
+
         Args:
             embeddings: (M, embed_dim) TR-GAT embeddings for cluster UAVs.
             positions: (M, 3) current [x, y, z] in meters.
@@ -62,32 +81,29 @@ class ResolutionModule(nn.Module):
         if M < 2:
             return torch.zeros(M, 3, device=embeddings.device), {"steps": 0}
 
-        init_offsets = self.init_net(embeddings)
-        init_offsets = torch.clamp(init_offsets, -self.max_offset_m, self.max_offset_m)
-        offsets = init_offsets.detach().clone().requires_grad_(True)
+        with torch.no_grad():
+            init_offsets = self.init_net(embeddings)
+            init_offsets = torch.clamp(init_offsets, -self.max_offset_m, self.max_offset_m)
 
-        optimizer = torch.optim.Adam([offsets], lr=self.pgd_lr)
-
+        offsets = init_offsets.clone().requires_grad_(True)
         best_offsets = offsets.detach().clone()
         best_obj = float("inf")
 
         for step in range(self.pgd_steps):
-            optimizer.zero_grad()
             new_pos = positions + offsets
-
             loss = _resolution_objective(
                 new_pos, positions, velocities, h_sep, v_sep
             )
-
             loss.backward()
-            optimizer.step()
 
             with torch.no_grad():
-                offsets.clamp_(-self.max_offset_m, self.max_offset_m)
+                offsets.data -= self.pgd_lr * offsets.grad
+                offsets.data.clamp_(-self.max_offset_m, self.max_offset_m)
+                offsets.grad.zero_()
 
-            if loss.item() < best_obj:
-                best_obj = loss.item()
-                best_offsets = offsets.detach().clone()
+                if loss.item() < best_obj:
+                    best_obj = loss.item()
+                    best_offsets = offsets.data.clone()
 
         return best_offsets, {"steps": self.pgd_steps, "final_loss": best_obj}
 
@@ -99,7 +115,7 @@ def _resolution_objective(
     h_sep: float,
     v_sep: float,
 ) -> torch.Tensor:
-    """Combined objective: maximize min separation + minimize path deviation."""
+    """Combined objective L = λ₁·L_sep + λ₂·L_dev (Algorithm 3, line 5)."""
     M = new_pos.size(0)
 
     path_dev = ((new_pos - orig_pos) ** 2).sum(dim=-1).mean()
@@ -113,4 +129,4 @@ def _resolution_objective(
     mask = 1.0 - torch.eye(M, device=new_pos.device)
     sep_penalty = ((h_violation + v_violation) * mask).sum()
 
-    return sep_penalty * 10.0 + path_dev * 0.1
+    return sep_penalty * 10.0 + path_dev * 1.0

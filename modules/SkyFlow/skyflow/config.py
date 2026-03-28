@@ -39,6 +39,9 @@ class DataConfig:
     scenario_minutes_test: int = 720
 
 
+PAPER_SEEDS = [42, 123, 456, 789, 1024]
+
+
 @dataclass
 class TrainingConfig:
     epochs: int = 150
@@ -51,6 +54,7 @@ class TrainingConfig:
     warmup_steps: int = 1000
     seed: int = 42
     num_seeds: int = 5
+    seeds: List[int] = field(default_factory=lambda: [42, 123, 456, 789, 1024])
     device: str = "auto"
 
 
