@@ -29,6 +29,21 @@ Real-World Assetization (RWA) and financial primitives:
 
 Future module for AI reasoning and decision-making capabilities. Currently contains only placeholder files (`__init__.py` and `README.md`) to reserve the namespace.
 
+### 4. `SkyFlow/`
+**Status**: ✅ Active Development
+
+Temporal Knowledge Graph Reasoning for Multi-UAV Conflict Detection:
+- **models/tr_gat.py**: TR-GAT (Temporal Relational Graph Attention Network) – 4-layer architecture with sinusoidal temporal encoding and multi-relation gating
+- **models/conflict_head.py**: Pairwise conflict scoring MLP
+- **models/resolution.py**: Coordinated avoidance waypoint generation via projected gradient descent
+- **data/tkg_builder.py**: Temporal Knowledge Graph construction from ADS-B, flight plans, weather, corridor reservations
+- **data/urbanair500.py**: UrbanAir-500 benchmark simulator (500 concurrent UAVs, 5km×5km urban grid, 10 Hz)
+- **baselines/**: 5 comparison methods (Velocity Obstacle, LSTM-Pair, Transformer-Pair, STGCN, GAT-Static)
+- **training/**: Focal loss, conflict metrics (CDR/FAR/F1), multi-seed trainer with cosine annealing
+- **scripts/reproduce_paper.py**: One-click paper experiment reproduction
+
+Key results on UrbanAir-500: CDR 92.47%, FAR 7.34%, F1 0.9132, Latency 147.3ms (4.2M parameters).
+
 ## Git Sync Status
 
 ### Why Only `voxel_airspace_core` Was Initially Synced

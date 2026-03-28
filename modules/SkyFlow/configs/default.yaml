@@ -1,0 +1,41 @@
+model:
+  num_layers: 4
+  embed_dim: 128
+  num_heads: 4
+  temporal_dim: 32
+  recurrent_dim: 64
+  dropout: 0.1
+  num_relation_types: 6
+
+data:
+  num_uavs: 500
+  num_sectors: 64
+  num_weather_cells: 36
+  num_restricted_zones: 12
+  uav_feature_dim: 23
+  sector_feature_dim: 8
+  weather_feature_dim: 12
+  observation_window: 10
+  lookahead_seconds: 30.0
+  conflict_h_sep_m: 10.0
+  conflict_v_sep_m: 3.0
+  sim_freq_hz: 10.0
+  grid_size_m: 5000.0
+  scenario_minutes_train: 3360
+  scenario_minutes_val: 720
+  scenario_minutes_test: 720
+
+training:
+  epochs: 150
+  batch_size: 32
+  learning_rate: 0.0003
+  weight_decay: 0.00001
+  gradient_clip_norm: 1.0
+  focal_gamma: 2.0
+  conflict_threshold: 0.42
+  warmup_steps: 1000
+  seed: 42
+  num_seeds: 5
+  device: auto
+
+output_dir: outputs
