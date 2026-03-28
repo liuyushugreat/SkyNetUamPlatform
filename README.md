@@ -1,7 +1,7 @@
 # SkyNetUAM: Lifecycle-Aware Low-Altitude UAM Operations Platform
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![DOI](https://img.shields.io/badge/DOI-10.1109%2FXXX.2025.XXXXXXX-blue)](https://doi.org/)
+[![DOI](https://img.shields.io/badge/DOI-10.20944%2Fpreprints202512.2648.v1-blue)](https://doi.org/10.20944/preprints202512.2648.v1)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.2+](https://img.shields.io/badge/pytorch-2.2+-ee4c2c.svg)](https://pytorch.org/)
@@ -194,10 +194,13 @@ If you use this code or framework in your research, please cite our papers:
 
 ```bibtex
 @article{Liu2025SkyNetUAM,
-  title={SkyNetUAM: A Lifecycle-Aware Low-Altitude UAM Operations Platform},
+  title={A Low-Altitude Urban Air Mobility Operations Platform with Mission Lifecycle Assetization},
   author={Liu, Yushu and Wang, Longbiao and Du, Chenglin and Zhai, Haixiao},
-  journal={arXiv preprint arXiv:25XX.XXXXX},
-  year={2025}
+  journal={Preprints},
+  volume={2025},
+  pages={2025122648},
+  year={2025},
+  doi={10.20944/preprints202512.2648.v1}
 }
 ```
 
