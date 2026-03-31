@@ -8,7 +8,7 @@
 
 > **MobiHoc 2026 Reviewers:** The TR-GAT conflict detection code, `run.sh` one-click reproduction script, and all experiment artifacts are located at **[`modules/SkyFlow/`](./modules/SkyFlow)**. Run `cd modules/SkyFlow && bash run.sh` to reproduce all paper results.
 
-> **KSEM 2026 Reviewers:** The SkyKG neuro-symbolic knowledge graph code, ontology, and benchmark scripts are located at **[`modules/SkyKg/`](./modules/SkyKg)**. See [`modules/SkyKg/README.md`](./modules/SkyKg/README.md) for reproduction instructions.
+> **KSEM 2026 Reviewers:** The SkyKG neuro-symbolic knowledge graph code and reproduction artifact are at **[`modules/SkyKg/artifact_ksem2026/`](./modules/SkyKg/artifact_ksem2026)**. Run `cd modules/SkyKg/artifact_ksem2026 && bash run.sh` to reproduce all paper results.
 
 ---
 
@@ -173,7 +173,7 @@ SkyNetUamPlatform/
 │   ├── SkyKg/               # Neuro-symbolic KG for UAM risk reasoning (KSEM 2026)
 │   │   ├── SkyNet_Knowledge_Engine/  # Ontology + neuro-symbolic reasoning
 │   │   ├── voxel_airspace_core/ # 3D spatial indexing & A* pathfinding
-│   │   └── experiments/     # Benchmark, latency, visualization scripts & data
+│   │   └── artifact_ksem2026/   # Paper reproduction: run.sh, data, scripts
 │   ├── SkyRwa/              # Real-World Assetization & pricing
 │   └── SkyFlow/             # TR-GAT conflict detection (MobiHoc 2026)
 │       ├── skyflow/models/  #   TR-GAT, temporal encoding, conflict head, PGD resolution

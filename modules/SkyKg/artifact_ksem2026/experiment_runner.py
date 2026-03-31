@@ -18,7 +18,7 @@ if sys.platform.startswith('win'):
 # ==========================================
 # 1. Path Management
 # ==========================================
-# Current script path: modules/SkyKg/experiments/experiment_runner.py
+# Current script path: modules/SkyKg/artifact_ksem2026/experiment_runner.py
 CURRENT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = CURRENT_DIR.parents[2]  # modules -> SkyKg -> experiments -> root
 OUTPUT_DIR = CURRENT_DIR / "outputs"

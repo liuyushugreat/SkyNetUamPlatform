@@ -1,0 +1,4 @@
+# Generated outputs (not tracked — reproduce via run.sh)
+outputs/
+__pycache__/
+*.pyc

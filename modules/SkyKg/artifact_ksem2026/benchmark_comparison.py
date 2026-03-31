@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Path setup: Add project root to sys.path
-# modules/SkyKg/experiments -> project_root (3 levels up)
+# modules/SkyKg/artifact_ksem2026 -> project_root (3 levels up)
 current_dir = Path(__file__).resolve().parent
 project_root = current_dir.parent.parent.parent
 sys.path.insert(0, str(project_root))

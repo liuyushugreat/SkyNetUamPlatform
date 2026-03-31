@@ -1,0 +1,20 @@
+# SkyKG KSEM 2026 Artifact — Python Dependencies
+# Tested with Python 3.10+
+
+# LLM integration
+langchain-openai>=0.1.0
+python-dotenv>=1.0.0
+
+# ML evaluation
+scikit-learn>=1.3.0
+
+# Visualization
+matplotlib>=3.8.0
+seaborn>=0.13.0
+numpy>=1.24.0
+
+# Knowledge graph (used by SkyNet_Knowledge_Engine)
+rdflib>=7.0.0
+
+# Graph visualization
+networkx>=3.1
