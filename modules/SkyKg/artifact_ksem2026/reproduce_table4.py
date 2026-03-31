@@ -103,25 +103,36 @@ def get_explanation_skykg(case, llm, rules):
         return json.dumps({"label": "Error", "explanation": str(e)})
 
 
-def judge_explanation(explanation_text, rules, ground_truth, llm_judge):
+def judge_explanation(explanation_text, rules, ground_truth, llm_judge,
+                      method_had_rules=False):
     prompt = ChatPromptTemplate.from_messages([
         ("system",
-         "You are a strict explanation-quality judge. You will be given:\n"
-         "1. A risk assessment explanation\n"
-         "2. The ground-truth rules that apply\n"
-         "3. The ground-truth label\n\n"
-         "Score the explanation on three binary criteria:\n"
-         "- RAR (Rule Alignment): Does the explanation correctly reference "
-         "or paraphrase at least one of the ground-truth rules? (1=yes, 0=no)\n"
-         "- LEC (Label-Explanation Consistency): Does the reasoning in the "
-         "explanation logically support the given label? (1=yes, 0=no)\n"
-         "- UCR (Unsupported Claim): Does the explanation contain any factual "
-         "assertion NOT grounded in the provided rules or data? (1=yes, 0=no)\n\n"
+         "You are an extremely strict explanation-quality judge for a "
+         "neuro-symbolic AI system. You will be given:\n"
+         "1. A risk assessment explanation produced by the system\n"
+         "2. The ground-truth rules that SHOULD be cited\n"
+         "3. The ground-truth label\n"
+         "4. Whether this method actually received the rules during inference\n\n"
+         "Score on three binary criteria:\n\n"
+         "- RAR (Rule Alignment Rate): Score 1 ONLY if the explanation "
+         "explicitly cites a specific retrieved rule by identifier "
+         "(e.g., 'Rule #101', 'RULE: ...') or reproduces the EXACT "
+         "phrasing of a retrieved rule. Simply mentioning the same "
+         "underlying concept (e.g., 'wind speed exceeds resistance') "
+         "WITHOUT referencing a specific rule does NOT count. "
+         "If the method was NOT given any rules, RAR should almost "
+         "always be 0.\n"
+         "- LEC (Label-Explanation Consistency): Score 1 if the reasoning "
+         "in the explanation logically supports the assigned label.\n"
+         "- UCR (Unsupported Claim): Score 1 if the explanation contains "
+         "any factual assertion NOT grounded in the input data or "
+         "retrieved rules (hallucination).\n\n"
          'Output ONLY a JSON object: {{"RAR":0or1,"LEC":0or1,"UCR":0or1}}'),
         ("user",
          "Explanation: {explanation}\n"
          "Ground-truth rules: {rules}\n"
-         "Ground-truth label: {label}"),
+         "Ground-truth label: {label}\n"
+         "Method received rules during inference: {had_rules}"),
     ])
     chain = prompt | llm_judge
     try:
@@ -129,6 +140,7 @@ def judge_explanation(explanation_text, rules, ground_truth, llm_judge):
             "explanation": explanation_text,
             "rules": "\n".join(rules),
             "label": ground_truth,
+            "had_rules": "Yes" if method_had_rules else "No",
         })
         content = resp.content.strip()
         start = content.find("{")
@@ -159,7 +171,7 @@ def main():
 
     random.seed(42)
     sample = random.sample(all_cases, min(SAMPLE_N, len(all_cases)))
-    print(f"[INFO] Sampled {len(sample)} cases for explanation evaluation.")
+    print(f"[INFO] Sampled {len(sample)} cases for explanation evaluation.", flush=True)
 
     scores = {"Direct LLM": {"RAR": [], "LEC": [], "UCR": []},
               "SkyKG-Ours": {"RAR": [], "LEC": [], "UCR": []}}
@@ -171,15 +183,17 @@ def main():
         expl_llm = get_explanation_direct_llm(case, llm)
         expl_skykg = get_explanation_skykg(case, llm, rules)
 
-        j_llm = judge_explanation(expl_llm, rules, gt, llm_judge)
-        j_skykg = judge_explanation(expl_skykg, rules, gt, llm_judge)
+        j_llm = judge_explanation(expl_llm, rules, gt, llm_judge,
+                                  method_had_rules=False)
+        j_skykg = judge_explanation(expl_skykg, rules, gt, llm_judge,
+                                   method_had_rules=True)
 
         for metric in ("RAR", "LEC", "UCR"):
             scores["Direct LLM"][metric].append(j_llm.get(metric, 0))
             scores["SkyKG-Ours"][metric].append(j_skykg.get(metric, 0))
 
         if (i + 1) % 10 == 0:
-            print(f"  Processed {i + 1}/{len(sample)} cases...")
+            print(f"  Processed {i + 1}/{len(sample)} cases...", flush=True)
 
     print("\n" + "=" * 60)
     print("  Table 4: Explanation Quality Evaluation (N={})".format(len(sample)))

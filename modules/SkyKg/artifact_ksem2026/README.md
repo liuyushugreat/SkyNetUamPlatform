@@ -15,6 +15,7 @@ This is the **self-contained reproduction artifact** for the KSEM 2026 paper. It
 | File / Directory | Maps to Paper | Description |
 |-----------------|---------------|-------------|
 | `benchmark_comparison.py` | **Table 2, Fig. 3, Fig. 4** | Main benchmark: Rule-Based vs Direct LLM vs SkyKG |
+| `reproduce_table3.py` | **Table 3** | Robustness to sensor noise (accuracy under σ=0.05/0.15/0.30) |
 | `reproduce_table4.py` | **Table 4** | Explanation quality evaluation (RAR, LEC, UCR) |
 | `analyze_latency_tradeoff.py` | **Fig. 5** | Inference latency distribution analysis |
 | `experiment_runner.py` | — | Automated experiment pipeline (alternative entry) |
@@ -64,6 +65,9 @@ pip install -r requirements.txt
 # Table 2: Main benchmark (Rule vs LLM vs SkyKG)
 python benchmark_comparison.py
 
+# Table 3: Robustness to noise (3 noise levels × 1000 cases)
+python reproduce_table3.py
+
 # Table 4: Explanation quality (RAR, LEC, UCR)
 python reproduce_table4.py
 
@@ -81,7 +85,8 @@ All results are written to `outputs/` (auto-created):
 - `outputs/Fig_Confusion_Matrix_*.png` — Confusion matrices (Fig. 4)
 - `outputs/Fig_Latency_Analysis.png` — Latency distribution (Fig. 5)
 - `outputs/Fig_Ontology_Schema.png` — Ontology schema (Fig. 2)
-- Console output prints Table 2 metrics
+- Console output prints Table 2 and Table 3 metrics
+- `outputs/table3_robustness.json` — Accuracy under three noise levels (Table 3)
 - `outputs/table4_explanation_quality.json` — Per-case RAR/LEC/UCR scores (Table 4)
 
 ---
@@ -94,7 +99,7 @@ All results are written to `outputs/` (auto-created):
 | Baseline-LLM | 1.000 | 1.000 | 1.000 | 1.000 | ~1355 |
 | **SkyKG (Ours)** | **1.000** | **1.000** | **1.000** | **1.000** | **~1363** |
 
-> SkyKG's advantage over Direct LLM is in **explanation quality** (RAR=0.97 vs 0.31), not aggregate accuracy. See paper §4.6.
+> SkyKG's advantage over Direct LLM is in **explanation quality** (RAR=1.00 vs 0.00, UCR=0.00 vs 0.36), not aggregate accuracy. See paper §4.6.
 
 ---
 

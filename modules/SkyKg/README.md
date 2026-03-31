@@ -15,7 +15,7 @@
 - **Structured Knowledge Representation** — A Low-Altitude Economy Ontology (RDF/OWL) encoding UAVs, airspace, regulations, and environmental conditions
 - **Deterministic Compliance Checks** — SPARQL queries enforcing hard safety constraints
 - **Semantic Risk Reasoning** — Retrieval-Augmented Generation (RAG) with DeepSeek-V3
-- **Explainable Outputs** — Rule-grounded natural language explanations (RAR = 0.97)
+- **Explainable Outputs** — Rule-grounded natural language explanations (RAR = 1.00, UCR = 0.00)
 
 ---
 
@@ -37,6 +37,7 @@ modules/SkyKg/
     ├── run.sh                          #   One-click reproduction
     ├── requirements.txt                #   Pinned dependencies
     ├── benchmark_comparison.py         #   Table 2: main benchmark
+    ├── reproduce_table3.py            #   Table 3: noise robustness ablation
     ├── reproduce_table4.py            #   Table 4: explanation quality (RAR/LEC/UCR)
     ├── analyze_latency_tradeoff.py     #   Fig. 5: latency analysis
     ├── viz_ontology_structure.py       #   Fig. 2: ontology schema

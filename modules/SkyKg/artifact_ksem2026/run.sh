@@ -60,19 +60,24 @@ echo ""
 echo "[Step 2] Running benchmark: Rule-Based vs Direct LLM vs SkyKG (Table 2)..."
 $PYTHON benchmark_comparison.py
 
-# ── Step 3: Run explanation quality evaluation (Table 4) ──
+# ── Step 3: Run robustness to sensor noise (Table 3) ──
 echo ""
-echo "[Step 3] Running explanation quality evaluation (Table 4)..."
+echo "[Step 3] Running noise robustness ablation (Table 3)..."
+$PYTHON reproduce_table3.py
+
+# ── Step 4: Run explanation quality evaluation (Table 4) ──
+echo ""
+echo "[Step 4] Running explanation quality evaluation (Table 4)..."
 $PYTHON reproduce_table4.py
 
-# ── Step 4: Run latency analysis (Fig. 5) ──
+# ── Step 5: Run latency analysis (Fig. 5) ──
 echo ""
-echo "[Step 4] Running latency analysis (Fig. 5)..."
+echo "[Step 5] Running latency analysis (Fig. 5)..."
 $PYTHON analyze_latency_tradeoff.py
 
-# ── Step 5: Generate figures ──
+# ── Step 6: Generate figures ──
 echo ""
-echo "[Step 5] Generating paper figures..."
+echo "[Step 6] Generating paper figures..."
 $PYTHON viz_ontology_structure.py
 $PYTHON viz_arch_placeholder.py
 
