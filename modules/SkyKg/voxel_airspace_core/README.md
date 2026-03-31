@@ -16,7 +16,7 @@ This module implements a sparse octree data structure for managing 3D airspace o
 ## Usage
 
 ```python
-from modules.voxel_airspace_core import SparseOctree
+from modules.SkyKg.voxel_airspace_core import SparseOctree
 
 # Create an octree covering 1000m x 1000m x 1000m airspace
 # with maximum depth of 8 (minimum voxel size = 1000 / 2^8 ≈ 3.9m)

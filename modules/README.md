@@ -1,101 +1,32 @@
 # Modules Directory
 
-This directory contains modular, production-ready components for the SkyNetUamPlatform.
+This directory contains modular capabilities for the SkyNetUamPlatform.
 
-## Current Modules
+## Current Structure
 
-### 1. `voxel_airspace_core/`
-**Status**: ✅ Synced to GitHub
+### `SkyKg/`
 
-3D spatial indexing and pathfinding for urban airspace:
-- **indexer.py**: Sparse octree data structure for efficient 3D spatial queries
-- **builder.py**: GeoJSON to voxel conversion (buildings → 3D occupancy grid)
-- **pathfinder.py**: 3D A* pathfinding algorithm with safety margins
-- **manager.py**: High-level API for city model loading and path planning
-- **api.py**: FastAPI router for REST endpoints
+Modules related to the `research/papers/Knowledge_Engine` paper:
 
-### 2. `rwa_core/`
-**Status**: ✅ Synced to GitHub (as of 2025-12-31)
+- `SkyNet_Knowledge_Engine/`: ontology, neuro-symbolic reasoning, and LLM explanation
+- `voxel_airspace_core/`: voxelized 3D airspace indexing, adaptive octree, and pathfinding
 
-Real-World Assetization (RWA) and financial primitives:
-- **valuation.py**: Data packet valuation interfaces (`DataPacket`, `ValuationResult`, `AbstractValuationEngine`)
-- **pricing_engine.py**: Dynamic pricing engine for SkyNet data assets
-- **economics/pricing.py**: Congestion pricing models for airspace voxels
+### `SkyRwa/`
 
-**Migration Note**: This module was migrated from `nexus_core/assetization/` and `nexus_core/economics/` in Phase-1. Backward compatibility is maintained via re-export shims in the old paths.
+Real-World Assetization (RWA) and pricing primitives:
 
-### 3. `reasoning_engine/`
-**Status**: ✅ Synced to GitHub (placeholder)
+- `valuation.py`: data packet valuation interfaces
+- `pricing_engine.py`: dynamic pricing engine
+- `economics/pricing.py`: congestion pricing models for airspace voxels
 
-Future module for AI reasoning and decision-making capabilities. Currently contains only placeholder files (`__init__.py` and `README.md`) to reserve the namespace.
+### `SkyFlow/`
 
-### 4. `SkyFlow/`
-**Status**: ✅ Active Development
+Temporal knowledge-graph reasoning for multi-UAV conflict detection. This module
+belongs to a different paper track and is intentionally not grouped under `SkyKg/`.
 
-Temporal Knowledge Graph Reasoning for Multi-UAV Conflict Detection:
-- **models/tr_gat.py**: TR-GAT (Temporal Relational Graph Attention Network) – 4-layer architecture with sinusoidal temporal encoding and multi-relation gating
-- **models/conflict_head.py**: Pairwise conflict scoring MLP
-- **models/resolution.py**: Coordinated avoidance waypoint generation via projected gradient descent
-- **data/tkg_builder.py**: Temporal Knowledge Graph construction from ADS-B, flight plans, weather, corridor reservations
-- **data/urbanair500.py**: UrbanAir-500 benchmark simulator (500 concurrent UAVs, 5km×5km urban grid, 10 Hz)
-- **baselines/**: 5 comparison methods (Velocity Obstacle, LSTM-Pair, Transformer-Pair, STGCN, GAT-Static)
-- **training/**: Focal loss, conflict metrics (CDR/FAR/F1), multi-seed trainer with cosine annealing
-- **scripts/reproduce_paper.py**: One-click paper experiment reproduction
+## Notes
 
-Key results on UrbanAir-500: CDR 92.47%, FAR 7.34%, F1 0.9132, Latency 147.3ms (4.2M parameters).
-
-## Git Sync Status
-
-### Why Only `voxel_airspace_core` Was Initially Synced
-
-The `voxel_airspace_core` module was committed and pushed in an earlier commit (`e68705c`). The `rwa_core` module was created later but:
-
-1. **Files were created but not committed**: The files existed locally but were not added to Git staging area
-2. **Git tracked file moves**: Git detected the files as moved from `nexus_core/` but the actual files in `modules/rwa_core/` were untracked
-3. **Missing `git add`**: The new files needed to be explicitly added with `git add modules/rwa_core/`
-
-### Resolution (2025-12-31)
-
-All `modules/rwa_core/` files have been:
-- ✅ Added to Git staging area
-- ✅ Committed to local repository (commit `a2bf324`)
-- ⚠️ **Pending**: Push to remote repository (`git push origin main`)
-
-## Ensuring Future Sync
-
-To ensure all modules stay synced to GitHub:
-
-### Option 1: Manual Push (Recommended for now)
-```bash
-# After making changes to modules/
-git add modules/
-git commit -m "Update modules: [description]"
-git push origin main
-```
-
-### Option 2: Git Hooks (Automated)
-Create `.git/hooks/post-commit` to automatically push after commits:
-```bash
-#!/bin/sh
-# Auto-push modules/ changes (optional, use with caution)
-git push origin main
-```
-
-### Option 3: CI/CD Pipeline
-Set up GitHub Actions to automatically sync on push (if using multiple remotes).
-
-## Module Development Guidelines
-
-1. **New modules** should be added under `modules/` with a clear `__init__.py`
-2. **Always commit** new modules immediately after creation
-3. **Test imports** to ensure backward compatibility shims work
-4. **Update this README** when adding new modules
-
-## Backward Compatibility
-
-Modules maintain compatibility with old import paths via re-export shims:
-- `nexus_core/assetization/valuation.py` → `modules.rwa_core.valuation`
-- `nexus_core/economics/pricing.py` → `modules.rwa_core.economics.pricing`
-
-This allows existing code to continue working without immediate refactoring.
+- `SkyKg/` is the paper-focused bundle for the Knowledge Engine work.
+- `SkyFlow/` remains separate because it is unrelated to the SkyKG paper.
+- `SkyRwa/` remains at the top level because it supports economics and pricing rather than the SkyKG workflow.
 

@@ -12,7 +12,11 @@ SkyNetUamPlatform/
 ├── nexus_core/                      # Python core libraries (production + simulation core)
 │
 ├── modules/                         # Reusable capability modules (pluggable)
-│   └── voxel_airspace_core/         # Sparse octree + builder + A* + FastAPI router
+│   ├── SkyKg/                       # Knowledge-engine paper module bundle
+│   │   ├── voxel_airspace_core/     # Sparse octree + builder + A* + FastAPI router
+│   │   └── SkyNet_Knowledge_Engine/ # Ontology + neuro-symbolic reasoning
+│   ├── SkyRwa/                      # Real-World Assetization & pricing
+│   └── SkyFlow/                     # Multi-UAV conflict detection (separate paper)
 │
 ├── research/                        # Research workspace (paper-facing)
 │   ├── experiments/

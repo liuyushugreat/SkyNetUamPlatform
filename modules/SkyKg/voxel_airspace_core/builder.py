@@ -35,7 +35,7 @@ try:
     from shapely.geometry.base import BaseGeometry
 except ImportError as e:  # pragma: no cover
     raise ImportError(
-        "shapely is required for modules.voxel_airspace_core.builder. "
+        "shapely is required for modules.SkyKg.voxel_airspace_core.builder. "
         "Install it via: pip install shapely"
     ) from e
 

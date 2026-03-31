@@ -13,9 +13,9 @@ current_dir = Path(__file__).resolve().parent
 project_root = current_dir.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from modules.rwa_core.neural_pricing import TorusPricingModel
-from modules.rwa_core.adversarial import ArbitrageInjector
-from modules.rwa_core.topology_metrics import calculate_integrity_score, get_betti_numbers
+from modules.SkyRwa.neural_pricing import TorusPricingModel
+from modules.SkyRwa.adversarial import ArbitrageInjector
+from modules.SkyRwa.topology_metrics import calculate_integrity_score, get_betti_numbers
 
 # Configuration
 CONFIG = {
@@ -26,8 +26,10 @@ CONFIG = {
     'epochs': 600,
     'batch_size': 256,
     'seed': 1337,
-    'output_dir': project_root / 'research/papers/rwa_core_papers/figures'
+    'output_dir': project_root / 'research/papers/SkyRwa_papers/figures'
 }
+
+CONFIG['output_dir'].mkdir(parents=True, exist_ok=True)
 
 def set_seed(seed):
     torch.manual_seed(seed)

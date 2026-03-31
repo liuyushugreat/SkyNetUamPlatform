@@ -15,7 +15,7 @@ current_dir = Path(__file__).resolve().parent
 project_root = current_dir.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from modules.rwa_core.neural_pricing import TorusPricingModel, PizzaPricingModel
+from modules.SkyRwa.neural_pricing import TorusPricingModel, PizzaPricingModel
 
 # Configuration
 CONFIG = {

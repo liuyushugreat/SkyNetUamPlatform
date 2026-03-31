@@ -5,10 +5,10 @@ import sys
 from pathlib import Path
 
 # 添加项目根目录到路径
-project_root = Path(__file__).parent.parent.parent.parent
+project_root = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(project_root))
 
-from modules.SkyNet_Knowledge_Engine.llm_agent.deepseek_client import SkyNetExplainer
+from modules.SkyKg.SkyNet_Knowledge_Engine.llm_agent.deepseek_client import SkyNetExplainer
 
 def test_deepseek_connection():
     """测试 DeepSeek API 连接"""

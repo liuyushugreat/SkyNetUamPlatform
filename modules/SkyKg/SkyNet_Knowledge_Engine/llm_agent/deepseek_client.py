@@ -6,7 +6,7 @@ from pathlib import Path
 try:
     from dotenv import load_dotenv
     # 从项目根目录查找 .env 文件
-    env_path = Path(__file__).parent.parent.parent.parent / ".env"
+    env_path = Path(__file__).resolve().parents[4] / ".env"
     if env_path.exists():
         load_dotenv(env_path)
 except ImportError:

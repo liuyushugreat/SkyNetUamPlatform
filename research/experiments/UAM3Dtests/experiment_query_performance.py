@@ -42,12 +42,12 @@ PAPER3D_FIG_DIR = REPO_ROOT / "research" / "papers" / "paper3D" / "figures"
 def load_adaptive_octree_by_path():
     """
     Load `adaptive_octree.py` directly by path to avoid optional deps pulled by
-    `modules.voxel_airspace_core.__init__` (e.g., shapely).
+    `modules.SkyKg.voxel_airspace_core.__init__` (e.g., shapely).
     """
     import importlib.util
 
     mod_name = "skynet_adaptive_octree"
-    path = REPO_ROOT / "modules" / "voxel_airspace_core" / "adaptive_octree.py"
+    path = REPO_ROOT / "modules" / "SkyKg" / "voxel_airspace_core" / "adaptive_octree.py"
     spec = importlib.util.spec_from_file_location(mod_name, path)
     if spec is None or spec.loader is None:
         raise ImportError(f"Failed to load adaptive octree module from: {path}")

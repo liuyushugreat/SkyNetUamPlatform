@@ -168,9 +168,10 @@ SkyNetUamPlatform/
 ├── edge-node/               # Edge computing & storage interface (Edge Layer)
 ├── components/              # Shared React UI components
 ├── modules/
-│   ├── voxel_airspace_core/ # 3D spatial indexing & A* pathfinding
-│   ├── rwa_core/            # Real-World Assetization & pricing
-│   ├── SkyNet_Knowledge_Engine/  # Ontology + neuro-symbolic reasoning
+│   ├── SkyKg/               # Knowledge-engine paper modules
+│   │   ├── voxel_airspace_core/ # 3D spatial indexing & A* pathfinding
+│   │   └── SkyNet_Knowledge_Engine/  # Ontology + neuro-symbolic reasoning
+│   ├── SkyRwa/              # Real-World Assetization & pricing
 │   └── SkyFlow/             # TR-GAT conflict detection (MobiHoc 2026)
 │       ├── skyflow/models/  #   TR-GAT, temporal encoding, conflict head, PGD resolution
 │       ├── skyflow/data/    #   TKG builder, UrbanAir-500 simulator, SDD adapter

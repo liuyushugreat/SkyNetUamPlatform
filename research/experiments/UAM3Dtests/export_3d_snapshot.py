@@ -30,7 +30,7 @@ PAPER3D_FIG_DIR = REPO_ROOT / "research" / "papers" / "paper3D" / "figures"
 import importlib.util
 def load_adaptive_octree():
     mod_name = "skynet_adaptive_octree_vis"
-    path = REPO_ROOT / "modules" / "voxel_airspace_core" / "adaptive_octree.py"
+    path = REPO_ROOT / "modules" / "SkyKg" / "voxel_airspace_core" / "adaptive_octree.py"
     spec = importlib.util.spec_from_file_location(mod_name, path)
     if not spec or not spec.loader:
         raise ImportError(f"Cannot load {path}")

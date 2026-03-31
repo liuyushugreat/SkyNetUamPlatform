@@ -6,7 +6,7 @@ Goal
 ----
 Simulate a "swarm converges then disperses" scenario to validate the
 Density-Based Adaptive Octree (DBAO) behavior implemented in
-`modules/voxel_airspace_core/adaptive_octree.py`.
+`modules/SkyKg/voxel_airspace_core/adaptive_octree.py`.
 
 We record the total octree node count over time and plot a performance curve
 that is suitable for paper figures.
@@ -41,12 +41,12 @@ sys.path.insert(0, str(REPO_ROOT))
 PAPER3D_FIG_DIR = REPO_ROOT / "research" / "papers" / "paper3D" / "figures"
 
 # IMPORTANT:
-# `modules/voxel_airspace_core/__init__.py` may import optional heavy deps (e.g. shapely).
+# `modules/SkyKg/voxel_airspace_core/__init__.py` may import optional heavy deps (e.g. shapely).
 # For this experiment we only need `adaptive_octree.py`, so we load it directly by path
 # to avoid requiring shapely in the experimental environment.
 import importlib.util  # noqa: E402
 
-_ADAPTIVE_PATH = REPO_ROOT / "modules" / "voxel_airspace_core" / "adaptive_octree.py"
+_ADAPTIVE_PATH = REPO_ROOT / "modules" / "SkyKg" / "voxel_airspace_core" / "adaptive_octree.py"
 _spec = importlib.util.spec_from_file_location("skynet_adaptive_octree", _ADAPTIVE_PATH)
 if _spec is None or _spec.loader is None:
     raise ImportError(f"Failed to load adaptive octree module from: {_ADAPTIVE_PATH}")
