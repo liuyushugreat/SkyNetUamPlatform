@@ -16,7 +16,7 @@ This is the **self-contained reproduction artifact** for the KSEM 2026 paper. It
 |-----------------|---------------|-------------|
 | `benchmark_comparison.py` | **Table 2, Fig. 3, Fig. 4** | Main benchmark: Rule-Based vs Direct LLM vs SkyKG |
 | `reproduce_table3.py` | **Table 3** | Robustness to sensor noise (accuracy under σ=0.05/0.15/0.30) |
-| `reproduce_table4.py` | **Table 4** | Explanation quality evaluation (RAR, LEC, UCR) |
+| `reproduce_table4.py` | **Table 4** | Explanation quality evaluation via automated LLM-as-judge (RAR, LEC, UCR) |
 | `analyze_latency_tradeoff.py` | **Fig. 5** | Inference latency distribution analysis |
 | `experiment_runner.py` | — | Automated experiment pipeline (alternative entry) |
 | `viz_ontology_structure.py` | **Fig. 2** | Ontology schema visualization |
@@ -100,6 +100,12 @@ All results are written to `outputs/` (auto-created):
 | **SkyKG (Ours)** | **1.000** | **1.000** | **1.000** | **1.000** | **~1363** |
 
 > SkyKG's advantage over Direct LLM is in **explanation quality** (RAR=1.00 vs 0.00, UCR=0.00 vs 0.36), not aggregate accuracy. See paper §4.6.
+
+---
+
+## Evaluation Protocol for Table 4
+
+Table 4 (Explanation Quality) uses an **automated LLM-as-judge** approach: a separate DeepSeek-V3 instance (temperature = 0) scores each explanation on three binary criteria (RAR, LEC, UCR) against the ground-truth rule set and scenario description. This provides a reproducible evaluation proxy. The paper notes that a full human-factors study with domain experts remains future work.
 
 ---
 
