@@ -8,6 +8,8 @@
 
 > **MobiHoc 2026 Reviewers:** The TR-GAT conflict detection code, `run.sh` one-click reproduction script, and all experiment artifacts are located at **[`modules/SkyFlow/`](./modules/SkyFlow)**. Run `cd modules/SkyFlow && bash run.sh` to reproduce all paper results.
 
+> **KSEM 2026 Reviewers:** The SkyKG neuro-symbolic knowledge graph code, ontology, and benchmark scripts are located at **[`modules/SkyKg/`](./modules/SkyKg)**. See [`modules/SkyKg/README.md`](./modules/SkyKg/README.md) for reproduction instructions.
+
 ---
 
 > **Official implementation** of our Drones submission (2025): a mission-lifecycle-aware operational platform for scalable low-altitude UAM/drone operations.  
@@ -168,9 +170,10 @@ SkyNetUamPlatform/
 ├── edge-node/               # Edge computing & storage interface (Edge Layer)
 ├── components/              # Shared React UI components
 ├── modules/
-│   ├── SkyKg/               # Knowledge-engine paper modules
+│   ├── SkyKg/               # Neuro-symbolic KG for UAM risk reasoning (KSEM 2026)
+│   │   ├── SkyNet_Knowledge_Engine/  # Ontology + neuro-symbolic reasoning
 │   │   ├── voxel_airspace_core/ # 3D spatial indexing & A* pathfinding
-│   │   └── SkyNet_Knowledge_Engine/  # Ontology + neuro-symbolic reasoning
+│   │   └── experiments/     # Benchmark, latency, visualization scripts & data
 │   ├── SkyRwa/              # Real-World Assetization & pricing
 │   └── SkyFlow/             # TR-GAT conflict detection (MobiHoc 2026)
 │       ├── skyflow/models/  #   TR-GAT, temporal encoding, conflict head, PGD resolution
@@ -218,6 +221,19 @@ If you use the SkyFlow conflict detection module specifically, please also cite:
   author    = {Liu, Yushu and Wang, Longbiao and Du, Chenglin and Zhai, Haixiao},
   booktitle = {Proceedings of the Twenty-seventh ACM International Symposium
                on Mobile Ad Hoc Networking and Computing (MobiHoc)},
+  year      = {2026}
+}
+```
+
+If you use the SkyKG knowledge graph module, please cite:
+
+```bibtex
+@inproceedings{liu2026skykg,
+  title     = {SkyKG: A Neuro-Symbolic Knowledge Graph Framework for
+               Explainable Risk Reasoning in Urban Air Mobility},
+  author    = {Liu, Yushu and Wang, Longbiao and Du, Chenglin and Zhai, Haixiao},
+  booktitle = {Proceedings of the 19th International Conference on
+               Knowledge Science, Engineering and Management (KSEM)},
   year      = {2026}
 }
 ```

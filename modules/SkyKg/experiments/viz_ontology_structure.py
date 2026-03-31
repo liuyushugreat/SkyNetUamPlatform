@@ -6,10 +6,9 @@ import matplotlib.patches as mpatches
 def generate_ontology_schema():
     # Setup paths
     current_dir = Path(__file__).resolve().parent
-    project_root = current_dir.parent.parent.parent
-    
+
     # Output path
-    output_dir = project_root / "research" / "papers" / "Knowledge_Engine"
+    output_dir = current_dir / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / "Fig_Ontology_Schema.png"
 

@@ -12,13 +12,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Path setup: Add project root to sys.path
-# research/experiments/Knowledge_Engine -> project_root (4 levels up)
+# modules/SkyKg/experiments -> project_root (3 levels up)
 current_dir = Path(__file__).resolve().parent
 project_root = current_dir.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-# Output Directory for Paper
-PAPER_OUTPUT_DIR = project_root / "research" / "papers" / "Knowledge_Engine"
+# Output Directory
+PAPER_OUTPUT_DIR = current_dir / "outputs"
 PAPER_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Load environment variables
@@ -189,7 +189,7 @@ def generate_latex_table(stats):
     print("\n".join(latex_code))
 
 def evaluate_benchmarks():
-    dataset_path = current_dir / "ksem_large_dataset.json" # Updated dataset path
+    dataset_path = current_dir / "data" / "ksem_large_dataset.json"
     if not dataset_path.exists():
         print("Dataset not found. Please run generate_large_scale_dataset.py first.")
         return

@@ -18,15 +18,10 @@ if sys.platform.startswith('win'):
 # ==========================================
 # 1. Path Management
 # ==========================================
-# Current script path: research/experiments/KSEMtest/experiment_runner.py
+# Current script path: modules/SkyKg/experiments/experiment_runner.py
 CURRENT_DIR = Path(__file__).resolve().parent
-# Target output path: research/papers/paperKSEM/picsKSEM
-# Logic: Go up 3 levels (research) -> papers -> paperKSEM -> picsKSEM
-# CURRENT_DIR = .../research/experiments/KSEMtest
-# parents[0] = .../research/experiments
-# parents[1] = .../research
-# parents[2] = .../SkyNetUamPlatform
-OUTPUT_DIR = CURRENT_DIR.parents[2] / "research" / "papers" / "paperKSEM" / "picsKSEM"
+PROJECT_ROOT = CURRENT_DIR.parents[2]  # modules -> SkyKg -> experiments -> root
+OUTPUT_DIR = CURRENT_DIR / "outputs"
 
 # Ensure output directory exists
 os.makedirs(OUTPUT_DIR, exist_ok=True)

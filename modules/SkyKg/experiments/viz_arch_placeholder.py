@@ -4,10 +4,9 @@ from pathlib import Path
 def generate_arch_placeholder():
     # Setup paths
     current_dir = Path(__file__).resolve().parent
-    project_root = current_dir.parent.parent.parent
-    output_dir = project_root / "research" / "papers" / "Knowledge_Engine"
+    output_dir = current_dir / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     output_path = output_dir / "Fig_System_Arch.png"
 
     fig, ax = plt.subplots(figsize=(10, 6), dpi=300)

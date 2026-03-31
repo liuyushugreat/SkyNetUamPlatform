@@ -4,7 +4,7 @@ from pathlib import Path
 from datetime import datetime
 
 def generate_dataset(num_samples=50):
-    output_path = Path(__file__).parent / "ksem_test_cases.json"
+    output_path = Path(__file__).parent / "data" / "ksem_test_cases.json"
     
     scenarios = ["A", "B", "C"]
     data = []

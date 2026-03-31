@@ -16,7 +16,7 @@ project_root = current_dir.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 # Output path
-output_dir = project_root / "research" / "papers" / "Knowledge_Engine"
+output_dir = current_dir / "outputs"
 output_dir.mkdir(parents=True, exist_ok=True)
 
 # Load env
@@ -73,7 +73,7 @@ def run_skykg(case, llm):
 
 def analyze_latency():
     print("Starting Latency Analysis...")
-    dataset_path = current_dir / "ksem_large_dataset.json"
+    dataset_path = current_dir / "data" / "ksem_large_dataset.json"
     
     if not dataset_path.exists():
         print("Dataset not found, generating small subset for test...")

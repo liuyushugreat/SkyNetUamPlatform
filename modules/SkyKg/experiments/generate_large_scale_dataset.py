@@ -4,7 +4,7 @@ from pathlib import Path
 from datetime import datetime
 
 def generate_large_scale_dataset(num_samples=1000):
-    output_path = Path(__file__).parent / "ksem_large_dataset.json"
+    output_path = Path(__file__).parent / "data" / "ksem_large_dataset.json"
     
     scenarios = ["A", "B", "C"]
     data = []
