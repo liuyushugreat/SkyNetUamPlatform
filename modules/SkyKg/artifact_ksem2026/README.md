@@ -15,6 +15,7 @@ This is the **self-contained reproduction artifact** for the KSEM 2026 paper. It
 | File / Directory | Maps to Paper | Description |
 |-----------------|---------------|-------------|
 | `benchmark_comparison.py` | **Table 2, Fig. 3, Fig. 4** | Main benchmark: Rule-Based vs Direct LLM vs SkyKG |
+| `reproduce_table4.py` | **Table 4** | Explanation quality evaluation (RAR, LEC, UCR) |
 | `analyze_latency_tradeoff.py` | **Fig. 5** | Inference latency distribution analysis |
 | `experiment_runner.py` | — | Automated experiment pipeline (alternative entry) |
 | `viz_ontology_structure.py` | **Fig. 2** | Ontology schema visualization |
@@ -63,6 +64,9 @@ pip install -r requirements.txt
 # Table 2: Main benchmark (Rule vs LLM vs SkyKG)
 python benchmark_comparison.py
 
+# Table 4: Explanation quality (RAR, LEC, UCR)
+python reproduce_table4.py
+
 # Fig. 5: Latency analysis
 python analyze_latency_tradeoff.py
 
@@ -78,6 +82,7 @@ All results are written to `outputs/` (auto-created):
 - `outputs/Fig_Latency_Analysis.png` — Latency distribution (Fig. 5)
 - `outputs/Fig_Ontology_Schema.png` — Ontology schema (Fig. 2)
 - Console output prints Table 2 metrics
+- `outputs/table4_explanation_quality.json` — Per-case RAR/LEC/UCR scores (Table 4)
 
 ---
 

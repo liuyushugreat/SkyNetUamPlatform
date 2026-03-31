@@ -37,6 +37,7 @@ modules/SkyKg/
     ├── run.sh                          #   One-click reproduction
     ├── requirements.txt                #   Pinned dependencies
     ├── benchmark_comparison.py         #   Table 2: main benchmark
+    ├── reproduce_table4.py            #   Table 4: explanation quality (RAR/LEC/UCR)
     ├── analyze_latency_tradeoff.py     #   Fig. 5: latency analysis
     ├── viz_ontology_structure.py       #   Fig. 2: ontology schema
     ├── viz_arch_placeholder.py         #   Fig. 1: architecture
@@ -46,12 +47,20 @@ modules/SkyKg/
 
 ---
 
+## Prerequisites
+
+- **Python 3.10+**
+- **DeepSeek API key** — required to run the LLM-based methods (Direct LLM baseline and SkyKG). Obtain one from [DeepSeek Platform](https://platform.deepseek.com/). The Rule-Based baseline and visualization scripts run without a key.
+
 ## Quick Start
 
 ```bash
 git clone https://github.com/liuyushugreat/SkyNetUamPlatform.git
 cd SkyNetUamPlatform/modules/SkyKg/artifact_ksem2026
-export DEEPSEEK_API_KEY="your_key"
+
+# Set your own DeepSeek API key (required for LLM-based experiments)
+export DEEPSEEK_API_KEY="your_key_here"
+
 bash run.sh
 ```
 
