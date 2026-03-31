@@ -22,9 +22,9 @@ def test_deepseek_connection():
     # 检查是否有 API 密钥
     if not explainer.api_key:
         print("\n[!] 未检测到 API 密钥")
-        print("\n请按以下方式之一设置 DEEPSEEK_API_KEY:")
-        print("1. 在项目根目录创建 .env 文件，添加: DEEPSEEK_API_KEY=你的密钥")
-        print("2. 设置环境变量: $env:DEEPSEEK_API_KEY='你的密钥' (PowerShell)")
+        print("\nSet DEEPSEEK_API_KEY in one of the following ways:")
+        print("1. Create a .env file at project root and add: DEEPSEEK_API_KEY=Please enter your DeepSeek key.")
+        print("2. Set environment variable: $env:DEEPSEEK_API_KEY='Please enter your DeepSeek key.' (PowerShell)")
         print("\n当前运行在 MOCK 模式（返回模拟响应）")
         print("-" * 60)
     else:
