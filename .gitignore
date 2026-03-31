@@ -47,21 +47,8 @@ fig*.png
 /paperBigdata/
 /paperMADDPG/
 
-# Research paper assets (keep local by default)
+# Research paper assets (keep local only, never push)
 /research/papers/
-# Exception: KSEM 2026 paper source (camera-ready)
-!/research/papers/Knowledge_Engine/
-!/research/papers/Knowledge_Engine/**
-# Exclude LaTeX build artifacts
-research/papers/Knowledge_Engine/*.log
-research/papers/Knowledge_Engine/*.aux
-research/papers/Knowledge_Engine/*.blg
-research/papers/Knowledge_Engine/*.out
-research/papers/Knowledge_Engine/*.synctex*
-research/papers/Knowledge_Engine/main_final*
-research/papers/Knowledge_Engine/main_v3*
-research/papers/Knowledge_Engine/main_v4*
-research/papers/Knowledge_Engine/LatexTempKSEM/*.pdf
 
 # Archive files
 *.zip
