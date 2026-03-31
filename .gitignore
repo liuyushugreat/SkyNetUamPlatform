@@ -43,12 +43,28 @@ paper.html
 paper2.md
 fig*.png
 
-# Paper folders (do not commit to GitHub)
+# ============================================================
+# PAPERS & THESIS — NEVER PUSH TO GITHUB
+# Any LaTeX source, compiled PDF, or paper asset must stay local.
+# ============================================================
 /paperBigdata/
 /paperMADDPG/
-
-# Research paper assets (keep local only, never push)
 /research/papers/
+/pressRequire/
+
+# Block all LaTeX / paper file types globally
+*.tex
+*.bbl
+*.bib
+*.cls
+*.bst
+*.eps
+*.aux
+*.blg
+*.out
+*.synctex*
+*.fls
+*.fdb_latexmk
 
 # Archive files
 *.zip
