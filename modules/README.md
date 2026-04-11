@@ -24,9 +24,20 @@ Real-World Assetization (RWA) and pricing primitives:
 Temporal knowledge-graph reasoning for multi-UAV conflict detection. This module
 belongs to a different paper track and is intentionally not grouped under `SkyKg/`.
 
+### `SkyGov/`
+
+LLM-driven multi-agent governance system for UAM regulatory compliance (WISA 2026 / 计算机研究与发展):
+
+- `skygov/agents/`: Four specialized agents (compliance, risk assessment, explanation, audit)
+- `skygov/orchestrator/`: DAG-based workflow engine with trust negotiation protocol
+- `skygov/rag_pipeline/`: Multi-source retrieval, re-ranking, and context building
+- `skygov/governance/`: Decision tracing, hallucination guarding, compliance reports
+- `api/`: FastAPI service interface
+
 ## Notes
 
 - `SkyKg/` is the paper-focused bundle for the Knowledge Engine work.
 - `SkyFlow/` remains separate because it is unrelated to the SkyKG paper.
+- `SkyGov/` extends SkyKG from a single RAG pipeline to a multi-agent LLM governance system.
 - `SkyRwa/` remains at the top level because it supports economics and pricing rather than the SkyKG workflow.
 

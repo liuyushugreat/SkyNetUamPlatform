@@ -1,0 +1,54 @@
+llm:
+  provider: deepseek
+  model: deepseek-chat
+  base_url: https://api.deepseek.com
+  temperature: 0.2
+  max_tokens: 1024
+  timeout_seconds: 30
+
+rag:
+  top_k: 5
+  chunk_max_tokens: 512
+  context_budget_tokens: 3072
+  rerank_enabled: true
+  sources:
+    - ontology
+    - regulation
+    - case_history
+
+agents:
+  compliance:
+    enabled: true
+    veto_power: true
+    sparql_timeout_ms: 500
+  risk_assessment:
+    enabled: true
+    rag_top_k: 5
+    confidence_threshold: 0.7
+  explanation:
+    enabled: true
+    max_explanation_tokens: 512
+    require_rule_citation: true
+  audit:
+    enabled: true
+    rar_threshold: 0.8
+    lec_threshold: 0.6
+    ucr_threshold: 0.1
+    re_retrieval_on_failure: true
+
+workflow:
+  default_task: flight_approval
+  timeout_seconds: 180
+  max_retries: 2
+  human_escalation_enabled: true
+
+governance:
+  trace_all_decisions: true
+  report_format: json
+  hallucination_check_enabled: true
+
+ontology:
+  path: ../SkyKg/SkyNet_Knowledge_Engine/ontology/skynet_core.ttl
+  namespace: http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#
+
+output_dir: outputs

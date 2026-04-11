@@ -10,6 +10,8 @@
 
 > **KSEM 2026 Reviewers:** The SkyKG neuro-symbolic knowledge graph code and reproduction artifact are at **[`modules/SkyKg/artifact_ksem2026/`](./modules/SkyKg/artifact_ksem2026)**. Run `cd modules/SkyKg/artifact_ksem2026 && bash run.sh` to reproduce all paper results.
 
+> **SkyGov Reviewers / Readers:** The evidence-driven multi-agent governance module for UAM compliance is located at **[`modules/SkyGov/`](./modules/SkyGov)**. For a quick demo run `cd modules/SkyGov && python scripts/run_governance.py`; for the latest evaluation pipeline run `python scripts/run_full_eval.py --scenarios 1000`.
+
 ---
 
 > **Official implementation** of our Drones submission (2025): a mission-lifecycle-aware operational platform for scalable low-altitude UAM/drone operations.  
@@ -25,6 +27,7 @@
 *   **Operational State Service (backend)**: NestJS service that ingests mission events and maintains consistent lifecycle state.
 *   **Optional persistence adapter**: can be enabled as an asynchronous extension for auditability/settlement-style workflows (kept out of the critical operational path).
 *   **SkyFlow conflict detection** *(NEW)*: Temporal Relational Graph Attention Network (TR-GAT) for real-time multi-UAV conflict detection in dense low-altitude airspace — see [modules/SkyFlow](./modules/SkyFlow).
+*   **SkyGov compliance governance** *(NEW)*: evidence-driven four-agent LLM governance pipeline for low-altitude regulatory compliance with hard-rule veto, explanation auditing, trust negotiation, and decision traceability — see [modules/SkyGov](./modules/SkyGov).
 
 ## 🏗️ System Architecture
 
@@ -140,6 +143,49 @@ bash scripts/reproduce_table3.sh      # Table 3
 bash scripts/reproduce_table7.sh      # Table 7
 ```
 
+## 🛡️ SkyGov: Evidence-Driven Multi-Agent Governance for UAM Compliance
+
+**SkyGov** ([`modules/SkyGov`](./modules/SkyGov)) is a self-contained research module for low-altitude regulatory compliance and auditable LLM governance. It extends the single-agent KG-RAG style used in `SkyKg` into a four-agent workflow:
+
+| Agent | Responsibility | Key mechanism |
+|-------|----------------|---------------|
+| `ComplianceAgent` | deterministic hard-rule compliance checking | SPARQL rule matching with veto power |
+| `RiskAssessmentAgent` | semantic risk reasoning | knowledge-graph-enhanced retrieval + LLM |
+| `ExplanationAgent` | traceable compliance explanation | rule-grounded natural language generation |
+| `AuditAgent` | output quality control | RAR / LEC / UCR metrics with retry trigger |
+
+### SkyGov Highlights
+
+*   **Evidence-driven governance**: all LLM reasoning is grounded in ontology triples, regulations, and case evidence.
+*   **Hard-rule first**: deterministic constraints short-circuit unsafe cases before probabilistic reasoning.
+*   **Auditable explanation chain**: each decision can be traced to retrieved evidence, cited rules, and agent outputs.
+*   **Layered trust protocol**: final decisions fuse veto, quality gate, and weighted voting.
+*   **Reproducible evaluation**: includes benchmark, ablation, robustness, and end-to-end evaluation scripts.
+
+### Quick Start
+
+```bash
+cd modules/SkyGov
+pip install -r requirements.txt
+
+# Optional: configure DeepSeek API key for real API runs
+# Linux/macOS:
+export DEEPSEEK_API_KEY="your_key_here"
+# PowerShell:
+$env:DEEPSEEK_API_KEY="your_key_here"
+
+# Single-scenario demo
+python scripts/run_governance.py
+
+# Baseline / ablation runs
+python scripts/run_ablation.py --scenarios 100 --mock
+
+# Full evaluation: end-to-end metrics, robustness, sensitivity
+python scripts/run_full_eval.py --scenarios 1000
+```
+
+See [`modules/SkyGov/README.md`](./modules/SkyGov/README.md) for module details.
+
 ## 🧪 Experiments & Reproduction
 
 This repository includes the source code and simulation environment for our research on Low-Altitude Intelligent Internet storage architectures.
@@ -175,6 +221,12 @@ SkyNetUamPlatform/
 │   │   ├── voxel_airspace_core/ # 3D spatial indexing & A* pathfinding
 │   │   └── artifact_ksem2026/   # Paper reproduction: run.sh, data, scripts
 │   ├── SkyRwa/              # Real-World Assetization & pricing
+│   ├── SkyGov/              # Multi-agent compliance governance with auditable LLM reasoning
+│   │   ├── skygov/          #   agents, orchestrator, RAG pipeline, governance utilities
+│   │   ├── scripts/         #   governance demo, benchmark, ablation, full evaluation
+│   │   ├── configs/         #   default thresholds and model settings
+│   │   ├── outputs/         #   generated evaluation summaries
+│   │   └── tests/           #   agent/workflow/governance tests
 │   └── SkyFlow/             # TR-GAT conflict detection (MobiHoc 2026)
 │       ├── skyflow/models/  #   TR-GAT, temporal encoding, conflict head, PGD resolution
 │       ├── skyflow/data/    #   TKG builder, UrbanAir-500 simulator, SDD adapter
@@ -235,6 +287,18 @@ If you use the SkyKG knowledge graph module, please cite:
   booktitle = {Proceedings of the 19th International Conference on
                Knowledge Science, Engineering and Management (KSEM)},
   year      = {2026}
+}
+```
+
+If you use the SkyGov governance module, please also cite:
+
+```bibtex
+@article{liu2026skygov,
+  title   = {SkyGov: An Evidence-Driven Multi-Agent Collaborative Reasoning System for UAM Compliance Governance},
+  author  = {Liu, Yushu and Wang, Longbiao and Du, Chenglin},
+  journal = {Journal of Computer Research and Development},
+  year    = {2026},
+  note    = {under review}
 }
 ```
 
