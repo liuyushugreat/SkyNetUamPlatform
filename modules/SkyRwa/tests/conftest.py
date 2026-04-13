@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -16,7 +16,7 @@ from SkyRwa.rights.governance import GovernanceEngine
 
 @pytest.fixture()
 def sample_record() -> FlightIngestRecord:
-    now = datetime.utcnow()
+    now = datetime.now(UTC)
     return FlightIngestRecord(
         flight_id="FLT-TEST-001",
         uav_id="UAV-TEST-01",

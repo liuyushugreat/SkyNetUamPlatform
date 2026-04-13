@@ -3,13 +3,16 @@
 Connects every layer of the SkyRwa module into a single, sequential pipeline::
 
     FlightIngestRecord
-        → ingest  → FlightAssetUnit (INGESTED)
-        → provenance → FlightAssetUnit (EVIDENCE_BUILT)
-        → governance → FlightAssetUnit (GOVERNED)
-        → valuation → FlightAssetUnit (VALUATED)
-        → (optional) settlement rule attachment → SETTLEMENT_READY
+      1. ingest       -> FlightAssetUnit   (INGESTED)
+      2. provenance   -> FlightEvidencePackage attached (EVIDENCE_BUILT)
+      3. governance   -> RightsProfile attached        (GOVERNED)
+      4. valuation    -> ValuationResultV2 attached     (VALUATED)
+      5. settlement   -> SettlementRule attached        (ready for revenue)
 
-Each step is independently replaceable.
+Each step is independently replaceable via constructor injection.
+
+The pipeline is designed to run **asynchronously / post-hoc** — it must
+never block real-time flight control loops.
 """
 
 from __future__ import annotations
@@ -29,10 +32,16 @@ logger = logging.getLogger(__name__)
 
 
 class FlightToAssetPipeline:
-    """Orchestrates the full ingest → valuation pipeline.
+    """Orchestrates the full ingest -> valuation pipeline.
 
     All components can be injected; defaults are provided for out-of-the-box
     usage.
+
+    Raises
+    ------
+    ValueError
+        If any pipeline step encounters invalid data (propagated from the
+        underlying engines).
     """
 
     def __init__(
@@ -58,33 +67,60 @@ class FlightToAssetPipeline:
         owner: Optional[str] = None,
         settlement_rule: Optional[SettlementRule] = None,
     ) -> FlightAssetUnit:
-        """Execute the full pipeline and return a fully-populated asset unit."""
+        """Execute the full pipeline and return a fully-populated asset unit.
+
+        Steps
+        -----
+        1. **Ingest** — normalise raw flight data into a FlightAssetUnit.
+        2. **Provenance** — build FlightEvidencePackage with SHA-256 digest.
+        3. **Governance** — assign RightsProfile and compliance score.
+        4. **Valuation** — compute DataQualityScore + AssetValueScore.
+        5. **Settlement rule** — attach revenue-split configuration.
+        """
+        if not record.flight_id:
+            raise ValueError("FlightIngestRecord.flight_id must not be empty")
 
         # 1. Ingest
         unit = self.ingestor.ingest(record)
-        logger.debug("Ingested → %s  status=%s", unit.asset_unit_id, unit.status)
+        logger.info(
+            "[1/5] Ingested flight_id=%s -> asset_unit_id=%s  status=%s",
+            record.flight_id, unit.asset_unit_id, unit.status.value,
+        )
 
         # 2. Provenance
         self.evidence_builder.build(unit, record, signer_id=self.signer_id)
-        logger.debug("Evidence built → digest=%s", unit.evidence and unit.evidence.digest_hash[:16])
+        digest_short = (unit.evidence.digest_hash[:16] + "...") if unit.evidence else "?"
+        logger.info("[2/5] Evidence built  digest=%s", digest_short)
 
         # 3. Governance
         operator_id = record.operator_id or ""
         self.governance.govern(unit, owner=owner, operator_id=operator_id)
-        logger.debug("Governed → class=%s  tradable=%s", unit.asset_class.value, unit.rights_profile and unit.rights_profile.tradable)
+        logger.info(
+            "[3/5] Governed  class=%s  tradable=%s  compliance=%.2f",
+            unit.asset_class.value,
+            unit.rights_profile.tradable if unit.rights_profile else "?",
+            unit.compliance_score,
+        )
 
         # 4. Valuation
         result = self.valuation.evaluate(unit)
-        logger.debug(
-            "Valuated → value=%.4f %s  quality=%.4f",
+        logger.info(
+            "[4/5] Valuated  value=%.4f %s  quality=%.4f  confidence=%.4f",
             result.estimated_value,
             result.currency,
             result.quality_score.overall,
+            result.confidence,
         )
 
-        # 5. Attach settlement rule (if any)
+        # 5. Attach settlement rule
         rule = settlement_rule or self.default_settlement_rule
         if rule is not None:
             unit.settlement_rule = rule
+            logger.info(
+                "[5/5] Settlement rule attached  participants=%d",
+                len(rule.participants),
+            )
+        else:
+            logger.info("[5/5] No settlement rule provided (skipped)")
 
         return unit

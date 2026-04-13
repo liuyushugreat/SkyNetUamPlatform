@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from SkyRwa.models.enums import AssetStatus
 from SkyRwa.valuation.rule_engine import RuleBasedValuationEngine
 
@@ -63,3 +65,15 @@ class TestRuleBasedValuationEngine:
         engine = RuleBasedValuationEngine()
         result = engine.evaluate(governed_unit)
         assert governed_unit.data_quality_score == result.quality_score.overall
+
+    def test_notes_contain_formula(self, governed_unit):
+        engine = RuleBasedValuationEngine()
+        result = engine.evaluate(governed_unit)
+        assert "base_price" in result.notes
+        assert "quality_weight" in result.notes
+
+    def test_no_evidence_raises(self, ingested_unit):
+        """Valuation without evidence must raise, not silently return zero."""
+        engine = RuleBasedValuationEngine()
+        with pytest.raises(ValueError, match="evidence"):
+            engine.evaluate(ingested_unit)

@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import tempfile
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
+
+import pytest
 
 from SkyRwa.ingest.flight_ingestor import FlightIngestRecord
 from SkyRwa.models.enums import AssetClass, AssetStatus, UsageType
@@ -15,7 +17,7 @@ from SkyRwa.storage.json_store import JsonStore
 
 
 def _make_record(**overrides) -> FlightIngestRecord:
-    now = datetime.utcnow()
+    now = datetime.now(UTC)
     defaults = dict(
         flight_id="FLT-SMOKE-001",
         uav_id="UAV-SMOKE",
@@ -109,3 +111,42 @@ class TestPipelineSmoke:
             AssetClass.ROUTE_OPTIMIZATION_SAMPLE,
             AssetClass.FLIGHT_EVIDENCE,
         )
+
+    def test_empty_flight_id_raises(self):
+        record = _make_record(flight_id="")
+        pipeline = FlightToAssetPipeline()
+        with pytest.raises(ValueError, match="flight_id"):
+            pipeline.run(record)
+
+    def test_full_9_step_workflow(self):
+        """End-to-end: ingest -> evidence -> govern -> valuate -> settle."""
+        rule = SettlementRule(
+            participants=[
+                SplitEntry(party_id="p", role="platform", share_pct=30),
+                SplitEntry(party_id="o", role="operator", share_pct=50),
+                SplitEntry(party_id="d", role="data_processor", share_pct=20),
+            ],
+        )
+        pipeline = FlightToAssetPipeline(
+            default_settlement_rule=rule,
+            signer_id="test-signer",
+        )
+        unit = pipeline.run(_make_record())
+        assert unit.status == AssetStatus.VALUATED
+
+        ledger = Ledger()
+        ledger.record_usage(unit, UsageType.API_CALL, "consumer-A", 10.0)
+        ledger.record_usage(unit, UsageType.TRAINING_USE, "consumer-B", 5.0)
+
+        record = ledger.settle_all(unit.asset_unit_id)
+        assert record is not None
+        assert record.total_gross == 15.0
+        assert len(record.participant_totals) == 3
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            store = JsonStore(base_dir=tmpdir)
+            store.save(unit)
+            store.save_ledger(ledger.to_dicts())
+            store.save_settlements(ledger.settlements_to_dicts())
+            assert len(store.load_settlements()) == 1
+            assert len(store.load_ledger()) == 2

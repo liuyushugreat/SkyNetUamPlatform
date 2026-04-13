@@ -60,6 +60,7 @@ from .models import (
     SettlementRule,
     RevenueLog,
     SplitEntry,
+    SettlementRecord,
     FlightAssetUnit,
 )
 from .ingest import FlightIngestRecord, FlightIngestor
@@ -104,6 +105,7 @@ __all__ = [
     "SettlementRule",
     "RevenueLog",
     "SplitEntry",
+    "SettlementRecord",
     "FlightAssetUnit",
     # layers
     "FlightIngestRecord",

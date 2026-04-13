@@ -1,14 +1,20 @@
 """Governance engine — assigns rights profiles to asset units.
 
-The default implementation applies rule-based policies:
-- Flights with violations → ``NON_TRANSFERABLE`` + desensitization required
-- Clean flights → ``INTERNAL_ONLY`` by default, upgradable
-- High-quality, anomaly-free flights → may be marked ``TRADABLE_AFTER_DESENSITIZATION``
+Policy rules (transparent, not black-box)
+-----------------------------------------
+* Flights with **violations** -> ``NON_TRANSFERABLE``, desensitization required.
+* Flights with **anomalies** or incomplete missions -> ``INTERNAL_ONLY``.
+* Clean, completed flights with low risk -> eligible for
+  ``TRADABLE_AFTER_DESENSITIZATION``; asset class is upgraded based on
+  mission-type keyword matching.
+
+Revenue-split ratios come from ``GovernanceEngine``'s constructor or are
+overridden per-call — they are **never hard-coded** inside business logic.
 """
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Dict, List, Optional
 
 from ..models.asset_unit import FlightAssetUnit
@@ -22,7 +28,13 @@ from ..models.rights import RetentionPolicy, RevenueParticipant, RightsProfile
 
 
 class GovernanceEngine:
-    """Assigns a :class:`RightsProfile` and optionally upgrades the asset class."""
+    """Assigns a :class:`RightsProfile` and optionally upgrades the asset class.
+
+    Raises
+    ------
+    ValueError
+        If *unit* has no attached evidence when ``govern()`` is called.
+    """
 
     def __init__(
         self,
@@ -44,16 +56,19 @@ class GovernanceEngine:
         owner: Optional[str] = None,
         operator_id: str = "",
     ) -> FlightAssetUnit:
-        evidence = unit.evidence
-        has_violations = bool(
-            evidence and evidence.mission_result.violations
-        )
-        has_anomalies = bool(
-            evidence and evidence.mission_result.anomalies
-        )
-        mission_ok = bool(evidence and evidence.mission_result.completed)
+        """Apply governance rules and attach a :class:`RightsProfile`."""
+        if unit.evidence is None:
+            raise ValueError(
+                f"Cannot govern asset unit {unit.asset_unit_id}: "
+                "evidence package is missing (run EvidenceBuilder first)"
+            )
 
-        # --- determine usage level ---
+        evidence = unit.evidence
+        has_violations = bool(evidence.mission_result.violations)
+        has_anomalies = bool(evidence.mission_result.anomalies)
+        mission_ok = bool(evidence.mission_result.completed)
+
+        # --- determine usage level (rule is transparent) ---
         if has_violations:
             permitted = [UsageLevel.NON_TRANSFERABLE]
             tradable = False
@@ -77,7 +92,7 @@ class GovernanceEngine:
         if tradable:
             categories.append(DataCategory.TRAINING_SAMPLE)
 
-        # --- revenue participants ---
+        # --- revenue participants (read from config, not hard-coded) ---
         real_owner = owner or self.default_owner
         participants = [
             RevenueParticipant(**entry)  # type: ignore[arg-type]
@@ -111,7 +126,7 @@ class GovernanceEngine:
         unit.asset_class = asset_class
         unit.compliance_score = self._compliance_score(unit)
         unit.status = AssetStatus.GOVERNED
-        unit.updated_at = datetime.utcnow()
+        unit.updated_at = datetime.now(UTC)
         return unit
 
     # ------------------------------------------------------------------
@@ -133,6 +148,13 @@ class GovernanceEngine:
 
     @staticmethod
     def _compliance_score(unit: FlightAssetUnit) -> float:
+        """Transparent compliance heuristic.
+
+        Starts at 1.0 and deducts:
+        - 0.20 per violation
+        - 0.05 per anomaly
+        - 0.10 if mission was not completed
+        """
         if not unit.evidence:
             return 0.0
         mr = unit.evidence.mission_result

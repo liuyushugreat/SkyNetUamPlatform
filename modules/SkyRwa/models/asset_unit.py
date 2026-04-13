@@ -1,16 +1,20 @@
 """The top-level aggregate: FlightAssetUnit.
 
 A :class:`FlightAssetUnit` is the *candidate* data-asset that a single flight
-produces after passing through the ingest → provenance → governance →
+produces after passing through the ingest -> provenance -> governance ->
 valuation pipeline.  It is **not** a token or a tradable product by itself;
 it becomes one only after explicit promotion through governance and
 settlement steps.
+
+Lifecycle::
+
+    INGESTED -> EVIDENCE_BUILT -> GOVERNED -> VALUATED -> SETTLEMENT_READY -> SETTLED
 """
 
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
@@ -49,5 +53,5 @@ class FlightAssetUnit(BaseModel):
     status: AssetStatus = AssetStatus.INGESTED
 
     evidence: Optional[FlightEvidencePackage] = None
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

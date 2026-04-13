@@ -1,3 +1,15 @@
+"""
+Neural pricing models (Phase-1 — retained).
+
+These PyTorch models are **not** deprecated; they remain the core neural
+pricing primitives.  To use them within the V2 asset-valuation pipeline,
+wrap them with :class:`~SkyRwa.valuation.neural_adapter.NeuralValuationAdapter`
+which bridges the ``nn.Module.forward()`` interface into the
+``AbstractAssetValuationEngine.evaluate()`` contract.
+
+TODO(adapter): train a production model and load weights in NeuralValuationAdapter.
+"""
+
 import torch
 import torch.nn as nn
 import numpy as np

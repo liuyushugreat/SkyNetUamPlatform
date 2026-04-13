@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from SkyRwa.ingest.flight_ingestor import FlightIngestRecord, FlightIngestor
 from SkyRwa.models.enums import AssetStatus
 from SkyRwa.provenance.evidence_builder import EvidenceBuilder
@@ -57,3 +59,16 @@ class TestEvidenceBuilder:
         mr = ingested_unit.evidence.mission_result
         assert mr.completed == sample_record.mission_completed
         assert mr.deviation_m == sample_record.deviation_m
+
+    def test_empty_flight_id_raises(self, ingested_unit, sample_record):
+        sample_record.flight_id = ""
+        with pytest.raises(ValueError, match="flight_id"):
+            EvidenceBuilder().build(ingested_unit, sample_record)
+
+    def test_digest_is_deterministic(self, ingested_unit, sample_record):
+        """Re-computing the digest on the same package always yields the same hash."""
+        EvidenceBuilder().build(ingested_unit, sample_record)
+        ev = ingested_unit.evidence
+        hash1 = EvidenceBuilder._compute_digest(ev)
+        hash2 = EvidenceBuilder._compute_digest(ev)
+        assert hash1 == hash2 == ev.digest_hash

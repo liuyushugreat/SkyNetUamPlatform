@@ -1,15 +1,24 @@
 """Evidence builder — constructs a verifiable evidence package from flight data.
 
 The builder collects metadata from a :class:`FlightIngestRecord` and the
-partially-populated :class:`FlightAssetUnit`, computes a canonical digest
-hash of the package content, and attaches it to the asset unit.
+partially-populated :class:`FlightAssetUnit`, computes a **canonical SHA-256
+digest** of the package content, and attaches it to the asset unit.
+
+Hashing contract
+----------------
+* Uses ``hashlib.sha256`` from the standard library.
+* The digest covers all evidence fields **except** ``digest_hash``,
+  ``signature``, ``signed_by`` and ``signed_at`` (which are populated *after*
+  hashing).
+* Fields are serialised to canonical JSON (sorted keys, ``default=str``)
+  so that the hash is deterministic and reproducible.
 """
 
 from __future__ import annotations
 
 import hashlib
 import json
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Optional
 
 from ..ingest.flight_ingestor import FlightIngestRecord
@@ -24,7 +33,13 @@ from ..models.evidence import (
 
 
 class EvidenceBuilder:
-    """Builds and attaches a :class:`FlightEvidencePackage` to an asset unit."""
+    """Builds and attaches a :class:`FlightEvidencePackage` to an asset unit.
+
+    Raises
+    ------
+    ValueError
+        If *unit* has no ``flight_id`` or *record* has no ``flight_id``.
+    """
 
     def build(
         self,
@@ -33,20 +48,12 @@ class EvidenceBuilder:
         *,
         signer_id: Optional[str] = None,
     ) -> FlightAssetUnit:
-        """
-        Populate ``unit.evidence`` and advance status to ``EVIDENCE_BUILT``.
+        """Populate ``unit.evidence`` and advance status to ``EVIDENCE_BUILT``."""
+        if not record.flight_id:
+            raise ValueError("FlightIngestRecord.flight_id must not be empty")
+        if not unit.flight_id:
+            raise ValueError("FlightAssetUnit.flight_id must not be empty")
 
-        Parameters
-        ----------
-        unit:
-            A :class:`FlightAssetUnit` in ``INGESTED`` status.
-        record:
-            The original ingest record carrying raw flight metadata.
-        signer_id:
-            Optional identifier of the signing authority.  When provided the
-            ``signature`` / ``signed_by`` fields are populated with a
-            placeholder — real PKI signing is left to an external adapter.
-        """
         duration = 0.0
         if record.start_time and record.end_time:
             duration = (record.end_time - record.start_time).total_seconds()
@@ -82,13 +89,14 @@ class EvidenceBuilder:
             violations=record.violations,
         )
 
+        now = datetime.now(UTC)
         evidence = FlightEvidencePackage(
             flight_id=record.flight_id,
             uav_id=record.uav_id,
             mission_id=record.mission_id,
             operator_id=record.operator_id,
-            start_time=record.start_time or datetime.utcnow(),
-            end_time=record.end_time or datetime.utcnow(),
+            start_time=record.start_time or now,
+            end_time=record.end_time or now,
             duration_seconds=duration,
             trajectory_hash=record.trajectory_hash,
             raw_data_uri=record.raw_data_uri,
@@ -101,22 +109,26 @@ class EvidenceBuilder:
         evidence.digest_hash = self._compute_digest(evidence)
 
         if signer_id:
+            # FIXME(sign): replace placeholder with real PKI signature
             evidence.signed_by = signer_id
             evidence.signature = f"placeholder-sig-{evidence.digest_hash[:16]}"
-            evidence.signed_at = datetime.utcnow()
+            evidence.signed_at = datetime.now(UTC)
 
         unit.evidence = evidence
         unit.telemetry_hash = evidence.trajectory_hash or evidence.digest_hash
         unit.evidence_uri = evidence.raw_data_uri
         unit.status = AssetStatus.EVIDENCE_BUILT
-        unit.updated_at = datetime.utcnow()
+        unit.updated_at = datetime.now(UTC)
         return unit
 
     # ------------------------------------------------------------------
 
     @staticmethod
     def _compute_digest(evidence: FlightEvidencePackage) -> str:
-        """SHA-256 over the canonical JSON of the evidence payload."""
+        """SHA-256 over the canonical JSON of the evidence payload.
+
+        The hash is reproducible: same inputs always produce the same digest.
+        """
         payload = evidence.model_dump(
             mode="json",
             exclude={"digest_hash", "signature", "signed_by", "signed_at"},

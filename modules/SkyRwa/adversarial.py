@@ -1,3 +1,14 @@
+"""
+Adversarial / synthetic-anomaly injectors (Phase-1 — retained).
+
+These utilities generate synthetic market anomalies for testing the
+topological integrity of pricing manifolds.  They are used in conjunction
+with ``topology_metrics.py`` and are not part of the V2 asset pipeline.
+
+FIXME(scope): consider moving to a ``testing/`` or ``experiments/``
+sub-package once the V2 pipeline stabilises.
+"""
+
 import numpy as np
 import torch
 from typing import Tuple, Optional

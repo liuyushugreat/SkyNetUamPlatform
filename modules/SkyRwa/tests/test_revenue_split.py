@@ -1,11 +1,16 @@
-"""Tests for revenue splitting and ledger operations."""
+"""Tests for revenue splitting, ledger operations and settlement records."""
 
 from __future__ import annotations
+
+import tempfile
+
+import pytest
 
 from SkyRwa.models.enums import SettlementStatus, UsageType
 from SkyRwa.models.settlement import SettlementRule, SplitEntry
 from SkyRwa.settlement.ledger import Ledger
 from SkyRwa.settlement.splitter import RevenueSplitter
+from SkyRwa.storage.json_store import JsonStore
 
 
 class TestRevenueSplitter:
@@ -70,12 +75,33 @@ class TestLedger:
         ledger.record_usage(governed_unit, UsageType.API_CALL, "d", 15.0)
         assert ledger.total_revenue() == 20.0
 
-    def test_settle_marks_entry(self, governed_unit, default_settlement_rule):
+    def test_settle_returns_record(self, governed_unit, default_settlement_rule):
         governed_unit.settlement_rule = default_settlement_rule
         ledger = Ledger()
         log = ledger.record_usage(governed_unit, UsageType.API_CALL, "c", 5.0)
-        assert ledger.settle(log.usage_id)
+        record = ledger.settle(log.usage_id)
+        assert record is not None
+        assert record.total_gross == 5.0
         assert log.settlement_status == SettlementStatus.SETTLED
+
+    def test_settle_all_aggregates(self, governed_unit, default_settlement_rule):
+        governed_unit.settlement_rule = default_settlement_rule
+        ledger = Ledger()
+        ledger.record_usage(governed_unit, UsageType.API_CALL, "c", 5.0)
+        ledger.record_usage(governed_unit, UsageType.API_CALL, "d", 15.0)
+        record = ledger.settle_all(governed_unit.asset_unit_id)
+        assert record is not None
+        assert record.total_gross == 20.0
+        assert len(record.settled_usage_ids) == 2
+
+    def test_settle_all_empty_returns_none(self, governed_unit):
+        ledger = Ledger()
+        assert ledger.settle_all(governed_unit.asset_unit_id) is None
+
+    def test_negative_amount_raises(self, governed_unit):
+        ledger = Ledger()
+        with pytest.raises(ValueError, match="gross_amount"):
+            ledger.record_usage(governed_unit, UsageType.API_CALL, "c", -1.0)
 
     def test_serialisation_roundtrip(self, governed_unit, default_settlement_rule):
         governed_unit.settlement_rule = default_settlement_rule
@@ -85,3 +111,15 @@ class TestLedger:
         restored = Ledger.from_dicts(data)
         assert len(restored.entries) == 1
         assert restored.entries[0].gross_amount == 10.0
+
+    def test_settlement_record_persistence(self, governed_unit, default_settlement_rule):
+        governed_unit.settlement_rule = default_settlement_rule
+        ledger = Ledger()
+        ledger.record_usage(governed_unit, UsageType.API_CALL, "c", 8.0)
+        ledger.settle_all(governed_unit.asset_unit_id)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            store = JsonStore(base_dir=tmpdir)
+            path = store.save_settlements(ledger.settlements_to_dicts())
+            loaded = store.load_settlements()
+            assert len(loaded) == 1
+            assert loaded[0]["total_gross"] == 8.0

@@ -7,7 +7,7 @@ Pydantic models for the flight-to-asset pipeline:
 - Flight evidence packaging
 - Rights & governance profiles
 - Multi-dimensional valuation results
-- Settlement rules and revenue logs
+- Settlement rules, revenue logs and settlement records
 - The top-level FlightAssetUnit aggregate
 """
 
@@ -27,7 +27,7 @@ from .evidence import (
 )
 from .rights import RightsProfile, RetentionPolicy, RevenueParticipant
 from .valuation import DataQualityScore, AssetValueScore, ValuationResultV2
-from .settlement import SettlementRule, RevenueLog, SplitEntry
+from .settlement import SettlementRule, RevenueLog, SplitEntry, SettlementRecord
 from .asset_unit import FlightAssetUnit
 
 __all__ = [
@@ -50,5 +50,6 @@ __all__ = [
     "SettlementRule",
     "RevenueLog",
     "SplitEntry",
+    "SettlementRecord",
     "FlightAssetUnit",
 ]

@@ -4,12 +4,18 @@ A :class:`FlightEvidencePackage` is the *attestation record* for a single
 flight.  It captures summary statistics, environmental context, mission
 outcomes, and cryptographic references to the raw data — but it does **not**
 contain the raw telemetry itself.
+
+.. important::
+
+   An evidence package is **not** an asset.  It is raw attestation material.
+   Only after governance review can it be promoted into a data product or
+   revenue-right object.
 """
 
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
@@ -50,8 +56,7 @@ class MissionResult(BaseModel):
 
 
 class FlightEvidencePackage(BaseModel):
-    """
-    Verifiable evidence package for a single flight.
+    """Verifiable evidence package for a single flight.
 
     This is **not** an asset — it is the raw attestation material from which
     governed data products (the real assets) are derived.
@@ -75,9 +80,11 @@ class FlightEvidencePackage(BaseModel):
     mission_result: MissionResult = Field(default_factory=MissionResult)
 
     digest_hash: str = ""
+    # FIXME(sign): signature is a placeholder string today; integrate a real
+    # PKI adapter (e.g. ECDSA / EdDSA) before production use.
     signature: Optional[str] = None
     signed_by: Optional[str] = None
     signed_at: Optional[datetime] = None
 
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     extra: Dict[str, Any] = Field(default_factory=dict)

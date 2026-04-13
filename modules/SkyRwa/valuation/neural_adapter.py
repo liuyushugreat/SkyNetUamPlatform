@@ -8,7 +8,7 @@ valuation — without replacing the full rule-based scoring.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Optional
 
 from ..models.asset_unit import FlightAssetUnit
@@ -103,7 +103,7 @@ class NeuralValuationAdapter(AbstractAssetValuationEngine):
         unit.valuation_result = result
         unit.data_quality_score = rule_result.quality_score.overall
         unit.status = AssetStatus.VALUATED
-        unit.updated_at = datetime.utcnow()
+        unit.updated_at = datetime.now(UTC)
         return result
 
     # ------------------------------------------------------------------

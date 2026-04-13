@@ -1,15 +1,29 @@
 """Rule-based valuation engine — the default, production-ready implementation.
 
-Scoring pipeline:
-1. Compute :class:`DataQualityScore` from evidence-derived metrics.
-2. Compute :class:`AssetValueScore` from business-value metrics.
-3. Combine into a monetary :class:`ValuationResultV2` using configurable
-   weights and a base-price multiplier.
+Scoring pipeline (fully transparent, no black-box)
+---------------------------------------------------
+1. **DataQualityScore** — intrinsic data quality from evidence metrics:
+   - completeness        (weight 0.25)
+   - temporal_continuity (weight 0.20)
+   - sensor_reliability  (weight 0.20)
+   - event_richness      (weight 0.15)
+   - compliance_degree   (weight 0.20)
+
+2. **AssetValueScore** — extrinsic business-value metrics:
+   - scarcity            (weight 0.25)
+   - scenario_relevance  (weight 0.25)
+   - reuse_potential     (weight 0.30)
+   - timeliness          (weight 0.20)
+
+3. **Estimated value** = ``base_price * (quality_weight * Q + value_weight * V)``
+
+Higher completeness + compliance + event richness + scarcity = bonus.
+Missing data + violations + non-reusable = penalty.
 """
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from ..models.asset_unit import FlightAssetUnit
 from ..models.enums import AssetStatus
@@ -17,9 +31,31 @@ from ..models.valuation import AssetValueScore, DataQualityScore, ValuationResul
 from . import metrics as M
 from .base import AbstractAssetValuationEngine
 
+# Weights are module-level constants so they can be inspected / overridden.
+_QUALITY_WEIGHTS = {
+    "completeness": 0.25,
+    "temporal_continuity": 0.20,
+    "sensor_reliability": 0.20,
+    "event_richness": 0.15,
+    "compliance_degree": 0.20,
+}
+
+_VALUE_WEIGHTS = {
+    "scarcity": 0.25,
+    "scenario_relevance": 0.25,
+    "reuse_potential": 0.30,
+    "timeliness": 0.20,
+}
+
 
 class RuleBasedValuationEngine(AbstractAssetValuationEngine):
-    """Deterministic, configurable valuation engine."""
+    """Deterministic, configurable, explainable valuation engine.
+
+    Raises
+    ------
+    ValueError
+        If *unit* has no attached evidence.
+    """
 
     engine_id: str = "rule_based"
 
@@ -36,6 +72,12 @@ class RuleBasedValuationEngine(AbstractAssetValuationEngine):
         self.currency = currency
 
     def evaluate(self, unit: FlightAssetUnit) -> ValuationResultV2:
+        if unit.evidence is None:
+            raise ValueError(
+                f"Cannot valuate asset unit {unit.asset_unit_id}: "
+                "evidence package is missing"
+            )
+
         qs = self._quality_score(unit)
         vs = self._value_score(unit)
 
@@ -56,27 +98,39 @@ class RuleBasedValuationEngine(AbstractAssetValuationEngine):
                 "value_weight": self.value_weight,
                 "quality_overall": qs.overall,
                 "value_overall": vs.overall,
-                "combined_factor": combined,
+                "combined_factor": round(combined, 4),
             },
             engine_id=self.engine_id,
+            notes=(
+                "estimated_value = base_price * "
+                "(quality_weight * quality_overall + value_weight * value_overall)"
+            ),
         )
 
         unit.valuation_result = result
         unit.data_quality_score = qs.overall
         unit.status = AssetStatus.VALUATED
-        unit.updated_at = datetime.utcnow()
+        unit.updated_at = datetime.now(UTC)
         return result
 
     # ------------------------------------------------------------------
 
     @staticmethod
     def _quality_score(unit: FlightAssetUnit) -> DataQualityScore:
+        w = _QUALITY_WEIGHTS
         c = M.completeness(unit)
         t = M.temporal_continuity(unit)
         s = M.sensor_reliability(unit)
         e = M.event_richness(unit)
         comp = M.compliance_degree(unit)
-        overall = round(0.25 * c + 0.20 * t + 0.20 * s + 0.15 * e + 0.20 * comp, 4)
+        overall = round(
+            w["completeness"] * c
+            + w["temporal_continuity"] * t
+            + w["sensor_reliability"] * s
+            + w["event_richness"] * e
+            + w["compliance_degree"] * comp,
+            4,
+        )
         return DataQualityScore(
             completeness=round(c, 4),
             temporal_continuity=round(t, 4),
@@ -88,11 +142,18 @@ class RuleBasedValuationEngine(AbstractAssetValuationEngine):
 
     @staticmethod
     def _value_score(unit: FlightAssetUnit) -> AssetValueScore:
+        w = _VALUE_WEIGHTS
         sc = M.scarcity(unit)
         sr = M.scenario_relevance(unit)
         rp = M.reuse_potential(unit)
         tl = M.timeliness(unit)
-        overall = round(0.25 * sc + 0.25 * sr + 0.30 * rp + 0.20 * tl, 4)
+        overall = round(
+            w["scarcity"] * sc
+            + w["scenario_relevance"] * sr
+            + w["reuse_potential"] * rp
+            + w["timeliness"] * tl,
+            4,
+        )
         return AssetValueScore(
             scarcity=round(sc, 4),
             scenario_relevance=round(sr, 4),
