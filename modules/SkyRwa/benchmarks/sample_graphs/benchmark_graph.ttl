@@ -1,0 +1,1786 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix skyrwa: <urn:skyrwa:ontology#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<urn:skyrwa:asset:09c22a67236a46109444ce2b7099891e> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.65"^^xsd:float ;
+    skyrwa:dataQualityScore "0.62"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:0fb048e4aadf49b5990ad9b5d93267d8> ;
+    skyrwa:endTime "2026-01-19T17:10:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-EMER-002" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "non_transferable" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "53.52"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.408"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5352"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.62"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.35"^^xsd:float ;
+    skyrwa:startTime "2026-01-19T17:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-F1" .
+
+<urn:skyrwa:asset:1c742375251545d9af58dc40291e53aa> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.4"^^xsd:float ;
+    skyrwa:dataQualityScore "0.54"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:f8385028dfee4d8f9170fbab84557932> ;
+    skyrwa:endTime "2026-01-16T13:05:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-LOWQ-003" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "non_transferable" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "45.68"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.4568"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.54"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.332"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.6"^^xsd:float ;
+    skyrwa:startTime "2026-01-16T13:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-G1" .
+
+<urn:skyrwa:asset:31de1554bafc4029b974849017f3635f> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "1.0"^^xsd:float ;
+    skyrwa:dataQualityScore "0.71"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:64b012706f65458292f8b1102838883c> ;
+    skyrwa:endTime "2026-01-16T03:25:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-CLEAN-000" ;
+    skyrwa:hasAssetClass "route_optimization_sample" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ] ;
+            skyrwa:isTradable true ;
+            skyrwa:permittedUse "internal_only",
+                "tradable_after_desensitization" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "56.48"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5648"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.71"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.347"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.0"^^xsd:float ;
+    skyrwa:startTime "2026-01-16T03:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-A1" .
+
+<urn:skyrwa:asset:339a71c634554ffd9a1d2a15fd200b42> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.9"^^xsd:float ;
+    skyrwa:dataQualityScore "0.76"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:7e54822de054411285d5e7f6b7238e23> ;
+    skyrwa:endTime "2026-01-23T06:15:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-MAINT-001" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "internal_only" ;
+            skyrwa:requiresDesensitization false ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "60.56"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.374"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.76"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.6056"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.2"^^xsd:float ;
+    skyrwa:startTime "2026-01-23T06:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-E2" .
+
+<urn:skyrwa:asset:3417f9f2487f4bffb54da4ef48eefb79> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.9"^^xsd:float ;
+    skyrwa:dataQualityScore "0.69"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:6ca47d6d8b6f40d9a8ea4ffccc51ebc2> ;
+    skyrwa:endTime "2026-01-23T01:30:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-WEATHER-003" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "internal_only" ;
+            skyrwa:requiresDesensitization false ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "57.08"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5708"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.392"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.69"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.2"^^xsd:float ;
+    skyrwa:startTime "2026-01-23T01:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-C2" .
+
+<urn:skyrwa:asset:410c087c50a44832b40f149310ecc6c1> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "1.0"^^xsd:float ;
+    skyrwa:dataQualityScore "0.74"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:894c306e31864b7b8f2d8a8370e4a90d> ;
+    skyrwa:endTime "2026-01-18T03:10:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-EMER-000" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ] ;
+            skyrwa:isTradable true ;
+            skyrwa:permittedUse "internal_only",
+                "tradable_after_desensitization" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "61.5"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.615"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.74"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.4275"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.0"^^xsd:float ;
+    skyrwa:startTime "2026-01-18T03:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-F1" .
+
+<urn:skyrwa:asset:4a5be77019fb4d7f80bbf4813ea8de6b> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "1.0"^^xsd:float ;
+    skyrwa:dataQualityScore "0.71"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:b310c131e2fc407787496168176b2def> ;
+    skyrwa:endTime "2026-01-20T22:33:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-CLEAN-004" ;
+    skyrwa:hasAssetClass "route_optimization_sample" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ] ;
+            skyrwa:isTradable true ;
+            skyrwa:permittedUse "internal_only",
+                "tradable_after_desensitization" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "56.48"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.71"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.347"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5648"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.0"^^xsd:float ;
+    skyrwa:startTime "2026-01-20T22:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-A2" .
+
+<urn:skyrwa:asset:4b83c65d5454473a94c224ae70904e76> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "1.0"^^xsd:float ;
+    skyrwa:dataQualityScore "0.71"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:69b12c7c2dde4477a8f7ce37a68a780c> ;
+    skyrwa:endTime "2026-01-21T04:27:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-CLEAN-001" ;
+    skyrwa:hasAssetClass "route_optimization_sample" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ] ;
+            skyrwa:isTradable true ;
+            skyrwa:permittedUse "internal_only",
+                "tradable_after_desensitization" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "56.48"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.347"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5648"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.71"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.0"^^xsd:float ;
+    skyrwa:startTime "2026-01-21T04:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-A2" .
+
+<urn:skyrwa:asset:4f84f4cde98d4856aefadf504086d0fa> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.95"^^xsd:float ;
+    skyrwa:dataQualityScore "0.73"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:d144fb89d7dc41e5bf894a6a6ab3c380> ;
+    skyrwa:endTime "2026-01-16T15:20:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-NIGHT-001" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "internal_only" ;
+            skyrwa:requiresDesensitization false ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "58.58"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5858"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.3695"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.73"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.1"^^xsd:float ;
+    skyrwa:startTime "2026-01-16T15:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-B2" .
+
+<urn:skyrwa:asset:54e1e3a3c83c4a0990810475ba03361d> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "1.0"^^xsd:float ;
+    skyrwa:dataQualityScore "0.71"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:2caad36437dd4ad9b7f0c3e70e159afa> ;
+    skyrwa:endTime "2026-01-19T13:40:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-RIGHTS-002" ;
+    skyrwa:hasAssetClass "route_optimization_sample" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ] ;
+            skyrwa:isTradable true ;
+            skyrwa:permittedUse "internal_only",
+                "tradable_after_desensitization" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "56.48"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.71"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.347"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5648"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.0"^^xsd:float ;
+    skyrwa:startTime "2026-01-19T13:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-H3" .
+
+<urn:skyrwa:asset:585591bcc0324ca0844fd6ad2ff84f3d> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.4"^^xsd:float ;
+    skyrwa:dataQualityScore "0.48"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:96ff5397a3454f4bab9d507d9a4ec597> ;
+    skyrwa:endTime "2026-01-20T15:05:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-LOWQ-001" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "non_transferable" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "42.08"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.4208"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.48"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.332"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.6"^^xsd:float ;
+    skyrwa:startTime "2026-01-20T15:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-G1" .
+
+<urn:skyrwa:asset:5b0b4bf8f2324d87a973ef8bb8bbf6b3> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.95"^^xsd:float ;
+    skyrwa:dataQualityScore "0.77"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:3de5643a282f4c7dbf9f313cd2ec8091> ;
+    skyrwa:endTime "2026-01-23T02:15:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-MAINT-000" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "internal_only" ;
+            skyrwa:requiresDesensitization false ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "60.98"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.77"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.6098"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.3695"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.1"^^xsd:float ;
+    skyrwa:startTime "2026-01-23T02:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-E1" .
+
+<urn:skyrwa:asset:64385613d2d64bcda3e667bf739a0382> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.95"^^xsd:float ;
+    skyrwa:dataQualityScore "0.67"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:f977621ed69c442c810129a451a4bbf4> ;
+    skyrwa:endTime "2026-01-21T02:35:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-NFZ-000" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "internal_only" ;
+            skyrwa:requiresDesensitization false ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "54.98"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.3695"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.67"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5498"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.1"^^xsd:float ;
+    skyrwa:startTime "2026-01-21T02:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-D1" .
+
+<urn:skyrwa:asset:69edd5c4b7914fbcb1110e714ea74f84> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "1.0"^^xsd:float ;
+    skyrwa:dataQualityScore "0.71"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:3dbe71a2428345d982b592b6a3fb9e12> ;
+    skyrwa:endTime "2026-01-23T16:40:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-RIGHTS-001" ;
+    skyrwa:hasAssetClass "route_optimization_sample" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ] ;
+            skyrwa:isTradable true ;
+            skyrwa:permittedUse "internal_only",
+                "tradable_after_desensitization" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "56.48"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.71"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.347"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5648"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.0"^^xsd:float ;
+    skyrwa:startTime "2026-01-23T16:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-H2" .
+
+<urn:skyrwa:asset:81f9415471804abc9778b5e9c909d309> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.9"^^xsd:float ;
+    skyrwa:dataQualityScore "0.69"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:0e1176c092d84714aaf88e9fa388d343> ;
+    skyrwa:endTime "2026-01-19T02:30:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-WEATHER-001" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "internal_only" ;
+            skyrwa:requiresDesensitization false ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "57.08"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.69"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.392"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5708"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.2"^^xsd:float ;
+    skyrwa:startTime "2026-01-19T02:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-C2" .
+
+<urn:skyrwa:asset:84c48b31db834f2cbc9e8f1f44f418ed> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.85"^^xsd:float ;
+    skyrwa:dataQualityScore "0.75"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:17c7ad126bb348399df2bef199b3faf4> ;
+    skyrwa:endTime "2026-01-17T03:15:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-MAINT-002" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "internal_only" ;
+            skyrwa:requiresDesensitization false ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "60.14"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.3785"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.75"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.6014"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.3"^^xsd:float ;
+    skyrwa:startTime "2026-01-17T03:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-E1" .
+
+<urn:skyrwa:asset:86c556f4e9b341c9949b94d9c84aaa1e> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.95"^^xsd:float ;
+    skyrwa:dataQualityScore "0.73"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:c6f8ed91c5f74387beb400292f09b651> ;
+    skyrwa:endTime "2026-01-18T08:20:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-NIGHT-003" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "internal_only" ;
+            skyrwa:requiresDesensitization false ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "58.58"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.73"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5858"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.3695"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.1"^^xsd:float ;
+    skyrwa:startTime "2026-01-18T08:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-B2" .
+
+<urn:skyrwa:asset:98890b0c55a04984a2d4551e40fea3ad> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.95"^^xsd:float ;
+    skyrwa:dataQualityScore "0.73"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:6823c556eb5b42a094a5ab964f0585f0> ;
+    skyrwa:endTime "2026-01-19T05:20:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-NIGHT-002" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "internal_only" ;
+            skyrwa:requiresDesensitization false ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "58.58"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.3695"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5858"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.73"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.1"^^xsd:float ;
+    skyrwa:startTime "2026-01-19T05:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-B1" .
+
+<urn:skyrwa:asset:9a77cbeda4bc4fffa4a3e630595dac86> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "1.0"^^xsd:float ;
+    skyrwa:dataQualityScore "0.74"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:5b6c38c1461446009e006fd1338735a7> ;
+    skyrwa:endTime "2026-01-16T06:10:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-EMER-001" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ] ;
+            skyrwa:isTradable true ;
+            skyrwa:permittedUse "internal_only",
+                "tradable_after_desensitization" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "61.5"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.615"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.74"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.4275"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.0"^^xsd:float ;
+    skyrwa:startTime "2026-01-16T06:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-F1" .
+
+<urn:skyrwa:asset:9cf499e04b784dc09e4bf529dc50b082> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.75"^^xsd:float ;
+    skyrwa:dataQualityScore "0.66"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:176c1f95cdc84a6eac184dca3b5027c2> ;
+    skyrwa:endTime "2026-01-15T17:35:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-NFZ-001" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "non_transferable" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "55.1"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.66"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.551"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.3875"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.45"^^xsd:float ;
+    skyrwa:startTime "2026-01-15T17:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-D1" .
+
+<urn:skyrwa:asset:ab159c4bbb144c1890c97239a2cd5eab> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.85"^^xsd:float ;
+    skyrwa:dataQualityScore "0.75"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:79c0abeb23634737b6b59b84ea66e7e7> ;
+    skyrwa:endTime "2026-01-22T07:15:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-MAINT-003" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "internal_only" ;
+            skyrwa:requiresDesensitization false ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "60.14"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.75"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.3785"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.6014"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.3"^^xsd:float ;
+    skyrwa:startTime "2026-01-22T07:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-E2" .
+
+<urn:skyrwa:asset:b4edd4ad59b64d40b3bb680c73fc60a9> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.4"^^xsd:float ;
+    skyrwa:dataQualityScore "0.48"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:eaedf5664c744f6b9188fa194a934ffd> ;
+    skyrwa:endTime "2026-01-17T17:05:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-LOWQ-000" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "non_transferable" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "42.08"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.4208"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.48"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.332"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.6"^^xsd:float ;
+    skyrwa:startTime "2026-01-17T17:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-G1" .
+
+<urn:skyrwa:asset:bb0036a5e93a442d899e00d601273af7> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.9"^^xsd:float ;
+    skyrwa:dataQualityScore "0.69"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:0d917656c26c4f13858367aefed5f8b0> ;
+    skyrwa:endTime "2026-01-15T16:30:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-WEATHER-000" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "internal_only" ;
+            skyrwa:requiresDesensitization false ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "57.08"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5708"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.69"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.392"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.2"^^xsd:float ;
+    skyrwa:startTime "2026-01-15T16:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-C1" .
+
+<urn:skyrwa:asset:e2e8929ae4414abe97f8537cf60901a9> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.75"^^xsd:float ;
+    skyrwa:dataQualityScore "0.66"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:cd2c0f1cf77043b8aa368474d01847d4> ;
+    skyrwa:endTime "2026-01-18T07:35:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-NFZ-002" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "non_transferable" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "55.1"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.551"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.3875"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.66"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.65"^^xsd:float ;
+    skyrwa:startTime "2026-01-18T07:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-D1" .
+
+<urn:skyrwa:asset:ec28d1b935374542a4e7e9bfeeba4f02> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.4"^^xsd:float ;
+    skyrwa:dataQualityScore "0.54"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:1d440dec7bba4a17bae5b4eca9f4299a> ;
+    skyrwa:endTime "2026-01-16T05:05:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-LOWQ-002" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "non_transferable" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "45.68"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.4568"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.54"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.332"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.6"^^xsd:float ;
+    skyrwa:startTime "2026-01-16T05:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-G1" .
+
+<urn:skyrwa:asset:ede1705acb6f4275a1ec2bd43380da86> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "1.0"^^xsd:float ;
+    skyrwa:dataQualityScore "0.71"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:5395fa631b564f14b3c4633ab6357f5a> ;
+    skyrwa:endTime "2026-01-20T22:31:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-CLEAN-003" ;
+    skyrwa:hasAssetClass "route_optimization_sample" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ] ;
+            skyrwa:isTradable true ;
+            skyrwa:permittedUse "internal_only",
+                "tradable_after_desensitization" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "56.48"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5648"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.71"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.347"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.0"^^xsd:float ;
+    skyrwa:startTime "2026-01-20T22:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-A1" .
+
+<urn:skyrwa:asset:ee8c16fadae44533898300e3861611e4> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "1.0"^^xsd:float ;
+    skyrwa:dataQualityScore "0.71"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:a03a308c2d424fe8a087108cab2da834> ;
+    skyrwa:endTime "2026-01-20T18:29:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-CLEAN-002" ;
+    skyrwa:hasAssetClass "route_optimization_sample" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ] ;
+            skyrwa:isTradable true ;
+            skyrwa:permittedUse "internal_only",
+                "tradable_after_desensitization" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "56.48"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.347"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.71"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5648"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.0"^^xsd:float ;
+    skyrwa:startTime "2026-01-20T18:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-A3" .
+
+<urn:skyrwa:asset:f51e9fcec3fa44298e079a8764ecfc86> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.95"^^xsd:float ;
+    skyrwa:dataQualityScore "0.73"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:eeaf4de5be2943569b3809bac3885bf7> ;
+    skyrwa:endTime "2026-01-21T00:20:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-NIGHT-000" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "internal_only" ;
+            skyrwa:requiresDesensitization false ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "58.58"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.73"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.3695"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5858"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.1"^^xsd:float ;
+    skyrwa:startTime "2026-01-21T00:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-B1" .
+
+<urn:skyrwa:asset:f789fdc8bab844ee8a8abd62b7a00cce> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "1.0"^^xsd:float ;
+    skyrwa:dataQualityScore "0.71"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:beb86beee1a7453194e08f434433710a> ;
+    skyrwa:endTime "2026-01-17T04:40:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-RIGHTS-000" ;
+    skyrwa:hasAssetClass "route_optimization_sample" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ] ;
+            skyrwa:isTradable true ;
+            skyrwa:permittedUse "internal_only",
+                "tradable_after_desensitization" ;
+            skyrwa:requiresDesensitization true ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "56.48"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5648"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.71"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.347"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.0"^^xsd:float ;
+    skyrwa:startTime "2026-01-17T04:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-H1" .
+
+<urn:skyrwa:asset:fc5b9fb2b3ee455da476d1f870b3c7f9> a skyrwa:AssetCandidate ;
+    skyrwa:complianceScore "0.9"^^xsd:float ;
+    skyrwa:dataQualityScore "0.69"^^xsd:float ;
+    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:87d0a240f27a417b8801d3c8f8e5bcfd> ;
+    skyrwa:endTime "2026-01-21T15:30:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-WEATHER-002" ;
+    skyrwa:hasAssetClass "flight_evidence" ;
+    skyrwa:hasRightsProfile [ skyrwa:hasRevenueShare [ skyrwa:partyId "platform" ;
+                    skyrwa:role "platform" ;
+                    skyrwa:sharePct "30.0"^^xsd:float ],
+                [ skyrwa:partyId "data_processor" ;
+                    skyrwa:role "data_processor" ;
+                    skyrwa:sharePct "20.0"^^xsd:float ],
+                [ skyrwa:partyId "operator" ;
+                    skyrwa:role "operator" ;
+                    skyrwa:sharePct "50.0"^^xsd:float ] ;
+            skyrwa:isTradable false ;
+            skyrwa:permittedUse "internal_only" ;
+            skyrwa:requiresDesensitization false ] ;
+    skyrwa:hasStatus "valuated" ;
+    skyrwa:hasValuation [ a skyrwa:ValuationExplanation ;
+            skyrwa:estimatedValue "57.08"^^xsd:float ;
+            skyrwa:hasValuationFactor [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "base_price" ;
+                    skyrwa:factorScore "100.0"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_overall" ;
+                    skyrwa:factorScore "0.69"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_weight" ;
+                    skyrwa:factorScore "0.4"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "quality_weight" ;
+                    skyrwa:factorScore "0.6"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "value_overall" ;
+                    skyrwa:factorScore "0.392"^^xsd:float ],
+                [ a skyrwa:ValuationFactor ;
+                    skyrwa:factorName "combined_factor" ;
+                    skyrwa:factorScore "0.5708"^^xsd:float ] ] ;
+    skyrwa:riskScore "0.2"^^xsd:float ;
+    skyrwa:startTime "2026-01-21T15:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-C1" .
+
+<urn:skyrwa:evidence:0d917656c26c4f13858367aefed5f8b0> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.723635+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-15T16:30:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-WEATHER-000" ;
+    skyrwa:hasDigest "c0441ffe4784ebc32e7ab12d073c8b68eb37dee76d9fc8c3bff16ae9ab679eec" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-WEATHER-000> ;
+    skyrwa:hasSignature "OtWg91BuCzRjlHfystZAxNFGA86rEUC4T/yIGAY0ERWue2qlp80SVM5w+14Addbqobi9EC32PJsrWeKDHdTZAA==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-C1> ;
+    skyrwa:startTime "2026-01-15T16:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-C1" .
+
+<urn:skyrwa:evidence:0e1176c092d84714aaf88e9fa388d343> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.724183+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-19T02:30:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-WEATHER-001" ;
+    skyrwa:hasDigest "94151462dcc69b090ad6a04b05676326ae64a7170c184ed66d3ac441d77aeb63" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-WEATHER-001> ;
+    skyrwa:hasSignature "5fFdwkC3LUnnqYrcJQhQ/3w8TPmkvhrCbJEDNrZ1POE+uc0/hJ50BKCq76Grr3ATe+oJeMnEzfpOv+bbeIp+DQ==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-C2> ;
+    skyrwa:startTime "2026-01-19T02:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-C2" .
+
+<urn:skyrwa:evidence:0fb048e4aadf49b5990ad9b5d93267d8> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.731548+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-19T17:10:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-EMER-002" ;
+    skyrwa:hasDigest "a9aca1632010fb44a3b065b57c220c97b2492cb3a96778545f3b846b5657e251" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-EMER-002> ;
+    skyrwa:hasSignature "jk1OJXtYPqDbQGRg7GRNVOuUFFJTQG7UZh17yETwxtpJE8p9nNYUa0moHKFxLRhJv+YbyGGyR1utISRV7/J0AQ==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-F1> ;
+    skyrwa:startTime "2026-01-19T17:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-F1" .
+
+<urn:skyrwa:evidence:176c1f95cdc84a6eac184dca3b5027c2> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.726476+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-15T17:35:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-NFZ-001" ;
+    skyrwa:hasDigest "89830d3a4c42df22f294f185b95fa0fc6a930ead7fb5004e08f1140b5387185e" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-NFZ-001> ;
+    skyrwa:hasSignature "AiNnQrSxj4ah9cpu7i5EHjMyLODbvhAFAYTKiI/RQedf6rq7mc7wFGEa323eUdul1Cziwhyq1yVU4eDpuQt9CQ==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-D1> ;
+    skyrwa:startTime "2026-01-15T17:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-D1" .
+
+<urn:skyrwa:evidence:17c7ad126bb348399df2bef199b3faf4> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.728694+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-17T03:15:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-MAINT-002" ;
+    skyrwa:hasDigest "606f0c41458c613ce6c9822413a9ff5fc70262586941a0b51e11268e98cb1280" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-MAINT-002> ;
+    skyrwa:hasSignature "JH2ijRk03C3a5ayqEUSqDBYmofqLMswNnbDY3SVyRVfNJkPLlKUnzjSzwIGYehIxRdbh+IpwAGVgkaiz98ltCw==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-E1> ;
+    skyrwa:startTime "2026-01-17T03:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-E1" .
+
+<urn:skyrwa:evidence:1d440dec7bba4a17bae5b4eca9f4299a> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.733272+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-16T05:05:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-LOWQ-002" ;
+    skyrwa:hasDigest "bdd28901e771f34dee05d6c08acd6882cd9ce06f363c5b80b8ef7fed00152c1c" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-LOWQ-002> ;
+    skyrwa:hasSignature "wHb6Kje/P7WCJyy3XEk7JzrTqYPAacNJnB/tKxOOzZyRXg5N3gYiC3JcXAdlqJVsVUFM9lpo9VLUDJHS94gfAQ==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-G1> ;
+    skyrwa:startTime "2026-01-16T05:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-G1" .
+
+<urn:skyrwa:evidence:2caad36437dd4ad9b7f0c3e70e159afa> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.735484+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-19T13:40:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-RIGHTS-002" ;
+    skyrwa:hasDigest "3453d8d25436e03dc0e705ffc1367148e7dd0995aa57829f51a33c0648d7cdde" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-RIGHTS-002> ;
+    skyrwa:hasSignature "FJUExdhDCLS7Y11fKe3so/BBwuDUnsWmZ+cNwknBUzgGBJZAuLI2kPPerogeCZyFeIPE30jXpe7Ubdyl43TRAg==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-H3> ;
+    skyrwa:startTime "2026-01-19T13:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-H3" .
+
+<urn:skyrwa:evidence:3dbe71a2428345d982b592b6a3fb9e12> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.734921+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-23T16:40:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-RIGHTS-001" ;
+    skyrwa:hasDigest "8681894ddea45c11d0fd155010f8c2c6806528c6f313fa97b627fef7736f7ff5" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-RIGHTS-001> ;
+    skyrwa:hasSignature "VlOy1lZRK8ZEHMBkaM+JGyzGsdYlCWgxuHsyb2sYnHZW358fxZN2J+Q3AkdvS9BByXTQXotrhNM+bHGgSMYbCA==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-H2> ;
+    skyrwa:startTime "2026-01-23T16:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-H2" .
+
+<urn:skyrwa:evidence:3de5643a282f4c7dbf9f313cd2ec8091> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.727592+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-23T02:15:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-MAINT-000" ;
+    skyrwa:hasDigest "5c31a21601a6558ea18495d6830030c1004bda5e44e81e5bae1f712a3731f665" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-MAINT-000> ;
+    skyrwa:hasSignature "D8TwkMu6eahI9cXgXBk7c8bYFdS8qQ1G8ufyU28RjjUwhj71ctY4wbve1s5piiFTvKicNLxGTUslmkHkmypKBQ==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-E1> ;
+    skyrwa:startTime "2026-01-23T02:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-E1" .
+
+<urn:skyrwa:evidence:5395fa631b564f14b3c4633ab6357f5a> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.720244+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-20T22:31:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-CLEAN-003" ;
+    skyrwa:hasDigest "83a1cd820c2075733b8f18ac860ef0cbec81dd43ab7d94b715e18d74604708ba" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-CLEAN-003> ;
+    skyrwa:hasSignature "3hm4YWnbsWiWKJTN51yO5NEnYmgfTq/7XzLVPk96ir+doHalHhh2VUaXcllXhW9WT7LM/wx3Xh1/K6l/Dd0gCA==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-A1> ;
+    skyrwa:startTime "2026-01-20T22:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-A1" .
+
+<urn:skyrwa:evidence:5b6c38c1461446009e006fd1338735a7> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.730831+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-16T06:10:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-EMER-001" ;
+    skyrwa:hasDigest "80119cf4718b68316a54b5a1a9aa74480efd8135c09d408ac316bf38a54b8549" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-EMER-001> ;
+    skyrwa:hasSignature "Iq2uwATC1nZH+1z6NHFNRhw/8s/VhkhRM5QBJZqURNyoIfmiBiu5BcnTSpBgFBWKq3tNuxKQbgwbDg4HJFWECA==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-F1> ;
+    skyrwa:startTime "2026-01-16T06:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-F1" .
+
+<urn:skyrwa:evidence:64b012706f65458292f8b1102838883c> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.717979+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-16T03:25:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-CLEAN-000" ;
+    skyrwa:hasDigest "73f5b50218c44e1ca522e25995509b77569f9447407ad5bb77f44ea538bc0c9f" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-CLEAN-000> ;
+    skyrwa:hasSignature "OR/45TNbcUUa7TfGylGeviSPzQxB0IlwmmkzLvnECayX8+jin/icsxq6OUhkGCLq0B+pPJqvaeVLZrKllzUkAA==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-A1> ;
+    skyrwa:startTime "2026-01-16T03:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-A1" .
+
+<urn:skyrwa:evidence:6823c556eb5b42a094a5ab964f0585f0> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.722542+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-19T05:20:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-NIGHT-002" ;
+    skyrwa:hasDigest "ec2638253098600cfb2bdab1baff549f1d99cd466eb5d72d51621cda2eaf153e" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-NIGHT-002> ;
+    skyrwa:hasSignature "rbuDuajF8xKScpaqutrIE0qFA1rhnjDrXYU0AlRrWq2qQskfn8LCdVSYoYwTB1l+TZyxToIWR529UvQXN1MLDw==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-B1> ;
+    skyrwa:startTime "2026-01-19T05:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-B1" .
+
+<urn:skyrwa:evidence:69b12c7c2dde4477a8f7ce37a68a780c> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.719032+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-21T04:27:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-CLEAN-001" ;
+    skyrwa:hasDigest "584a4c9d4979e654aa8a1020a358384c0c497bcb8ab0a021061d9b7ecea69e37" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-CLEAN-001> ;
+    skyrwa:hasSignature "HX4mGyKgtk8wRcAFxePpXKGLIx8KZ0+yjKFBrDYNmEvOZszFSmtEHo/sIG+pTsyzqbGPJvViT4LBnkVec5tlAw==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-A2> ;
+    skyrwa:startTime "2026-01-21T04:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-A2" .
+
+<urn:skyrwa:evidence:6ca47d6d8b6f40d9a8ea4ffccc51ebc2> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.725346+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-23T01:30:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-WEATHER-003" ;
+    skyrwa:hasDigest "75b478596d4ed482399dfed4b951c55370ecaa9d58a781b78e7de415e303c7e6" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-WEATHER-003> ;
+    skyrwa:hasSignature "kbNex4yIaO4PJ5kke46DIiuyu3IeA+IdUNHQcFgt/+q1WaWlc9a4VAQx/6j8rhhARfMwmtqJt00UCRWRvJYRCA==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-C2> ;
+    skyrwa:startTime "2026-01-23T01:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-C2" .
+
+<urn:skyrwa:evidence:79c0abeb23634737b6b59b84ea66e7e7> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.729569+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-22T07:15:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-MAINT-003" ;
+    skyrwa:hasDigest "5251c4454671b1479493a675f60014a8ca695d02b6b629c2c45c8df91dadb5f1" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-MAINT-003> ;
+    skyrwa:hasSignature "PiWfZgoly8guhI/Jk5S6F+3t1Clc43nROCa0PdrzutVJvUufy0QL+alLfquPtlIGqPOPMEqQgLtD/+RSka6aDQ==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-E2> ;
+    skyrwa:startTime "2026-01-22T07:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-E2" .
+
+<urn:skyrwa:evidence:7e54822de054411285d5e7f6b7238e23> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.728155+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-23T06:15:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-MAINT-001" ;
+    skyrwa:hasDigest "a876360ee1714ffaaad17da22445617641f964321eeeb10c26cadfeddd7c2e7d" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-MAINT-001> ;
+    skyrwa:hasSignature "ggGRrkcabODNvgi4FX+00qRak3FcyrtaawTaH1deLHvhrwRAz0rZUCD7AbS441RHQ+aOc4OiNxyOeedTV/IJAg==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-E2> ;
+    skyrwa:startTime "2026-01-23T06:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-E2" .
+
+<urn:skyrwa:evidence:87d0a240f27a417b8801d3c8f8e5bcfd> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.724760+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-21T15:30:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-WEATHER-002" ;
+    skyrwa:hasDigest "28b8d7c6d0a1710d4895047ff44426509cffcb4bc13392281506fd4aff5430af" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-WEATHER-002> ;
+    skyrwa:hasSignature "3kA4AzHY35sJ3fTKY223UkyYWQFWgsekLzRBZwXwrTAjy4JWks6vBTx8ULftbYfOHyqDoGP49nv0e9PzKYVODA==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-C1> ;
+    skyrwa:startTime "2026-01-21T15:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-C1" .
+
+<urn:skyrwa:evidence:894c306e31864b7b8f2d8a8370e4a90d> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.730208+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-18T03:10:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-EMER-000" ;
+    skyrwa:hasDigest "1c1c3af11c37cf25fecbc801a498406064edb41930f518ec8ec001438ca98d86" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-EMER-000> ;
+    skyrwa:hasSignature "o7wf8nPDkudzBhxz6av3/2e/b/5MNkJxuQjt8frLL4T9R6jLAdzN1KRDbsTn750J2asVbohxZxE2Ns2MHW4fAg==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-F1> ;
+    skyrwa:startTime "2026-01-18T03:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-F1" .
+
+<urn:skyrwa:evidence:96ff5397a3454f4bab9d507d9a4ec597> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.732703+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-20T15:05:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-LOWQ-001" ;
+    skyrwa:hasDigest "d5a8b7010f61516e9f1daab9ce7a39fc10956458d1586d6543eab5348bc73c5e" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-LOWQ-001> ;
+    skyrwa:hasSignature "sJMCg2ipq+I1cF3zXKOf8WBTbC/UbtfrZMD82JKoIelj2b8nExgdnT8pHEVzpN+fXnEC+zwEuk5oML/4KTgCDg==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-G1> ;
+    skyrwa:startTime "2026-01-20T15:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-G1" .
+
+<urn:skyrwa:evidence:a03a308c2d424fe8a087108cab2da834> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.719664+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-20T18:29:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-CLEAN-002" ;
+    skyrwa:hasDigest "892a7cc494886e11a11962fa58615ba1fdac5947aa6ee0e62c43b6a5086c084f" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-CLEAN-002> ;
+    skyrwa:hasSignature "I8xsETQl1AudAxFy6WWBG70CUwC62ZCHdiOKrXYy4rni08hOKTy0JfnvY1hPLa416L65PT28hdG/knBDXYnPBg==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-A3> ;
+    skyrwa:startTime "2026-01-20T18:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-A3" .
+
+<urn:skyrwa:evidence:b310c131e2fc407787496168176b2def> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.720830+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-20T22:33:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-CLEAN-004" ;
+    skyrwa:hasDigest "3142417b58fd146301fb52c4277ae6d420730b8d1258c09b2bce23ede91013b8" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-CLEAN-004> ;
+    skyrwa:hasSignature "RkwOhjZY62uQrGa8l9MNb8xCb4h00NBQXj4QTNEKXghWdeSIu3/HxShAamKehwrqx8AVbWXHrDbqwl74IQOODQ==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-A2> ;
+    skyrwa:startTime "2026-01-20T22:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-A2" .
+
+<urn:skyrwa:evidence:beb86beee1a7453194e08f434433710a> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.734360+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-17T04:40:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-RIGHTS-000" ;
+    skyrwa:hasDigest "08ba517091ac245a443abfba590a2d7d1c36d0402a4f42980b5882a03aa11ce7" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-RIGHTS-000> ;
+    skyrwa:hasSignature "CnKZqHBlnkgY0VwML12CIdjs0wxStLWBfcaFYfVOhLRuoITBqqztGS732NihnHSEDthr+TLV/anOIExbexQkAg==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-H1> ;
+    skyrwa:startTime "2026-01-17T04:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-H1" .
+
+<urn:skyrwa:evidence:c6f8ed91c5f74387beb400292f09b651> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.723075+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-18T08:20:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-NIGHT-003" ;
+    skyrwa:hasDigest "1c2d61f31de8710e8c1ed94a87df2a49d5409a0804c21b2eff6882f1fa63588e" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-NIGHT-003> ;
+    skyrwa:hasSignature "223t80edmAEjYglZYKdWinwEWMmUBtcLZzNh6KPXQi+RClugNlVpGivkttpaekH67nCR23Idj967ZFeurUo7Cg==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-B2> ;
+    skyrwa:startTime "2026-01-18T08:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-B2" .
+
+<urn:skyrwa:evidence:cd2c0f1cf77043b8aa368474d01847d4> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.727026+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-18T07:35:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-NFZ-002" ;
+    skyrwa:hasDigest "9e378bad152c55717114e015248cc80dbc55b99e5de261231357f09a512a7ed7" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-NFZ-002> ;
+    skyrwa:hasSignature "eEtsLcrehXcqiQEYrgIswKqcos8Icf7FxnfEHehYumwO4CTml1uPO1yE+REbEF+NoWTvk4DwpuGpZFIvY21rAw==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-D1> ;
+    skyrwa:startTime "2026-01-18T07:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-D1" .
+
+<urn:skyrwa:evidence:d144fb89d7dc41e5bf894a6a6ab3c380> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.721994+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-16T15:20:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-NIGHT-001" ;
+    skyrwa:hasDigest "09898a44ef28dc8db1181d9bc9382ec0c3fbdb805e1cdb786f9ffd4bfb51b74d" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-NIGHT-001> ;
+    skyrwa:hasSignature "5nOoOtHg5LVDQJB4C67AAItetia9Ae2YUB1UmVRBIrOpEMTNaaKuxl3yQQFZYmUQfam4TQRSsRDbVxvVR1V4Bg==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-B2> ;
+    skyrwa:startTime "2026-01-16T15:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-B2" .
+
+<urn:skyrwa:evidence:eaedf5664c744f6b9188fa194a934ffd> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.732128+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-17T17:05:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-LOWQ-000" ;
+    skyrwa:hasDigest "b6bd4ec374c7378eeb093eb9c66df55071843e178d93750f18d4e567b671e2bf" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-LOWQ-000> ;
+    skyrwa:hasSignature "qQl87qJmsznvpa7iaBvgQY0CRu/DMBcxu508YRJ/O5gRVhYzupRHHq1eWBw75nmFCg84eZDWPzWyc3S7sCeXAw==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-G1> ;
+    skyrwa:startTime "2026-01-17T17:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-G1" .
+
+<urn:skyrwa:evidence:eeaf4de5be2943569b3809bac3885bf7> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.721399+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-21T00:20:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-NIGHT-000" ;
+    skyrwa:hasDigest "a256011ab251cff47b74023f905d4d6ca33dbab681107bac7aba4f7253975f31" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-NIGHT-000> ;
+    skyrwa:hasSignature "zHP2TQJxCY3PNXDGKrLuueXDuvhbOVt7TYm3kx+yxhz+giAahN7Ka+j8bSdn/jyKmzpJVhbL0uADfuSUAPXuDQ==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-B1> ;
+    skyrwa:startTime "2026-01-21T00:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-B1" .
+
+<urn:skyrwa:evidence:f8385028dfee4d8f9170fbab84557932> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.733822+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-16T13:05:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-LOWQ-003" ;
+    skyrwa:hasDigest "18991fd7e6c43a5b19c15c8d3e61ffe4b8b01adfedca4658f1e3f9b5d63d8cce" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-LOWQ-003> ;
+    skyrwa:hasSignature "TQYj3n4l+y4UAEg4FI3VE+D5S/2Qbtu3t5gRFo0UeQGchRsEZspzKBheqOfztNYLJ/zGBaXXD7hge2zn4X2gCw==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-G1> ;
+    skyrwa:startTime "2026-01-16T13:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-G1" .
+
+<urn:skyrwa:evidence:f977621ed69c442c810129a451a4bbf4> a skyrwa:FlightEvidence ;
+    prov:generatedAtTime "2026-04-13T17:43:23.725905+00:00"^^xsd:dateTime ;
+    skyrwa:endTime "2026-01-21T02:35:00+00:00"^^xsd:dateTime ;
+    skyrwa:flightId "FLT-NFZ-000" ;
+    skyrwa:hasDigest "1d1c00620446590b890eb4113ec91fa6a9333d3ca9cd8d884ff7bb07ac5de598" ;
+    skyrwa:hasMission <urn:skyrwa:mission:MSN-FLT-NFZ-000> ;
+    skyrwa:hasSignature "0u4FHLxHwgLVa6WOItX8u5aQDGxyJip4ihH63XSoCFFnyCAv7fr6mRrK1EWt1PbCcQ931DVjO47V2RL+BNTkAw==" ;
+    skyrwa:operatedBy <urn:skyrwa:operator:OP-BENCH> ;
+    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-D1> ;
+    skyrwa:startTime "2026-01-21T02:00:00+00:00"^^xsd:dateTime ;
+    skyrwa:uavId "UAV-D1" .
+
+<urn:skyrwa:mission:MSN-FLT-CLEAN-000> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-CLEAN-001> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-CLEAN-002> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-CLEAN-003> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-CLEAN-004> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-EMER-000> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-EMER-001> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-EMER-002> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-LOWQ-000> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-LOWQ-001> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-LOWQ-002> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-LOWQ-003> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-MAINT-000> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-MAINT-001> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-MAINT-002> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-MAINT-003> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-NFZ-000> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-NFZ-001> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-NFZ-002> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-NIGHT-000> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-NIGHT-001> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-NIGHT-002> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-NIGHT-003> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-RIGHTS-000> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-RIGHTS-001> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-RIGHTS-002> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-WEATHER-000> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-WEATHER-001> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-WEATHER-002> a skyrwa:FlightMission .
+
+<urn:skyrwa:mission:MSN-FLT-WEATHER-003> a skyrwa:FlightMission .
+
+<urn:skyrwa:uav:UAV-A3> a skyrwa:UAV .
+
+<urn:skyrwa:uav:UAV-H1> a skyrwa:UAV .
+
+<urn:skyrwa:uav:UAV-H2> a skyrwa:UAV .
+
+<urn:skyrwa:uav:UAV-H3> a skyrwa:UAV .
+
+<urn:skyrwa:uav:UAV-A1> a skyrwa:UAV .
+
+<urn:skyrwa:uav:UAV-A2> a skyrwa:UAV .
+
+<urn:skyrwa:uav:UAV-B1> a skyrwa:UAV .
+
+<urn:skyrwa:uav:UAV-B2> a skyrwa:UAV .
+
+<urn:skyrwa:uav:UAV-C1> a skyrwa:UAV .
+
+<urn:skyrwa:uav:UAV-C2> a skyrwa:UAV .
+
+<urn:skyrwa:uav:UAV-E1> a skyrwa:UAV .
+
+<urn:skyrwa:uav:UAV-E2> a skyrwa:UAV .
+
+<urn:skyrwa:uav:UAV-D1> a skyrwa:UAV .
+
+<urn:skyrwa:uav:UAV-F1> a skyrwa:UAV .
+
+<urn:skyrwa:uav:UAV-G1> a skyrwa:UAV .
+
+<urn:skyrwa:operator:OP-BENCH> a skyrwa:Operator .
+

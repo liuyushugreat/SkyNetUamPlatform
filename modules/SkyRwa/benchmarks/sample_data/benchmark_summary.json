@@ -1,0 +1,17 @@
+{
+  "total_flights": 30,
+  "scenario_tags": [
+    "rights_conflict",
+    "clean_route_survey",
+    "weather_disturbance",
+    "low_quality",
+    "night_flight",
+    "anomaly_maintenance",
+    "emergency_logistics",
+    "near_nfz"
+  ],
+  "tradable_count": 10,
+  "non_tradable_count": 20,
+  "with_violations": 7,
+  "graph_triples": 2006
+}

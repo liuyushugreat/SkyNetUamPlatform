@@ -1,0 +1,4176 @@
+[
+  {
+    "asset_unit_id": "31de1554bafc4029b974849017f3635f",
+    "flight_id": "FLT-CLEAN-000",
+    "uav_id": "UAV-A1",
+    "mission_type": "route_survey",
+    "start_time": "2026-01-16T03:00:00Z",
+    "end_time": "2026-01-16T03:25:00Z",
+    "telemetry_hash": "73f5b50218c44e1ca522e25995509b77569f9447407ad5bb77f44ea538bc0c9f",
+    "evidence_uri": "",
+    "compliance_score": 1.0,
+    "risk_score": 0.0,
+    "data_quality_score": 0.71,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features",
+        "training_sample"
+      ],
+      "permitted_uses": [
+        "internal_only",
+        "tradable_after_desensitization"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": true,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "route_optimization_sample",
+    "valuation_result": {
+      "asset_unit_id": "31de1554bafc4029b974849017f3635f",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 1.0,
+        "event_richness": 0.0,
+        "compliance_degree": 1.0,
+        "overall": 0.71
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.54,
+        "timeliness": 0.3,
+        "overall": 0.347
+      },
+      "estimated_value": 56.48,
+      "currency": "USD",
+      "confidence": 0.347,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.71,
+        "value_overall": 0.347,
+        "combined_factor": 0.5648
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "64b012706f65458292f8b1102838883c",
+      "flight_id": "FLT-CLEAN-000",
+      "uav_id": "UAV-A1",
+      "mission_id": "MSN-FLT-CLEAN-000",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-16T03:00:00Z",
+      "end_time": "2026-01-16T03:25:00Z",
+      "duration_seconds": 1500.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 1200,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear",
+        "wind_speed_mps": 3.0,
+        "visibility_km": 15.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": []
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 100.0,
+        "deviation_m": 0.0,
+        "anomalies": [],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "73f5b50218c44e1ca522e25995509b77569f9447407ad5bb77f44ea538bc0c9f",
+      "signature": "OR/45TNbcUUa7TfGylGeviSPzQxB0IlwmmkzLvnECayX8+jin/icsxq6OUhkGCLq0B+pPJqvaeVLZrKllzUkAA==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.718294Z",
+      "created_at": "2026-04-13T17:43:23.717979Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.717930Z",
+    "updated_at": "2026-04-13T17:43:23.718384Z"
+  },
+  {
+    "asset_unit_id": "4b83c65d5454473a94c224ae70904e76",
+    "flight_id": "FLT-CLEAN-001",
+    "uav_id": "UAV-A2",
+    "mission_type": "route_survey",
+    "start_time": "2026-01-21T04:00:00Z",
+    "end_time": "2026-01-21T04:27:00Z",
+    "telemetry_hash": "584a4c9d4979e654aa8a1020a358384c0c497bcb8ab0a021061d9b7ecea69e37",
+    "evidence_uri": "",
+    "compliance_score": 1.0,
+    "risk_score": 0.0,
+    "data_quality_score": 0.71,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features",
+        "training_sample"
+      ],
+      "permitted_uses": [
+        "internal_only",
+        "tradable_after_desensitization"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": true,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "route_optimization_sample",
+    "valuation_result": {
+      "asset_unit_id": "4b83c65d5454473a94c224ae70904e76",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 1.0,
+        "event_richness": 0.0,
+        "compliance_degree": 1.0,
+        "overall": 0.71
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.54,
+        "timeliness": 0.3,
+        "overall": 0.347
+      },
+      "estimated_value": 56.48,
+      "currency": "USD",
+      "confidence": 0.347,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.71,
+        "value_overall": 0.347,
+        "combined_factor": 0.5648
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "69b12c7c2dde4477a8f7ce37a68a780c",
+      "flight_id": "FLT-CLEAN-001",
+      "uav_id": "UAV-A2",
+      "mission_id": "MSN-FLT-CLEAN-001",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-21T04:00:00Z",
+      "end_time": "2026-01-21T04:27:00Z",
+      "duration_seconds": 1620.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 1250,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear",
+        "wind_speed_mps": 3.0,
+        "visibility_km": 15.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": []
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 100.0,
+        "deviation_m": 0.0,
+        "anomalies": [],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "584a4c9d4979e654aa8a1020a358384c0c497bcb8ab0a021061d9b7ecea69e37",
+      "signature": "HX4mGyKgtk8wRcAFxePpXKGLIx8KZ0+yjKFBrDYNmEvOZszFSmtEHo/sIG+pTsyzqbGPJvViT4LBnkVec5tlAw==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.719113Z",
+      "created_at": "2026-04-13T17:43:23.719032Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.719006Z",
+    "updated_at": "2026-04-13T17:43:23.719162Z"
+  },
+  {
+    "asset_unit_id": "ee8c16fadae44533898300e3861611e4",
+    "flight_id": "FLT-CLEAN-002",
+    "uav_id": "UAV-A3",
+    "mission_type": "route_survey",
+    "start_time": "2026-01-20T18:00:00Z",
+    "end_time": "2026-01-20T18:29:00Z",
+    "telemetry_hash": "892a7cc494886e11a11962fa58615ba1fdac5947aa6ee0e62c43b6a5086c084f",
+    "evidence_uri": "",
+    "compliance_score": 1.0,
+    "risk_score": 0.0,
+    "data_quality_score": 0.71,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features",
+        "training_sample"
+      ],
+      "permitted_uses": [
+        "internal_only",
+        "tradable_after_desensitization"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": true,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "route_optimization_sample",
+    "valuation_result": {
+      "asset_unit_id": "ee8c16fadae44533898300e3861611e4",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 1.0,
+        "event_richness": 0.0,
+        "compliance_degree": 1.0,
+        "overall": 0.71
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.54,
+        "timeliness": 0.3,
+        "overall": 0.347
+      },
+      "estimated_value": 56.48,
+      "currency": "USD",
+      "confidence": 0.347,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.71,
+        "value_overall": 0.347,
+        "combined_factor": 0.5648
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "a03a308c2d424fe8a087108cab2da834",
+      "flight_id": "FLT-CLEAN-002",
+      "uav_id": "UAV-A3",
+      "mission_id": "MSN-FLT-CLEAN-002",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-20T18:00:00Z",
+      "end_time": "2026-01-20T18:29:00Z",
+      "duration_seconds": 1740.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 1300,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear",
+        "wind_speed_mps": 3.0,
+        "visibility_km": 15.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": []
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 100.0,
+        "deviation_m": 0.0,
+        "anomalies": [],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "892a7cc494886e11a11962fa58615ba1fdac5947aa6ee0e62c43b6a5086c084f",
+      "signature": "I8xsETQl1AudAxFy6WWBG70CUwC62ZCHdiOKrXYy4rni08hOKTy0JfnvY1hPLa416L65PT28hdG/knBDXYnPBg==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.719725Z",
+      "created_at": "2026-04-13T17:43:23.719664Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.719648Z",
+    "updated_at": "2026-04-13T17:43:23.719760Z"
+  },
+  {
+    "asset_unit_id": "ede1705acb6f4275a1ec2bd43380da86",
+    "flight_id": "FLT-CLEAN-003",
+    "uav_id": "UAV-A1",
+    "mission_type": "route_survey",
+    "start_time": "2026-01-20T22:00:00Z",
+    "end_time": "2026-01-20T22:31:00Z",
+    "telemetry_hash": "83a1cd820c2075733b8f18ac860ef0cbec81dd43ab7d94b715e18d74604708ba",
+    "evidence_uri": "",
+    "compliance_score": 1.0,
+    "risk_score": 0.0,
+    "data_quality_score": 0.71,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features",
+        "training_sample"
+      ],
+      "permitted_uses": [
+        "internal_only",
+        "tradable_after_desensitization"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": true,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "route_optimization_sample",
+    "valuation_result": {
+      "asset_unit_id": "ede1705acb6f4275a1ec2bd43380da86",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 1.0,
+        "event_richness": 0.0,
+        "compliance_degree": 1.0,
+        "overall": 0.71
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.54,
+        "timeliness": 0.3,
+        "overall": 0.347
+      },
+      "estimated_value": 56.48,
+      "currency": "USD",
+      "confidence": 0.347,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.71,
+        "value_overall": 0.347,
+        "combined_factor": 0.5648
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "5395fa631b564f14b3c4633ab6357f5a",
+      "flight_id": "FLT-CLEAN-003",
+      "uav_id": "UAV-A1",
+      "mission_id": "MSN-FLT-CLEAN-003",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-20T22:00:00Z",
+      "end_time": "2026-01-20T22:31:00Z",
+      "duration_seconds": 1860.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 1350,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear",
+        "wind_speed_mps": 3.0,
+        "visibility_km": 15.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": []
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 100.0,
+        "deviation_m": 0.0,
+        "anomalies": [],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "83a1cd820c2075733b8f18ac860ef0cbec81dd43ab7d94b715e18d74604708ba",
+      "signature": "3hm4YWnbsWiWKJTN51yO5NEnYmgfTq/7XzLVPk96ir+doHalHhh2VUaXcllXhW9WT7LM/wx3Xh1/K6l/Dd0gCA==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.720319Z",
+      "created_at": "2026-04-13T17:43:23.720244Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.720229Z",
+    "updated_at": "2026-04-13T17:43:23.720353Z"
+  },
+  {
+    "asset_unit_id": "4a5be77019fb4d7f80bbf4813ea8de6b",
+    "flight_id": "FLT-CLEAN-004",
+    "uav_id": "UAV-A2",
+    "mission_type": "route_survey",
+    "start_time": "2026-01-20T22:00:00Z",
+    "end_time": "2026-01-20T22:33:00Z",
+    "telemetry_hash": "3142417b58fd146301fb52c4277ae6d420730b8d1258c09b2bce23ede91013b8",
+    "evidence_uri": "",
+    "compliance_score": 1.0,
+    "risk_score": 0.0,
+    "data_quality_score": 0.71,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features",
+        "training_sample"
+      ],
+      "permitted_uses": [
+        "internal_only",
+        "tradable_after_desensitization"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": true,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "route_optimization_sample",
+    "valuation_result": {
+      "asset_unit_id": "4a5be77019fb4d7f80bbf4813ea8de6b",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 1.0,
+        "event_richness": 0.0,
+        "compliance_degree": 1.0,
+        "overall": 0.71
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.54,
+        "timeliness": 0.3,
+        "overall": 0.347
+      },
+      "estimated_value": 56.48,
+      "currency": "USD",
+      "confidence": 0.347,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.71,
+        "value_overall": 0.347,
+        "combined_factor": 0.5648
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "b310c131e2fc407787496168176b2def",
+      "flight_id": "FLT-CLEAN-004",
+      "uav_id": "UAV-A2",
+      "mission_id": "MSN-FLT-CLEAN-004",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-20T22:00:00Z",
+      "end_time": "2026-01-20T22:33:00Z",
+      "duration_seconds": 1980.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 1400,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear",
+        "wind_speed_mps": 3.0,
+        "visibility_km": 15.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": []
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 100.0,
+        "deviation_m": 0.0,
+        "anomalies": [],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "3142417b58fd146301fb52c4277ae6d420730b8d1258c09b2bce23ede91013b8",
+      "signature": "RkwOhjZY62uQrGa8l9MNb8xCb4h00NBQXj4QTNEKXghWdeSIu3/HxShAamKehwrqx8AVbWXHrDbqwl74IQOODQ==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.720891Z",
+      "created_at": "2026-04-13T17:43:23.720830Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.720814Z",
+    "updated_at": "2026-04-13T17:43:23.720923Z"
+  },
+  {
+    "asset_unit_id": "f51e9fcec3fa44298e079a8764ecfc86",
+    "flight_id": "FLT-NIGHT-000",
+    "uav_id": "UAV-B1",
+    "mission_type": "inspection",
+    "start_time": "2026-01-21T00:00:00Z",
+    "end_time": "2026-01-21T00:20:00Z",
+    "telemetry_hash": "a256011ab251cff47b74023f905d4d6ca33dbab681107bac7aba4f7253975f31",
+    "evidence_uri": "",
+    "compliance_score": 0.95,
+    "risk_score": 0.1,
+    "data_quality_score": 0.73,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features"
+      ],
+      "permitted_uses": [
+        "internal_only"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": false,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "f51e9fcec3fa44298e079a8764ecfc86",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 0.85,
+        "event_richness": 0.4,
+        "compliance_degree": 0.95,
+        "overall": 0.73
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.615,
+        "timeliness": 0.3,
+        "overall": 0.3695
+      },
+      "estimated_value": 58.58,
+      "currency": "USD",
+      "confidence": 0.3695,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.73,
+        "value_overall": 0.3695,
+        "combined_factor": 0.5858
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "eeaf4de5be2943569b3809bac3885bf7",
+      "flight_id": "FLT-NIGHT-000",
+      "uav_id": "UAV-B1",
+      "mission_id": "MSN-FLT-NIGHT-000",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-21T00:00:00Z",
+      "end_time": "2026-01-21T00:20:00Z",
+      "duration_seconds": 1200.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 800,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear_night",
+        "wind_speed_mps": 2.0,
+        "visibility_km": 5.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "nighttime_operation"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 95.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "low_visibility_warning"
+        ],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "a256011ab251cff47b74023f905d4d6ca33dbab681107bac7aba4f7253975f31",
+      "signature": "zHP2TQJxCY3PNXDGKrLuueXDuvhbOVt7TYm3kx+yxhz+giAahN7Ka+j8bSdn/jyKmzpJVhbL0uADfuSUAPXuDQ==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.721454Z",
+      "created_at": "2026-04-13T17:43:23.721399Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.721384Z",
+    "updated_at": "2026-04-13T17:43:23.721484Z"
+  },
+  {
+    "asset_unit_id": "4f84f4cde98d4856aefadf504086d0fa",
+    "flight_id": "FLT-NIGHT-001",
+    "uav_id": "UAV-B2",
+    "mission_type": "inspection",
+    "start_time": "2026-01-16T15:00:00Z",
+    "end_time": "2026-01-16T15:20:00Z",
+    "telemetry_hash": "09898a44ef28dc8db1181d9bc9382ec0c3fbdb805e1cdb786f9ffd4bfb51b74d",
+    "evidence_uri": "",
+    "compliance_score": 0.95,
+    "risk_score": 0.1,
+    "data_quality_score": 0.73,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features"
+      ],
+      "permitted_uses": [
+        "internal_only"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": false,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "4f84f4cde98d4856aefadf504086d0fa",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 0.85,
+        "event_richness": 0.4,
+        "compliance_degree": 0.95,
+        "overall": 0.73
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.615,
+        "timeliness": 0.3,
+        "overall": 0.3695
+      },
+      "estimated_value": 58.58,
+      "currency": "USD",
+      "confidence": 0.3695,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.73,
+        "value_overall": 0.3695,
+        "combined_factor": 0.5858
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "d144fb89d7dc41e5bf894a6a6ab3c380",
+      "flight_id": "FLT-NIGHT-001",
+      "uav_id": "UAV-B2",
+      "mission_id": "MSN-FLT-NIGHT-001",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-16T15:00:00Z",
+      "end_time": "2026-01-16T15:20:00Z",
+      "duration_seconds": 1200.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 830,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear_night",
+        "wind_speed_mps": 2.0,
+        "visibility_km": 5.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "nighttime_operation"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 95.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "low_visibility_warning"
+        ],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "09898a44ef28dc8db1181d9bc9382ec0c3fbdb805e1cdb786f9ffd4bfb51b74d",
+      "signature": "5nOoOtHg5LVDQJB4C67AAItetia9Ae2YUB1UmVRBIrOpEMTNaaKuxl3yQQFZYmUQfam4TQRSsRDbVxvVR1V4Bg==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.722048Z",
+      "created_at": "2026-04-13T17:43:23.721994Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.721978Z",
+    "updated_at": "2026-04-13T17:43:23.722081Z"
+  },
+  {
+    "asset_unit_id": "98890b0c55a04984a2d4551e40fea3ad",
+    "flight_id": "FLT-NIGHT-002",
+    "uav_id": "UAV-B1",
+    "mission_type": "inspection",
+    "start_time": "2026-01-19T05:00:00Z",
+    "end_time": "2026-01-19T05:20:00Z",
+    "telemetry_hash": "ec2638253098600cfb2bdab1baff549f1d99cd466eb5d72d51621cda2eaf153e",
+    "evidence_uri": "",
+    "compliance_score": 0.95,
+    "risk_score": 0.1,
+    "data_quality_score": 0.73,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features"
+      ],
+      "permitted_uses": [
+        "internal_only"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": false,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "98890b0c55a04984a2d4551e40fea3ad",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 0.85,
+        "event_richness": 0.4,
+        "compliance_degree": 0.95,
+        "overall": 0.73
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.615,
+        "timeliness": 0.3,
+        "overall": 0.3695
+      },
+      "estimated_value": 58.58,
+      "currency": "USD",
+      "confidence": 0.3695,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.73,
+        "value_overall": 0.3695,
+        "combined_factor": 0.5858
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "6823c556eb5b42a094a5ab964f0585f0",
+      "flight_id": "FLT-NIGHT-002",
+      "uav_id": "UAV-B1",
+      "mission_id": "MSN-FLT-NIGHT-002",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-19T05:00:00Z",
+      "end_time": "2026-01-19T05:20:00Z",
+      "duration_seconds": 1200.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 860,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear_night",
+        "wind_speed_mps": 2.0,
+        "visibility_km": 5.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "nighttime_operation"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 95.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "low_visibility_warning"
+        ],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "ec2638253098600cfb2bdab1baff549f1d99cd466eb5d72d51621cda2eaf153e",
+      "signature": "rbuDuajF8xKScpaqutrIE0qFA1rhnjDrXYU0AlRrWq2qQskfn8LCdVSYoYwTB1l+TZyxToIWR529UvQXN1MLDw==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.722593Z",
+      "created_at": "2026-04-13T17:43:23.722542Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.722529Z",
+    "updated_at": "2026-04-13T17:43:23.722622Z"
+  },
+  {
+    "asset_unit_id": "86c556f4e9b341c9949b94d9c84aaa1e",
+    "flight_id": "FLT-NIGHT-003",
+    "uav_id": "UAV-B2",
+    "mission_type": "inspection",
+    "start_time": "2026-01-18T08:00:00Z",
+    "end_time": "2026-01-18T08:20:00Z",
+    "telemetry_hash": "1c2d61f31de8710e8c1ed94a87df2a49d5409a0804c21b2eff6882f1fa63588e",
+    "evidence_uri": "",
+    "compliance_score": 0.95,
+    "risk_score": 0.1,
+    "data_quality_score": 0.73,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features"
+      ],
+      "permitted_uses": [
+        "internal_only"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": false,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "86c556f4e9b341c9949b94d9c84aaa1e",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 0.85,
+        "event_richness": 0.4,
+        "compliance_degree": 0.95,
+        "overall": 0.73
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.615,
+        "timeliness": 0.3,
+        "overall": 0.3695
+      },
+      "estimated_value": 58.58,
+      "currency": "USD",
+      "confidence": 0.3695,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.73,
+        "value_overall": 0.3695,
+        "combined_factor": 0.5858
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "c6f8ed91c5f74387beb400292f09b651",
+      "flight_id": "FLT-NIGHT-003",
+      "uav_id": "UAV-B2",
+      "mission_id": "MSN-FLT-NIGHT-003",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-18T08:00:00Z",
+      "end_time": "2026-01-18T08:20:00Z",
+      "duration_seconds": 1200.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 890,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear_night",
+        "wind_speed_mps": 2.0,
+        "visibility_km": 5.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "nighttime_operation"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 95.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "low_visibility_warning"
+        ],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "1c2d61f31de8710e8c1ed94a87df2a49d5409a0804c21b2eff6882f1fa63588e",
+      "signature": "223t80edmAEjYglZYKdWinwEWMmUBtcLZzNh6KPXQi+RClugNlVpGivkttpaekH67nCR23Idj967ZFeurUo7Cg==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.723127Z",
+      "created_at": "2026-04-13T17:43:23.723075Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.723062Z",
+    "updated_at": "2026-04-13T17:43:23.723157Z"
+  },
+  {
+    "asset_unit_id": "bb0036a5e93a442d899e00d601273af7",
+    "flight_id": "FLT-WEATHER-000",
+    "uav_id": "UAV-C1",
+    "mission_type": "delivery",
+    "start_time": "2026-01-15T16:00:00Z",
+    "end_time": "2026-01-15T16:30:00Z",
+    "telemetry_hash": "c0441ffe4784ebc32e7ab12d073c8b68eb37dee76d9fc8c3bff16ae9ab679eec",
+    "evidence_uri": "",
+    "compliance_score": 0.9,
+    "risk_score": 0.2,
+    "data_quality_score": 0.69,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features"
+      ],
+      "permitted_uses": [
+        "internal_only"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": false,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "bb0036a5e93a442d899e00d601273af7",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.5,
+        "sensor_reliability": 0.7,
+        "event_richness": 0.8,
+        "compliance_degree": 0.9,
+        "overall": 0.69
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.69,
+        "timeliness": 0.3,
+        "overall": 0.392
+      },
+      "estimated_value": 57.08,
+      "currency": "USD",
+      "confidence": 0.392,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.69,
+        "value_overall": 0.392,
+        "combined_factor": 0.5708
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "0d917656c26c4f13858367aefed5f8b0",
+      "flight_id": "FLT-WEATHER-000",
+      "uav_id": "UAV-C1",
+      "mission_id": "MSN-FLT-WEATHER-000",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-15T16:00:00Z",
+      "end_time": "2026-01-15T16:30:00Z",
+      "duration_seconds": 1800.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 600,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "rainy",
+        "wind_speed_mps": 12.0,
+        "visibility_km": 3.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "weather_degradation",
+          "wind_shear"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 90.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "turbulence",
+          "gust_warning"
+        ],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "c0441ffe4784ebc32e7ab12d073c8b68eb37dee76d9fc8c3bff16ae9ab679eec",
+      "signature": "OtWg91BuCzRjlHfystZAxNFGA86rEUC4T/yIGAY0ERWue2qlp80SVM5w+14Addbqobi9EC32PJsrWeKDHdTZAA==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.723689Z",
+      "created_at": "2026-04-13T17:43:23.723635Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.723622Z",
+    "updated_at": "2026-04-13T17:43:23.723717Z"
+  },
+  {
+    "asset_unit_id": "81f9415471804abc9778b5e9c909d309",
+    "flight_id": "FLT-WEATHER-001",
+    "uav_id": "UAV-C2",
+    "mission_type": "delivery",
+    "start_time": "2026-01-19T02:00:00Z",
+    "end_time": "2026-01-19T02:30:00Z",
+    "telemetry_hash": "94151462dcc69b090ad6a04b05676326ae64a7170c184ed66d3ac441d77aeb63",
+    "evidence_uri": "",
+    "compliance_score": 0.9,
+    "risk_score": 0.2,
+    "data_quality_score": 0.69,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features"
+      ],
+      "permitted_uses": [
+        "internal_only"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": false,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "81f9415471804abc9778b5e9c909d309",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.5,
+        "sensor_reliability": 0.7,
+        "event_richness": 0.8,
+        "compliance_degree": 0.9,
+        "overall": 0.69
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.69,
+        "timeliness": 0.3,
+        "overall": 0.392
+      },
+      "estimated_value": 57.08,
+      "currency": "USD",
+      "confidence": 0.392,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.69,
+        "value_overall": 0.392,
+        "combined_factor": 0.5708
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "0e1176c092d84714aaf88e9fa388d343",
+      "flight_id": "FLT-WEATHER-001",
+      "uav_id": "UAV-C2",
+      "mission_id": "MSN-FLT-WEATHER-001",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-19T02:00:00Z",
+      "end_time": "2026-01-19T02:30:00Z",
+      "duration_seconds": 1800.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 620,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "rainy",
+        "wind_speed_mps": 13.0,
+        "visibility_km": 3.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "weather_degradation",
+          "wind_shear"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 85.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "turbulence",
+          "gust_warning"
+        ],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "94151462dcc69b090ad6a04b05676326ae64a7170c184ed66d3ac441d77aeb63",
+      "signature": "5fFdwkC3LUnnqYrcJQhQ/3w8TPmkvhrCbJEDNrZ1POE+uc0/hJ50BKCq76Grr3ATe+oJeMnEzfpOv+bbeIp+DQ==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.724235Z",
+      "created_at": "2026-04-13T17:43:23.724183Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.724164Z",
+    "updated_at": "2026-04-13T17:43:23.724267Z"
+  },
+  {
+    "asset_unit_id": "fc5b9fb2b3ee455da476d1f870b3c7f9",
+    "flight_id": "FLT-WEATHER-002",
+    "uav_id": "UAV-C1",
+    "mission_type": "delivery",
+    "start_time": "2026-01-21T15:00:00Z",
+    "end_time": "2026-01-21T15:30:00Z",
+    "telemetry_hash": "28b8d7c6d0a1710d4895047ff44426509cffcb4bc13392281506fd4aff5430af",
+    "evidence_uri": "",
+    "compliance_score": 0.9,
+    "risk_score": 0.2,
+    "data_quality_score": 0.69,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features"
+      ],
+      "permitted_uses": [
+        "internal_only"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": false,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "fc5b9fb2b3ee455da476d1f870b3c7f9",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.5,
+        "sensor_reliability": 0.7,
+        "event_richness": 0.8,
+        "compliance_degree": 0.9,
+        "overall": 0.69
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.69,
+        "timeliness": 0.3,
+        "overall": 0.392
+      },
+      "estimated_value": 57.08,
+      "currency": "USD",
+      "confidence": 0.392,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.69,
+        "value_overall": 0.392,
+        "combined_factor": 0.5708
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "87d0a240f27a417b8801d3c8f8e5bcfd",
+      "flight_id": "FLT-WEATHER-002",
+      "uav_id": "UAV-C1",
+      "mission_id": "MSN-FLT-WEATHER-002",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-21T15:00:00Z",
+      "end_time": "2026-01-21T15:30:00Z",
+      "duration_seconds": 1800.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 640,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "rainy",
+        "wind_speed_mps": 14.0,
+        "visibility_km": 3.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "weather_degradation",
+          "wind_shear"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 80.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "turbulence",
+          "gust_warning"
+        ],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "28b8d7c6d0a1710d4895047ff44426509cffcb4bc13392281506fd4aff5430af",
+      "signature": "3kA4AzHY35sJ3fTKY223UkyYWQFWgsekLzRBZwXwrTAjy4JWks6vBTx8ULftbYfOHyqDoGP49nv0e9PzKYVODA==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.724829Z",
+      "created_at": "2026-04-13T17:43:23.724760Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.724745Z",
+    "updated_at": "2026-04-13T17:43:23.724861Z"
+  },
+  {
+    "asset_unit_id": "3417f9f2487f4bffb54da4ef48eefb79",
+    "flight_id": "FLT-WEATHER-003",
+    "uav_id": "UAV-C2",
+    "mission_type": "delivery",
+    "start_time": "2026-01-23T01:00:00Z",
+    "end_time": "2026-01-23T01:30:00Z",
+    "telemetry_hash": "75b478596d4ed482399dfed4b951c55370ecaa9d58a781b78e7de415e303c7e6",
+    "evidence_uri": "",
+    "compliance_score": 0.9,
+    "risk_score": 0.2,
+    "data_quality_score": 0.69,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features"
+      ],
+      "permitted_uses": [
+        "internal_only"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": false,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "3417f9f2487f4bffb54da4ef48eefb79",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.5,
+        "sensor_reliability": 0.7,
+        "event_richness": 0.8,
+        "compliance_degree": 0.9,
+        "overall": 0.69
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.69,
+        "timeliness": 0.3,
+        "overall": 0.392
+      },
+      "estimated_value": 57.08,
+      "currency": "USD",
+      "confidence": 0.392,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.69,
+        "value_overall": 0.392,
+        "combined_factor": 0.5708
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "6ca47d6d8b6f40d9a8ea4ffccc51ebc2",
+      "flight_id": "FLT-WEATHER-003",
+      "uav_id": "UAV-C2",
+      "mission_id": "MSN-FLT-WEATHER-003",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-23T01:00:00Z",
+      "end_time": "2026-01-23T01:30:00Z",
+      "duration_seconds": 1800.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 660,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "rainy",
+        "wind_speed_mps": 15.0,
+        "visibility_km": 3.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "weather_degradation",
+          "wind_shear"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 75.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "turbulence",
+          "gust_warning"
+        ],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "75b478596d4ed482399dfed4b951c55370ecaa9d58a781b78e7de415e303c7e6",
+      "signature": "kbNex4yIaO4PJ5kke46DIiuyu3IeA+IdUNHQcFgt/+q1WaWlc9a4VAQx/6j8rhhARfMwmtqJt00UCRWRvJYRCA==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.725403Z",
+      "created_at": "2026-04-13T17:43:23.725346Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.725317Z",
+    "updated_at": "2026-04-13T17:43:23.725432Z"
+  },
+  {
+    "asset_unit_id": "64385613d2d64bcda3e667bf739a0382",
+    "flight_id": "FLT-NFZ-000",
+    "uav_id": "UAV-D1",
+    "mission_type": "patrol",
+    "start_time": "2026-01-21T02:00:00Z",
+    "end_time": "2026-01-21T02:35:00Z",
+    "telemetry_hash": "1d1c00620446590b890eb4113ec91fa6a9333d3ca9cd8d884ff7bb07ac5de598",
+    "evidence_uri": "",
+    "compliance_score": 0.95,
+    "risk_score": 0.1,
+    "data_quality_score": 0.67,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features"
+      ],
+      "permitted_uses": [
+        "internal_only"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": false,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "64385613d2d64bcda3e667bf739a0382",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.5,
+        "sensor_reliability": 0.85,
+        "event_richness": 0.4,
+        "compliance_degree": 0.95,
+        "overall": 0.67
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.615,
+        "timeliness": 0.3,
+        "overall": 0.3695
+      },
+      "estimated_value": 54.98,
+      "currency": "USD",
+      "confidence": 0.3695,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.67,
+        "value_overall": 0.3695,
+        "combined_factor": 0.5498
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "f977621ed69c442c810129a451a4bbf4",
+      "flight_id": "FLT-NFZ-000",
+      "uav_id": "UAV-D1",
+      "mission_id": "MSN-FLT-NFZ-000",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-21T02:00:00Z",
+      "end_time": "2026-01-21T02:35:00Z",
+      "duration_seconds": 2100.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 1000,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "overcast",
+        "wind_speed_mps": 5.0,
+        "visibility_km": 8.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "nfz_buffer_entry"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 100.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "nfz_proximity"
+        ],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "1d1c00620446590b890eb4113ec91fa6a9333d3ca9cd8d884ff7bb07ac5de598",
+      "signature": "0u4FHLxHwgLVa6WOItX8u5aQDGxyJip4ihH63XSoCFFnyCAv7fr6mRrK1EWt1PbCcQ931DVjO47V2RL+BNTkAw==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.725959Z",
+      "created_at": "2026-04-13T17:43:23.725905Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.725891Z",
+    "updated_at": "2026-04-13T17:43:23.725996Z"
+  },
+  {
+    "asset_unit_id": "9cf499e04b784dc09e4bf529dc50b082",
+    "flight_id": "FLT-NFZ-001",
+    "uav_id": "UAV-D1",
+    "mission_type": "patrol",
+    "start_time": "2026-01-15T17:00:00Z",
+    "end_time": "2026-01-15T17:35:00Z",
+    "telemetry_hash": "89830d3a4c42df22f294f185b95fa0fc6a930ead7fb5004e08f1140b5387185e",
+    "evidence_uri": "",
+    "compliance_score": 0.75,
+    "risk_score": 0.45,
+    "data_quality_score": 0.66,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry"
+      ],
+      "permitted_uses": [
+        "non_transferable"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "9cf499e04b784dc09e4bf529dc50b082",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.5,
+        "sensor_reliability": 0.85,
+        "event_richness": 0.6,
+        "compliance_degree": 0.75,
+        "overall": 0.66
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.675,
+        "timeliness": 0.3,
+        "overall": 0.3875
+      },
+      "estimated_value": 55.1,
+      "currency": "USD",
+      "confidence": 0.3875,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.66,
+        "value_overall": 0.3875,
+        "combined_factor": 0.551
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "176c1f95cdc84a6eac184dca3b5027c2",
+      "flight_id": "FLT-NFZ-001",
+      "uav_id": "UAV-D1",
+      "mission_id": "MSN-FLT-NFZ-001",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-15T17:00:00Z",
+      "end_time": "2026-01-15T17:35:00Z",
+      "duration_seconds": 2100.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 1000,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "overcast",
+        "wind_speed_mps": 5.0,
+        "visibility_km": 8.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 1,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "nfz_buffer_entry"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 100.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "nfz_proximity"
+        ],
+        "alerts": [],
+        "violations": [
+          "nfz_proximity_warning"
+        ]
+      },
+      "digest_hash": "89830d3a4c42df22f294f185b95fa0fc6a930ead7fb5004e08f1140b5387185e",
+      "signature": "AiNnQrSxj4ah9cpu7i5EHjMyLODbvhAFAYTKiI/RQedf6rq7mc7wFGEa323eUdul1Cziwhyq1yVU4eDpuQt9CQ==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.726527Z",
+      "created_at": "2026-04-13T17:43:23.726476Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.726462Z",
+    "updated_at": "2026-04-13T17:43:23.726558Z"
+  },
+  {
+    "asset_unit_id": "e2e8929ae4414abe97f8537cf60901a9",
+    "flight_id": "FLT-NFZ-002",
+    "uav_id": "UAV-D1",
+    "mission_type": "patrol",
+    "start_time": "2026-01-18T07:00:00Z",
+    "end_time": "2026-01-18T07:35:00Z",
+    "telemetry_hash": "9e378bad152c55717114e015248cc80dbc55b99e5de261231357f09a512a7ed7",
+    "evidence_uri": "",
+    "compliance_score": 0.75,
+    "risk_score": 0.65,
+    "data_quality_score": 0.66,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry"
+      ],
+      "permitted_uses": [
+        "non_transferable"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "e2e8929ae4414abe97f8537cf60901a9",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.5,
+        "sensor_reliability": 0.85,
+        "event_richness": 0.6,
+        "compliance_degree": 0.75,
+        "overall": 0.66
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.675,
+        "timeliness": 0.3,
+        "overall": 0.3875
+      },
+      "estimated_value": 55.1,
+      "currency": "USD",
+      "confidence": 0.3875,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.66,
+        "value_overall": 0.3875,
+        "combined_factor": 0.551
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "cd2c0f1cf77043b8aa368474d01847d4",
+      "flight_id": "FLT-NFZ-002",
+      "uav_id": "UAV-D1",
+      "mission_id": "MSN-FLT-NFZ-002",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-18T07:00:00Z",
+      "end_time": "2026-01-18T07:35:00Z",
+      "duration_seconds": 2100.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 1000,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "overcast",
+        "wind_speed_mps": 5.0,
+        "visibility_km": 8.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 2,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "nfz_buffer_entry"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 100.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "nfz_proximity"
+        ],
+        "alerts": [],
+        "violations": [
+          "nfz_proximity_warning"
+        ]
+      },
+      "digest_hash": "9e378bad152c55717114e015248cc80dbc55b99e5de261231357f09a512a7ed7",
+      "signature": "eEtsLcrehXcqiQEYrgIswKqcos8Icf7FxnfEHehYumwO4CTml1uPO1yE+REbEF+NoWTvk4DwpuGpZFIvY21rAw==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.727077Z",
+      "created_at": "2026-04-13T17:43:23.727026Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.727014Z",
+    "updated_at": "2026-04-13T17:43:23.727104Z"
+  },
+  {
+    "asset_unit_id": "5b0b4bf8f2324d87a973ef8bb8bbf6b3",
+    "flight_id": "FLT-MAINT-000",
+    "uav_id": "UAV-E1",
+    "mission_type": "maintenance_check",
+    "start_time": "2026-01-23T02:00:00Z",
+    "end_time": "2026-01-23T02:15:00Z",
+    "telemetry_hash": "5c31a21601a6558ea18495d6830030c1004bda5e44e81e5bae1f712a3731f665",
+    "evidence_uri": "",
+    "compliance_score": 0.95,
+    "risk_score": 0.1,
+    "data_quality_score": 0.77,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features"
+      ],
+      "permitted_uses": [
+        "internal_only"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": false,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "5b0b4bf8f2324d87a973ef8bb8bbf6b3",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 1.0,
+        "sensor_reliability": 0.85,
+        "event_richness": 0.4,
+        "compliance_degree": 0.95,
+        "overall": 0.77
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.615,
+        "timeliness": 0.3,
+        "overall": 0.3695
+      },
+      "estimated_value": 60.98,
+      "currency": "USD",
+      "confidence": 0.3695,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.77,
+        "value_overall": 0.3695,
+        "combined_factor": 0.6098
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "3de5643a282f4c7dbf9f313cd2ec8091",
+      "flight_id": "FLT-MAINT-000",
+      "uav_id": "UAV-E1",
+      "mission_id": "MSN-FLT-MAINT-000",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-23T02:00:00Z",
+      "end_time": "2026-01-23T02:15:00Z",
+      "duration_seconds": 900.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 900,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear",
+        "wind_speed_mps": 4.0,
+        "visibility_km": 12.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "equipment_warning"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 85.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "motor_vibration"
+        ],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "5c31a21601a6558ea18495d6830030c1004bda5e44e81e5bae1f712a3731f665",
+      "signature": "D8TwkMu6eahI9cXgXBk7c8bYFdS8qQ1G8ufyU28RjjUwhj71ctY4wbve1s5piiFTvKicNLxGTUslmkHkmypKBQ==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.727657Z",
+      "created_at": "2026-04-13T17:43:23.727592Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.727575Z",
+    "updated_at": "2026-04-13T17:43:23.727691Z"
+  },
+  {
+    "asset_unit_id": "339a71c634554ffd9a1d2a15fd200b42",
+    "flight_id": "FLT-MAINT-001",
+    "uav_id": "UAV-E2",
+    "mission_type": "maintenance_check",
+    "start_time": "2026-01-23T06:00:00Z",
+    "end_time": "2026-01-23T06:15:00Z",
+    "telemetry_hash": "a876360ee1714ffaaad17da22445617641f964321eeeb10c26cadfeddd7c2e7d",
+    "evidence_uri": "",
+    "compliance_score": 0.9,
+    "risk_score": 0.2,
+    "data_quality_score": 0.76,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features"
+      ],
+      "permitted_uses": [
+        "internal_only"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": false,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "339a71c634554ffd9a1d2a15fd200b42",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 1.0,
+        "sensor_reliability": 0.7,
+        "event_richness": 0.6,
+        "compliance_degree": 0.9,
+        "overall": 0.76
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.63,
+        "timeliness": 0.3,
+        "overall": 0.374
+      },
+      "estimated_value": 60.56,
+      "currency": "USD",
+      "confidence": 0.374,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.76,
+        "value_overall": 0.374,
+        "combined_factor": 0.6056
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "7e54822de054411285d5e7f6b7238e23",
+      "flight_id": "FLT-MAINT-001",
+      "uav_id": "UAV-E2",
+      "mission_id": "MSN-FLT-MAINT-001",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-23T06:00:00Z",
+      "end_time": "2026-01-23T06:15:00Z",
+      "duration_seconds": 900.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 900,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear",
+        "wind_speed_mps": 4.0,
+        "visibility_km": 12.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "equipment_warning"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 85.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "motor_vibration",
+          "battery_temp_high"
+        ],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "a876360ee1714ffaaad17da22445617641f964321eeeb10c26cadfeddd7c2e7d",
+      "signature": "ggGRrkcabODNvgi4FX+00qRak3FcyrtaawTaH1deLHvhrwRAz0rZUCD7AbS441RHQ+aOc4OiNxyOeedTV/IJAg==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.728207Z",
+      "created_at": "2026-04-13T17:43:23.728155Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.728140Z",
+    "updated_at": "2026-04-13T17:43:23.728237Z"
+  },
+  {
+    "asset_unit_id": "84c48b31db834f2cbc9e8f1f44f418ed",
+    "flight_id": "FLT-MAINT-002",
+    "uav_id": "UAV-E1",
+    "mission_type": "maintenance_check",
+    "start_time": "2026-01-17T03:00:00Z",
+    "end_time": "2026-01-17T03:15:00Z",
+    "telemetry_hash": "606f0c41458c613ce6c9822413a9ff5fc70262586941a0b51e11268e98cb1280",
+    "evidence_uri": "",
+    "compliance_score": 0.85,
+    "risk_score": 0.3,
+    "data_quality_score": 0.75,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features"
+      ],
+      "permitted_uses": [
+        "internal_only"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": false,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "84c48b31db834f2cbc9e8f1f44f418ed",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 1.0,
+        "sensor_reliability": 0.55,
+        "event_richness": 0.8,
+        "compliance_degree": 0.85,
+        "overall": 0.75
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.645,
+        "timeliness": 0.3,
+        "overall": 0.3785
+      },
+      "estimated_value": 60.14,
+      "currency": "USD",
+      "confidence": 0.3785,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.75,
+        "value_overall": 0.3785,
+        "combined_factor": 0.6014
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "17c7ad126bb348399df2bef199b3faf4",
+      "flight_id": "FLT-MAINT-002",
+      "uav_id": "UAV-E1",
+      "mission_id": "MSN-FLT-MAINT-002",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-17T03:00:00Z",
+      "end_time": "2026-01-17T03:15:00Z",
+      "duration_seconds": 900.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 900,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear",
+        "wind_speed_mps": 4.0,
+        "visibility_km": 12.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "equipment_warning"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 85.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "motor_vibration",
+          "battery_temp_high",
+          "gps_drift"
+        ],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "606f0c41458c613ce6c9822413a9ff5fc70262586941a0b51e11268e98cb1280",
+      "signature": "JH2ijRk03C3a5ayqEUSqDBYmofqLMswNnbDY3SVyRVfNJkPLlKUnzjSzwIGYehIxRdbh+IpwAGVgkaiz98ltCw==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.728744Z",
+      "created_at": "2026-04-13T17:43:23.728694Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.728681Z",
+    "updated_at": "2026-04-13T17:43:23.728774Z"
+  },
+  {
+    "asset_unit_id": "ab159c4bbb144c1890c97239a2cd5eab",
+    "flight_id": "FLT-MAINT-003",
+    "uav_id": "UAV-E2",
+    "mission_type": "maintenance_check",
+    "start_time": "2026-01-22T07:00:00Z",
+    "end_time": "2026-01-22T07:15:00Z",
+    "telemetry_hash": "5251c4454671b1479493a675f60014a8ca695d02b6b629c2c45c8df91dadb5f1",
+    "evidence_uri": "",
+    "compliance_score": 0.85,
+    "risk_score": 0.3,
+    "data_quality_score": 0.75,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features"
+      ],
+      "permitted_uses": [
+        "internal_only"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": false,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "ab159c4bbb144c1890c97239a2cd5eab",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 1.0,
+        "sensor_reliability": 0.55,
+        "event_richness": 0.8,
+        "compliance_degree": 0.85,
+        "overall": 0.75
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.645,
+        "timeliness": 0.3,
+        "overall": 0.3785
+      },
+      "estimated_value": 60.14,
+      "currency": "USD",
+      "confidence": 0.3785,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.75,
+        "value_overall": 0.3785,
+        "combined_factor": 0.6014
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "79c0abeb23634737b6b59b84ea66e7e7",
+      "flight_id": "FLT-MAINT-003",
+      "uav_id": "UAV-E2",
+      "mission_id": "MSN-FLT-MAINT-003",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-22T07:00:00Z",
+      "end_time": "2026-01-22T07:15:00Z",
+      "duration_seconds": 900.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 900,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear",
+        "wind_speed_mps": 4.0,
+        "visibility_km": 12.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "equipment_warning"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 85.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "motor_vibration",
+          "battery_temp_high",
+          "gps_drift"
+        ],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "5251c4454671b1479493a675f60014a8ca695d02b6b629c2c45c8df91dadb5f1",
+      "signature": "PiWfZgoly8guhI/Jk5S6F+3t1Clc43nROCa0PdrzutVJvUufy0QL+alLfquPtlIGqPOPMEqQgLtD/+RSka6aDQ==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.729679Z",
+      "created_at": "2026-04-13T17:43:23.729569Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.729542Z",
+    "updated_at": "2026-04-13T17:43:23.729731Z"
+  },
+  {
+    "asset_unit_id": "410c087c50a44832b40f149310ecc6c1",
+    "flight_id": "FLT-EMER-000",
+    "uav_id": "UAV-F1",
+    "mission_type": "emergency_delivery",
+    "start_time": "2026-01-18T03:00:00Z",
+    "end_time": "2026-01-18T03:10:00Z",
+    "telemetry_hash": "1c1c3af11c37cf25fecbc801a498406064edb41930f518ec8ec001438ca98d86",
+    "evidence_uri": "",
+    "compliance_score": 1.0,
+    "risk_score": 0.0,
+    "data_quality_score": 0.74,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features",
+        "training_sample"
+      ],
+      "permitted_uses": [
+        "internal_only",
+        "tradable_after_desensitization"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": true,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "410c087c50a44832b40f149310ecc6c1",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 1.0,
+        "event_richness": 0.2,
+        "compliance_degree": 1.0,
+        "overall": 0.74
+      },
+      "value_score": {
+        "scarcity": 0.25,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.6,
+        "timeliness": 0.3,
+        "overall": 0.4275
+      },
+      "estimated_value": 61.5,
+      "currency": "USD",
+      "confidence": 0.4275,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.74,
+        "value_overall": 0.4275,
+        "combined_factor": 0.615
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "894c306e31864b7b8f2d8a8370e4a90d",
+      "flight_id": "FLT-EMER-000",
+      "uav_id": "UAV-F1",
+      "mission_id": "MSN-FLT-EMER-000",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-18T03:00:00Z",
+      "end_time": "2026-01-18T03:10:00Z",
+      "duration_seconds": 600.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 500,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear",
+        "wind_speed_mps": 6.0,
+        "visibility_km": 10.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "priority_corridor"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 100.0,
+        "deviation_m": 0.0,
+        "anomalies": [],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "1c1c3af11c37cf25fecbc801a498406064edb41930f518ec8ec001438ca98d86",
+      "signature": "o7wf8nPDkudzBhxz6av3/2e/b/5MNkJxuQjt8frLL4T9R6jLAdzN1KRDbsTn750J2asVbohxZxE2Ns2MHW4fAg==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.730273Z",
+      "created_at": "2026-04-13T17:43:23.730208Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.730192Z",
+    "updated_at": "2026-04-13T17:43:23.730308Z"
+  },
+  {
+    "asset_unit_id": "9a77cbeda4bc4fffa4a3e630595dac86",
+    "flight_id": "FLT-EMER-001",
+    "uav_id": "UAV-F1",
+    "mission_type": "emergency_delivery",
+    "start_time": "2026-01-16T06:00:00Z",
+    "end_time": "2026-01-16T06:10:00Z",
+    "telemetry_hash": "80119cf4718b68316a54b5a1a9aa74480efd8135c09d408ac316bf38a54b8549",
+    "evidence_uri": "",
+    "compliance_score": 1.0,
+    "risk_score": 0.0,
+    "data_quality_score": 0.74,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features",
+        "training_sample"
+      ],
+      "permitted_uses": [
+        "internal_only",
+        "tradable_after_desensitization"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": true,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "9a77cbeda4bc4fffa4a3e630595dac86",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 1.0,
+        "event_richness": 0.2,
+        "compliance_degree": 1.0,
+        "overall": 0.74
+      },
+      "value_score": {
+        "scarcity": 0.25,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.6,
+        "timeliness": 0.3,
+        "overall": 0.4275
+      },
+      "estimated_value": 61.5,
+      "currency": "USD",
+      "confidence": 0.4275,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.74,
+        "value_overall": 0.4275,
+        "combined_factor": 0.615
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "5b6c38c1461446009e006fd1338735a7",
+      "flight_id": "FLT-EMER-001",
+      "uav_id": "UAV-F1",
+      "mission_id": "MSN-FLT-EMER-001",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-16T06:00:00Z",
+      "end_time": "2026-01-16T06:10:00Z",
+      "duration_seconds": 600.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 500,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear",
+        "wind_speed_mps": 6.0,
+        "visibility_km": 10.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "priority_corridor"
+        ]
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 100.0,
+        "deviation_m": 0.0,
+        "anomalies": [],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "80119cf4718b68316a54b5a1a9aa74480efd8135c09d408ac316bf38a54b8549",
+      "signature": "Iq2uwATC1nZH+1z6NHFNRhw/8s/VhkhRM5QBJZqURNyoIfmiBiu5BcnTSpBgFBWKq3tNuxKQbgwbDg4HJFWECA==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.730934Z",
+      "created_at": "2026-04-13T17:43:23.730831Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.730774Z",
+    "updated_at": "2026-04-13T17:43:23.730998Z"
+  },
+  {
+    "asset_unit_id": "09c22a67236a46109444ce2b7099891e",
+    "flight_id": "FLT-EMER-002",
+    "uav_id": "UAV-F1",
+    "mission_type": "emergency_delivery",
+    "start_time": "2026-01-19T17:00:00Z",
+    "end_time": "2026-01-19T17:10:00Z",
+    "telemetry_hash": "a9aca1632010fb44a3b065b57c220c97b2492cb3a96778545f3b846b5657e251",
+    "evidence_uri": "",
+    "compliance_score": 0.65,
+    "risk_score": 0.35,
+    "data_quality_score": 0.62,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry"
+      ],
+      "permitted_uses": [
+        "non_transferable"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "09c22a67236a46109444ce2b7099891e",
+      "quality_score": {
+        "completeness": 0.4,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 0.85,
+        "event_richness": 0.4,
+        "compliance_degree": 0.65,
+        "overall": 0.62
+      },
+      "value_score": {
+        "scarcity": 0.25,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.535,
+        "timeliness": 0.3,
+        "overall": 0.408
+      },
+      "estimated_value": 53.52,
+      "currency": "USD",
+      "confidence": 0.408,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.62,
+        "value_overall": 0.408,
+        "combined_factor": 0.5352
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "0fb048e4aadf49b5990ad9b5d93267d8",
+      "flight_id": "FLT-EMER-002",
+      "uav_id": "UAV-F1",
+      "mission_id": "MSN-FLT-EMER-002",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-19T17:00:00Z",
+      "end_time": "2026-01-19T17:10:00Z",
+      "duration_seconds": 600.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 500,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear",
+        "wind_speed_mps": 6.0,
+        "visibility_km": 10.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": [
+          "priority_corridor"
+        ]
+      },
+      "mission_result": {
+        "completed": false,
+        "completion_pct": 60.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "mission_abort"
+        ],
+        "alerts": [],
+        "violations": [
+          "altitude_exceedance"
+        ]
+      },
+      "digest_hash": "a9aca1632010fb44a3b065b57c220c97b2492cb3a96778545f3b846b5657e251",
+      "signature": "jk1OJXtYPqDbQGRg7GRNVOuUFFJTQG7UZh17yETwxtpJE8p9nNYUa0moHKFxLRhJv+YbyGGyR1utISRV7/J0AQ==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.731610Z",
+      "created_at": "2026-04-13T17:43:23.731548Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.731530Z",
+    "updated_at": "2026-04-13T17:43:23.731644Z"
+  },
+  {
+    "asset_unit_id": "b4edd4ad59b64d40b3bb680c73fc60a9",
+    "flight_id": "FLT-LOWQ-000",
+    "uav_id": "UAV-G1",
+    "mission_type": "survey",
+    "start_time": "2026-01-17T17:00:00Z",
+    "end_time": "2026-01-17T17:05:00Z",
+    "telemetry_hash": "b6bd4ec374c7378eeb093eb9c66df55071843e178d93750f18d4e567b671e2bf",
+    "evidence_uri": "",
+    "compliance_score": 0.4,
+    "risk_score": 0.6,
+    "data_quality_score": 0.48,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry"
+      ],
+      "permitted_uses": [
+        "non_transferable"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "b4edd4ad59b64d40b3bb680c73fc60a9",
+      "quality_score": {
+        "completeness": 0.4,
+        "temporal_continuity": 0.5,
+        "sensor_reliability": 0.7,
+        "event_richness": 0.4,
+        "compliance_degree": 0.4,
+        "overall": 0.48
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.49,
+        "timeliness": 0.3,
+        "overall": 0.332
+      },
+      "estimated_value": 42.08,
+      "currency": "USD",
+      "confidence": 0.332,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.48,
+        "value_overall": 0.332,
+        "combined_factor": 0.4208
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "eaedf5664c744f6b9188fa194a934ffd",
+      "flight_id": "FLT-LOWQ-000",
+      "uav_id": "UAV-G1",
+      "mission_id": "MSN-FLT-LOWQ-000",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-17T17:00:00Z",
+      "end_time": "2026-01-17T17:05:00Z",
+      "duration_seconds": 300.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 100,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "foggy",
+        "wind_speed_mps": 8.0,
+        "visibility_km": 1.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": []
+      },
+      "mission_result": {
+        "completed": false,
+        "completion_pct": 30.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "telemetry_loss",
+          "gps_failure"
+        ],
+        "alerts": [],
+        "violations": [
+          "data_gap",
+          "sensor_failure"
+        ]
+      },
+      "digest_hash": "b6bd4ec374c7378eeb093eb9c66df55071843e178d93750f18d4e567b671e2bf",
+      "signature": "qQl87qJmsznvpa7iaBvgQY0CRu/DMBcxu508YRJ/O5gRVhYzupRHHq1eWBw75nmFCg84eZDWPzWyc3S7sCeXAw==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.732185Z",
+      "created_at": "2026-04-13T17:43:23.732128Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.732113Z",
+    "updated_at": "2026-04-13T17:43:23.732216Z"
+  },
+  {
+    "asset_unit_id": "585591bcc0324ca0844fd6ad2ff84f3d",
+    "flight_id": "FLT-LOWQ-001",
+    "uav_id": "UAV-G1",
+    "mission_type": "survey",
+    "start_time": "2026-01-20T15:00:00Z",
+    "end_time": "2026-01-20T15:05:00Z",
+    "telemetry_hash": "d5a8b7010f61516e9f1daab9ce7a39fc10956458d1586d6543eab5348bc73c5e",
+    "evidence_uri": "",
+    "compliance_score": 0.4,
+    "risk_score": 0.6,
+    "data_quality_score": 0.48,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry"
+      ],
+      "permitted_uses": [
+        "non_transferable"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "585591bcc0324ca0844fd6ad2ff84f3d",
+      "quality_score": {
+        "completeness": 0.4,
+        "temporal_continuity": 0.5,
+        "sensor_reliability": 0.7,
+        "event_richness": 0.4,
+        "compliance_degree": 0.4,
+        "overall": 0.48
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.49,
+        "timeliness": 0.3,
+        "overall": 0.332
+      },
+      "estimated_value": 42.08,
+      "currency": "USD",
+      "confidence": 0.332,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.48,
+        "value_overall": 0.332,
+        "combined_factor": 0.4208
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "96ff5397a3454f4bab9d507d9a4ec597",
+      "flight_id": "FLT-LOWQ-001",
+      "uav_id": "UAV-G1",
+      "mission_id": "MSN-FLT-LOWQ-001",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-20T15:00:00Z",
+      "end_time": "2026-01-20T15:05:00Z",
+      "duration_seconds": 300.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 130,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "foggy",
+        "wind_speed_mps": 8.0,
+        "visibility_km": 1.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": []
+      },
+      "mission_result": {
+        "completed": false,
+        "completion_pct": 40.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "telemetry_loss",
+          "gps_failure"
+        ],
+        "alerts": [],
+        "violations": [
+          "data_gap",
+          "sensor_failure"
+        ]
+      },
+      "digest_hash": "d5a8b7010f61516e9f1daab9ce7a39fc10956458d1586d6543eab5348bc73c5e",
+      "signature": "sJMCg2ipq+I1cF3zXKOf8WBTbC/UbtfrZMD82JKoIelj2b8nExgdnT8pHEVzpN+fXnEC+zwEuk5oML/4KTgCDg==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.732765Z",
+      "created_at": "2026-04-13T17:43:23.732703Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.732687Z",
+    "updated_at": "2026-04-13T17:43:23.732798Z"
+  },
+  {
+    "asset_unit_id": "ec28d1b935374542a4e7e9bfeeba4f02",
+    "flight_id": "FLT-LOWQ-002",
+    "uav_id": "UAV-G1",
+    "mission_type": "survey",
+    "start_time": "2026-01-16T05:00:00Z",
+    "end_time": "2026-01-16T05:05:00Z",
+    "telemetry_hash": "bdd28901e771f34dee05d6c08acd6882cd9ce06f363c5b80b8ef7fed00152c1c",
+    "evidence_uri": "",
+    "compliance_score": 0.4,
+    "risk_score": 0.6,
+    "data_quality_score": 0.54,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry"
+      ],
+      "permitted_uses": [
+        "non_transferable"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "ec28d1b935374542a4e7e9bfeeba4f02",
+      "quality_score": {
+        "completeness": 0.4,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 0.7,
+        "event_richness": 0.4,
+        "compliance_degree": 0.4,
+        "overall": 0.54
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.49,
+        "timeliness": 0.3,
+        "overall": 0.332
+      },
+      "estimated_value": 45.68,
+      "currency": "USD",
+      "confidence": 0.332,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.54,
+        "value_overall": 0.332,
+        "combined_factor": 0.4568
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "1d440dec7bba4a17bae5b4eca9f4299a",
+      "flight_id": "FLT-LOWQ-002",
+      "uav_id": "UAV-G1",
+      "mission_id": "MSN-FLT-LOWQ-002",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-16T05:00:00Z",
+      "end_time": "2026-01-16T05:05:00Z",
+      "duration_seconds": 300.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 160,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "foggy",
+        "wind_speed_mps": 8.0,
+        "visibility_km": 1.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": []
+      },
+      "mission_result": {
+        "completed": false,
+        "completion_pct": 50.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "telemetry_loss",
+          "gps_failure"
+        ],
+        "alerts": [],
+        "violations": [
+          "data_gap",
+          "sensor_failure"
+        ]
+      },
+      "digest_hash": "bdd28901e771f34dee05d6c08acd6882cd9ce06f363c5b80b8ef7fed00152c1c",
+      "signature": "wHb6Kje/P7WCJyy3XEk7JzrTqYPAacNJnB/tKxOOzZyRXg5N3gYiC3JcXAdlqJVsVUFM9lpo9VLUDJHS94gfAQ==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.733325Z",
+      "created_at": "2026-04-13T17:43:23.733272Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.733258Z",
+    "updated_at": "2026-04-13T17:43:23.733357Z"
+  },
+  {
+    "asset_unit_id": "1c742375251545d9af58dc40291e53aa",
+    "flight_id": "FLT-LOWQ-003",
+    "uav_id": "UAV-G1",
+    "mission_type": "survey",
+    "start_time": "2026-01-16T13:00:00Z",
+    "end_time": "2026-01-16T13:05:00Z",
+    "telemetry_hash": "18991fd7e6c43a5b19c15c8d3e61ffe4b8b01adfedca4658f1e3f9b5d63d8cce",
+    "evidence_uri": "",
+    "compliance_score": 0.4,
+    "risk_score": 0.6,
+    "data_quality_score": 0.54,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry"
+      ],
+      "permitted_uses": [
+        "non_transferable"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": false,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "flight_evidence",
+    "valuation_result": {
+      "asset_unit_id": "1c742375251545d9af58dc40291e53aa",
+      "quality_score": {
+        "completeness": 0.4,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 0.7,
+        "event_richness": 0.4,
+        "compliance_degree": 0.4,
+        "overall": 0.54
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.49,
+        "timeliness": 0.3,
+        "overall": 0.332
+      },
+      "estimated_value": 45.68,
+      "currency": "USD",
+      "confidence": 0.332,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.54,
+        "value_overall": 0.332,
+        "combined_factor": 0.4568
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "f8385028dfee4d8f9170fbab84557932",
+      "flight_id": "FLT-LOWQ-003",
+      "uav_id": "UAV-G1",
+      "mission_id": "MSN-FLT-LOWQ-003",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-16T13:00:00Z",
+      "end_time": "2026-01-16T13:05:00Z",
+      "duration_seconds": 300.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 190,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "foggy",
+        "wind_speed_mps": 8.0,
+        "visibility_km": 1.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": []
+      },
+      "mission_result": {
+        "completed": false,
+        "completion_pct": 60.0,
+        "deviation_m": 0.0,
+        "anomalies": [
+          "telemetry_loss",
+          "gps_failure"
+        ],
+        "alerts": [],
+        "violations": [
+          "data_gap",
+          "sensor_failure"
+        ]
+      },
+      "digest_hash": "18991fd7e6c43a5b19c15c8d3e61ffe4b8b01adfedca4658f1e3f9b5d63d8cce",
+      "signature": "TQYj3n4l+y4UAEg4FI3VE+D5S/2Qbtu3t5gRFo0UeQGchRsEZspzKBheqOfztNYLJ/zGBaXXD7hge2zn4X2gCw==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.733873Z",
+      "created_at": "2026-04-13T17:43:23.733822Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.733809Z",
+    "updated_at": "2026-04-13T17:43:23.733905Z"
+  },
+  {
+    "asset_unit_id": "f789fdc8bab844ee8a8abd62b7a00cce",
+    "flight_id": "FLT-RIGHTS-000",
+    "uav_id": "UAV-H1",
+    "mission_type": "commercial_survey",
+    "start_time": "2026-01-17T04:00:00Z",
+    "end_time": "2026-01-17T04:40:00Z",
+    "telemetry_hash": "08ba517091ac245a443abfba590a2d7d1c36d0402a4f42980b5882a03aa11ce7",
+    "evidence_uri": "",
+    "compliance_score": 1.0,
+    "risk_score": 0.0,
+    "data_quality_score": 0.71,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features",
+        "training_sample"
+      ],
+      "permitted_uses": [
+        "internal_only",
+        "tradable_after_desensitization"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": true,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "route_optimization_sample",
+    "valuation_result": {
+      "asset_unit_id": "f789fdc8bab844ee8a8abd62b7a00cce",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 1.0,
+        "event_richness": 0.0,
+        "compliance_degree": 1.0,
+        "overall": 0.71
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.54,
+        "timeliness": 0.3,
+        "overall": 0.347
+      },
+      "estimated_value": 56.48,
+      "currency": "USD",
+      "confidence": 0.347,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.71,
+        "value_overall": 0.347,
+        "combined_factor": 0.5648
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "beb86beee1a7453194e08f434433710a",
+      "flight_id": "FLT-RIGHTS-000",
+      "uav_id": "UAV-H1",
+      "mission_id": "MSN-FLT-RIGHTS-000",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-17T04:00:00Z",
+      "end_time": "2026-01-17T04:40:00Z",
+      "duration_seconds": 2400.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 1500,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear",
+        "wind_speed_mps": 3.0,
+        "visibility_km": 15.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": []
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 98.0,
+        "deviation_m": 0.0,
+        "anomalies": [],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "08ba517091ac245a443abfba590a2d7d1c36d0402a4f42980b5882a03aa11ce7",
+      "signature": "CnKZqHBlnkgY0VwML12CIdjs0wxStLWBfcaFYfVOhLRuoITBqqztGS732NihnHSEDthr+TLV/anOIExbexQkAg==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.734412Z",
+      "created_at": "2026-04-13T17:43:23.734360Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.734347Z",
+    "updated_at": "2026-04-13T17:43:23.734442Z"
+  },
+  {
+    "asset_unit_id": "69edd5c4b7914fbcb1110e714ea74f84",
+    "flight_id": "FLT-RIGHTS-001",
+    "uav_id": "UAV-H2",
+    "mission_type": "commercial_survey",
+    "start_time": "2026-01-23T16:00:00Z",
+    "end_time": "2026-01-23T16:40:00Z",
+    "telemetry_hash": "8681894ddea45c11d0fd155010f8c2c6806528c6f313fa97b627fef7736f7ff5",
+    "evidence_uri": "",
+    "compliance_score": 1.0,
+    "risk_score": 0.0,
+    "data_quality_score": 0.71,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features",
+        "training_sample"
+      ],
+      "permitted_uses": [
+        "internal_only",
+        "tradable_after_desensitization"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": true,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "route_optimization_sample",
+    "valuation_result": {
+      "asset_unit_id": "69edd5c4b7914fbcb1110e714ea74f84",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 1.0,
+        "event_richness": 0.0,
+        "compliance_degree": 1.0,
+        "overall": 0.71
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.54,
+        "timeliness": 0.3,
+        "overall": 0.347
+      },
+      "estimated_value": 56.48,
+      "currency": "USD",
+      "confidence": 0.347,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.71,
+        "value_overall": 0.347,
+        "combined_factor": 0.5648
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "3dbe71a2428345d982b592b6a3fb9e12",
+      "flight_id": "FLT-RIGHTS-001",
+      "uav_id": "UAV-H2",
+      "mission_id": "MSN-FLT-RIGHTS-001",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-23T16:00:00Z",
+      "end_time": "2026-01-23T16:40:00Z",
+      "duration_seconds": 2400.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 1500,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear",
+        "wind_speed_mps": 3.0,
+        "visibility_km": 15.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": []
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 98.0,
+        "deviation_m": 0.0,
+        "anomalies": [],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "8681894ddea45c11d0fd155010f8c2c6806528c6f313fa97b627fef7736f7ff5",
+      "signature": "VlOy1lZRK8ZEHMBkaM+JGyzGsdYlCWgxuHsyb2sYnHZW358fxZN2J+Q3AkdvS9BByXTQXotrhNM+bHGgSMYbCA==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.734977Z",
+      "created_at": "2026-04-13T17:43:23.734921Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.734907Z",
+    "updated_at": "2026-04-13T17:43:23.735012Z"
+  },
+  {
+    "asset_unit_id": "54e1e3a3c83c4a0990810475ba03361d",
+    "flight_id": "FLT-RIGHTS-002",
+    "uav_id": "UAV-H3",
+    "mission_type": "commercial_survey",
+    "start_time": "2026-01-19T13:00:00Z",
+    "end_time": "2026-01-19T13:40:00Z",
+    "telemetry_hash": "3453d8d25436e03dc0e705ffc1367148e7dd0995aa57829f51a33c0648d7cdde",
+    "evidence_uri": "",
+    "compliance_score": 1.0,
+    "risk_score": 0.0,
+    "data_quality_score": 0.71,
+    "rights_profile": {
+      "owner": "platform",
+      "controller": "platform",
+      "contributors": [],
+      "data_categories": [
+        "raw_telemetry",
+        "derived_features",
+        "training_sample"
+      ],
+      "permitted_uses": [
+        "internal_only",
+        "tradable_after_desensitization"
+      ],
+      "prohibited_uses": [],
+      "desensitization_required": true,
+      "aggregation_min_count": 1,
+      "tradable": true,
+      "retention": {
+        "max_retention_days": 1095,
+        "expires_at": null,
+        "auto_archive": true
+      },
+      "revenue_split": [
+        {
+          "party_id": "platform",
+          "role": "platform",
+          "share_pct": 30.0
+        },
+        {
+          "party_id": "operator",
+          "role": "operator",
+          "share_pct": 50.0
+        },
+        {
+          "party_id": "data_processor",
+          "role": "data_processor",
+          "share_pct": 20.0
+        }
+      ]
+    },
+    "asset_class": "route_optimization_sample",
+    "valuation_result": {
+      "asset_unit_id": "54e1e3a3c83c4a0990810475ba03361d",
+      "quality_score": {
+        "completeness": 0.6,
+        "temporal_continuity": 0.8,
+        "sensor_reliability": 1.0,
+        "event_richness": 0.0,
+        "compliance_degree": 1.0,
+        "overall": 0.71
+      },
+      "value_score": {
+        "scarcity": 0.0,
+        "scenario_relevance": 0.5,
+        "reuse_potential": 0.54,
+        "timeliness": 0.3,
+        "overall": 0.347
+      },
+      "estimated_value": 56.48,
+      "currency": "USD",
+      "confidence": 0.347,
+      "breakdown": {
+        "base_price": 100.0,
+        "quality_weight": 0.6,
+        "value_weight": 0.4,
+        "quality_overall": 0.71,
+        "value_overall": 0.347,
+        "combined_factor": 0.5648
+      },
+      "engine_id": "rule_based",
+      "notes": "estimated_value = base_price * (quality_weight * quality_overall + value_weight * value_overall)"
+    },
+    "settlement_rule": null,
+    "revenue_log": [],
+    "status": "valuated",
+    "evidence": {
+      "evidence_id": "2caad36437dd4ad9b7f0c3e70e159afa",
+      "flight_id": "FLT-RIGHTS-002",
+      "uav_id": "UAV-H3",
+      "mission_id": "MSN-FLT-RIGHTS-002",
+      "operator_id": "OP-BENCH",
+      "start_time": "2026-01-19T13:00:00Z",
+      "end_time": "2026-01-19T13:40:00Z",
+      "duration_seconds": 2400.0,
+      "trajectory_hash": "",
+      "raw_data_uri": "",
+      "raw_data_hash": "",
+      "telemetry_summary": {
+        "total_points": 1500,
+        "avg_altitude_m": 120.0,
+        "max_altitude_m": 200.0,
+        "max_speed_mps": 25.0,
+        "avg_speed_mps": 15.0,
+        "min_battery_pct": 40.0,
+        "avg_battery_pct": 100.0,
+        "payload_active": false,
+        "trajectory_length_m": 0.0
+      },
+      "environment": {
+        "weather_condition": "clear",
+        "wind_speed_mps": 3.0,
+        "visibility_km": 15.0,
+        "temperature_c": null,
+        "no_fly_zone_incursions": 0,
+        "temporary_restrictions": [],
+        "risk_events": []
+      },
+      "mission_result": {
+        "completed": true,
+        "completion_pct": 98.0,
+        "deviation_m": 0.0,
+        "anomalies": [],
+        "alerts": [],
+        "violations": []
+      },
+      "digest_hash": "3453d8d25436e03dc0e705ffc1367148e7dd0995aa57829f51a33c0648d7cdde",
+      "signature": "FJUExdhDCLS7Y11fKe3so/BBwuDUnsWmZ+cNwknBUzgGBJZAuLI2kPPerogeCZyFeIPE30jXpe7Ubdyl43TRAg==",
+      "signed_by": "benchmark-signer",
+      "signed_at": "2026-04-13T17:43:23.735535Z",
+      "created_at": "2026-04-13T17:43:23.735484Z",
+      "extra": {}
+    },
+    "created_at": "2026-04-13T17:43:23.735471Z",
+    "updated_at": "2026-04-13T17:43:23.735569Z"
+  }
+]
