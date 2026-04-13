@@ -50,6 +50,76 @@
     "completed": true
   },
   {
+    "flight_id": "FLT-CLEAN-005",
+    "tag": "clean_route_survey",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-CLEAN-006",
+    "tag": "clean_route_survey",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-CLEAN-007",
+    "tag": "clean_route_survey",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-CLEAN-008",
+    "tag": "clean_route_survey",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-CLEAN-009",
+    "tag": "clean_route_survey",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-CLEAN-010",
+    "tag": "clean_route_survey",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-CLEAN-011",
+    "tag": "clean_route_survey",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
     "flight_id": "FLT-NIGHT-000",
     "tag": "night_flight",
     "asset_class": "maintenance_sample",
@@ -81,6 +151,46 @@
   },
   {
     "flight_id": "FLT-NIGHT-003",
+    "tag": "night_flight",
+    "asset_class": "maintenance_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-NIGHT-004",
+    "tag": "night_flight",
+    "asset_class": "maintenance_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-NIGHT-005",
+    "tag": "night_flight",
+    "asset_class": "maintenance_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-NIGHT-006",
+    "tag": "night_flight",
+    "asset_class": "maintenance_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-NIGHT-007",
     "tag": "night_flight",
     "asset_class": "maintenance_sample",
     "expected_tradable": false,
@@ -130,10 +240,70 @@
     "completed": true
   },
   {
+    "flight_id": "FLT-WEATHER-004",
+    "tag": "weather_disturbance",
+    "asset_class": "weather_operation_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-WEATHER-005",
+    "tag": "weather_disturbance",
+    "asset_class": "weather_operation_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-WEATHER-006",
+    "tag": "weather_disturbance",
+    "asset_class": "weather_operation_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-WEATHER-007",
+    "tag": "weather_disturbance",
+    "asset_class": "weather_operation_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-WEATHER-008",
+    "tag": "weather_disturbance",
+    "asset_class": "weather_operation_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-WEATHER-009",
+    "tag": "weather_disturbance",
+    "asset_class": "weather_operation_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
     "flight_id": "FLT-NFZ-000",
     "tag": "near_nfz",
     "asset_class": "compliance_record",
-    "expected_tradable": false,
+    "expected_tradable": true,
     "expected_quality_above_05": true,
     "expected_compliance_above_07": true,
     "has_violations": false,
@@ -143,6 +313,26 @@
     "flight_id": "FLT-NFZ-001",
     "tag": "near_nfz",
     "asset_class": "compliance_record",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-NFZ-002",
+    "tag": "near_nfz",
+    "asset_class": "compliance_record",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-NFZ-003",
+    "tag": "near_nfz",
+    "asset_class": "compliance_record",
     "expected_tradable": false,
     "expected_quality_above_05": true,
     "expected_compliance_above_07": true,
@@ -150,7 +340,37 @@
     "completed": true
   },
   {
-    "flight_id": "FLT-NFZ-002",
+    "flight_id": "FLT-NFZ-004",
+    "tag": "near_nfz",
+    "asset_class": "compliance_record",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": true,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-NFZ-005",
+    "tag": "near_nfz",
+    "asset_class": "compliance_record",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": true,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-NFZ-006",
+    "tag": "near_nfz",
+    "asset_class": "compliance_record",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": true,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-NFZ-007",
     "tag": "near_nfz",
     "asset_class": "compliance_record",
     "expected_tradable": false,
@@ -200,6 +420,66 @@
     "completed": true
   },
   {
+    "flight_id": "FLT-MAINT-004",
+    "tag": "anomaly_maintenance",
+    "asset_class": "maintenance_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-MAINT-005",
+    "tag": "anomaly_maintenance",
+    "asset_class": "maintenance_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-MAINT-006",
+    "tag": "anomaly_maintenance",
+    "asset_class": "maintenance_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-MAINT-007",
+    "tag": "anomaly_maintenance",
+    "asset_class": "maintenance_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-MAINT-008",
+    "tag": "anomaly_maintenance",
+    "asset_class": "maintenance_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-MAINT-009",
+    "tag": "anomaly_maintenance",
+    "asset_class": "maintenance_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
     "flight_id": "FLT-EMER-000",
     "tag": "emergency_logistics",
     "asset_class": "risk_dataset",
@@ -223,6 +503,56 @@
     "flight_id": "FLT-EMER-002",
     "tag": "emergency_logistics",
     "asset_class": "risk_dataset",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-EMER-003",
+    "tag": "emergency_logistics",
+    "asset_class": "risk_dataset",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-EMER-004",
+    "tag": "emergency_logistics",
+    "asset_class": "risk_dataset",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-EMER-005",
+    "tag": "emergency_logistics",
+    "asset_class": "risk_dataset",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
+  },
+  {
+    "flight_id": "FLT-EMER-006",
+    "tag": "emergency_logistics",
+    "asset_class": "risk_dataset",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
+  },
+  {
+    "flight_id": "FLT-EMER-007",
+    "tag": "emergency_logistics",
+    "asset_class": "risk_dataset",
     "expected_tradable": false,
     "expected_quality_above_05": true,
     "expected_compliance_above_07": false,
@@ -234,7 +564,7 @@
     "tag": "low_quality",
     "asset_class": "flight_evidence",
     "expected_tradable": false,
-    "expected_quality_above_05": false,
+    "expected_quality_above_05": true,
     "expected_compliance_above_07": false,
     "has_violations": true,
     "completed": false
@@ -264,7 +594,87 @@
     "tag": "low_quality",
     "asset_class": "flight_evidence",
     "expected_tradable": false,
+    "expected_quality_above_05": false,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
+  },
+  {
+    "flight_id": "FLT-LOWQ-004",
+    "tag": "low_quality",
+    "asset_class": "flight_evidence",
+    "expected_tradable": false,
     "expected_quality_above_05": true,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
+  },
+  {
+    "flight_id": "FLT-LOWQ-005",
+    "tag": "low_quality",
+    "asset_class": "flight_evidence",
+    "expected_tradable": false,
+    "expected_quality_above_05": false,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
+  },
+  {
+    "flight_id": "FLT-LOWQ-006",
+    "tag": "low_quality",
+    "asset_class": "flight_evidence",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
+  },
+  {
+    "flight_id": "FLT-LOWQ-007",
+    "tag": "low_quality",
+    "asset_class": "flight_evidence",
+    "expected_tradable": false,
+    "expected_quality_above_05": false,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
+  },
+  {
+    "flight_id": "FLT-LOWQ-008",
+    "tag": "low_quality",
+    "asset_class": "flight_evidence",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
+  },
+  {
+    "flight_id": "FLT-LOWQ-009",
+    "tag": "low_quality",
+    "asset_class": "flight_evidence",
+    "expected_tradable": false,
+    "expected_quality_above_05": false,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
+  },
+  {
+    "flight_id": "FLT-LOWQ-010",
+    "tag": "low_quality",
+    "asset_class": "flight_evidence",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
+  },
+  {
+    "flight_id": "FLT-LOWQ-011",
+    "tag": "low_quality",
+    "asset_class": "flight_evidence",
+    "expected_tradable": false,
+    "expected_quality_above_05": false,
     "expected_compliance_above_07": false,
     "has_violations": true,
     "completed": false
@@ -298,5 +708,345 @@
     "expected_compliance_above_07": true,
     "has_violations": false,
     "completed": true
+  },
+  {
+    "flight_id": "FLT-RIGHTS-003",
+    "tag": "rights_conflict",
+    "asset_class": "audit_ready_package",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-RIGHTS-004",
+    "tag": "rights_conflict",
+    "asset_class": "audit_ready_package",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-RIGHTS-005",
+    "tag": "rights_conflict",
+    "asset_class": "audit_ready_package",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-RIGHTS-006",
+    "tag": "rights_conflict",
+    "asset_class": "audit_ready_package",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-RIGHTS-007",
+    "tag": "rights_conflict",
+    "asset_class": "audit_ready_package",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-BVLOS-000",
+    "tag": "beyond_vlos",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-BVLOS-001",
+    "tag": "beyond_vlos",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-BVLOS-002",
+    "tag": "beyond_vlos",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-BVLOS-003",
+    "tag": "beyond_vlos",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-BVLOS-004",
+    "tag": "beyond_vlos",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-BVLOS-005",
+    "tag": "beyond_vlos",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-BVLOS-006",
+    "tag": "beyond_vlos",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-BVLOS-007",
+    "tag": "beyond_vlos",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-BVLOS-008",
+    "tag": "beyond_vlos",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-BVLOS-009",
+    "tag": "beyond_vlos",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-BVLOS-010",
+    "tag": "beyond_vlos",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-BVLOS-011",
+    "tag": "beyond_vlos",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-BVLOS-012",
+    "tag": "beyond_vlos",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
+  },
+  {
+    "flight_id": "FLT-BVLOS-013",
+    "tag": "beyond_vlos",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
+  },
+  {
+    "flight_id": "FLT-BVLOS-014",
+    "tag": "beyond_vlos",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
+  },
+  {
+    "flight_id": "FLT-URBAN-000",
+    "tag": "urban_corridor",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-URBAN-001",
+    "tag": "urban_corridor",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-URBAN-002",
+    "tag": "urban_corridor",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-URBAN-003",
+    "tag": "urban_corridor",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-URBAN-004",
+    "tag": "urban_corridor",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-URBAN-005",
+    "tag": "urban_corridor",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-URBAN-006",
+    "tag": "urban_corridor",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-URBAN-007",
+    "tag": "urban_corridor",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": true,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-URBAN-008",
+    "tag": "urban_corridor",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-URBAN-009",
+    "tag": "urban_corridor",
+    "asset_class": "route_optimization_sample",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-URBAN-010",
+    "tag": "urban_corridor",
+    "asset_class": "risk_dataset",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": true,
+    "has_violations": false,
+    "completed": true
+  },
+  {
+    "flight_id": "FLT-URBAN-011",
+    "tag": "urban_corridor",
+    "asset_class": "risk_dataset",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
+  },
+  {
+    "flight_id": "FLT-URBAN-012",
+    "tag": "urban_corridor",
+    "asset_class": "risk_dataset",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
+  },
+  {
+    "flight_id": "FLT-URBAN-013",
+    "tag": "urban_corridor",
+    "asset_class": "risk_dataset",
+    "expected_tradable": false,
+    "expected_quality_above_05": true,
+    "expected_compliance_above_07": false,
+    "has_violations": true,
+    "completed": false
   }
 ]

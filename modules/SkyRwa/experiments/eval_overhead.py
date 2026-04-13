@@ -52,7 +52,7 @@ def run() -> dict:
     print("=== Experiment: Overhead Measurement ===\n")
     results: dict = {}
 
-    sizes = [5, 10, 20, 50]
+    sizes = [5, 10, 20, 50, 100, 200, 500, 1000]
     ingestor = FlightIngestor()
     eb = EvidenceBuilder()
     gov = GovernanceEngine()
