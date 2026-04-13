@@ -1,0 +1,16 @@
+# Q1: Flights that have evidence with digest and high compliance, suitable for promotion
+
+PREFIX skyrwa: <urn:skyrwa:ontology#>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?asset ?flightId ?compliance ?quality
+WHERE {
+    ?asset a skyrwa:AssetCandidate ;
+           skyrwa:flightId ?flightId ;
+           skyrwa:complianceScore ?compliance ;
+           skyrwa:dataQualityScore ?quality ;
+           skyrwa:derivedFromEvidence ?ev .
+    ?ev skyrwa:hasDigest ?digest .
+    FILTER (?compliance >= 0.8 && ?quality >= 0.5)
+}
+ORDER BY DESC(?quality)

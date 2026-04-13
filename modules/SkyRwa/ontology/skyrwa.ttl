@@ -1,0 +1,264 @@
+@prefix skyrwa:  <urn:skyrwa:ontology#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix dcat:    <http://www.w3.org/ns/dcat#> .
+
+# ============================================================================
+# SkyRwa Flight-to-Asset Ontology
+# ============================================================================
+# Title:   SkyRwa — A Knowledge Graph Ontology for UAM Flight Data Assets
+# Version: 0.3.0
+# Date:    2026-04-13
+# Purpose: Provides a formal vocabulary for the flight-to-asset pipeline
+#          in Urban Air Mobility systems.  Covers evidence, governance,
+#          productization, valuation, and settlement.
+# ============================================================================
+
+skyrwa: a owl:Ontology ;
+    owl:versionInfo "0.3.0" ;
+    dcterms:title "SkyRwa Flight-to-Asset Ontology"@en ;
+    dcterms:description """Domain ontology for transforming UAM flight records
+into governable, valuatable, and tradable data assets.  The ontology
+distinguishes raw flight evidence from governed asset candidates,
+aggregated data products, and revenue-right objects."""@en ;
+    dcterms:creator "SkyNet UAM Platform" ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> .
+
+# ────────────────────────────────────────────────────────────────────────────
+# Core Classes
+# ────────────────────────────────────────────────────────────────────────────
+
+skyrwa:FlightEvidence a owl:Class ;
+    rdfs:label "Flight Evidence"@en ;
+    rdfs:comment """Raw, unprocessed attestation of a single UAM flight.
+Contains telemetry summaries, environment context, mission results,
+and cryptographic digests.  NOT directly tradable."""@en ;
+    rdfs:subClassOf prov:Entity .
+
+skyrwa:AssetCandidate a owl:Class ;
+    rdfs:label "Asset Candidate"@en ;
+    rdfs:comment """A flight evidence package that has passed initial
+governance and received a valuation.  It is a candidate for further
+aggregation into a data product."""@en ;
+    rdfs:subClassOf prov:Entity .
+
+skyrwa:GovernedDataProduct a owl:Class ;
+    rdfs:label "Governed Data Product"@en ;
+    rdfs:comment """An aggregated data product derived from one or more
+asset candidates, passing full governance checks.  May be priced,
+licensed, or settled."""@en ;
+    rdfs:subClassOf dcat:Dataset, prov:Entity .
+
+skyrwa:RevenueRight a owl:Class ;
+    rdfs:label "Revenue Right"@en ;
+    rdfs:comment """A revenue entitlement mapped from a governed data product.
+May be registered on-chain as an RWA token."""@en ;
+    rdfs:subClassOf prov:Entity .
+
+skyrwa:UsageEvent a owl:Class ;
+    rdfs:label "Usage Event"@en ;
+    rdfs:comment "An event where a data asset or product is consumed."@en ;
+    rdfs:subClassOf prov:Activity .
+
+skyrwa:SettlementRecord a owl:Class ;
+    rdfs:label "Settlement Record"@en ;
+    rdfs:comment "Finalized revenue-split record for one or more usage events."@en ;
+    rdfs:subClassOf prov:Entity .
+
+skyrwa:GovernanceDecision a owl:Class ;
+    rdfs:label "Governance Decision"@en ;
+    rdfs:comment """An explicit decision on tradability, desensitization,
+permitted uses, etc. for a flight evidence or asset candidate."""@en ;
+    rdfs:subClassOf prov:Activity .
+
+skyrwa:ValuationExplanation a owl:Class ;
+    rdfs:label "Valuation Explanation"@en ;
+    rdfs:comment """Structured rationale for a valuation score, including
+which factors contributed positively or negatively."""@en .
+
+skyrwa:FlightMission a owl:Class ;
+    rdfs:label "Flight Mission"@en ;
+    rdfs:comment "A planned mission that one or more flights execute."@en ;
+    rdfs:subClassOf prov:Activity .
+
+skyrwa:UAV a owl:Class ;
+    rdfs:label "UAV"@en ;
+    rdfs:comment "An unmanned aerial vehicle participating in UAM flights."@en ;
+    rdfs:subClassOf prov:Agent .
+
+skyrwa:Operator a owl:Class ;
+    rdfs:label "Operator"@en ;
+    rdfs:comment "The human or organizational entity operating a UAV."@en ;
+    rdfs:subClassOf prov:Agent .
+
+skyrwa:DataConsumer a owl:Class ;
+    rdfs:label "Data Consumer"@en ;
+    rdfs:comment "An entity that consumes or subscribes to a data product."@en ;
+    rdfs:subClassOf prov:Agent .
+
+skyrwa:ValuationFactor a owl:Class ;
+    rdfs:label "Valuation Factor"@en ;
+    rdfs:comment "A single scored dimension contributing to overall valuation."@en .
+
+# ────────────────────────────────────────────────────────────────────────────
+# Object Properties
+# ────────────────────────────────────────────────────────────────────────────
+
+skyrwa:derivedFromEvidence a owl:ObjectProperty ;
+    rdfs:label "derived from evidence"@en ;
+    rdfs:domain skyrwa:AssetCandidate ;
+    rdfs:range skyrwa:FlightEvidence ;
+    rdfs:subPropertyOf prov:wasDerivedFrom .
+
+skyrwa:governedBy a owl:ObjectProperty ;
+    rdfs:label "governed by"@en ;
+    rdfs:domain skyrwa:AssetCandidate ;
+    rdfs:range skyrwa:GovernanceDecision .
+
+skyrwa:promotedToProduct a owl:ObjectProperty ;
+    rdfs:label "promoted to product"@en ;
+    rdfs:domain skyrwa:AssetCandidate ;
+    rdfs:range skyrwa:GovernedDataProduct .
+
+skyrwa:hasUsageEvent a owl:ObjectProperty ;
+    rdfs:label "has usage event"@en ;
+    rdfs:range skyrwa:UsageEvent .
+
+skyrwa:hasSettlementRecord a owl:ObjectProperty ;
+    rdfs:label "has settlement record"@en ;
+    rdfs:range skyrwa:SettlementRecord .
+
+skyrwa:hasValuation a owl:ObjectProperty ;
+    rdfs:label "has valuation"@en ;
+    rdfs:range skyrwa:ValuationExplanation .
+
+skyrwa:hasRightsProfile a owl:ObjectProperty ;
+    rdfs:label "has rights profile"@en ;
+    rdfs:comment "Links an asset candidate to its governance-assigned rights."@en .
+
+skyrwa:requiresDesensitization a owl:DatatypeProperty ;
+    rdfs:label "requires desensitization"@en ;
+    rdfs:range xsd:boolean .
+
+skyrwa:isTradable a owl:DatatypeProperty ;
+    rdfs:label "is tradable"@en ;
+    rdfs:range xsd:boolean .
+
+skyrwa:hasRevenueShare a owl:ObjectProperty ;
+    rdfs:label "has revenue share"@en ;
+    rdfs:comment "Links to a revenue participant entry."@en .
+
+skyrwa:hasDigest a owl:DatatypeProperty ;
+    rdfs:label "has digest"@en ;
+    rdfs:range xsd:string ;
+    rdfs:comment "SHA-256 content digest of the evidence package."@en .
+
+skyrwa:hasSignature a owl:DatatypeProperty ;
+    rdfs:label "has signature"@en ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Cryptographic signature over the evidence digest."@en .
+
+skyrwa:hasLineage a owl:ObjectProperty ;
+    rdfs:label "has lineage"@en ;
+    rdfs:comment "Links a derived entity to its provenance chain."@en ;
+    rdfs:subPropertyOf prov:wasDerivedFrom .
+
+skyrwa:hasAssetClass a owl:DatatypeProperty ;
+    rdfs:label "has asset class"@en ;
+    rdfs:range xsd:string .
+
+skyrwa:hasStatus a owl:DatatypeProperty ;
+    rdfs:label "has status"@en ;
+    rdfs:range xsd:string .
+
+skyrwa:hasValuationFactor a owl:ObjectProperty ;
+    rdfs:label "has valuation factor"@en ;
+    rdfs:domain skyrwa:ValuationExplanation ;
+    rdfs:range skyrwa:ValuationFactor .
+
+skyrwa:hasMission a owl:ObjectProperty ;
+    rdfs:label "has mission"@en ;
+    rdfs:domain skyrwa:FlightEvidence ;
+    rdfs:range skyrwa:FlightMission .
+
+skyrwa:operatedBy a owl:ObjectProperty ;
+    rdfs:label "operated by"@en ;
+    rdfs:domain skyrwa:FlightEvidence ;
+    rdfs:range skyrwa:Operator ;
+    rdfs:subPropertyOf prov:wasAttributedTo .
+
+skyrwa:performedByUAV a owl:ObjectProperty ;
+    rdfs:label "performed by UAV"@en ;
+    rdfs:domain skyrwa:FlightEvidence ;
+    rdfs:range skyrwa:UAV .
+
+skyrwa:consumedBy a owl:ObjectProperty ;
+    rdfs:label "consumed by"@en ;
+    rdfs:domain skyrwa:UsageEvent ;
+    rdfs:range skyrwa:DataConsumer .
+
+skyrwa:settledVia a owl:ObjectProperty ;
+    rdfs:label "settled via"@en ;
+    rdfs:domain skyrwa:UsageEvent ;
+    rdfs:range skyrwa:SettlementRecord .
+
+skyrwa:aggregatesCandidate a owl:ObjectProperty ;
+    rdfs:label "aggregates candidate"@en ;
+    rdfs:domain skyrwa:GovernedDataProduct ;
+    rdfs:range skyrwa:AssetCandidate .
+
+# ────────────────────────────────────────────────────────────────────────────
+# Datatype Properties (scalar attributes)
+# ────────────────────────────────────────────────────────────────────────────
+
+skyrwa:flightId a owl:DatatypeProperty ;
+    rdfs:label "flight ID"@en ;
+    rdfs:range xsd:string .
+
+skyrwa:uavId a owl:DatatypeProperty ;
+    rdfs:label "UAV ID"@en ;
+    rdfs:range xsd:string .
+
+skyrwa:startTime a owl:DatatypeProperty ;
+    rdfs:label "start time"@en ;
+    rdfs:range xsd:dateTime .
+
+skyrwa:endTime a owl:DatatypeProperty ;
+    rdfs:label "end time"@en ;
+    rdfs:range xsd:dateTime .
+
+skyrwa:complianceScore a owl:DatatypeProperty ;
+    rdfs:label "compliance score"@en ;
+    rdfs:range xsd:float .
+
+skyrwa:riskScore a owl:DatatypeProperty ;
+    rdfs:label "risk score"@en ;
+    rdfs:range xsd:float .
+
+skyrwa:dataQualityScore a owl:DatatypeProperty ;
+    rdfs:label "data quality score"@en ;
+    rdfs:range xsd:float .
+
+skyrwa:estimatedValue a owl:DatatypeProperty ;
+    rdfs:label "estimated value"@en ;
+    rdfs:range xsd:float .
+
+skyrwa:grossAmount a owl:DatatypeProperty ;
+    rdfs:label "gross amount"@en ;
+    rdfs:range xsd:float .
+
+skyrwa:sharePct a owl:DatatypeProperty ;
+    rdfs:label "share percentage"@en ;
+    rdfs:range xsd:float .
+
+skyrwa:usageType a owl:DatatypeProperty ;
+    rdfs:label "usage type"@en ;
+    rdfs:range xsd:string .
+
+skyrwa:consumer a owl:DatatypeProperty ;
+    rdfs:label "consumer"@en ;
+    rdfs:range xsd:string .

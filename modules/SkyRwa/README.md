@@ -2,6 +2,9 @@
 
 > **Every UAM flight produces verifiable, governable, valuatable data-asset candidate units.**
 
+> **Semantic Web / Knowledge Graph system artifact for ISWC 2026:**
+> *From Flight Evidence to Governable Data Assets: A Knowledge Graph–Driven Flight-to-Asset Pipeline for Urban Air Mobility*
+
 ## Architecture
 
 ![SkyRwa Flight-to-Asset Pipeline Architecture](docs/architecture.png)
@@ -27,9 +30,10 @@ It does **not** assume that every flight is automatically an asset or a token. I
 |---------|-----------|---------|
 | **Flight Evidence** (`FlightEvidencePackage`) | Raw attestation record of a single flight — telemetry summary, environment context, mission result, SHA-256 digest. **Not tradable.** | "UAV-007 flew route R-03 on 2026-04-13, 4980 telemetry points, no violations" |
 | **Asset Candidate** (`FlightAssetUnit`) | A governed, scored, classified wrapper around the evidence. Carries a `RightsProfile`, `ValuationResultV2`, and `SettlementRule`. **May** become tradable after governance. | The same flight, classified as `route_optimization_sample`, valued at 74.92 USD, tradable after desensitisation |
-| **Revenue-Right / RWA Token** | An on-chain or off-chain representation of the right to receive revenue when the asset is consumed. **Not implemented in V1** — the `OnChainAdapter` provides a protocol-level interface. | A receipt token on Ethereum representing 50% operator share |
+| **Governed Data Product** (`GovernedProduct`) | An aggregated data product derived from multiple asset candidates after passing full governance. Tradable and licensable. | A weather-operation dataset aggregated from 5 flights, valued at 300 USD |
+| **Revenue-Right / RWA Token** | An on-chain or off-chain representation of the right to receive revenue when the asset is consumed. The `OnChainAdapter` provides a protocol-level interface. | A receipt token on Ethereum representing 50% operator share |
 
-### Pipeline Lifecycle
+### Pipeline Lifecycle (Extended)
 
 ```
 FlightIngestRecord
@@ -238,12 +242,140 @@ Replace `JsonStore` with a SQLAlchemy / async DB adapter. The store interface
 (`save`, `load`, `list_ids`, `save_ledger`, `save_settlements`) is intentionally
 simple to facilitate migration.
 
+## Semantic Web / Knowledge Graph Support
+
+### Ontology
+
+SkyRwa includes a formal domain ontology (`ontology/skyrwa.ttl`) defining 12 core classes and 20+ properties, aligned with PROV-O, DCAT, ODRL 2.2, and Schema.org / Dublin Core. See [`ontology/README.md`](ontology/README.md).
+
+### RDF / JSON-LD / Turtle Export
+
+All core domain objects can be serialized to RDF:
+
+```python
+from SkyRwa.rdf.serializer import to_turtle, to_jsonld, to_graph
+
+ttl = to_turtle(asset_unit)        # Turtle string
+jld = to_jsonld(evidence_package)  # JSON-LD string
+g   = to_graph(settlement_record)  # rdflib.Graph
+```
+
+### SHACL Validation
+
+Five SHACL shape files validate FlightEvidence, AssetCandidate, GovernedDataProduct, SettlementRule, and UsageEvent:
+
+```python
+from SkyRwa.semantic_rules import ShaclValidator
+from SkyRwa.rdf.serializer import to_graph
+
+g = to_graph(my_asset_unit)
+report = ShaclValidator().validate(g)
+print(report.conforms, len(report.violations))
+```
+
+### SPARQL Competency Queries
+
+Six competency questions (CQ1–CQ6) and four analytical queries are provided as `.rq` files in `queries/`. See [`benchmarks/competency_questions.md`](benchmarks/competency_questions.md).
+
+### Multi-flight Productization
+
+The `productization/` layer aggregates multiple asset candidates into governed data products:
+
+```python
+from SkyRwa.productization import CandidateAggregator, ProductBuilder, ProductCatalogue
+
+groups = CandidateAggregator(min_count=3).group(asset_units)
+for cls, group in groups.items():
+    product = ProductBuilder().build(group)
+    ProductCatalogue().register(product)
+```
+
+### Provenance Signing (Ed25519)
+
+Real cryptographic signatures replace the placeholder mechanism:
+
+```python
+from SkyRwa.provenance.signing import Ed25519Signer
+
+signer = Ed25519Signer.generate_keypair("my-signer")
+signer.sign_evidence(evidence_package)
+assert signer.verify_evidence(evidence_package)
+```
+
+## Benchmark & Experiments
+
+### Generate Benchmark Data
+
+```bash
+cd SkyNetUamPlatform/modules
+python -m SkyRwa.benchmarks.generate_benchmark
+```
+
+Generates 30 flights across 8 scenarios with JSON inputs, RDF graphs, and expected labels.
+
+### Run Experiments
+
+```bash
+python -m SkyRwa.experiments.eval_validation     # SHACL coverage
+python -m SkyRwa.experiments.eval_queryability    # JSON vs SPARQL
+python -m SkyRwa.experiments.eval_overhead        # Performance
+python -m SkyRwa.experiments.eval_case_studies     # Paper case studies
+python -m SkyRwa.experiments.run_queries           # All SPARQL queries
+```
+
+## Extended Directory Structure
+
+```
+modules/SkyRwa/
+├── ontology/              # Domain ontology (Turtle)
+│   ├── skyrwa.ttl         # Core classes & properties
+│   ├── prefixes.ttl       # Shared namespace prefixes
+│   ├── alignments.ttl     # PROV-O / DCAT / ODRL / Schema.org mappings
+│   └── README.md
+├── rdf/                   # RDF serialization layer
+│   ├── namespaces.py      # Namespace declarations
+│   ├── mapper.py          # Domain objects → RDF triples
+│   ├── serializer.py      # to_turtle(), to_jsonld(), to_graph()
+│   └── graph_store.py     # In-memory graph store + SPARQL
+├── shapes/                # SHACL constraint shapes
+│   ├── flight_evidence.shacl.ttl
+│   ├── asset_candidate.shacl.ttl
+│   ├── governed_product.shacl.ttl
+│   ├── settlement_rule.shacl.ttl
+│   └── revenue_record.shacl.ttl
+├── queries/               # SPARQL queries
+│   ├── competency/        # CQ1–CQ6 (competency questions)
+│   └── analytical/        # Q1–Q4 (analytical queries)
+├── semantic_rules/        # Explicit semantic governance
+│   ├── validation_runner.py    # SHACL validator wrapper
+│   ├── governance_rules.py     # SPARQL-based governance rules
+│   ├── promotion_rules.py      # Product promotion rules
+│   └── explanation_rules.py    # Structured explanation builder
+├── productization/        # Multi-flight aggregation
+│   ├── aggregator.py      # Group candidates by class
+│   ├── product_builder.py # Build GovernedProduct
+│   └── catalogue.py       # Product catalogue + RDF export
+├── benchmarks/            # Evaluation data
+│   ├── generate_benchmark.py   # 30-flight benchmark generator
+│   ├── benchmark_spec.md
+│   ├── competency_questions.md
+│   ├── sample_data/       # Generated JSON inputs/labels
+│   └── sample_graphs/     # Generated RDF graphs
+├── experiments/           # ISWC evaluation scripts
+│   ├── eval_validation.py
+│   ├── eval_queryability.py
+│   ├── eval_overhead.py
+│   ├── eval_case_studies.py
+│   └── run_queries.py
+└── ISWC_DEV_NOTES.md     # Paper-to-code mapping
+```
+
 ## Current Limitations
 
-- **Signature is a placeholder** — integrate a real PKI adapter (ECDSA/EdDSA) before production.
 - **Scarcity metric** is keyword-based — should query a data catalogue index.
 - **Scenario relevance** is keyword-based — should accept demand-side signals.
 - **No real-time streaming** — the pipeline is batch/post-hoc only.
-- **No multi-flight aggregation** — each `FlightAssetUnit` covers a single flight.
 - **On-chain adapter is a no-op stub** — needs a concrete blockchain implementation.
-- **No authentication/authorization** — access control is out of scope for V1.
+- **No authentication/authorization** — access control is out of scope.
+- **No triple store integration** — uses in-memory rdflib graph (P2 enhancement).
+- **No formal ontology evaluation** (OntoClean / OOPS!) — planned for future.

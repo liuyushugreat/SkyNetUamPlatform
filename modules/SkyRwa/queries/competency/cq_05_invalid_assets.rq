@@ -1,0 +1,16 @@
+# CQ5: Which objects are marked tradable but lack a rights profile?
+# These represent governance violations.
+
+PREFIX skyrwa: <urn:skyrwa:ontology#>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?asset ?flightId
+WHERE {
+    ?asset a skyrwa:AssetCandidate ;
+           skyrwa:flightId ?flightId .
+    FILTER NOT EXISTS { ?asset skyrwa:hasRightsProfile ?rp }
+    FILTER EXISTS {
+        ?asset skyrwa:hasStatus "settlement_ready"
+    }
+}
+ORDER BY ?flightId

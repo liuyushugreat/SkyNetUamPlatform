@@ -1,0 +1,14 @@
+# CQ4: How much settled revenue has each operator earned across all assets?
+
+PREFIX skyrwa: <urn:skyrwa:ontology#>
+
+SELECT ?partyId ?role (SUM(?amount) AS ?totalRevenue)
+WHERE {
+    ?settlement a skyrwa:SettlementRecord ;
+                skyrwa:hasRevenueShare ?share .
+    ?share skyrwa:partyId ?partyId ;
+           skyrwa:role ?role ;
+           skyrwa:amount ?amount .
+}
+GROUP BY ?partyId ?role
+ORDER BY DESC(?totalRevenue)

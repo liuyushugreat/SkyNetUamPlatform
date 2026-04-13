@@ -1,0 +1,14 @@
+# Q3: Assets with estimated value above a threshold
+
+PREFIX skyrwa: <urn:skyrwa:ontology#>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?asset ?flightId ?value
+WHERE {
+    ?asset a skyrwa:AssetCandidate ;
+           skyrwa:flightId ?flightId ;
+           skyrwa:hasValuation ?val .
+    ?val skyrwa:estimatedValue ?value .
+    FILTER (?value > 50.0)
+}
+ORDER BY DESC(?value)

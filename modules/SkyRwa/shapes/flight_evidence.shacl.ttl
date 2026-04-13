@@ -1,0 +1,57 @@
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix skyrwa:  <urn:skyrwa:ontology#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================================
+# SHACL Shape: FlightEvidence
+# ============================================================================
+# Validates that every FlightEvidence instance has the minimum fields
+# required for audit and downstream processing.
+# ============================================================================
+
+skyrwa:FlightEvidenceShape a sh:NodeShape ;
+    sh:targetClass skyrwa:FlightEvidence ;
+    sh:name "Flight Evidence Shape" ;
+    sh:description "Minimum constraints for a valid flight evidence record." ;
+
+    sh:property [
+        sh:path skyrwa:flightId ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:name "flight ID" ;
+        sh:message "FlightEvidence must have a non-empty flightId." ;
+    ] ;
+
+    sh:property [
+        sh:path skyrwa:hasDigest ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:name "digest hash" ;
+        sh:message "FlightEvidence must have a digest hash." ;
+    ] ;
+
+    sh:property [
+        sh:path skyrwa:startTime ;
+        sh:minCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:name "start time" ;
+        sh:message "FlightEvidence must have a start time." ;
+    ] ;
+
+    sh:property [
+        sh:path skyrwa:endTime ;
+        sh:minCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:name "end time" ;
+        sh:message "FlightEvidence must have an end time." ;
+    ] ;
+
+    sh:property [
+        sh:path skyrwa:uavId ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:name "UAV ID" ;
+        sh:message "FlightEvidence must reference a UAV." ;
+    ] .

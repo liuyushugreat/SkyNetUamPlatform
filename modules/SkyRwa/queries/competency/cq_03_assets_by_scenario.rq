@@ -1,0 +1,12 @@
+# CQ3: Which route-optimization data products derive from which flight evidence?
+
+PREFIX skyrwa: <urn:skyrwa:ontology#>
+
+SELECT ?product ?candidate ?evidence
+WHERE {
+    ?product a skyrwa:GovernedDataProduct ;
+             skyrwa:hasAssetClass "route_optimization_sample" ;
+             skyrwa:aggregatesCandidate ?candidate .
+    ?candidate skyrwa:derivedFromEvidence ?evidence .
+}
+ORDER BY ?product ?candidate

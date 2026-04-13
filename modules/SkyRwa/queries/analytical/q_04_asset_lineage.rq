@@ -1,0 +1,16 @@
+# Q4: Full lineage chain from evidence through candidate to product to settlement
+
+PREFIX skyrwa: <urn:skyrwa:ontology#>
+PREFIX prov:   <http://www.w3.org/ns/prov#>
+
+SELECT ?evidence ?candidate ?product ?settlement
+WHERE {
+    ?candidate skyrwa:derivedFromEvidence ?evidence .
+    OPTIONAL {
+        ?product skyrwa:aggregatesCandidate ?candidate .
+    }
+    OPTIONAL {
+        ?candidate skyrwa:hasSettlementRecord ?settlement .
+    }
+}
+ORDER BY ?evidence ?candidate

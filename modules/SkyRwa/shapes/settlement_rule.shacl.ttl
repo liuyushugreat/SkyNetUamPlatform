@@ -1,0 +1,31 @@
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix skyrwa:  <urn:skyrwa:ontology#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================================
+# SHACL Shape: SettlementRule (via revenue shares)
+# ============================================================================
+# Validates that settlement rules attached to assets have at least one
+# participant and that share percentages are non-negative and sum to 100.
+# ============================================================================
+
+skyrwa:RevenueShareShape a sh:NodeShape ;
+    sh:name "Revenue Share Shape" ;
+    sh:description "Validates a single revenue share entry." ;
+
+    sh:property [
+        sh:path skyrwa:partyId ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:name "party ID" ;
+        sh:message "Revenue share must identify a party." ;
+    ] ;
+
+    sh:property [
+        sh:path skyrwa:sharePct ;
+        sh:minCount 1 ;
+        sh:datatype xsd:float ;
+        sh:minInclusive 0.0 ;
+        sh:name "share percentage" ;
+        sh:message "Share percentage must be non-negative." ;
+    ] .

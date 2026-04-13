@@ -1,0 +1,77 @@
+@prefix skyrwa:  <urn:skyrwa:ontology#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix dcat:    <http://www.w3.org/ns/dcat#> .
+@prefix odrl:    <http://www.w3.org/ns/odrl/2/> .
+@prefix schema:  <http://schema.org/> .
+
+# ============================================================================
+# Alignments — mapping SkyRwa classes / properties to standard vocabularies
+# ============================================================================
+# This file documents how SkyRwa domain concepts align with:
+#   - PROV-O    (W3C Provenance Ontology)
+#   - DCAT      (Data Catalog Vocabulary)
+#   - ODRL 2.2  (Open Digital Rights Language)
+#   - Schema.org / Dublin Core Terms
+# ============================================================================
+
+# ────────────────────────────────────────────────────────────────────────────
+# PROV-O Alignments — provenance tracking
+# ────────────────────────────────────────────────────────────────────────────
+
+skyrwa:FlightEvidence rdfs:subClassOf prov:Entity .
+skyrwa:AssetCandidate rdfs:subClassOf prov:Entity .
+skyrwa:GovernedDataProduct rdfs:subClassOf prov:Entity .
+skyrwa:RevenueRight rdfs:subClassOf prov:Entity .
+skyrwa:SettlementRecord rdfs:subClassOf prov:Entity .
+
+skyrwa:GovernanceDecision rdfs:subClassOf prov:Activity .
+skyrwa:FlightMission rdfs:subClassOf prov:Activity .
+skyrwa:UsageEvent rdfs:subClassOf prov:Activity .
+
+skyrwa:UAV rdfs:subClassOf prov:Agent .
+skyrwa:Operator rdfs:subClassOf prov:Agent .
+skyrwa:DataConsumer rdfs:subClassOf prov:Agent .
+
+skyrwa:derivedFromEvidence rdfs:subPropertyOf prov:wasDerivedFrom .
+skyrwa:hasLineage rdfs:subPropertyOf prov:wasDerivedFrom .
+skyrwa:operatedBy rdfs:subPropertyOf prov:wasAttributedTo .
+
+# PROV usage: a GovernanceDecision prov:used a FlightEvidence
+# PROV generation: a GovernanceDecision prov:generated an AssetCandidate
+
+# ────────────────────────────────────────────────────────────────────────────
+# DCAT Alignments — governed products as datasets
+# ────────────────────────────────────────────────────────────────────────────
+
+skyrwa:GovernedDataProduct rdfs:subClassOf dcat:Dataset .
+
+skyrwa:hasAssetClass rdfs:subPropertyOf dcat:theme .
+skyrwa:startTime rdfs:subPropertyOf dcat:startDate .
+skyrwa:endTime rdfs:subPropertyOf dcat:endDate .
+
+# ────────────────────────────────────────────────────────────────────────────
+# ODRL Alignments — usage policies and rights
+# ────────────────────────────────────────────────────────────────────────────
+
+# RightsProfile maps to an ODRL Policy:
+#   - permitted_uses   -> odrl:permission
+#   - prohibited_uses  -> odrl:prohibition
+#   - tradable         -> odrl:permission with odrl:action = odrl:distribute
+#   - desensitization  -> odrl:duty (obligation before use)
+
+skyrwa:hasRightsProfile rdfs:comment """Semantically equivalent to attaching
+an odrl:Policy to the asset. Each permitted_use maps to an
+odrl:Permission, each prohibited_use to an odrl:Prohibition."""@en .
+
+# ────────────────────────────────────────────────────────────────────────────
+# Schema.org / Dublin Core Alignments — basic metadata
+# ────────────────────────────────────────────────────────────────────────────
+
+skyrwa:flightId rdfs:subPropertyOf dcterms:identifier .
+skyrwa:startTime rdfs:subPropertyOf schema:startDate .
+skyrwa:endTime rdfs:subPropertyOf schema:endDate .
+skyrwa:estimatedValue rdfs:subPropertyOf schema:price .

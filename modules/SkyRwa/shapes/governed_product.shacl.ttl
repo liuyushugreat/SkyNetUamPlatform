@@ -1,0 +1,35 @@
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix skyrwa:  <urn:skyrwa:ontology#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================================
+# SHACL Shape: GovernedDataProduct
+# ============================================================================
+
+skyrwa:GovernedDataProductShape a sh:NodeShape ;
+    sh:targetClass skyrwa:GovernedDataProduct ;
+    sh:name "Governed Data Product Shape" ;
+    sh:description "Validates aggregated, governed data products." ;
+
+    sh:property [
+        sh:path skyrwa:aggregatesCandidate ;
+        sh:minCount 1 ;
+        sh:class skyrwa:AssetCandidate ;
+        sh:name "aggregates candidate" ;
+        sh:message "GovernedDataProduct must aggregate at least one AssetCandidate." ;
+    ] ;
+
+    sh:property [
+        sh:path skyrwa:hasAssetClass ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:name "product category" ;
+        sh:message "GovernedDataProduct must have a product category (asset class)." ;
+    ] ;
+
+    sh:property [
+        sh:path skyrwa:hasRightsProfile ;
+        sh:minCount 1 ;
+        sh:name "rights profile" ;
+        sh:message "GovernedDataProduct must define usage constraints via a rights profile." ;
+    ] .

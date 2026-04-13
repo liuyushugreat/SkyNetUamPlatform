@@ -1,0 +1,55 @@
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix skyrwa:  <urn:skyrwa:ontology#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================================
+# SHACL Shape: AssetCandidate
+# ============================================================================
+
+skyrwa:AssetCandidateShape a sh:NodeShape ;
+    sh:targetClass skyrwa:AssetCandidate ;
+    sh:name "Asset Candidate Shape" ;
+    sh:description "Constraints for a valid asset candidate." ;
+
+    sh:property [
+        sh:path skyrwa:derivedFromEvidence ;
+        sh:minCount 1 ;
+        sh:class skyrwa:FlightEvidence ;
+        sh:name "derived from evidence" ;
+        sh:message "AssetCandidate must be derived from at least one FlightEvidence." ;
+    ] ;
+
+    sh:property [
+        sh:path skyrwa:hasAssetClass ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:name "asset class" ;
+        sh:message "AssetCandidate must have an asset class." ;
+    ] ;
+
+    sh:property [
+        sh:path skyrwa:hasValuation ;
+        sh:minCount 1 ;
+        sh:name "valuation" ;
+        sh:message "AssetCandidate must have a valuation." ;
+    ] ;
+
+    # If tradable, must have a rights profile
+    sh:property [
+        sh:path skyrwa:isTradable ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:boolean ;
+    ] ;
+
+    sh:sparql [
+        sh:message "Tradable AssetCandidate must have a rights profile." ;
+        sh:prefixes skyrwa: ;
+        sh:select """
+            SELECT $this
+            WHERE {
+                $this skyrwa:hasRightsProfile ?rp .
+                ?rp skyrwa:isTradable true .
+                FILTER NOT EXISTS { $this skyrwa:hasRightsProfile ?any }
+            }
+        """ ;
+    ] .

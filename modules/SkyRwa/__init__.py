@@ -64,12 +64,29 @@ from .models import (
     FlightAssetUnit,
 )
 from .ingest import FlightIngestRecord, FlightIngestor
-from .provenance import EvidenceBuilder
+from .provenance import EvidenceBuilder, Ed25519Signer
 from .rights import GovernanceEngine
-from .valuation import AbstractAssetValuationEngine, RuleBasedValuationEngine
+from .valuation import (
+    AbstractAssetValuationEngine,
+    RuleBasedValuationEngine,
+    ValuationExplanation,
+    ProductValuationEngine,
+)
 from .settlement import Ledger, RevenueSplitter, OnChainAdapter
 from .pipeline import FlightToAssetPipeline
 from .storage import JsonStore
+from .productization import (
+    CandidateAggregator,
+    ProductBuilder,
+    GovernedProduct,
+    ProductCatalogue,
+)
+from .semantic_rules import (
+    ShaclValidator,
+    GovernanceRuleEngine,
+    PromotionRuleEngine,
+    ExplanationBuilder,
+)
 
 __all__ = [
     # legacy
@@ -119,4 +136,16 @@ __all__ = [
     "OnChainAdapter",
     "FlightToAssetPipeline",
     "JsonStore",
+    # Semantic / KG layer
+    "Ed25519Signer",
+    "ValuationExplanation",
+    "ProductValuationEngine",
+    "CandidateAggregator",
+    "ProductBuilder",
+    "GovernedProduct",
+    "ProductCatalogue",
+    "ShaclValidator",
+    "GovernanceRuleEngine",
+    "PromotionRuleEngine",
+    "ExplanationBuilder",
 ]

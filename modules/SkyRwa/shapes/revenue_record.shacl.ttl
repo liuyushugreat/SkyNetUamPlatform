@@ -1,0 +1,62 @@
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix skyrwa:  <urn:skyrwa:ontology#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+
+# ============================================================================
+# SHACL Shape: UsageEvent (revenue record)
+# ============================================================================
+
+skyrwa:UsageEventShape a sh:NodeShape ;
+    sh:targetClass skyrwa:UsageEvent ;
+    sh:name "Usage Event Shape" ;
+    sh:description "Validates revenue-generating usage events." ;
+
+    sh:property [
+        sh:path skyrwa:consumer ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:name "consumer" ;
+        sh:message "UsageEvent must identify a consumer." ;
+    ] ;
+
+    sh:property [
+        sh:path skyrwa:grossAmount ;
+        sh:minCount 1 ;
+        sh:datatype xsd:float ;
+        sh:minInclusive 0.0 ;
+        sh:name "gross amount" ;
+        sh:message "UsageEvent must have a non-negative gross amount." ;
+    ] ;
+
+    sh:property [
+        sh:path prov:startedAtTime ;
+        sh:minCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:name "timestamp" ;
+        sh:message "UsageEvent must have a timestamp." ;
+    ] .
+
+# ── SettlementRecord ────────────────────────────────────────────────────────
+
+skyrwa:SettlementRecordShape a sh:NodeShape ;
+    sh:targetClass skyrwa:SettlementRecord ;
+    sh:name "Settlement Record Shape" ;
+    sh:description "Validates finalized settlement records." ;
+
+    sh:property [
+        sh:path skyrwa:grossAmount ;
+        sh:minCount 1 ;
+        sh:datatype xsd:float ;
+        sh:name "total gross" ;
+        sh:message "SettlementRecord must have a total gross amount." ;
+    ] ;
+
+    sh:property [
+        sh:path prov:generatedAtTime ;
+        sh:minCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:name "settled at" ;
+        sh:message "SettlementRecord must have a settlement timestamp." ;
+    ] .

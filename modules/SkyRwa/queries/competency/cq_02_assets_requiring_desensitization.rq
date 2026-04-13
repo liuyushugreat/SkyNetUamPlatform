@@ -1,0 +1,13 @@
+# CQ2: Which asset candidates must be desensitized before external licensing?
+
+PREFIX skyrwa: <urn:skyrwa:ontology#>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?asset ?flightId
+WHERE {
+    ?asset a skyrwa:AssetCandidate ;
+           skyrwa:flightId ?flightId ;
+           skyrwa:hasRightsProfile ?rp .
+    ?rp skyrwa:requiresDesensitization "true"^^xsd:boolean .
+}
+ORDER BY ?flightId

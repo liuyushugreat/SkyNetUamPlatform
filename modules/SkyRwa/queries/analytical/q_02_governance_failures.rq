@@ -1,0 +1,16 @@
+# Q2: Asset candidates that fail governance checks
+# (low compliance or high risk)
+
+PREFIX skyrwa: <urn:skyrwa:ontology#>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?asset ?flightId ?compliance ?risk ?status
+WHERE {
+    ?asset a skyrwa:AssetCandidate ;
+           skyrwa:flightId ?flightId ;
+           skyrwa:complianceScore ?compliance ;
+           skyrwa:riskScore ?risk ;
+           skyrwa:hasStatus ?status .
+    FILTER (?compliance < 0.6 || ?risk > 0.7)
+}
+ORDER BY ?compliance DESC(?risk)
