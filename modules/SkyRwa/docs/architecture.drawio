@@ -1,0 +1,171 @@
+<mxfile host="draw.io" modified="2026-04-13" agent="SkyRwa" type="device">
+  <diagram name="SkyRwa Architecture" id="skyrwa-arch">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="SkyRwa  Flight-to-Asset Pipeline Architecture" style="text;html=1;fontSize=18;fontStyle=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="150" y="10" width="700" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="input" value="UAM Flight Data Source&lt;br&gt;&lt;font style=&quot;font-size:10px;font-weight:normal&quot;&gt;telemetry, mission logs, environment&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D6B656;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="310" y="55" width="320" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="pipeline_box" value="SkyRwa Module  (flight-to-asset pipeline)" style="swimlane;startSize=28;fillColor=#F5F5F5;strokeColor=#666666;fontStyle=1;fontSize=12;rounded=1;arcSize=8;swimlaneLine=1;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="860" height="510" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="layer_a" value="A. Ingest&lt;br&gt;&lt;font style=&quot;font-size:10px;font-weight:normal&quot;&gt;FlightIngestor&lt;br&gt;FlightIngestRecord &amp;rarr; FlightAssetUnit&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontStyle=1;fontSize=11;align=center;" vertex="1" parent="pipeline_box">
+          <mxGeometry x="30" y="45" width="250" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="out_a" value="FlightAssetUnit&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;status: INGESTED&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=10;fontStyle=1;" vertex="1" parent="pipeline_box">
+          <mxGeometry x="580" y="50" width="170" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="layer_b" value="B. Provenance&lt;br&gt;&lt;font style=&quot;font-size:10px;font-weight:normal&quot;&gt;EvidenceBuilder&lt;br&gt;SHA-256 digest + verify_digest()&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontStyle=1;fontSize=11;align=center;" vertex="1" parent="pipeline_box">
+          <mxGeometry x="30" y="135" width="250" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="out_b" value="FlightEvidencePackage&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;status: EVIDENCE_BUILT&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="pipeline_box">
+          <mxGeometry x="580" y="140" width="170" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="layer_c" value="C. Governance&lt;br&gt;&lt;font style=&quot;font-size:10px;font-weight:normal&quot;&gt;GovernanceEngine&lt;br&gt;rights, compliance, data classification&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontStyle=1;fontSize=11;align=center;" vertex="1" parent="pipeline_box">
+          <mxGeometry x="30" y="225" width="250" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="out_c" value="RightsProfile&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;status: GOVERNED&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="pipeline_box">
+          <mxGeometry x="580" y="232" width="170" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="layer_d" value="D. Valuation&lt;br&gt;&lt;font style=&quot;font-size:10px;font-weight:normal&quot;&gt;RuleBasedValuationEngine&lt;br&gt;NeuralValuationAdapter&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontStyle=1;fontSize=11;align=center;" vertex="1" parent="pipeline_box">
+          <mxGeometry x="30" y="315" width="250" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="out_d" value="ValuationResultV2&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;status: VALUATED&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="pipeline_box">
+          <mxGeometry x="580" y="322" width="170" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="layer_e" value="E. Settlement&lt;br&gt;&lt;font style=&quot;font-size:10px;font-weight:normal&quot;&gt;Ledger + RevenueSplitter&lt;br&gt;OnChainAdapter (extensible)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontStyle=1;fontSize=11;align=center;" vertex="1" parent="pipeline_box">
+          <mxGeometry x="30" y="405" width="250" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="out_e" value="SettlementRecord&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;status: SETTLED&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;fontSize=10;fontStyle=1;" vertex="1" parent="pipeline_box">
+          <mxGeometry x="580" y="412" width="170" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="orchestrator" value="FlightToAssetPipeline&lt;br&gt;&lt;font style=&quot;font-size:9px;font-weight:normal&quot;&gt;orchestrates steps 1-5&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6D0DE;strokeColor=#996185;fontStyle=1;fontSize=10;dashed=1;dashPattern=5 5;" vertex="1" parent="pipeline_box">
+          <mxGeometry x="320" y="195" width="200" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="models_box" value="models/&lt;br&gt;&lt;font style=&quot;font-size:9px;font-weight:normal&quot;&gt;enums, evidence,&lt;br&gt;rights, valuation,&lt;br&gt;settlement, asset_unit&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontStyle=1;fontSize=10;" vertex="1" parent="pipeline_box">
+          <mxGeometry x="350" y="260" width="150" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="storage_box" value="storage/&lt;br&gt;&lt;font style=&quot;font-size:9px;font-weight:normal&quot;&gt;JsonStore&lt;br&gt;assets + ledger +&lt;br&gt;settlements (.json)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#9673A6;fontStyle=1;fontSize=10;" vertex="1" parent="pipeline_box">
+          <mxGeometry x="350" y="350" width="150" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="legacy_box" value="Legacy (Phase-1 Compat)&lt;br&gt;&lt;font style=&quot;font-size:9px;font-weight:normal&quot;&gt;valuation_legacy.py&lt;br&gt;pricing_engine.py&lt;br&gt;neural_pricing.py&lt;br&gt;adversarial.py&lt;br&gt;topology_metrics.py&lt;br&gt;economics/pricing.py&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#B3B3B3;fontStyle=1;fontSize=10;dashed=1;dashPattern=8 4;" vertex="1" parent="pipeline_box">
+          <mxGeometry x="330" y="435" width="180" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_input_a" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#D6B656;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" source="input" target="layer_a" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_a_b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6C8EBF;strokeWidth=1.5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" source="layer_a" target="layer_b" parent="pipeline_box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_b_c" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6C8EBF;strokeWidth=1.5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" source="layer_b" target="layer_c" parent="pipeline_box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_c_d" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6C8EBF;strokeWidth=1.5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" source="layer_c" target="layer_d" parent="pipeline_box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_d_e" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#6C8EBF;strokeWidth=1.5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" source="layer_d" target="layer_e" parent="pipeline_box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_a_out" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#D6B656;strokeWidth=1;dashed=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="layer_a" target="out_a" parent="pipeline_box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_b_out" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#82B366;strokeWidth=1;dashed=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="layer_b" target="out_b" parent="pipeline_box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_c_out" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#82B366;strokeWidth=1;dashed=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="layer_c" target="out_c" parent="pipeline_box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_d_out" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#82B366;strokeWidth=1;dashed=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="layer_d" target="out_d" parent="pipeline_box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_e_out" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#82B366;strokeWidth=1;dashed=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" source="layer_e" target="out_e" parent="pipeline_box">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ext_blockchain" value="Blockchain&lt;br&gt;&lt;font style=&quot;font-size:9px;font-weight:normal&quot;&gt;SkyRouteNFT&lt;br&gt;OnChainAdapter&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8CECC;strokeColor=#B85450;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="670" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ext_marketplace" value="Data Marketplace&lt;br&gt;&lt;font style=&quot;font-size:9px;font-weight:normal&quot;&gt;catalogue listing,&lt;br&gt;licence &amp;amp; trade&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D6B656;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="320" y="670" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ext_audit" value="Audit / Compliance&lt;br&gt;&lt;font style=&quot;font-size:9px;font-weight:normal&quot;&gt;evidence verification,&lt;br&gt;regulatory filing&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D6B656;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="580" y="670" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_settle_bc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#B85450;strokeWidth=1.5;exitX=0.3;exitY=1;entryX=0.5;entryY=0;dashed=1;dashPattern=5 5;" edge="1" source="pipeline_box" target="ext_blockchain" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_settle_mp" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#D6B656;strokeWidth=1.5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;dashed=1;dashPattern=5 5;" edge="1" source="pipeline_box" target="ext_marketplace" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_settle_audit" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#D6B656;strokeWidth=1.5;exitX=0.7;exitY=1;entryX=0.5;entryY=0;dashed=1;dashPattern=5 5;" edge="1" source="pipeline_box" target="ext_audit" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="legend_title" value="Legend" style="text;html=1;fontSize=11;fontStyle=1;align=left;verticalAlign=middle;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="830" y="670" width="60" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg1" value="" style="rounded=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;" vertex="1" parent="1">
+          <mxGeometry x="830" y="695" width="16" height="12" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg1t" value="Pipeline Layer" style="text;fontSize=9;align=left;verticalAlign=middle;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="852" y="692" width="80" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg2" value="" style="rounded=1;fillColor=#D5E8D4;strokeColor=#82B366;" vertex="1" parent="1">
+          <mxGeometry x="830" y="712" width="16" height="12" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg2t" value="Data Model Output" style="text;fontSize=9;align=left;verticalAlign=middle;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="852" y="710" width="100" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg3" value="" style="rounded=1;fillColor=#FFF2CC;strokeColor=#D6B656;" vertex="1" parent="1">
+          <mxGeometry x="830" y="729" width="16" height="12" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg3t" value="Core Aggregate" style="text;fontSize=9;align=left;verticalAlign=middle;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="852" y="727" width="100" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg4" value="" style="rounded=1;fillColor=#F8CECC;strokeColor=#B85450;" vertex="1" parent="1">
+          <mxGeometry x="830" y="746" width="16" height="12" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg4t" value="On-Chain / Future" style="text;fontSize=9;align=left;verticalAlign=middle;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="852" y="744" width="100" height="16" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

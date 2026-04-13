@@ -2,6 +2,10 @@
 
 > **Every UAM flight produces verifiable, governable, valuatable data-asset candidate units.**
 
+## Architecture
+
+![SkyRwa Flight-to-Asset Pipeline Architecture](docs/architecture.png)
+
 ## Module Goal
 
 SkyRwa transforms raw flight data into structured data-asset candidates through a five-layer pipeline:
