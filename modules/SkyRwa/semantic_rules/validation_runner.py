@@ -47,6 +47,7 @@ class ShaclValidator:
             shacl_graph=self.shapes_graph,
             inference="none",
             abort_on_first=False,
+            advanced=True,
         )
         violations: List[ValidationViolation] = []
         if not conforms:

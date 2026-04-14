@@ -30,7 +30,7 @@
 *   **Optional persistence adapter**: can be enabled as an asynchronous extension for auditability/settlement-style workflows (kept out of the critical operational path).
 *   **SkyFlow conflict detection** *(NEW)*: Temporal Relational Graph Attention Network (TR-GAT) for real-time multi-UAV conflict detection in dense low-altitude airspace — see [modules/SkyFlow](./modules/SkyFlow).
 *   **SkyGov compliance governance** *(NEW)*: evidence-driven four-agent LLM governance pipeline for low-altitude regulatory compliance with hard-rule veto, explanation auditing, trust negotiation, and decision traceability — see [modules/SkyGov](./modules/SkyGov).
-*   **SkyRwa flight-to-asset pipeline** *(NEW)*: knowledge graph–driven four-tier lifecycle (Evidence → Candidate → Product → Revenue Right) for transforming UAM flight data into governable data assets, with domain ontology, SHACL validation, SPARQL queryability, and explainable valuation — see [modules/SkyRwa](./modules/SkyRwa).
+*   **SkyRwa semantic lifecycle modeling** *(NEW)*: four-tier governance lifecycle (Evidence → Candidate → Product → Revenue Right) where governance transitions are first-class KG entities, validated by SHACL + SHACL-SPARQL constraints, with 100% violation-type coverage — see [modules/SkyRwa](./modules/SkyRwa).
 
 ## 🏗️ System Architecture
 
@@ -189,9 +189,9 @@ python scripts/run_full_eval.py --scenarios 1000
 
 See [`modules/SkyGov/README.md`](./modules/SkyGov/README.md) for module details.
 
-## 📦 SkyRwa: KG-Driven Flight-to-Asset Pipeline for UAM Data Governance
+## 📦 SkyRwa: Modeling Governable Flight-to-Asset Lifecycles
 
-**SkyRwa** ([`modules/SkyRwa`](./modules/SkyRwa)) is a self-contained research module implementing a **knowledge graph–driven flight-to-asset pipeline** that transforms raw UAM flight data into governable, tradable data assets through a four-tier lifecycle:
+**SkyRwa** ([`modules/SkyRwa`](./modules/SkyRwa)) formalizes the governance transitions that transform raw UAM flight data into tradable data assets as first-class semantic objects in a knowledge graph, through a four-tier governance lifecycle:
 
 ```
 FlightEvidence ── governance ──► AssetCandidate ── aggregation ──► GovernedDataProduct ── settlement ──► RevenueRight
@@ -201,18 +201,19 @@ FlightEvidence ── governance ──► AssetCandidate ── aggregation ─
 ### SkyRwa Highlights
 
 *   **Domain ontology**: 13 OWL classes, 26 properties, aligned with PROV-O, DCAT, ODRL 2.2, and Schema.org.
-*   **Dual-layer governance**: Python rules + SHACL shapes detect 83% more violations than either alone.
-*   **SPARQL queryability**: 6 competency questions + 4 analytical queries over the flight-to-asset knowledge graph.
-*   **Explainable valuation**: structured explanation objects serialized to RDF, enabling machine-queryable reasoning.
+*   **Dual-layer governance**: Python rules + SHACL/SHACL-SPARQL shapes achieve 100% violation-type coverage (50% for either alone).
+*   **SPARQL queryability**: 6 competency questions + 4 analytical queries; cross-entity lineage with third-party verifiability.
+*   **Governance-aware valuation metadata**: illustrative, not pricing — the contribution is semantic representation of valuation rationale.
 *   **Cryptographic provenance**: Ed25519 signatures on flight evidence for tamper-evident attestation.
-*   **Scalability**: linear growth to 1000 flights (66K triples) with ~66 triples/flight.
+*   **Reproducible benchmark**: 105 flights, 10 scenarios, fixed seed (42), documented distributions, coverage matrix.
+*   **Scalability**: linear growth to 1000 flights (66K triples); deterministic across independent runs.
 
 ### Key Results (105-flight Benchmark, 10 Scenarios)
 
 | Experiment | Key Finding |
 |------------|-------------|
-| **Governance Ablation** (Table 7) | Combined Python+SHACL detects 83% of violation types vs 50% (Python) or 33% (SHACL) alone |
-| **Baseline Comparison** (Table 6) | SPARQL provides shorter, more maintainable queries for cross-entity lineage (3-hop traversal) |
+| **Governance Ablation** (Table 7) | Combined Python+SHACL achieves 100% violation-type coverage vs 50% for either alone |
+| **Baseline Comparison** (Table 6) | SPARQL enables third-party verifiable, interoperable queries for cross-entity lineage |
 | **Scalability** (Table 8) | Pipeline + RDF scales linearly; SHACL superlinear but acceptable (~9.6s for 1000 flights) |
 | **Queryability** (Table 9) | All 6 competency questions (CQ1–CQ6) return correct results |
 
@@ -233,7 +234,8 @@ python reproduce_table6.py       # Table 6: JSON vs SPARQL
 python reproduce_table7.py       # Table 7: governance ablation
 python reproduce_table8.py       # Table 8: scalability
 python reproduce_table9.py       # Table 9: SPARQL competency questions
-python reproduce_case_studies.py # §7.6: case studies
+python reproduce_robustness.py   # Robustness: multi-run, scale, thresholds
+python reproduce_case_studies.py # §7.7: case studies
 ```
 
 See [`modules/SkyRwa/README.md`](./modules/SkyRwa/README.md) for module details.
@@ -280,9 +282,10 @@ SkyNetUamPlatform/
 │   │   ├── semantic_rules/      # SHACL validator, governance/promotion/explanation
 │   │   ├── productization/      # Multi-flight aggregation & catalogue
 │   │   ├── provenance/          # Ed25519 signing + evidence builder
-│   │   ├── experiments/         # Evaluation scripts
-│   │   ├── benchmarks/          # 105-flight benchmark generator
-│   │   └── ISWC2026/            # Paper reproduction: run.sh, tables, case studies
+│   │   ├── experiments/         # Evaluation scripts (incl. robustness)
+│   │   ├── benchmark_generator/ # Reproducible generator (seed, distributions, coverage)
+│   │   ├── benchmarks/          # Legacy benchmark generator
+│   │   └── ISWC2026/            # Paper reproduction: run.sh, 8 scripts, case studies
 │   ├── SkyGov/              # Multi-agent compliance governance with auditable LLM reasoning
 │   │   ├── skygov/          #   agents, orchestrator, RAG pipeline, governance utilities
 │   │   ├── scripts/         #   governance demo, benchmark, ablation, full evaluation
@@ -356,9 +359,8 @@ If you use the SkyRwa flight-to-asset pipeline, please cite:
 
 ```bibtex
 @inproceedings{liu2026skyrwa,
-  title     = {From Flight Evidence to Governable Data Assets:
-               A Knowledge Graph--Driven Flight-to-Asset Pipeline
-               for Urban Air Mobility},
+  title     = {Modeling Governable Flight-to-Asset Lifecycles
+               with Knowledge Graphs, SHACL, and Provenance},
   author    = {Liu, Yushu and Wang, Longbiao and Du, Chenglin and Zhai, Haixiao},
   booktitle = {Proceedings of the 25th International Semantic Web
                Conference (ISWC)},

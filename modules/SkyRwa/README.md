@@ -1,4 +1,4 @@
-# SkyRwa: Knowledge Graph–Driven Flight-to-Asset Pipeline for UAM
+# SkyRwa: Modeling Governable Flight-to-Asset Lifecycles with Knowledge Graphs, SHACL, and Provenance
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Conference: ISWC 2026](https://img.shields.io/badge/Conference-ISWC_2026-green.svg)](https://iswc2026.semanticweb.org/)
@@ -10,14 +10,16 @@
 
 ## Overview
 
-**SkyRwa** is a knowledge graph–driven pipeline that transforms UAM flight data into governable data assets through a **four-tier lifecycle**:
+**SkyRwa** formalizes the governance transitions that transform raw UAM flight data into tradable data assets as first-class semantic objects in a knowledge graph. The core model is a **four-tier governance lifecycle**:
 
 - **Tier 1: Flight Evidence** — Raw attestation with SHA-256 digest + Ed25519 signature. NOT tradable.
 - **Tier 2: Asset Candidate** — Governed evidence with valuation and rights profile. Individually queryable.
 - **Tier 3: Governed Data Product** — Aggregated from multiple candidates. Catalogued and licensable.
 - **Tier 4: Revenue Right** — Downstream entitlement for revenue distribution.
 
-The system is grounded in a **domain ontology (13 classes, 26 properties)** aligned with PROV-O, DCAT, ODRL 2.2, and Schema.org, validated through **5 SHACL node shapes**, and queryable via **SPARQL** (6 competency + 4 analytical queries).
+The system is grounded in a **domain ontology (13 classes, 26 properties)** aligned with PROV-O, DCAT, ODRL 2.2, and Schema.org, validated through **5 SHACL shapes + SHACL-SPARQL constraints**, and queryable via **SPARQL** (6 competency + 4 analytical queries).
+
+> **Synthetic Benchmark Note:** Due to current Chinese civil aviation regulations (CAAC), real operational UAM flight data cannot be publicly shared. The benchmark is synthesized based on publicly available regulatory frameworks and operational parameters from published UAM trials. The **[`benchmark_generator/`](./benchmark_generator)** module provides the complete generator with fixed random seed (42), documented parameter distributions, scenario specifications, and a coverage matrix classifying violations as injected vs. emergent.
 
 ---
 
@@ -71,7 +73,12 @@ modules/SkyRwa/
 ├── settlement/                         # Revenue recording & settlement
 ├── pipeline/                           # End-to-end orchestrator
 ├── storage/                            # JSON file store
-├── benchmarks/                         # Benchmark generator (105 flights)
+├── benchmark_generator/                 # Reproducible benchmark generator
+│   ├── README.md                       #   CAAC data justification + distributions
+│   ├── scenario_spec.py                #   10 scenario specs, seed, distributions
+│   ├── coverage_matrix.py              #   Violation × scenario coverage matrix
+│   └── generate.py                     #   Main generator (seed=42)
+├── benchmarks/                         # Legacy benchmark generator (105 flights)
 ├── experiments/                        # Evaluation scripts
 ├── tests/                              # 13 pytest test modules
 └── examples/                           # Runnable demo
@@ -108,11 +115,12 @@ See [`ISWC2026/README.md`](./ISWC2026/README.md) for detailed step-by-step instr
 |---------------|-------------------|--------------------|
 | §7.1 — Benchmark Dataset | `reproduce_table5.py` | Table 5: 105 flights, 10 scenarios, 7007 triples |
 | §7.2 — Baseline Comparison | `reproduce_table6.py` | Table 6: JSON-scan vs SPARQL (4 query tasks) |
-| §7.3 — Governance Ablation | `reproduce_table7.py` | Table 7: Python vs SHACL vs Combined (83% detection) |
+| §7.3 — Governance Ablation | `reproduce_table7.py` | Table 7: Python vs SHACL vs Combined (100% detection) |
 | §7.4 — Scalability | `reproduce_table8.py` | Table 8: 5–1000 flights, ~66 triples/flight |
-| §7.5 — SPARQL Queryability | `reproduce_table9.py` | Table 9: CQ1–CQ6 competency questions |
-| §7.6 — Case Studies | `reproduce_case_studies.py` | 3 cases: promotion, failure, audit |
-| §5 — Governance & Validation | `reproduce_validation.py` | SHACL + SPARQL rule coverage |
+| §7.5 — Robustness | `reproduce_robustness.py` | Multi-run stability, scale sensitivity, threshold sweep |
+| §7.6 — SPARQL Queryability | `reproduce_table9.py` | Table 9: CQ1–CQ6 competency questions |
+| §7.7 — Case Studies | `reproduce_case_studies.py` | 4 cases: promotion, failure, audit, explainability |
+| §5 — Governance & Validation | `reproduce_validation.py` | SHACL + SHACL-SPARQL rule coverage |
 
 ---
 
@@ -126,9 +134,11 @@ See [`ISWC2026/README.md`](./ISWC2026/README.md) for detailed step-by-step instr
 | V2 | Missing derivation link | – | YES | YES |
 | V3 | Low compliance + tradable | YES | – | YES |
 | V4 | High risk + tradable | YES | – | YES |
-| V5 | Missing rights on tradable | – | – | – |
+| V5 | Missing rights on tradable | – | YES* | YES |
 | V6 | Incomplete mission + tradable | YES | – | YES |
-| | **Detection rate** | **50%** | **33%** | **83%** |
+| | **Detection rate** | **50%** | **50%** | **100%** |
+
+*V5 uses a SHACL-SPARQL constraint (`sh:sparql`), demonstrating the necessity of the SPARQL extension for conditional constraints.
 
 ### Table 8: Scalability
 
@@ -218,9 +228,8 @@ python -m pytest SkyRwa/tests/ -v
 
 ```bibtex
 @inproceedings{liu2026skyrwa,
-  title     = {From Flight Evidence to Governable Data Assets:
-               A Knowledge Graph--Driven Flight-to-Asset Pipeline
-               for Urban Air Mobility},
+  title     = {Modeling Governable Flight-to-Asset Lifecycles
+               with Knowledge Graphs, SHACL, and Provenance},
   author    = {Liu, Yushu and Wang, Longbiao and Du, Chenglin and Zhai, Haixiao},
   booktitle = {Proceedings of the 25th International Semantic Web
                Conference (ISWC)},

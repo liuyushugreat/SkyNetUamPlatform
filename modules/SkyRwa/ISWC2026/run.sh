@@ -3,9 +3,8 @@ set -euo pipefail
 
 # ============================================================
 # SkyRwa — ISWC 2026 One-Click Reproduction Script
-# Paper: "From Flight Evidence to Governable Data Assets:
-#         A Knowledge Graph–Driven Flight-to-Asset Pipeline
-#         for Urban Air Mobility"
+# Paper: "Modeling Governable Flight-to-Asset Lifecycles
+#         with Knowledge Graphs, SHACL, and Provenance"
 # ============================================================
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -35,33 +34,43 @@ echo "================================================"
 echo ""
 
 # ── Step 1: Generate benchmark dataset (Table 5) ──
-echo "[Step 1/6] Generating benchmark dataset (Table 5: 105 flights, 10 scenarios)..."
+echo "[Step 1/8] Generating benchmark dataset (Table 5: 105 flights, 10 scenarios)..."
 $PYTHON reproduce_table5.py
 echo ""
 
 # ── Step 2: Baseline comparison (Table 6) ──
-echo "[Step 2/6] Running baseline comparison: JSON-scan vs SPARQL (Table 6)..."
+echo "[Step 2/8] Running baseline comparison: JSON-scan vs SPARQL (Table 6)..."
 $PYTHON reproduce_table6.py
 echo ""
 
 # ── Step 3: Governance ablation (Table 7) ──
-echo "[Step 3/6] Running governance ablation: Python vs SHACL vs Combined (Table 7)..."
+echo "[Step 3/8] Running governance ablation: Python vs SHACL vs Combined (Table 7)..."
 $PYTHON reproduce_table7.py
 echo ""
 
 # ── Step 4: Scalability (Table 8) ──
-echo "[Step 4/6] Running scalability experiment: 5–1000 flights (Table 8)..."
+echo "[Step 4/8] Running scalability experiment: 5–1000 flights (Table 8)..."
 $PYTHON reproduce_table8.py
 echo ""
 
 # ── Step 5: SPARQL competency questions (Table 9) ──
-echo "[Step 5/6] Running SPARQL competency questions (Table 9)..."
+echo "[Step 5/8] Running SPARQL competency questions (Table 9)..."
 $PYTHON reproduce_table9.py
 echo ""
 
-# ── Step 6: Case studies (Section 7.6) ──
-echo "[Step 6/6] Running case studies (Section 7.6)..."
+# ── Step 6: Robustness (multi-run, scale, thresholds) ──
+echo "[Step 6/8] Running robustness experiments..."
+$PYTHON reproduce_robustness.py
+echo ""
+
+# ── Step 7: Case studies (Section 7.7) ──
+echo "[Step 7/8] Running case studies (Section 7.7)..."
 $PYTHON reproduce_case_studies.py
+echo ""
+
+# ── Step 8: SHACL + governance validation ──
+echo "[Step 8/8] Running SHACL + governance validation..."
+$PYTHON reproduce_validation.py
 echo ""
 
 echo "================================================"

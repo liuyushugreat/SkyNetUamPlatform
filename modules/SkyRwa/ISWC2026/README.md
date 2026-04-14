@@ -1,6 +1,6 @@
 # ISWC 2026 Artifact: SkyRwa
 
-**Paper:** *From Flight Evidence to Governable Data Assets: A Knowledge Graph–Driven Flight-to-Asset Pipeline for Urban Air Mobility*
+**Paper:** *Modeling Governable Flight-to-Asset Lifecycles with Knowledge Graphs, SHACL, and Provenance*
 
 **Conference:** ISWC 2026 — 25th International Semantic Web Conference
 
@@ -17,8 +17,9 @@ This is the **self-contained reproduction artifact** for the ISWC 2026 paper. It
 | `reproduce_table7.py` | **Table 7** (§7.3) | Governance ablation: Python vs SHACL vs Combined (6 violation types) |
 | `reproduce_table8.py` | **Table 8** (§7.4) | Scalability: overhead for 5–1000 flights |
 | `reproduce_table9.py` | **Table 9** (§7.5) | SPARQL competency questions (CQ1–CQ6) + analytical queries |
-| `reproduce_case_studies.py` | **§7.6** | Three case studies: clean promotion, governance failure, audit comparison |
-| `reproduce_validation.py` | **§5** | SHACL + governance rule validation coverage |
+| `reproduce_robustness.py` | **§7.5** | Robustness: multi-run stability, scale sensitivity, threshold sweep |
+| `reproduce_case_studies.py` | **§7.7** | Four case studies: promotion, failure, audit, explainability |
+| `reproduce_validation.py` | **§5** | SHACL + SHACL-SPARQL governance validation coverage |
 | `run.sh` | — | One-click reproduction (Linux/macOS) |
 | `run.ps1` | — | One-click reproduction (Windows) |
 | `requirements.txt` | — | Python dependencies |
@@ -88,7 +89,10 @@ python reproduce_table8.py
 # Table 9: SPARQL competency questions (CQ1–CQ6)
 python reproduce_table9.py
 
-# Section 7.6: Case studies
+# Section 7.5: Robustness (multi-run stability, scale, thresholds)
+python reproduce_robustness.py
+
+# Section 7.7: Case studies
 python reproduce_case_studies.py
 
 # Section 5: SHACL + governance validation coverage

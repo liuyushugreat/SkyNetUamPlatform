@@ -42,14 +42,14 @@ skyrwa:AssetCandidateShape a sh:NodeShape ;
     ] ;
 
     sh:sparql [
-        sh:message "Tradable AssetCandidate must have a rights profile." ;
-        sh:prefixes skyrwa: ;
+        sh:message "Tradable AssetCandidate must have a hasRightsProfile link (SHACL-SPARQL: V5)." ;
         sh:select """
+            PREFIX skyrwa: <urn:skyrwa:ontology#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             SELECT $this
             WHERE {
-                $this skyrwa:hasRightsProfile ?rp .
-                ?rp skyrwa:isTradable true .
-                FILTER NOT EXISTS { $this skyrwa:hasRightsProfile ?any }
+                $this skyrwa:isTradable "true"^^xsd:boolean .
+                FILTER NOT EXISTS { $this skyrwa:hasRightsProfile ?rp }
             }
         """ ;
     ] .
