@@ -34,10 +34,13 @@ modules/SkyRwa/
 │   ├── requirements.txt                #   Pinned dependencies
 │   ├── reproduce_table5.py             #   Table 5: benchmark dataset (105 flights)
 │   ├── reproduce_table6.py             #   Table 6: JSON vs SPARQL baseline
-│   ├── reproduce_table7.py             #   Table 7: governance ablation
-│   ├── reproduce_table8.py             #   Table 8: scalability (5–1000 flights)
-│   ├── reproduce_table9.py             #   Table 9: SPARQL competency questions
-│   ├── reproduce_case_studies.py       #   §7.6: case studies
+│   ├── reproduce_semantic_baseline.py  #   Table 7: Lifecycle KG vs Flat KG
+│   ├── reproduce_table7.py             #   Table 8: governance ablation
+│   ├── reproduce_table8.py             #   Table 9: scalability (5–1000 flights)
+│   ├── reproduce_table9.py             #   Table 10: SPARQL competency questions
+│   ├── reproduce_ontology_quality.py   #   §4.5: OOPS!, consistency, CQ mapping
+│   ├── reproduce_case_studies.py       #   §7.8: case studies
+│   ├── reproduce_user_study.py         #   §7.9: pilot expert evaluation
 │   ├── reproduce_validation.py         #   §5: SHACL validation coverage
 │   ├── data/                           #   Pre-generated benchmark data
 │   └── outputs/                        #   Experiment result JSONs
@@ -113,14 +116,17 @@ See [`ISWC2026/README.md`](./ISWC2026/README.md) for detailed step-by-step instr
 
 | Paper Section | Experiment Script | What it Reproduces |
 |---------------|-------------------|--------------------|
-| §7.1 — Benchmark Dataset | `reproduce_table5.py` | Table 5: 105 flights, 10 scenarios, 7007 triples |
-| §7.2 — Baseline Comparison | `reproduce_table6.py` | Table 6: JSON-scan vs SPARQL (4 query tasks) |
-| §7.3 — Governance Ablation | `reproduce_table7.py` | Table 7: Python vs SHACL vs Combined (100% detection) |
-| §7.4 — Scalability | `reproduce_table8.py` | Table 8: 5–1000 flights, ~66 triples/flight |
-| §7.5 — Robustness | `reproduce_robustness.py` | Multi-run stability, scale sensitivity, threshold sweep |
-| §7.6 — SPARQL Queryability | `reproduce_table9.py` | Table 9: CQ1–CQ6 competency questions |
-| §7.7 — Case Studies | `reproduce_case_studies.py` | 4 cases: promotion, failure, audit, explainability |
+| §4.5 — Ontology Quality | `reproduce_ontology_quality.py` | Tables 3–4: OOPS! pitfalls, consistency, CQ mapping |
 | §5 — Governance & Validation | `reproduce_validation.py` | SHACL + SHACL-SPARQL rule coverage |
+| §7.1 — Benchmark Dataset | `reproduce_table5.py` | Table 5: 105 flights, 10 scenarios, 7007 triples |
+| §7.2 — JSON Baseline | `reproduce_table6.py` | Table 6: JSON-scan vs SPARQL (4 query tasks) |
+| §7.3 — Semantic Baseline | `reproduce_semantic_baseline.py` | Table 7: Lifecycle KG vs Flat KG (4 audit tasks) |
+| §7.4 — Governance Ablation | `reproduce_table7.py` | Table 8: Python vs SHACL vs Combined |
+| §7.5 — Scalability | `reproduce_table8.py` | Table 9: 5–1000 flights, ~66 triples/flight |
+| §7.6 — SPARQL Queryability | `reproduce_table9.py` | Table 10: CQ1–CQ6 competency questions |
+| §7.7 — Robustness | `reproduce_robustness.py` | Multi-run stability, scale sensitivity, threshold sweep |
+| §7.8 — Case Studies | `reproduce_case_studies.py` | 4 cases: promotion, failure, audit, explainability |
+| §7.9 — Expert Evaluation | `reproduce_user_study.py` | Table 12: 4 experts × 4 tasks × 3 interfaces |
 
 ---
 
