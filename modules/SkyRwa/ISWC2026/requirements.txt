@@ -1,0 +1,19 @@
+# SkyRwa ISWC 2026 Artifact — Python Dependencies
+# Tested with Python 3.10+
+
+# Core data models
+pydantic>=2.0.0
+
+# RDF / Knowledge Graph
+rdflib>=7.0.0
+
+# SHACL validation
+pyshacl>=0.25.0
+
+# Cryptographic provenance (Ed25519 signing)
+cryptography>=41.0.0
+
+# Visualization (optional, for figures)
+matplotlib>=3.8.0
+seaborn>=0.13.0
+numpy>=1.24.0

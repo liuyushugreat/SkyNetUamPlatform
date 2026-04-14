@@ -10,6 +10,8 @@
 
 > **KSEM 2026 Reviewers:** The SkyKG neuro-symbolic knowledge graph code and reproduction artifact are at **[`modules/SkyKg/artifact_ksem2026/`](./modules/SkyKg/artifact_ksem2026)**. Run `cd modules/SkyKg/artifact_ksem2026 && bash run.sh` to reproduce all paper results.
 
+> **ISWC 2026 Reviewers:** The SkyRwa KG-driven flight-to-asset pipeline code and reproduction artifact are at **[`modules/SkyRwa/ISWC2026/`](./modules/SkyRwa/ISWC2026)**. Run `cd modules/SkyRwa/ISWC2026 && bash run.sh` (or `.\run.ps1` on Windows) to reproduce all paper results.
+
 > **SkyGov Reviewers / Readers:** The evidence-driven multi-agent governance module for UAM compliance is located at **[`modules/SkyGov/`](./modules/SkyGov)**. For a quick demo run `cd modules/SkyGov && python scripts/run_governance.py`; for the latest evaluation pipeline run `python scripts/run_full_eval.py --scenarios 1000`.
 
 ---
@@ -28,6 +30,7 @@
 *   **Optional persistence adapter**: can be enabled as an asynchronous extension for auditability/settlement-style workflows (kept out of the critical operational path).
 *   **SkyFlow conflict detection** *(NEW)*: Temporal Relational Graph Attention Network (TR-GAT) for real-time multi-UAV conflict detection in dense low-altitude airspace — see [modules/SkyFlow](./modules/SkyFlow).
 *   **SkyGov compliance governance** *(NEW)*: evidence-driven four-agent LLM governance pipeline for low-altitude regulatory compliance with hard-rule veto, explanation auditing, trust negotiation, and decision traceability — see [modules/SkyGov](./modules/SkyGov).
+*   **SkyRwa flight-to-asset pipeline** *(NEW)*: knowledge graph–driven four-tier lifecycle (Evidence → Candidate → Product → Revenue Right) for transforming UAM flight data into governable data assets, with domain ontology, SHACL validation, SPARQL queryability, and explainable valuation — see [modules/SkyRwa](./modules/SkyRwa).
 
 ## 🏗️ System Architecture
 
@@ -186,6 +189,55 @@ python scripts/run_full_eval.py --scenarios 1000
 
 See [`modules/SkyGov/README.md`](./modules/SkyGov/README.md) for module details.
 
+## 📦 SkyRwa: KG-Driven Flight-to-Asset Pipeline for UAM Data Governance
+
+**SkyRwa** ([`modules/SkyRwa`](./modules/SkyRwa)) is a self-contained research module implementing a **knowledge graph–driven flight-to-asset pipeline** that transforms raw UAM flight data into governable, tradable data assets through a four-tier lifecycle:
+
+```
+FlightEvidence ── governance ──► AssetCandidate ── aggregation ──► GovernedDataProduct ── settlement ──► RevenueRight
+    (Tier 1)                       (Tier 2)                          (Tier 3)                             (Tier 4)
+```
+
+### SkyRwa Highlights
+
+*   **Domain ontology**: 13 OWL classes, 26 properties, aligned with PROV-O, DCAT, ODRL 2.2, and Schema.org.
+*   **Dual-layer governance**: Python rules + SHACL shapes detect 83% more violations than either alone.
+*   **SPARQL queryability**: 6 competency questions + 4 analytical queries over the flight-to-asset knowledge graph.
+*   **Explainable valuation**: structured explanation objects serialized to RDF, enabling machine-queryable reasoning.
+*   **Cryptographic provenance**: Ed25519 signatures on flight evidence for tamper-evident attestation.
+*   **Scalability**: linear growth to 1000 flights (66K triples) with ~66 triples/flight.
+
+### Key Results (105-flight Benchmark, 10 Scenarios)
+
+| Experiment | Key Finding |
+|------------|-------------|
+| **Governance Ablation** (Table 7) | Combined Python+SHACL detects 83% of violation types vs 50% (Python) or 33% (SHACL) alone |
+| **Baseline Comparison** (Table 6) | SPARQL provides shorter, more maintainable queries for cross-entity lineage (3-hop traversal) |
+| **Scalability** (Table 8) | Pipeline + RDF scales linearly; SHACL superlinear but acceptable (~9.6s for 1000 flights) |
+| **Queryability** (Table 9) | All 6 competency questions (CQ1–CQ6) return correct results |
+
+### 1-Click Reproducibility
+
+```bash
+cd modules/SkyRwa/ISWC2026
+
+pip install -r requirements.txt
+
+# Full reproduction — all tables and case studies (~2–5 min)
+bash run.sh          # Linux/macOS
+# .\run.ps1          # Windows PowerShell
+
+# Individual experiments
+python reproduce_table5.py       # Table 5: benchmark dataset
+python reproduce_table6.py       # Table 6: JSON vs SPARQL
+python reproduce_table7.py       # Table 7: governance ablation
+python reproduce_table8.py       # Table 8: scalability
+python reproduce_table9.py       # Table 9: SPARQL competency questions
+python reproduce_case_studies.py # §7.6: case studies
+```
+
+See [`modules/SkyRwa/README.md`](./modules/SkyRwa/README.md) for module details.
+
 ## 🧪 Experiments & Reproduction
 
 This repository includes the source code and simulation environment for our research on Low-Altitude Intelligent Internet storage architectures.
@@ -220,7 +272,17 @@ SkyNetUamPlatform/
 │   │   ├── SkyNet_Knowledge_Engine/  # Ontology + neuro-symbolic reasoning
 │   │   ├── voxel_airspace_core/ # 3D spatial indexing & A* pathfinding
 │   │   └── artifact_ksem2026/   # Paper reproduction: run.sh, data, scripts
-│   ├── SkyRwa/              # Real-World Assetization & pricing
+│   ├── SkyRwa/              # KG-driven flight-to-asset pipeline (ISWC 2026)
+│   │   ├── ontology/            # Domain ontology (13 classes, PROV-O/DCAT/ODRL)
+│   │   ├── shapes/              # 5 SHACL constraint shapes
+│   │   ├── queries/             # 10 SPARQL queries (6 CQ + 4 analytical)
+│   │   ├── rdf/                 # RDF mapper, serializer, graph store
+│   │   ├── semantic_rules/      # SHACL validator, governance/promotion/explanation
+│   │   ├── productization/      # Multi-flight aggregation & catalogue
+│   │   ├── provenance/          # Ed25519 signing + evidence builder
+│   │   ├── experiments/         # Evaluation scripts
+│   │   ├── benchmarks/          # 105-flight benchmark generator
+│   │   └── ISWC2026/            # Paper reproduction: run.sh, tables, case studies
 │   ├── SkyGov/              # Multi-agent compliance governance with auditable LLM reasoning
 │   │   ├── skygov/          #   agents, orchestrator, RAG pipeline, governance utilities
 │   │   ├── scripts/         #   governance demo, benchmark, ablation, full evaluation
@@ -286,6 +348,20 @@ If you use the SkyKG knowledge graph module, please cite:
   author    = {Liu, Yushu and Wang, Longbiao and Du, Chenglin and Zhai, Haixiao},
   booktitle = {Proceedings of the 19th International Conference on
                Knowledge Science, Engineering and Management (KSEM)},
+  year      = {2026}
+}
+```
+
+If you use the SkyRwa flight-to-asset pipeline, please cite:
+
+```bibtex
+@inproceedings{liu2026skyrwa,
+  title     = {From Flight Evidence to Governable Data Assets:
+               A Knowledge Graph--Driven Flight-to-Asset Pipeline
+               for Urban Air Mobility},
+  author    = {Liu, Yushu and Wang, Longbiao and Du, Chenglin and Zhai, Haixiao},
+  booktitle = {Proceedings of the 25th International Semantic Web
+               Conference (ISWC)},
   year      = {2026}
 }
 ```

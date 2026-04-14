@@ -1,0 +1,12 @@
+{
+  "cq_01_tradable_assets": 45,
+  "cq_02_assets_requiring_desensitization": 71,
+  "cq_03_assets_by_scenario": 0,
+  "cq_04_revenue_by_participant": 0,
+  "cq_05_invalid_assets": 0,
+  "cq_06_product_lineage": 0,
+  "q_01_promotable_flights": 79,
+  "q_02_governance_failures": 8,
+  "q_03_high_value_assets": 92,
+  "q_04_asset_lineage": 105
+}

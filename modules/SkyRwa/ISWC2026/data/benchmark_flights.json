@@ -1,0 +1,2286 @@
+[
+  {
+    "flight_id": "FLT-CLEAN-000",
+    "tag": "clean_route_survey",
+    "uav_id": "UAV-A1",
+    "mission_type": "route_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 2.0,
+    "visibility": 15.0,
+    "total_points": 1000,
+    "duration_min": 20
+  },
+  {
+    "flight_id": "FLT-CLEAN-001",
+    "tag": "clean_route_survey",
+    "uav_id": "UAV-A2",
+    "mission_type": "route_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 2.3,
+    "visibility": 15.0,
+    "total_points": 1080,
+    "duration_min": 22
+  },
+  {
+    "flight_id": "FLT-CLEAN-002",
+    "tag": "clean_route_survey",
+    "uav_id": "UAV-A3",
+    "mission_type": "route_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 2.6,
+    "visibility": 15.0,
+    "total_points": 1160,
+    "duration_min": 24
+  },
+  {
+    "flight_id": "FLT-CLEAN-003",
+    "tag": "clean_route_survey",
+    "uav_id": "UAV-A4",
+    "mission_type": "route_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 2.9,
+    "visibility": 15.0,
+    "total_points": 1240,
+    "duration_min": 26
+  },
+  {
+    "flight_id": "FLT-CLEAN-004",
+    "tag": "clean_route_survey",
+    "uav_id": "UAV-A1",
+    "mission_type": "route_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 3.2,
+    "visibility": 15.0,
+    "total_points": 1320,
+    "duration_min": 28
+  },
+  {
+    "flight_id": "FLT-CLEAN-005",
+    "tag": "clean_route_survey",
+    "uav_id": "UAV-A2",
+    "mission_type": "route_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 3.5,
+    "visibility": 15.0,
+    "total_points": 1400,
+    "duration_min": 30
+  },
+  {
+    "flight_id": "FLT-CLEAN-006",
+    "tag": "clean_route_survey",
+    "uav_id": "UAV-A3",
+    "mission_type": "route_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 3.8,
+    "visibility": 15.0,
+    "total_points": 1480,
+    "duration_min": 32
+  },
+  {
+    "flight_id": "FLT-CLEAN-007",
+    "tag": "clean_route_survey",
+    "uav_id": "UAV-A4",
+    "mission_type": "route_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 4.1,
+    "visibility": 15.0,
+    "total_points": 1560,
+    "duration_min": 34
+  },
+  {
+    "flight_id": "FLT-CLEAN-008",
+    "tag": "clean_route_survey",
+    "uav_id": "UAV-A1",
+    "mission_type": "route_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 4.4,
+    "visibility": 15.0,
+    "total_points": 1640,
+    "duration_min": 36
+  },
+  {
+    "flight_id": "FLT-CLEAN-009",
+    "tag": "clean_route_survey",
+    "uav_id": "UAV-A2",
+    "mission_type": "route_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 4.699999999999999,
+    "visibility": 15.0,
+    "total_points": 1720,
+    "duration_min": 38
+  },
+  {
+    "flight_id": "FLT-CLEAN-010",
+    "tag": "clean_route_survey",
+    "uav_id": "UAV-A3",
+    "mission_type": "route_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 5.0,
+    "visibility": 15.0,
+    "total_points": 1800,
+    "duration_min": 40
+  },
+  {
+    "flight_id": "FLT-CLEAN-011",
+    "tag": "clean_route_survey",
+    "uav_id": "UAV-A4",
+    "mission_type": "route_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 5.3,
+    "visibility": 15.0,
+    "total_points": 1880,
+    "duration_min": 42
+  },
+  {
+    "flight_id": "FLT-NIGHT-000",
+    "tag": "night_flight",
+    "uav_id": "UAV-B1",
+    "mission_type": "inspection",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 95.0,
+    "violations": [],
+    "anomalies": [
+      "low_visibility_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "nighttime_operation"
+    ],
+    "weather": "clear_night",
+    "wind": 2.0,
+    "visibility": 4.0,
+    "total_points": 700,
+    "duration_min": 18
+  },
+  {
+    "flight_id": "FLT-NIGHT-001",
+    "tag": "night_flight",
+    "uav_id": "UAV-B2",
+    "mission_type": "inspection",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 94.0,
+    "violations": [],
+    "anomalies": [
+      "low_visibility_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "nighttime_operation"
+    ],
+    "weather": "clear_night",
+    "wind": 2.5,
+    "visibility": 4.3,
+    "total_points": 740,
+    "duration_min": 19
+  },
+  {
+    "flight_id": "FLT-NIGHT-002",
+    "tag": "night_flight",
+    "uav_id": "UAV-B3",
+    "mission_type": "inspection",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 93.0,
+    "violations": [],
+    "anomalies": [
+      "low_visibility_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "nighttime_operation"
+    ],
+    "weather": "clear_night",
+    "wind": 3.0,
+    "visibility": 4.6,
+    "total_points": 780,
+    "duration_min": 20
+  },
+  {
+    "flight_id": "FLT-NIGHT-003",
+    "tag": "night_flight",
+    "uav_id": "UAV-B1",
+    "mission_type": "inspection",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 92.0,
+    "violations": [],
+    "anomalies": [
+      "low_visibility_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "nighttime_operation"
+    ],
+    "weather": "clear_night",
+    "wind": 3.5,
+    "visibility": 4.9,
+    "total_points": 820,
+    "duration_min": 21
+  },
+  {
+    "flight_id": "FLT-NIGHT-004",
+    "tag": "night_flight",
+    "uav_id": "UAV-B2",
+    "mission_type": "inspection",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 91.0,
+    "violations": [],
+    "anomalies": [
+      "low_visibility_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "nighttime_operation"
+    ],
+    "weather": "clear_night",
+    "wind": 4.0,
+    "visibility": 5.2,
+    "total_points": 860,
+    "duration_min": 22
+  },
+  {
+    "flight_id": "FLT-NIGHT-005",
+    "tag": "night_flight",
+    "uav_id": "UAV-B3",
+    "mission_type": "inspection",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 90.0,
+    "violations": [],
+    "anomalies": [
+      "low_visibility_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "nighttime_operation"
+    ],
+    "weather": "clear_night",
+    "wind": 4.5,
+    "visibility": 5.5,
+    "total_points": 900,
+    "duration_min": 23
+  },
+  {
+    "flight_id": "FLT-NIGHT-006",
+    "tag": "night_flight",
+    "uav_id": "UAV-B1",
+    "mission_type": "inspection",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 89.0,
+    "violations": [],
+    "anomalies": [
+      "low_visibility_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "nighttime_operation"
+    ],
+    "weather": "clear_night",
+    "wind": 5.0,
+    "visibility": 5.8,
+    "total_points": 940,
+    "duration_min": 24
+  },
+  {
+    "flight_id": "FLT-NIGHT-007",
+    "tag": "night_flight",
+    "uav_id": "UAV-B2",
+    "mission_type": "inspection",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 88.0,
+    "violations": [],
+    "anomalies": [
+      "low_visibility_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "nighttime_operation"
+    ],
+    "weather": "clear_night",
+    "wind": 5.5,
+    "visibility": 6.1,
+    "total_points": 980,
+    "duration_min": 25
+  },
+  {
+    "flight_id": "FLT-WEATHER-000",
+    "tag": "weather_disturbance",
+    "uav_id": "UAV-C1",
+    "mission_type": "delivery",
+    "asset_class": "weather_operation_sample",
+    "completed": true,
+    "completion_pct": 92.0,
+    "violations": [],
+    "anomalies": [
+      "turbulence",
+      "gust_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "weather_degradation",
+      "wind_shear"
+    ],
+    "weather": "rainy",
+    "wind": 10.0,
+    "visibility": 3.0,
+    "total_points": 500,
+    "duration_min": 25
+  },
+  {
+    "flight_id": "FLT-WEATHER-001",
+    "tag": "weather_disturbance",
+    "uav_id": "UAV-C2",
+    "mission_type": "delivery",
+    "asset_class": "weather_operation_sample",
+    "completed": true,
+    "completion_pct": 89.0,
+    "violations": [],
+    "anomalies": [
+      "turbulence",
+      "gust_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "weather_degradation",
+      "wind_shear"
+    ],
+    "weather": "stormy",
+    "wind": 11.5,
+    "visibility": 2.9,
+    "total_points": 530,
+    "duration_min": 26
+  },
+  {
+    "flight_id": "FLT-WEATHER-002",
+    "tag": "weather_disturbance",
+    "uav_id": "UAV-C3",
+    "mission_type": "delivery",
+    "asset_class": "weather_operation_sample",
+    "completed": true,
+    "completion_pct": 86.0,
+    "violations": [],
+    "anomalies": [
+      "turbulence",
+      "gust_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "weather_degradation",
+      "wind_shear"
+    ],
+    "weather": "foggy",
+    "wind": 13.0,
+    "visibility": 2.8,
+    "total_points": 560,
+    "duration_min": 27
+  },
+  {
+    "flight_id": "FLT-WEATHER-003",
+    "tag": "weather_disturbance",
+    "uav_id": "UAV-C1",
+    "mission_type": "delivery",
+    "asset_class": "weather_operation_sample",
+    "completed": true,
+    "completion_pct": 83.0,
+    "violations": [],
+    "anomalies": [
+      "turbulence",
+      "gust_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "weather_degradation",
+      "wind_shear"
+    ],
+    "weather": "rainy",
+    "wind": 14.5,
+    "visibility": 2.7,
+    "total_points": 590,
+    "duration_min": 28
+  },
+  {
+    "flight_id": "FLT-WEATHER-004",
+    "tag": "weather_disturbance",
+    "uav_id": "UAV-C2",
+    "mission_type": "delivery",
+    "asset_class": "weather_operation_sample",
+    "completed": true,
+    "completion_pct": 80.0,
+    "violations": [],
+    "anomalies": [
+      "turbulence",
+      "gust_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "weather_degradation",
+      "wind_shear"
+    ],
+    "weather": "stormy",
+    "wind": 16.0,
+    "visibility": 2.6,
+    "total_points": 620,
+    "duration_min": 29
+  },
+  {
+    "flight_id": "FLT-WEATHER-005",
+    "tag": "weather_disturbance",
+    "uav_id": "UAV-C3",
+    "mission_type": "delivery",
+    "asset_class": "weather_operation_sample",
+    "completed": true,
+    "completion_pct": 77.0,
+    "violations": [],
+    "anomalies": [
+      "turbulence",
+      "gust_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "weather_degradation",
+      "wind_shear"
+    ],
+    "weather": "foggy",
+    "wind": 17.5,
+    "visibility": 2.5,
+    "total_points": 650,
+    "duration_min": 30
+  },
+  {
+    "flight_id": "FLT-WEATHER-006",
+    "tag": "weather_disturbance",
+    "uav_id": "UAV-C1",
+    "mission_type": "delivery",
+    "asset_class": "weather_operation_sample",
+    "completed": true,
+    "completion_pct": 74.0,
+    "violations": [],
+    "anomalies": [
+      "turbulence",
+      "gust_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "weather_degradation",
+      "wind_shear"
+    ],
+    "weather": "rainy",
+    "wind": 19.0,
+    "visibility": 2.4,
+    "total_points": 680,
+    "duration_min": 31
+  },
+  {
+    "flight_id": "FLT-WEATHER-007",
+    "tag": "weather_disturbance",
+    "uav_id": "UAV-C2",
+    "mission_type": "delivery",
+    "asset_class": "weather_operation_sample",
+    "completed": true,
+    "completion_pct": 71.0,
+    "violations": [],
+    "anomalies": [
+      "turbulence",
+      "gust_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "weather_degradation",
+      "wind_shear"
+    ],
+    "weather": "stormy",
+    "wind": 20.5,
+    "visibility": 2.3,
+    "total_points": 710,
+    "duration_min": 32
+  },
+  {
+    "flight_id": "FLT-WEATHER-008",
+    "tag": "weather_disturbance",
+    "uav_id": "UAV-C3",
+    "mission_type": "delivery",
+    "asset_class": "weather_operation_sample",
+    "completed": true,
+    "completion_pct": 68.0,
+    "violations": [],
+    "anomalies": [
+      "turbulence",
+      "gust_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "weather_degradation",
+      "wind_shear"
+    ],
+    "weather": "foggy",
+    "wind": 22.0,
+    "visibility": 2.2,
+    "total_points": 740,
+    "duration_min": 33
+  },
+  {
+    "flight_id": "FLT-WEATHER-009",
+    "tag": "weather_disturbance",
+    "uav_id": "UAV-C1",
+    "mission_type": "delivery",
+    "asset_class": "weather_operation_sample",
+    "completed": true,
+    "completion_pct": 65.0,
+    "violations": [],
+    "anomalies": [
+      "turbulence",
+      "gust_warning"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "weather_degradation",
+      "wind_shear"
+    ],
+    "weather": "rainy",
+    "wind": 23.5,
+    "visibility": 2.1,
+    "total_points": 770,
+    "duration_min": 34
+  },
+  {
+    "flight_id": "FLT-NFZ-000",
+    "tag": "near_nfz",
+    "uav_id": "UAV-D1",
+    "mission_type": "patrol",
+    "asset_class": "compliance_record",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "nfz_buffer_entry"
+    ],
+    "weather": "overcast",
+    "wind": 5.0,
+    "visibility": 8.0,
+    "total_points": 900,
+    "duration_min": 30
+  },
+  {
+    "flight_id": "FLT-NFZ-001",
+    "tag": "near_nfz",
+    "uav_id": "UAV-D2",
+    "mission_type": "patrol",
+    "asset_class": "compliance_record",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "nfz_buffer_entry"
+    ],
+    "weather": "overcast",
+    "wind": 5.0,
+    "visibility": 8.0,
+    "total_points": 920,
+    "duration_min": 31
+  },
+  {
+    "flight_id": "FLT-NFZ-002",
+    "tag": "near_nfz",
+    "uav_id": "UAV-D1",
+    "mission_type": "patrol",
+    "asset_class": "compliance_record",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [
+      "nfz_proximity"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "nfz_buffer_entry"
+    ],
+    "weather": "overcast",
+    "wind": 5.0,
+    "visibility": 8.0,
+    "total_points": 940,
+    "duration_min": 32
+  },
+  {
+    "flight_id": "FLT-NFZ-003",
+    "tag": "near_nfz",
+    "uav_id": "UAV-D2",
+    "mission_type": "patrol",
+    "asset_class": "compliance_record",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [
+      "nfz_proximity_warning"
+    ],
+    "anomalies": [
+      "nfz_proximity"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "nfz_buffer_entry"
+    ],
+    "weather": "overcast",
+    "wind": 5.0,
+    "visibility": 8.0,
+    "total_points": 960,
+    "duration_min": 33
+  },
+  {
+    "flight_id": "FLT-NFZ-004",
+    "tag": "near_nfz",
+    "uav_id": "UAV-D1",
+    "mission_type": "patrol",
+    "asset_class": "compliance_record",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [
+      "nfz_proximity_warning"
+    ],
+    "anomalies": [
+      "nfz_proximity"
+    ],
+    "no_fly_zone_incursions": 1,
+    "risk_events": [
+      "nfz_buffer_entry"
+    ],
+    "weather": "overcast",
+    "wind": 5.0,
+    "visibility": 8.0,
+    "total_points": 980,
+    "duration_min": 34
+  },
+  {
+    "flight_id": "FLT-NFZ-005",
+    "tag": "near_nfz",
+    "uav_id": "UAV-D2",
+    "mission_type": "patrol",
+    "asset_class": "compliance_record",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [
+      "nfz_proximity_warning"
+    ],
+    "anomalies": [
+      "nfz_proximity"
+    ],
+    "no_fly_zone_incursions": 2,
+    "risk_events": [
+      "nfz_buffer_entry"
+    ],
+    "weather": "overcast",
+    "wind": 5.0,
+    "visibility": 8.0,
+    "total_points": 1000,
+    "duration_min": 35
+  },
+  {
+    "flight_id": "FLT-NFZ-006",
+    "tag": "near_nfz",
+    "uav_id": "UAV-D1",
+    "mission_type": "patrol",
+    "asset_class": "compliance_record",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [
+      "nfz_proximity_warning"
+    ],
+    "anomalies": [
+      "nfz_proximity"
+    ],
+    "no_fly_zone_incursions": 3,
+    "risk_events": [
+      "nfz_buffer_entry"
+    ],
+    "weather": "overcast",
+    "wind": 5.0,
+    "visibility": 8.0,
+    "total_points": 1020,
+    "duration_min": 36
+  },
+  {
+    "flight_id": "FLT-NFZ-007",
+    "tag": "near_nfz",
+    "uav_id": "UAV-D2",
+    "mission_type": "patrol",
+    "asset_class": "compliance_record",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [
+      "nfz_proximity_warning"
+    ],
+    "anomalies": [
+      "nfz_proximity"
+    ],
+    "no_fly_zone_incursions": 4,
+    "risk_events": [
+      "nfz_buffer_entry"
+    ],
+    "weather": "overcast",
+    "wind": 5.0,
+    "visibility": 8.0,
+    "total_points": 1040,
+    "duration_min": 37
+  },
+  {
+    "flight_id": "FLT-MAINT-000",
+    "tag": "anomaly_maintenance",
+    "uav_id": "UAV-E1",
+    "mission_type": "maintenance_check",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 88.0,
+    "violations": [],
+    "anomalies": [
+      "motor_vibration"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "equipment_warning"
+    ],
+    "weather": "clear",
+    "wind": 3.0,
+    "visibility": 12.0,
+    "total_points": 800,
+    "duration_min": 12
+  },
+  {
+    "flight_id": "FLT-MAINT-001",
+    "tag": "anomaly_maintenance",
+    "uav_id": "UAV-E2",
+    "mission_type": "maintenance_check",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 87.0,
+    "violations": [],
+    "anomalies": [
+      "motor_vibration",
+      "battery_temp_high"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "equipment_warning"
+    ],
+    "weather": "clear",
+    "wind": 3.2,
+    "visibility": 12.0,
+    "total_points": 825,
+    "duration_min": 13
+  },
+  {
+    "flight_id": "FLT-MAINT-002",
+    "tag": "anomaly_maintenance",
+    "uav_id": "UAV-E3",
+    "mission_type": "maintenance_check",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 86.0,
+    "violations": [],
+    "anomalies": [
+      "motor_vibration",
+      "battery_temp_high",
+      "gps_drift"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "equipment_warning"
+    ],
+    "weather": "clear",
+    "wind": 3.4,
+    "visibility": 12.0,
+    "total_points": 850,
+    "duration_min": 14
+  },
+  {
+    "flight_id": "FLT-MAINT-003",
+    "tag": "anomaly_maintenance",
+    "uav_id": "UAV-E1",
+    "mission_type": "maintenance_check",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 85.0,
+    "violations": [],
+    "anomalies": [
+      "motor_vibration",
+      "battery_temp_high",
+      "gps_drift",
+      "compass_interference"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "equipment_warning"
+    ],
+    "weather": "clear",
+    "wind": 3.6,
+    "visibility": 12.0,
+    "total_points": 875,
+    "duration_min": 15
+  },
+  {
+    "flight_id": "FLT-MAINT-004",
+    "tag": "anomaly_maintenance",
+    "uav_id": "UAV-E2",
+    "mission_type": "maintenance_check",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 84.0,
+    "violations": [],
+    "anomalies": [
+      "motor_vibration"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "equipment_warning"
+    ],
+    "weather": "clear",
+    "wind": 3.8,
+    "visibility": 12.0,
+    "total_points": 900,
+    "duration_min": 16
+  },
+  {
+    "flight_id": "FLT-MAINT-005",
+    "tag": "anomaly_maintenance",
+    "uav_id": "UAV-E3",
+    "mission_type": "maintenance_check",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 83.0,
+    "violations": [],
+    "anomalies": [
+      "motor_vibration",
+      "battery_temp_high"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "equipment_warning"
+    ],
+    "weather": "clear",
+    "wind": 4.0,
+    "visibility": 12.0,
+    "total_points": 925,
+    "duration_min": 17
+  },
+  {
+    "flight_id": "FLT-MAINT-006",
+    "tag": "anomaly_maintenance",
+    "uav_id": "UAV-E1",
+    "mission_type": "maintenance_check",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 82.0,
+    "violations": [],
+    "anomalies": [
+      "motor_vibration",
+      "battery_temp_high",
+      "gps_drift"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "equipment_warning"
+    ],
+    "weather": "clear",
+    "wind": 4.2,
+    "visibility": 12.0,
+    "total_points": 950,
+    "duration_min": 18
+  },
+  {
+    "flight_id": "FLT-MAINT-007",
+    "tag": "anomaly_maintenance",
+    "uav_id": "UAV-E2",
+    "mission_type": "maintenance_check",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 81.0,
+    "violations": [],
+    "anomalies": [
+      "motor_vibration",
+      "battery_temp_high",
+      "gps_drift",
+      "compass_interference"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "equipment_warning"
+    ],
+    "weather": "clear",
+    "wind": 4.4,
+    "visibility": 12.0,
+    "total_points": 975,
+    "duration_min": 19
+  },
+  {
+    "flight_id": "FLT-MAINT-008",
+    "tag": "anomaly_maintenance",
+    "uav_id": "UAV-E3",
+    "mission_type": "maintenance_check",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 80.0,
+    "violations": [],
+    "anomalies": [
+      "motor_vibration"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "equipment_warning"
+    ],
+    "weather": "clear",
+    "wind": 4.6,
+    "visibility": 12.0,
+    "total_points": 1000,
+    "duration_min": 20
+  },
+  {
+    "flight_id": "FLT-MAINT-009",
+    "tag": "anomaly_maintenance",
+    "uav_id": "UAV-E1",
+    "mission_type": "maintenance_check",
+    "asset_class": "maintenance_sample",
+    "completed": true,
+    "completion_pct": 79.0,
+    "violations": [],
+    "anomalies": [
+      "motor_vibration",
+      "battery_temp_high"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "equipment_warning"
+    ],
+    "weather": "clear",
+    "wind": 4.8,
+    "visibility": 12.0,
+    "total_points": 1025,
+    "duration_min": 21
+  },
+  {
+    "flight_id": "FLT-EMER-000",
+    "tag": "emergency_logistics",
+    "uav_id": "UAV-F1",
+    "mission_type": "emergency_delivery",
+    "asset_class": "risk_dataset",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "priority_corridor"
+    ],
+    "weather": "clear",
+    "wind": 5.0,
+    "visibility": 10.0,
+    "total_points": 400,
+    "duration_min": 8
+  },
+  {
+    "flight_id": "FLT-EMER-001",
+    "tag": "emergency_logistics",
+    "uav_id": "UAV-F2",
+    "mission_type": "emergency_delivery",
+    "asset_class": "risk_dataset",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "priority_corridor"
+    ],
+    "weather": "clear",
+    "wind": 6.0,
+    "visibility": 10.0,
+    "total_points": 430,
+    "duration_min": 9
+  },
+  {
+    "flight_id": "FLT-EMER-002",
+    "tag": "emergency_logistics",
+    "uav_id": "UAV-F1",
+    "mission_type": "emergency_delivery",
+    "asset_class": "risk_dataset",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "priority_corridor"
+    ],
+    "weather": "clear",
+    "wind": 7.0,
+    "visibility": 10.0,
+    "total_points": 460,
+    "duration_min": 10
+  },
+  {
+    "flight_id": "FLT-EMER-003",
+    "tag": "emergency_logistics",
+    "uav_id": "UAV-F2",
+    "mission_type": "emergency_delivery",
+    "asset_class": "risk_dataset",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "priority_corridor"
+    ],
+    "weather": "clear",
+    "wind": 8.0,
+    "visibility": 10.0,
+    "total_points": 490,
+    "duration_min": 11
+  },
+  {
+    "flight_id": "FLT-EMER-004",
+    "tag": "emergency_logistics",
+    "uav_id": "UAV-F1",
+    "mission_type": "emergency_delivery",
+    "asset_class": "risk_dataset",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "priority_corridor"
+    ],
+    "weather": "clear",
+    "wind": 9.0,
+    "visibility": 10.0,
+    "total_points": 520,
+    "duration_min": 12
+  },
+  {
+    "flight_id": "FLT-EMER-005",
+    "tag": "emergency_logistics",
+    "uav_id": "UAV-F2",
+    "mission_type": "emergency_delivery",
+    "asset_class": "risk_dataset",
+    "completed": false,
+    "completion_pct": 65.0,
+    "violations": [
+      "altitude_exceedance"
+    ],
+    "anomalies": [
+      "mission_abort"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "priority_corridor"
+    ],
+    "weather": "clear",
+    "wind": 10.0,
+    "visibility": 10.0,
+    "total_points": 550,
+    "duration_min": 13
+  },
+  {
+    "flight_id": "FLT-EMER-006",
+    "tag": "emergency_logistics",
+    "uav_id": "UAV-F1",
+    "mission_type": "emergency_delivery",
+    "asset_class": "risk_dataset",
+    "completed": false,
+    "completion_pct": 70.0,
+    "violations": [
+      "altitude_exceedance"
+    ],
+    "anomalies": [
+      "mission_abort"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "priority_corridor",
+      "emergency_landing"
+    ],
+    "weather": "clear",
+    "wind": 11.0,
+    "visibility": 10.0,
+    "total_points": 580,
+    "duration_min": 14
+  },
+  {
+    "flight_id": "FLT-EMER-007",
+    "tag": "emergency_logistics",
+    "uav_id": "UAV-F2",
+    "mission_type": "emergency_delivery",
+    "asset_class": "risk_dataset",
+    "completed": false,
+    "completion_pct": 75.0,
+    "violations": [
+      "altitude_exceedance"
+    ],
+    "anomalies": [
+      "mission_abort"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "priority_corridor",
+      "emergency_landing"
+    ],
+    "weather": "clear",
+    "wind": 12.0,
+    "visibility": 10.0,
+    "total_points": 610,
+    "duration_min": 15
+  },
+  {
+    "flight_id": "FLT-LOWQ-000",
+    "tag": "low_quality",
+    "uav_id": "UAV-G1",
+    "mission_type": "survey",
+    "asset_class": "flight_evidence",
+    "completed": false,
+    "completion_pct": 20.0,
+    "violations": [
+      "data_gap"
+    ],
+    "anomalies": [
+      "telemetry_loss",
+      "gps_failure"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "foggy",
+    "wind": 7.0,
+    "visibility": 1.0,
+    "total_points": 50,
+    "duration_min": 3
+  },
+  {
+    "flight_id": "FLT-LOWQ-001",
+    "tag": "low_quality",
+    "uav_id": "UAV-G2",
+    "mission_type": "survey",
+    "asset_class": "flight_evidence",
+    "completed": false,
+    "completion_pct": 25.0,
+    "violations": [
+      "data_gap",
+      "sensor_failure"
+    ],
+    "anomalies": [
+      "telemetry_loss",
+      "gps_failure"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "foggy",
+    "wind": 7.5,
+    "visibility": 1.1,
+    "total_points": 70,
+    "duration_min": 4
+  },
+  {
+    "flight_id": "FLT-LOWQ-002",
+    "tag": "low_quality",
+    "uav_id": "UAV-G1",
+    "mission_type": "survey",
+    "asset_class": "flight_evidence",
+    "completed": false,
+    "completion_pct": 30.0,
+    "violations": [
+      "data_gap"
+    ],
+    "anomalies": [
+      "telemetry_loss",
+      "gps_failure"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "foggy",
+    "wind": 8.0,
+    "visibility": 1.2,
+    "total_points": 90,
+    "duration_min": 5
+  },
+  {
+    "flight_id": "FLT-LOWQ-003",
+    "tag": "low_quality",
+    "uav_id": "UAV-G2",
+    "mission_type": "survey",
+    "asset_class": "flight_evidence",
+    "completed": false,
+    "completion_pct": 35.0,
+    "violations": [
+      "data_gap",
+      "sensor_failure"
+    ],
+    "anomalies": [
+      "telemetry_loss",
+      "gps_failure"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "foggy",
+    "wind": 8.5,
+    "visibility": 1.3,
+    "total_points": 110,
+    "duration_min": 6
+  },
+  {
+    "flight_id": "FLT-LOWQ-004",
+    "tag": "low_quality",
+    "uav_id": "UAV-G1",
+    "mission_type": "survey",
+    "asset_class": "flight_evidence",
+    "completed": false,
+    "completion_pct": 40.0,
+    "violations": [
+      "data_gap"
+    ],
+    "anomalies": [
+      "telemetry_loss",
+      "gps_failure"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "foggy",
+    "wind": 9.0,
+    "visibility": 1.4,
+    "total_points": 130,
+    "duration_min": 7
+  },
+  {
+    "flight_id": "FLT-LOWQ-005",
+    "tag": "low_quality",
+    "uav_id": "UAV-G2",
+    "mission_type": "survey",
+    "asset_class": "flight_evidence",
+    "completed": false,
+    "completion_pct": 45.0,
+    "violations": [
+      "data_gap",
+      "sensor_failure"
+    ],
+    "anomalies": [
+      "telemetry_loss",
+      "gps_failure"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "foggy",
+    "wind": 9.5,
+    "visibility": 1.5,
+    "total_points": 150,
+    "duration_min": 8
+  },
+  {
+    "flight_id": "FLT-LOWQ-006",
+    "tag": "low_quality",
+    "uav_id": "UAV-G1",
+    "mission_type": "survey",
+    "asset_class": "flight_evidence",
+    "completed": false,
+    "completion_pct": 50.0,
+    "violations": [
+      "data_gap"
+    ],
+    "anomalies": [
+      "telemetry_loss",
+      "gps_failure"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "foggy",
+    "wind": 10.0,
+    "visibility": 1.6,
+    "total_points": 170,
+    "duration_min": 9
+  },
+  {
+    "flight_id": "FLT-LOWQ-007",
+    "tag": "low_quality",
+    "uav_id": "UAV-G2",
+    "mission_type": "survey",
+    "asset_class": "flight_evidence",
+    "completed": false,
+    "completion_pct": 55.0,
+    "violations": [
+      "data_gap",
+      "sensor_failure"
+    ],
+    "anomalies": [
+      "telemetry_loss",
+      "gps_failure"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "foggy",
+    "wind": 10.5,
+    "visibility": 1.7000000000000002,
+    "total_points": 190,
+    "duration_min": 10
+  },
+  {
+    "flight_id": "FLT-LOWQ-008",
+    "tag": "low_quality",
+    "uav_id": "UAV-G1",
+    "mission_type": "survey",
+    "asset_class": "flight_evidence",
+    "completed": false,
+    "completion_pct": 60.0,
+    "violations": [
+      "data_gap"
+    ],
+    "anomalies": [
+      "telemetry_loss",
+      "gps_failure"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "foggy",
+    "wind": 11.0,
+    "visibility": 1.8,
+    "total_points": 210,
+    "duration_min": 11
+  },
+  {
+    "flight_id": "FLT-LOWQ-009",
+    "tag": "low_quality",
+    "uav_id": "UAV-G2",
+    "mission_type": "survey",
+    "asset_class": "flight_evidence",
+    "completed": false,
+    "completion_pct": 65.0,
+    "violations": [
+      "data_gap",
+      "sensor_failure"
+    ],
+    "anomalies": [
+      "telemetry_loss",
+      "gps_failure"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "foggy",
+    "wind": 11.5,
+    "visibility": 1.9,
+    "total_points": 230,
+    "duration_min": 12
+  },
+  {
+    "flight_id": "FLT-LOWQ-010",
+    "tag": "low_quality",
+    "uav_id": "UAV-G1",
+    "mission_type": "survey",
+    "asset_class": "flight_evidence",
+    "completed": false,
+    "completion_pct": 70.0,
+    "violations": [
+      "data_gap"
+    ],
+    "anomalies": [
+      "telemetry_loss",
+      "gps_failure"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "foggy",
+    "wind": 12.0,
+    "visibility": 2.0,
+    "total_points": 250,
+    "duration_min": 13
+  },
+  {
+    "flight_id": "FLT-LOWQ-011",
+    "tag": "low_quality",
+    "uav_id": "UAV-G2",
+    "mission_type": "survey",
+    "asset_class": "flight_evidence",
+    "completed": false,
+    "completion_pct": 75.0,
+    "violations": [
+      "data_gap",
+      "sensor_failure"
+    ],
+    "anomalies": [
+      "telemetry_loss",
+      "gps_failure"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "foggy",
+    "wind": 12.5,
+    "visibility": 2.1,
+    "total_points": 270,
+    "duration_min": 14
+  },
+  {
+    "flight_id": "FLT-RIGHTS-000",
+    "tag": "rights_conflict",
+    "uav_id": "UAV-H1",
+    "mission_type": "commercial_survey",
+    "asset_class": "audit_ready_package",
+    "completed": true,
+    "completion_pct": 97.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 3.0,
+    "visibility": 15.0,
+    "total_points": 1400,
+    "duration_min": 35
+  },
+  {
+    "flight_id": "FLT-RIGHTS-001",
+    "tag": "rights_conflict",
+    "uav_id": "UAV-H2",
+    "mission_type": "commercial_survey",
+    "asset_class": "audit_ready_package",
+    "completed": true,
+    "completion_pct": 97.3,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 3.0,
+    "visibility": 15.0,
+    "total_points": 1450,
+    "duration_min": 38
+  },
+  {
+    "flight_id": "FLT-RIGHTS-002",
+    "tag": "rights_conflict",
+    "uav_id": "UAV-H3",
+    "mission_type": "commercial_survey",
+    "asset_class": "audit_ready_package",
+    "completed": true,
+    "completion_pct": 97.6,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 3.0,
+    "visibility": 15.0,
+    "total_points": 1500,
+    "duration_min": 41
+  },
+  {
+    "flight_id": "FLT-RIGHTS-003",
+    "tag": "rights_conflict",
+    "uav_id": "UAV-H1",
+    "mission_type": "commercial_survey",
+    "asset_class": "audit_ready_package",
+    "completed": true,
+    "completion_pct": 97.9,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 3.0,
+    "visibility": 15.0,
+    "total_points": 1550,
+    "duration_min": 44
+  },
+  {
+    "flight_id": "FLT-RIGHTS-004",
+    "tag": "rights_conflict",
+    "uav_id": "UAV-H2",
+    "mission_type": "commercial_survey",
+    "asset_class": "audit_ready_package",
+    "completed": true,
+    "completion_pct": 98.2,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 3.0,
+    "visibility": 15.0,
+    "total_points": 1600,
+    "duration_min": 47
+  },
+  {
+    "flight_id": "FLT-RIGHTS-005",
+    "tag": "rights_conflict",
+    "uav_id": "UAV-H3",
+    "mission_type": "commercial_survey",
+    "asset_class": "audit_ready_package",
+    "completed": true,
+    "completion_pct": 98.5,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 3.0,
+    "visibility": 15.0,
+    "total_points": 1650,
+    "duration_min": 50
+  },
+  {
+    "flight_id": "FLT-RIGHTS-006",
+    "tag": "rights_conflict",
+    "uav_id": "UAV-H1",
+    "mission_type": "commercial_survey",
+    "asset_class": "audit_ready_package",
+    "completed": true,
+    "completion_pct": 98.8,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 3.0,
+    "visibility": 15.0,
+    "total_points": 1700,
+    "duration_min": 53
+  },
+  {
+    "flight_id": "FLT-RIGHTS-007",
+    "tag": "rights_conflict",
+    "uav_id": "UAV-H2",
+    "mission_type": "commercial_survey",
+    "asset_class": "audit_ready_package",
+    "completed": true,
+    "completion_pct": 99.1,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [],
+    "weather": "clear",
+    "wind": 3.0,
+    "visibility": 15.0,
+    "total_points": 1750,
+    "duration_min": 56
+  },
+  {
+    "flight_id": "FLT-BVLOS-000",
+    "tag": "beyond_vlos",
+    "uav_id": "UAV-J1",
+    "mission_type": "long_range_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "beyond_vlos",
+      "relay_handoff"
+    ],
+    "weather": "clear",
+    "wind": 4.0,
+    "visibility": 10.0,
+    "total_points": 2000,
+    "duration_min": 45
+  },
+  {
+    "flight_id": "FLT-BVLOS-001",
+    "tag": "beyond_vlos",
+    "uav_id": "UAV-J2",
+    "mission_type": "long_range_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "beyond_vlos",
+      "relay_handoff"
+    ],
+    "weather": "overcast",
+    "wind": 4.4,
+    "visibility": 9.7,
+    "total_points": 2100,
+    "duration_min": 50
+  },
+  {
+    "flight_id": "FLT-BVLOS-002",
+    "tag": "beyond_vlos",
+    "uav_id": "UAV-J3",
+    "mission_type": "long_range_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "beyond_vlos",
+      "relay_handoff"
+    ],
+    "weather": "hazy",
+    "wind": 4.8,
+    "visibility": 9.4,
+    "total_points": 2200,
+    "duration_min": 55
+  },
+  {
+    "flight_id": "FLT-BVLOS-003",
+    "tag": "beyond_vlos",
+    "uav_id": "UAV-J4",
+    "mission_type": "long_range_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "beyond_vlos",
+      "relay_handoff"
+    ],
+    "weather": "clear",
+    "wind": 5.2,
+    "visibility": 9.1,
+    "total_points": 2300,
+    "duration_min": 60
+  },
+  {
+    "flight_id": "FLT-BVLOS-004",
+    "tag": "beyond_vlos",
+    "uav_id": "UAV-J1",
+    "mission_type": "long_range_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "beyond_vlos",
+      "relay_handoff"
+    ],
+    "weather": "overcast",
+    "wind": 5.6,
+    "visibility": 8.8,
+    "total_points": 2400,
+    "duration_min": 65
+  },
+  {
+    "flight_id": "FLT-BVLOS-005",
+    "tag": "beyond_vlos",
+    "uav_id": "UAV-J2",
+    "mission_type": "long_range_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "beyond_vlos",
+      "relay_handoff"
+    ],
+    "weather": "hazy",
+    "wind": 6.0,
+    "visibility": 8.5,
+    "total_points": 2500,
+    "duration_min": 70
+  },
+  {
+    "flight_id": "FLT-BVLOS-006",
+    "tag": "beyond_vlos",
+    "uav_id": "UAV-J3",
+    "mission_type": "long_range_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "beyond_vlos",
+      "relay_handoff"
+    ],
+    "weather": "clear",
+    "wind": 6.4,
+    "visibility": 8.2,
+    "total_points": 2600,
+    "duration_min": 75
+  },
+  {
+    "flight_id": "FLT-BVLOS-007",
+    "tag": "beyond_vlos",
+    "uav_id": "UAV-J4",
+    "mission_type": "long_range_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "beyond_vlos",
+      "relay_handoff"
+    ],
+    "weather": "overcast",
+    "wind": 6.800000000000001,
+    "visibility": 7.9,
+    "total_points": 2700,
+    "duration_min": 80
+  },
+  {
+    "flight_id": "FLT-BVLOS-008",
+    "tag": "beyond_vlos",
+    "uav_id": "UAV-J1",
+    "mission_type": "long_range_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "beyond_vlos",
+      "relay_handoff"
+    ],
+    "weather": "hazy",
+    "wind": 7.2,
+    "visibility": 7.6,
+    "total_points": 2800,
+    "duration_min": 85
+  },
+  {
+    "flight_id": "FLT-BVLOS-009",
+    "tag": "beyond_vlos",
+    "uav_id": "UAV-J2",
+    "mission_type": "long_range_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "beyond_vlos",
+      "relay_handoff"
+    ],
+    "weather": "clear",
+    "wind": 7.6,
+    "visibility": 7.300000000000001,
+    "total_points": 2900,
+    "duration_min": 90
+  },
+  {
+    "flight_id": "FLT-BVLOS-010",
+    "tag": "beyond_vlos",
+    "uav_id": "UAV-J3",
+    "mission_type": "long_range_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [
+      "link_degradation"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "beyond_vlos",
+      "relay_handoff"
+    ],
+    "weather": "overcast",
+    "wind": 8.0,
+    "visibility": 7.0,
+    "total_points": 3000,
+    "duration_min": 95
+  },
+  {
+    "flight_id": "FLT-BVLOS-011",
+    "tag": "beyond_vlos",
+    "uav_id": "UAV-J4",
+    "mission_type": "long_range_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [
+      "link_degradation"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "beyond_vlos",
+      "relay_handoff"
+    ],
+    "weather": "hazy",
+    "wind": 8.4,
+    "visibility": 6.7,
+    "total_points": 3100,
+    "duration_min": 100
+  },
+  {
+    "flight_id": "FLT-BVLOS-012",
+    "tag": "beyond_vlos",
+    "uav_id": "UAV-J1",
+    "mission_type": "long_range_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": false,
+    "completion_pct": 70.0,
+    "violations": [
+      "range_exceedance"
+    ],
+    "anomalies": [
+      "link_degradation"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "beyond_vlos",
+      "relay_handoff"
+    ],
+    "weather": "clear",
+    "wind": 8.8,
+    "visibility": 6.4,
+    "total_points": 3200,
+    "duration_min": 105
+  },
+  {
+    "flight_id": "FLT-BVLOS-013",
+    "tag": "beyond_vlos",
+    "uav_id": "UAV-J2",
+    "mission_type": "long_range_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": false,
+    "completion_pct": 70.0,
+    "violations": [
+      "range_exceedance"
+    ],
+    "anomalies": [
+      "link_degradation"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "beyond_vlos",
+      "relay_handoff"
+    ],
+    "weather": "overcast",
+    "wind": 9.2,
+    "visibility": 6.1,
+    "total_points": 3300,
+    "duration_min": 110
+  },
+  {
+    "flight_id": "FLT-BVLOS-014",
+    "tag": "beyond_vlos",
+    "uav_id": "UAV-J3",
+    "mission_type": "long_range_survey",
+    "asset_class": "route_optimization_sample",
+    "completed": false,
+    "completion_pct": 70.0,
+    "violations": [
+      "range_exceedance"
+    ],
+    "anomalies": [
+      "link_degradation"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "beyond_vlos",
+      "relay_handoff"
+    ],
+    "weather": "hazy",
+    "wind": 9.600000000000001,
+    "visibility": 5.8,
+    "total_points": 3400,
+    "duration_min": 115
+  },
+  {
+    "flight_id": "FLT-URBAN-000",
+    "tag": "urban_corridor",
+    "uav_id": "UAV-K1",
+    "mission_type": "urban_delivery",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "urban_density"
+    ],
+    "weather": "clear",
+    "wind": 3.0,
+    "visibility": 12.0,
+    "total_points": 600,
+    "duration_min": 15
+  },
+  {
+    "flight_id": "FLT-URBAN-001",
+    "tag": "urban_corridor",
+    "uav_id": "UAV-K2",
+    "mission_type": "urban_delivery",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "urban_density"
+    ],
+    "weather": "clear",
+    "wind": 3.3,
+    "visibility": 11.6,
+    "total_points": 650,
+    "duration_min": 17
+  },
+  {
+    "flight_id": "FLT-URBAN-002",
+    "tag": "urban_corridor",
+    "uav_id": "UAV-K3",
+    "mission_type": "urban_delivery",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "urban_density"
+    ],
+    "weather": "clear",
+    "wind": 3.6,
+    "visibility": 11.2,
+    "total_points": 700,
+    "duration_min": 19
+  },
+  {
+    "flight_id": "FLT-URBAN-003",
+    "tag": "urban_corridor",
+    "uav_id": "UAV-K4",
+    "mission_type": "urban_delivery",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "urban_density"
+    ],
+    "weather": "clear",
+    "wind": 3.9,
+    "visibility": 10.8,
+    "total_points": 750,
+    "duration_min": 21
+  },
+  {
+    "flight_id": "FLT-URBAN-004",
+    "tag": "urban_corridor",
+    "uav_id": "UAV-K5",
+    "mission_type": "urban_delivery",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "urban_density"
+    ],
+    "weather": "clear",
+    "wind": 4.2,
+    "visibility": 10.4,
+    "total_points": 800,
+    "duration_min": 23
+  },
+  {
+    "flight_id": "FLT-URBAN-005",
+    "tag": "urban_corridor",
+    "uav_id": "UAV-K1",
+    "mission_type": "urban_delivery",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "urban_density"
+    ],
+    "weather": "clear",
+    "wind": 4.5,
+    "visibility": 10.0,
+    "total_points": 850,
+    "duration_min": 25
+  },
+  {
+    "flight_id": "FLT-URBAN-006",
+    "tag": "urban_corridor",
+    "uav_id": "UAV-K2",
+    "mission_type": "urban_delivery",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "urban_density",
+      "obstacle_avoidance"
+    ],
+    "weather": "clear",
+    "wind": 4.8,
+    "visibility": 9.6,
+    "total_points": 900,
+    "duration_min": 27
+  },
+  {
+    "flight_id": "FLT-URBAN-007",
+    "tag": "urban_corridor",
+    "uav_id": "UAV-K3",
+    "mission_type": "urban_delivery",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "urban_density",
+      "obstacle_avoidance"
+    ],
+    "weather": "overcast",
+    "wind": 5.1,
+    "visibility": 9.2,
+    "total_points": 950,
+    "duration_min": 29
+  },
+  {
+    "flight_id": "FLT-URBAN-008",
+    "tag": "urban_corridor",
+    "uav_id": "UAV-K4",
+    "mission_type": "urban_delivery",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [
+      "obstacle_proximity"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "urban_density",
+      "obstacle_avoidance"
+    ],
+    "weather": "overcast",
+    "wind": 5.4,
+    "visibility": 8.8,
+    "total_points": 1000,
+    "duration_min": 31
+  },
+  {
+    "flight_id": "FLT-URBAN-009",
+    "tag": "urban_corridor",
+    "uav_id": "UAV-K5",
+    "mission_type": "urban_delivery",
+    "asset_class": "route_optimization_sample",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [
+      "obstacle_proximity"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "urban_density",
+      "obstacle_avoidance"
+    ],
+    "weather": "overcast",
+    "wind": 5.699999999999999,
+    "visibility": 8.4,
+    "total_points": 1050,
+    "duration_min": 33
+  },
+  {
+    "flight_id": "FLT-URBAN-010",
+    "tag": "urban_corridor",
+    "uav_id": "UAV-K1",
+    "mission_type": "urban_delivery",
+    "asset_class": "risk_dataset",
+    "completed": true,
+    "completion_pct": 100.0,
+    "violations": [],
+    "anomalies": [
+      "obstacle_proximity"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "urban_density",
+      "obstacle_avoidance"
+    ],
+    "weather": "overcast",
+    "wind": 6.0,
+    "visibility": 8.0,
+    "total_points": 1100,
+    "duration_min": 35
+  },
+  {
+    "flight_id": "FLT-URBAN-011",
+    "tag": "urban_corridor",
+    "uav_id": "UAV-K2",
+    "mission_type": "urban_delivery",
+    "asset_class": "risk_dataset",
+    "completed": false,
+    "completion_pct": 55.0,
+    "violations": [
+      "altitude_exceedance"
+    ],
+    "anomalies": [
+      "obstacle_proximity"
+    ],
+    "no_fly_zone_incursions": 0,
+    "risk_events": [
+      "urban_density",
+      "obstacle_avoidance"
+    ],
+    "weather": "overcast",
+    "wind": 6.3,
+    "visibility": 7.6,
+    "total_points": 1150,
+    "duration_min": 37
+  },
+  {
+    "flight_id": "FLT-URBAN-012",
+    "tag": "urban_corridor",
+    "uav_id": "UAV-K3",
+    "mission_type": "urban_delivery",
+    "asset_class": "risk_dataset",
+    "completed": false,
+    "completion_pct": 55.0,
+    "violations": [
+      "altitude_exceedance"
+    ],
+    "anomalies": [
+      "obstacle_proximity"
+    ],
+    "no_fly_zone_incursions": 1,
+    "risk_events": [
+      "urban_density",
+      "obstacle_avoidance"
+    ],
+    "weather": "overcast",
+    "wind": 6.6,
+    "visibility": 7.199999999999999,
+    "total_points": 1200,
+    "duration_min": 39
+  },
+  {
+    "flight_id": "FLT-URBAN-013",
+    "tag": "urban_corridor",
+    "uav_id": "UAV-K4",
+    "mission_type": "urban_delivery",
+    "asset_class": "risk_dataset",
+    "completed": false,
+    "completion_pct": 55.0,
+    "violations": [
+      "altitude_exceedance"
+    ],
+    "anomalies": [
+      "obstacle_proximity"
+    ],
+    "no_fly_zone_incursions": 1,
+    "risk_events": [
+      "urban_density",
+      "obstacle_avoidance"
+    ],
+    "weather": "overcast",
+    "wind": 6.9,
+    "visibility": 6.8,
+    "total_points": 1250,
+    "duration_min": 41
+  }
+]

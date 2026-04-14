@@ -1,0 +1,10 @@
+{
+  "case1_flights": 5,
+  "case1_products": 1,
+  "case1_all_tradable": true,
+  "case2_flights": 3,
+  "case2_all_non_tradable": true,
+  "case3_flights": 6,
+  "case3_products": 1,
+  "case3_graph_triples": 406
+}

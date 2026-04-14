@@ -1,0 +1,31 @@
+{
+  "total_flights": 105,
+  "scenario_tags": [
+    "anomaly_maintenance",
+    "beyond_vlos",
+    "clean_route_survey",
+    "emergency_logistics",
+    "low_quality",
+    "near_nfz",
+    "night_flight",
+    "rights_conflict",
+    "urban_corridor",
+    "weather_disturbance"
+  ],
+  "scenario_counts": {
+    "clean_route_survey": 12,
+    "night_flight": 8,
+    "weather_disturbance": 10,
+    "near_nfz": 8,
+    "anomaly_maintenance": 10,
+    "emergency_logistics": 8,
+    "low_quality": 12,
+    "rights_conflict": 8,
+    "beyond_vlos": 15,
+    "urban_corridor": 14
+  },
+  "tradable_count": 45,
+  "non_tradable_count": 60,
+  "with_violations": 26,
+  "graph_triples": 7007
+}

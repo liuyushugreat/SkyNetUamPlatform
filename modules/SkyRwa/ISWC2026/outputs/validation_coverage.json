@@ -1,0 +1,8 @@
+{
+  "shacl_conforms": true,
+  "shacl_violations": 0,
+  "governance_rules_executed": 3,
+  "governance_affected_total": 53,
+  "benchmark_flights": 105,
+  "graph_triples": 7007
+}
