@@ -6,11 +6,11 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.2+](https://img.shields.io/badge/pytorch-2.2+-ee4c2c.svg)](https://pytorch.org/)
 
+> **ISWC 2026 Reviewers:** The SkyRwa KG-driven flight-to-asset pipeline code and reproduction artifact are at **[`modules/SkyRwa/ISWC2026/`](./modules/SkyRwa/ISWC2026)**. Run `cd modules/SkyRwa/ISWC2026 && bash run.sh` (or `.\run.ps1` on Windows) to reproduce all paper results.
+
 > **MobiHoc 2026 Reviewers:** The TR-GAT conflict detection code, `run.sh` one-click reproduction script, and all experiment artifacts are located at **[`modules/SkyFlow/`](./modules/SkyFlow)**. Run `cd modules/SkyFlow && bash run.sh` to reproduce all paper results.
 
 > **KSEM 2026 Reviewers:** The SkyKG neuro-symbolic knowledge graph code and reproduction artifact are at **[`modules/SkyKg/artifact_ksem2026/`](./modules/SkyKg/artifact_ksem2026)**. Run `cd modules/SkyKg/artifact_ksem2026 && bash run.sh` to reproduce all paper results.
-
-> **ISWC 2026 Reviewers:** The SkyRwa KG-driven flight-to-asset pipeline code and reproduction artifact are at **[`modules/SkyRwa/ISWC2026/`](./modules/SkyRwa/ISWC2026)**. Run `cd modules/SkyRwa/ISWC2026 && bash run.sh` (or `.\run.ps1` on Windows) to reproduce all paper results.
 
 > **SkyGov Reviewers / Readers:** The evidence-driven multi-agent governance module for UAM compliance is located at **[`modules/SkyGov/`](./modules/SkyGov)**. For a quick demo run `cd modules/SkyGov && python scripts/run_governance.py`; for the latest evaluation pipeline run `python scripts/run_full_eval.py --scenarios 1000`.
 
