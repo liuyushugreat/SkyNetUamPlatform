@@ -99,12 +99,32 @@ class GovernanceRuleEngine:
 
     @staticmethod
     def inject_decisions(graph: Graph, results: List[GovernanceRuleResult]) -> None:
-        """Materialize governance decisions as triples in the graph."""
+        """Materialize governance decisions as triples in the graph.
+
+        Each affected asset gets its own GovernanceDecision node linked via
+        ``skyrwa:appliedToAsset``, enabling per-asset SPARQL audit queries.
+        """
         for r in results:
             if not r.affected_assets:
                 continue
-            decision = SKYRWA_INST[f"governance_decision:{r.rule_id}"]
-            graph.add((decision, RDF.type, SKYRWA.GovernanceDecision))
-            graph.add((decision, SKYRWA["ruleId"], Literal(r.rule_id)))
-            graph.add((decision, SKYRWA["ruleLabel"], Literal(r.rule_label)))
-            graph.add((decision, SKYRWA["explanation"], Literal(r.explanation)))
+            for idx, flight_id in enumerate(r.affected_assets):
+                decision = SKYRWA_INST[
+                    f"governance_decision:{r.rule_id}:{flight_id}"
+                ]
+                graph.add((decision, RDF.type, SKYRWA.GovernanceDecision))
+                graph.add((decision, SKYRWA["ruleId"], Literal(r.rule_id)))
+                graph.add(
+                    (decision, SKYRWA["ruleLabel"], Literal(r.rule_label))
+                )
+                graph.add(
+                    (decision, SKYRWA["explanation"], Literal(r.explanation))
+                )
+                asset_candidates = list(graph.subjects(
+                    SKYRWA["flightId"], Literal(flight_id)
+                ))
+                for asset_uri in asset_candidates:
+                    if (asset_uri, RDF.type, SKYRWA.AssetCandidate) in graph \
+                            or (asset_uri, RDF.type, SKYRWA.FlightEvidence) in graph:
+                        graph.add(
+                            (decision, SKYRWA["appliedToAsset"], asset_uri)
+                        )

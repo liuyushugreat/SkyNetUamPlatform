@@ -39,6 +39,7 @@ skyrwa:DataConsumer rdfs:subClassOf prov:Agent .
 skyrwa:derivedFromEvidence rdfs:subPropertyOf prov:wasDerivedFrom .
 skyrwa:hasLineage rdfs:subPropertyOf prov:wasDerivedFrom .
 skyrwa:operatedBy rdfs:subPropertyOf prov:wasAttributedTo .
+skyrwa:appliedToAsset rdfs:subPropertyOf prov:used .
 
 # PROV usage: a GovernanceDecision prov:used a FlightEvidence
 # PROV generation: a GovernanceDecision prov:generated an AssetCandidate

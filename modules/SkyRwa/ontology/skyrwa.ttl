@@ -105,7 +105,7 @@ skyrwa:ValuationFactor a owl:Class ;
     rdfs:comment "A single scored dimension contributing to overall valuation."@en .
 
 # ────────────────────────────────────────────────────────────────────────────
-# Object Properties
+# Object Properties  (16 core + 2 structural = 18)
 # ────────────────────────────────────────────────────────────────────────────
 
 skyrwa:derivedFromEvidence a owl:ObjectProperty ;
@@ -118,6 +118,12 @@ skyrwa:governedBy a owl:ObjectProperty ;
     rdfs:label "governed by"@en ;
     rdfs:domain skyrwa:AssetCandidate ;
     rdfs:range skyrwa:GovernanceDecision .
+
+skyrwa:appliedToAsset a owl:ObjectProperty ;
+    rdfs:label "applied to asset"@en ;
+    rdfs:comment "Links a GovernanceDecision to the asset it applies to."@en ;
+    rdfs:domain skyrwa:GovernanceDecision ;
+    rdfs:range skyrwa:AssetCandidate .
 
 skyrwa:promotedToProduct a owl:ObjectProperty ;
     rdfs:label "promoted to product"@en ;
@@ -140,40 +146,14 @@ skyrwa:hasRightsProfile a owl:ObjectProperty ;
     rdfs:label "has rights profile"@en ;
     rdfs:comment "Links an asset candidate to its governance-assigned rights."@en .
 
-skyrwa:requiresDesensitization a owl:DatatypeProperty ;
-    rdfs:label "requires desensitization"@en ;
-    rdfs:range xsd:boolean .
-
-skyrwa:isTradable a owl:DatatypeProperty ;
-    rdfs:label "is tradable"@en ;
-    rdfs:range xsd:boolean .
-
 skyrwa:hasRevenueShare a owl:ObjectProperty ;
     rdfs:label "has revenue share"@en ;
     rdfs:comment "Links to a revenue participant entry."@en .
-
-skyrwa:hasDigest a owl:DatatypeProperty ;
-    rdfs:label "has digest"@en ;
-    rdfs:range xsd:string ;
-    rdfs:comment "SHA-256 content digest of the evidence package."@en .
-
-skyrwa:hasSignature a owl:DatatypeProperty ;
-    rdfs:label "has signature"@en ;
-    rdfs:range xsd:string ;
-    rdfs:comment "Cryptographic signature over the evidence digest."@en .
 
 skyrwa:hasLineage a owl:ObjectProperty ;
     rdfs:label "has lineage"@en ;
     rdfs:comment "Links a derived entity to its provenance chain."@en ;
     rdfs:subPropertyOf prov:wasDerivedFrom .
-
-skyrwa:hasAssetClass a owl:DatatypeProperty ;
-    rdfs:label "has asset class"@en ;
-    rdfs:range xsd:string .
-
-skyrwa:hasStatus a owl:DatatypeProperty ;
-    rdfs:label "has status"@en ;
-    rdfs:range xsd:string .
 
 skyrwa:hasValuationFactor a owl:ObjectProperty ;
     rdfs:label "has valuation factor"@en ;
@@ -211,8 +191,19 @@ skyrwa:aggregatesCandidate a owl:ObjectProperty ;
     rdfs:domain skyrwa:GovernedDataProduct ;
     rdfs:range skyrwa:AssetCandidate .
 
+skyrwa:isAggregatedIn a owl:ObjectProperty ;
+    rdfs:label "is aggregated in"@en ;
+    rdfs:comment "Inverse of aggregatesCandidate."@en ;
+    rdfs:domain skyrwa:AssetCandidate ;
+    rdfs:range skyrwa:GovernedDataProduct ;
+    owl:inverseOf skyrwa:aggregatesCandidate .
+
+skyrwa:hasSettlementRule a owl:ObjectProperty ;
+    rdfs:label "has settlement rule"@en ;
+    rdfs:comment "Links an asset to its revenue-split configuration."@en .
+
 # ────────────────────────────────────────────────────────────────────────────
-# Datatype Properties (scalar attributes)
+# Datatype Properties  (core lifecycle attributes)
 # ────────────────────────────────────────────────────────────────────────────
 
 skyrwa:flightId a owl:DatatypeProperty ;
@@ -247,6 +238,32 @@ skyrwa:estimatedValue a owl:DatatypeProperty ;
     rdfs:label "estimated value"@en ;
     rdfs:range xsd:float .
 
+skyrwa:isTradable a owl:DatatypeProperty ;
+    rdfs:label "is tradable"@en ;
+    rdfs:range xsd:boolean .
+
+skyrwa:requiresDesensitization a owl:DatatypeProperty ;
+    rdfs:label "requires desensitization"@en ;
+    rdfs:range xsd:boolean .
+
+skyrwa:hasDigest a owl:DatatypeProperty ;
+    rdfs:label "has digest"@en ;
+    rdfs:range xsd:string ;
+    rdfs:comment "SHA-256 content digest of the evidence package."@en .
+
+skyrwa:hasSignature a owl:DatatypeProperty ;
+    rdfs:label "has signature"@en ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Cryptographic signature over the evidence digest."@en .
+
+skyrwa:hasAssetClass a owl:DatatypeProperty ;
+    rdfs:label "has asset class"@en ;
+    rdfs:range xsd:string .
+
+skyrwa:hasStatus a owl:DatatypeProperty ;
+    rdfs:label "has status"@en ;
+    rdfs:range xsd:string .
+
 skyrwa:grossAmount a owl:DatatypeProperty ;
     rdfs:label "gross amount"@en ;
     rdfs:range xsd:float .
@@ -261,4 +278,59 @@ skyrwa:usageType a owl:DatatypeProperty ;
 
 skyrwa:consumer a owl:DatatypeProperty ;
     rdfs:label "consumer"@en ;
+    rdfs:range xsd:string .
+
+# ────────────────────────────────────────────────────────────────────────────
+# GovernanceDecision attributes
+# ────────────────────────────────────────────────────────────────────────────
+
+skyrwa:ruleId a owl:DatatypeProperty ;
+    rdfs:label "rule ID"@en ;
+    rdfs:comment "Identifier of the governance rule that produced this decision."@en ;
+    rdfs:domain skyrwa:GovernanceDecision ;
+    rdfs:range xsd:string .
+
+skyrwa:ruleLabel a owl:DatatypeProperty ;
+    rdfs:label "rule label"@en ;
+    rdfs:domain skyrwa:GovernanceDecision ;
+    rdfs:range xsd:string .
+
+skyrwa:explanation a owl:DatatypeProperty ;
+    rdfs:label "explanation"@en ;
+    rdfs:comment "Human-readable explanation of the governance decision."@en ;
+    rdfs:domain skyrwa:GovernanceDecision ;
+    rdfs:range xsd:string .
+
+# ────────────────────────────────────────────────────────────────────────────
+# Auxiliary properties (blank-node detail attributes)
+# ────────────────────────────────────────────────────────────────────────────
+
+skyrwa:partyId a owl:DatatypeProperty ;
+    rdfs:label "party ID"@en ;
+    rdfs:range xsd:string .
+
+skyrwa:role a owl:DatatypeProperty ;
+    rdfs:label "role"@en ;
+    rdfs:range xsd:string .
+
+skyrwa:amount a owl:DatatypeProperty ;
+    rdfs:label "amount"@en ;
+    rdfs:range xsd:float .
+
+skyrwa:factorName a owl:DatatypeProperty ;
+    rdfs:label "factor name"@en ;
+    rdfs:domain skyrwa:ValuationFactor ;
+    rdfs:range xsd:string .
+
+skyrwa:factorScore a owl:DatatypeProperty ;
+    rdfs:label "factor score"@en ;
+    rdfs:domain skyrwa:ValuationFactor ;
+    rdfs:range xsd:float .
+
+skyrwa:permittedUse a owl:DatatypeProperty ;
+    rdfs:label "permitted use"@en ;
+    rdfs:range xsd:string .
+
+skyrwa:prohibitedUse a owl:DatatypeProperty ;
+    rdfs:label "prohibited use"@en ;
     rdfs:range xsd:string .
