@@ -114,6 +114,18 @@ skynet:geoWKT rdf:type owl:DatatypeProperty ;
               rdfs:range xsd:string ;
               rdfs:comment "The geographical coordinates of the entity defined in Well-Known Text (WKT) format."@en .
 
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#currentEnvironmentWind
+skynet:currentEnvironmentWind rdf:type owl:DatatypeProperty ;
+                              rdfs:domain skynet:UAV ;
+                              rdfs:range xsd:integer ;
+                              rdfs:comment "The current wind speed level experienced by the UAV at its location."@en .
+
+###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#conflicts_with
+skynet:conflicts_with rdf:type owl:ObjectProperty ;
+                      rdfs:domain skynet:UAV ;
+                      rdfs:range skynet:RestrictedZone ;
+                      rdfs:comment "Indicates a UAV is operating inside or approaching a restricted airspace zone."@en .
+
 ###  http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#timestamp
 skynet:timestamp rdf:type owl:DatatypeProperty ;
                  rdfs:domain skynet:DynamicEvent ;

@@ -1,166 +1,202 @@
 import logging
 from rdflib import Graph, Namespace, Literal, RDF, XSD
-from rdflib.plugins.sparql import prepareQuery
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+BATTERY_CRITICAL_THRESHOLD = 20
+BATTERY_LOW_THRESHOLD = 35
+
+
 class SkyNetReasoner:
     """
-    SkyNetReasoner: A Neuro-Symbolic Reasoning Engine component.
-    
-    This class handles the 'Symbolic' part of the system, using RDF/OWL ontologies
-    and SPARQL rules to infer risks and state changes based on real-time telemetry.
+    Neuro-Symbolic Reasoning Engine for the SkyKG framework.
+
+    Uses RDF/OWL ontologies and SPARQL rules to infer risks from
+    real-time UAV telemetry.  Supports three hard-rule categories:
+      - StabilityRisk  (wind exceeds resistance)
+      - BatteryRisk    (battery below safety threshold)
+      - NoFlyZoneRisk  (UAV inside a restricted zone)
     """
 
     def __init__(self):
-        """
-        Initialize the Knowledge Graph and define Namespaces.
-        """
         self.graph = Graph()
-        self.SKYNET = Namespace("http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#")
+        self.SKYNET = Namespace(
+            "http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#"
+        )
         self.graph.bind("skynet", self.SKYNET)
-        logger.info("SkyNetReasoner initialized with empty graph.")
+        logger.info("SkyNetReasoner initialized.")
 
     def load_ontology(self, path: str):
-        """
-        Load the core SkyNet ontology from a Turtle (.ttl) file.
-        
-        Args:
-            path (str): File path to the .ttl ontology file.
-        """
         try:
             self.graph.parse(path, format="turtle")
-            logger.info(f"Ontology loaded successfully from {path}")
+            logger.info(f"Ontology loaded from {path}")
         except Exception as e:
             logger.error(f"Failed to load ontology: {e}")
             raise
 
-    def inject_realtime_data(self, uav_id: str, telemetry_data: dict):
-        """
-        Inject real-time UAV telemetry data into the Knowledge Graph as RDF triples.
-        
-        Args:
-            uav_id (str): Unique identifier for the UAV (e.g., 'UAV_001').
-            telemetry_data (dict): Dictionary containing data fields:
-                - 'wind_resistance' (int): UAV's max wind resistance level.
-                - 'current_env_wind' (int): Current detected wind speed level.
-                - 'battery' (int): Current battery percentage.
-        """
-        # Define the UAV URI
-        uav_uri = self.SKYNET[uav_id]
+    # ------------------------------------------------------------------
+    # Data injection
+    # ------------------------------------------------------------------
 
-        # --- Symbolic Reasoning Logic: Data Injection ---
-        
-        # 1. Define Type: uav_uri is a skynet:UAV
+    def inject_realtime_data(self, uav_id: str, telemetry_data: dict):
+        """Inject real-time UAV telemetry into the KG as RDF triples.
+
+        Supported telemetry fields:
+            wind_resistance (int), current_env_wind (int),
+            battery (int), is_no_fly (bool), zone_id (str)
+        """
+        uav_uri = self.SKYNET[uav_id]
         self.graph.add((uav_uri, RDF.type, self.SKYNET.UAV))
 
-        # 2. Inject Static Property: maxWindResistance
-        if 'wind_resistance' in telemetry_data:
+        if "wind_resistance" in telemetry_data:
             self.graph.add((
-                uav_uri, 
-                self.SKYNET.maxWindResistance, 
-                Literal(telemetry_data['wind_resistance'], datatype=XSD.integer)
+                uav_uri,
+                self.SKYNET.maxWindResistance,
+                Literal(telemetry_data["wind_resistance"], datatype=XSD.integer),
             ))
 
-        # 3. Inject Dynamic Property: currentBattery
-        if 'battery' in telemetry_data:
-            # First remove old battery value if exists (to update state)
+        if "battery" in telemetry_data:
             self.graph.remove((uav_uri, self.SKYNET.currentBattery, None))
             self.graph.add((
-                uav_uri, 
-                self.SKYNET.currentBattery, 
-                Literal(telemetry_data['battery'], datatype=XSD.integer)
+                uav_uri,
+                self.SKYNET.currentBattery,
+                Literal(telemetry_data["battery"], datatype=XSD.integer),
             ))
 
-        # 4. Inject Dynamic Environmental Data: currentEnvironmentWind
-        # Note: This property represents the wind condition *experienced* by the UAV.
-        if 'current_env_wind' in telemetry_data:
-            # Remove old wind value
+        if "current_env_wind" in telemetry_data:
             self.graph.remove((uav_uri, self.SKYNET.currentEnvironmentWind, None))
             self.graph.add((
-                uav_uri, 
-                self.SKYNET.currentEnvironmentWind, 
-                Literal(telemetry_data['current_env_wind'], datatype=XSD.integer)
+                uav_uri,
+                self.SKYNET.currentEnvironmentWind,
+                Literal(telemetry_data["current_env_wind"], datatype=XSD.integer),
             ))
-            
+
+        if telemetry_data.get("is_no_fly"):
+            zone_id = telemetry_data.get("zone_id", "UnknownZone")
+            zone_uri = self.SKYNET[zone_id]
+            self.graph.add((zone_uri, RDF.type, self.SKYNET.RestrictedZone))
+            self.graph.add((uav_uri, self.SKYNET.conflicts_with, zone_uri))
+
         logger.debug(f"Injected telemetry for {uav_id}")
 
-    def execute_risk_inference(self):
-        """
-        Execute SPARQL rules to detect logical conflicts and risks.
-        
-        Logic Target: Detect 'StabilityRisk' where currentEnvironmentWind > maxWindResistance.
-        
-        Returns:
-            list: A list of tuples (uav_id, risk_type).
-        """
-        # --- Symbolic Reasoning Logic: Risk Inference ---
-        
-        query_str = """
-        PREFIX skynet: <http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#>
-        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    # ------------------------------------------------------------------
+    # Multi-rule risk inference
+    # ------------------------------------------------------------------
 
-        SELECT ?uav
-        WHERE {
-            ?uav rdf:type skynet:UAV .
-            ?uav skynet:maxWindResistance ?maxWind .
-            ?uav skynet:currentEnvironmentWind ?currWind .
-            FILTER (?currWind > ?maxWind)
-        }
+    _SPARQL_STABILITY = """
+    PREFIX skynet: <http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#>
+    SELECT ?uav ?currWind ?maxWind WHERE {
+        ?uav rdf:type skynet:UAV .
+        ?uav skynet:maxWindResistance ?maxWind .
+        ?uav skynet:currentEnvironmentWind ?currWind .
+        FILTER (?currWind > ?maxWind)
+    }
+    """
+
+    _SPARQL_BATTERY = """
+    PREFIX skynet: <http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#>
+    SELECT ?uav ?bat WHERE {
+        ?uav rdf:type skynet:UAV .
+        ?uav skynet:currentBattery ?bat .
+        FILTER (?bat < %d)
+    }
+    """ % BATTERY_LOW_THRESHOLD
+
+    _SPARQL_NOFLY = """
+    PREFIX skynet: <http://github.com/liuyushugreat/SkyNetUamPlatform/ontology#>
+    SELECT ?uav ?zone WHERE {
+        ?uav rdf:type skynet:UAV .
+        ?uav skynet:conflicts_with ?zone .
+        ?zone rdf:type skynet:RestrictedZone .
+    }
+    """
+
+    def execute_risk_inference(self) -> list:
+        """Run all hard-rule SPARQL queries and return detected risks.
+
+        Returns:
+            list[dict]: Each entry contains 'uav_id', 'risk_type', and
+                        a 'details' dict with supporting evidence.
         """
-        
-        risks = []
-        try:
-            results = self.graph.query(query_str)
-            
-            for row in results:
-                # Extract the local name (e.g., 'UAV_001') from the full URI
-                uav_uri = row.uav
-                uav_id = uav_uri.split("#")[-1]
-                
-                risks.append((uav_id, "StabilityRisk"))
-                logger.warning(f"Risk Detected: {uav_id} is facing StabilityRisk (Wind > MaxResistance).")
-                
-        except Exception as e:
-            logger.error(f"Error executing risk inference: {e}")
-            
+        risks: list[dict] = []
+
+        for row in self.graph.query(self._SPARQL_STABILITY):
+            uid = str(row.uav).split("#")[-1]
+            risks.append({
+                "uav_id": uid,
+                "risk_type": "StabilityRisk",
+                "details": {
+                    "current_wind": int(row.currWind),
+                    "max_resistance": int(row.maxWind),
+                    "rule": "Rule #101: Flight prohibited if V_wind > V_resistance",
+                },
+            })
+            logger.warning(f"StabilityRisk: {uid} wind={row.currWind} > max={row.maxWind}")
+
+        for row in self.graph.query(self._SPARQL_BATTERY):
+            uid = str(row.uav).split("#")[-1]
+            level = "CriticalBatteryRisk" if int(row.bat) < BATTERY_CRITICAL_THRESHOLD else "LowBatteryRisk"
+            risks.append({
+                "uav_id": uid,
+                "risk_type": level,
+                "details": {
+                    "battery_pct": int(row.bat),
+                    "threshold": BATTERY_CRITICAL_THRESHOLD if level.startswith("Critical") else BATTERY_LOW_THRESHOLD,
+                    "rule": "Rule #201: Return-to-home required if battery < threshold",
+                },
+            })
+            logger.warning(f"{level}: {uid} battery={row.bat}%")
+
+        for row in self.graph.query(self._SPARQL_NOFLY):
+            uid = str(row.uav).split("#")[-1]
+            zid = str(row.zone).split("#")[-1]
+            risks.append({
+                "uav_id": uid,
+                "risk_type": "NoFlyZoneRisk",
+                "details": {
+                    "zone_id": zid,
+                    "rule": "Rule #301: Entry into restricted zone is prohibited",
+                },
+            })
+            logger.warning(f"NoFlyZoneRisk: {uid} in zone {zid}")
+
         return risks
 
-# Example usage for testing (if run directly)
+    def retrieve_context(self, uav_id: str) -> dict:
+        """Retrieve all KG facts about a UAV for RAG prompt construction."""
+        uav_uri = self.SKYNET[uav_id]
+        ctx: dict = {"uav_id": uav_id, "properties": {}, "relations": []}
+        for p, o in self.graph.predicate_objects(uav_uri):
+            pname = str(p).split("#")[-1]
+            if isinstance(o, Literal):
+                ctx["properties"][pname] = o.toPython()
+            else:
+                ctx["relations"].append((pname, str(o).split("#")[-1]))
+        return ctx
+
+
 if __name__ == "__main__":
     import os
-    
-    # Setup paths
+
     base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     ontology_path = os.path.join(base_path, "ontology", "skynet_core.ttl")
-    
-    # Initialize Reasoner
+
     reasoner = SkyNetReasoner()
-    
-    # Load Ontology
     if os.path.exists(ontology_path):
         reasoner.load_ontology(ontology_path)
-    else:
-        logger.error(f"Ontology file not found at {ontology_path}")
-    
-    # Inject Data
-    # UAV_001: Max Wind 5, Current Wind 7 -> Should trigger risk
+
     reasoner.inject_realtime_data("UAV_001", {
-        "wind_resistance": 5,
-        "current_env_wind": 7,
-        "battery": 80
+        "wind_resistance": 5, "current_env_wind": 7, "battery": 80,
     })
-    
-    # UAV_002: Max Wind 6, Current Wind 4 -> Safe
     reasoner.inject_realtime_data("UAV_002", {
-        "wind_resistance": 6,
-        "current_env_wind": 4,
-        "battery": 90
+        "wind_resistance": 6, "current_env_wind": 4, "battery": 15,
     })
-    
-    # Execute Reasoning
-    detected_risks = reasoner.execute_risk_inference()
-    print("Detected Risks:", detected_risks)
+    reasoner.inject_realtime_data("UAV_003", {
+        "wind_resistance": 8, "current_env_wind": 3, "battery": 60,
+        "is_no_fly": True, "zone_id": "MilitaryZone_A",
+    })
+
+    for r in reasoner.execute_risk_inference():
+        print(r)
 
