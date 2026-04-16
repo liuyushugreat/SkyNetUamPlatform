@@ -1,0 +1,64 @@
+@prefix skyrwa:  <urn:skyrwa:ontology#> .
+@prefix avport:  <urn:skyrwa:port:av#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix dcat:    <http://www.w3.org/ns/dcat#> .
+
+# ============================================================================
+# SkyRwa -> Autonomous Vehicle (AV) micro-port
+# ============================================================================
+# Demonstrates that the SkyRwa "typed governance transition" pattern is
+# domain-parametric: only the *evidence-level* classes/properties need to be
+# swapped; GovernanceDecision, AssetCandidate, GovernedDataProduct,
+# RevenueRight, SettlementRecord, and all GOV-* rules are reused as-is.
+#
+# The Turtle diff below is the complete port (~40 lines). Everything
+# downstream (promotion, productization, settlement, SHACL-SPARQL governance)
+# is inherited from skyrwa.ttl via rdfs:subClassOf.
+# ============================================================================
+
+avport: a owl:Ontology ;
+    owl:versionInfo "0.1.0" ;
+    rdfs:comment "Minimal port of the SkyRwa flight-to-asset lifecycle to the autonomous-vehicle (AV) domain."@en ;
+    owl:imports <urn:skyrwa:ontology> .
+
+# ── Evidence-level class renaming (only the physical-layer concepts change) ─
+
+avport:DriveEvidence a owl:Class ;
+    rdfs:label "Drive Evidence"@en ;
+    rdfs:comment "Raw attestation of a single autonomous-vehicle drive session; AV analogue of skyrwa:FlightEvidence."@en ;
+    rdfs:subClassOf skyrwa:FlightEvidence , prov:Entity .
+
+avport:Vehicle a owl:Class ;
+    rdfs:label "Vehicle"@en ;
+    rdfs:comment "An autonomous ground vehicle; AV analogue of skyrwa:UAV."@en ;
+    rdfs:subClassOf skyrwa:UAV , prov:Agent .
+
+avport:Trip a owl:Class ;
+    rdfs:label "Trip"@en ;
+    rdfs:comment "A planned drive mission executed by a vehicle; AV analogue of skyrwa:FlightMission."@en ;
+    rdfs:subClassOf skyrwa:FlightMission , prov:Activity .
+
+# ── Evidence-level property renaming ────────────────────────────────────────
+
+avport:performedByVehicle a owl:ObjectProperty ;
+    rdfs:label "performed by vehicle"@en ;
+    rdfs:comment "Links a drive evidence to the vehicle that performed it; AV analogue of skyrwa:performedByUAV."@en ;
+    rdfs:domain avport:DriveEvidence ;
+    rdfs:range avport:Vehicle ;
+    rdfs:subPropertyOf skyrwa:performedByUAV .
+
+avport:hasTrip a owl:ObjectProperty ;
+    rdfs:label "has trip"@en ;
+    rdfs:comment "Links a drive evidence to the trip it executes; AV analogue of skyrwa:hasMission."@en ;
+    rdfs:domain avport:DriveEvidence ;
+    rdfs:range avport:Trip ;
+    rdfs:subPropertyOf skyrwa:hasMission .
+
+# NOTE: skyrwa:AssetCandidate, skyrwa:GovernanceDecision,
+#       skyrwa:GovernedDataProduct, skyrwa:RevenueRight,
+#       skyrwa:SettlementRecord, and all skyrwa:gov-* rule templates
+#       are INHERITED VERBATIM — no modification required.

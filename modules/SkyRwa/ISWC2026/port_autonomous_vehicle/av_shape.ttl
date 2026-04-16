@@ -1,0 +1,30 @@
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skyrwa:  <urn:skyrwa:ontology#> .
+@prefix avport:  <urn:skyrwa:port:av#> .
+
+# ============================================================================
+# AV-port SHACL shape — the only shape that must be retargeted.
+# All AssetCandidate/Product/Settlement shapes are reused from
+# ../../shapes/skyrwa_shapes.ttl unchanged.
+# ============================================================================
+
+avport:DriveEvidenceShape a sh:NodeShape ;
+    sh:targetClass avport:DriveEvidence ;
+    sh:property [
+        sh:path skyrwa:flightId ;      # reused as "session id"
+        sh:minCount 1 ; sh:datatype xsd:string ;
+        sh:message "Must have a non-empty session id." ] ;
+    sh:property [
+        sh:path skyrwa:hasDigest ;
+        sh:minCount 1 ; sh:datatype xsd:string ;
+        sh:message "Must have a digest hash." ] ;
+    sh:property [
+        sh:path skyrwa:startTime ;
+        sh:minCount 1 ; sh:datatype xsd:dateTime ] ;
+    sh:property [
+        sh:path skyrwa:endTime ;
+        sh:minCount 1 ; sh:datatype xsd:dateTime ] ;
+    sh:property [
+        sh:path avport:performedByVehicle ;
+        sh:minCount 1 ] .

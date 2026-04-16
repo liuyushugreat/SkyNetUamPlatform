@@ -11,7 +11,7 @@
       "pitfall": "P05",
       "name": "Inverse relationships not explicitly declared",
       "severity": "Minor",
-      "count": 18,
+      "count": 16,
       "resolution": "Added owl:inverseOf"
     },
     {
@@ -25,8 +25,8 @@
       "pitfall": "P08",
       "name": "Missing annotations",
       "severity": "Minor",
-      "count": 37,
-      "resolution": "Added rdfs:comment"
+      "count": 0,
+      "resolution": "---"
     },
     {
       "pitfall": "P11",

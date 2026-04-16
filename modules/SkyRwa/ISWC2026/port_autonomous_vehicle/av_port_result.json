@@ -1,0 +1,25 @@
+{
+  "ontology_triples": 302,
+  "data_triples": 163,
+  "self_inverse_violations": 0,
+  "shacl_conforms": true,
+  "port_scope": {
+    "renamed_classes": [
+      "FlightEvidence->DriveEvidence",
+      "UAV->Vehicle",
+      "FlightMission->Trip"
+    ],
+    "renamed_properties": [
+      "performedByUAV->performedByVehicle",
+      "hasMission->hasTrip"
+    ],
+    "inherited_unchanged": [
+      "AssetCandidate",
+      "GovernanceDecision",
+      "GovernedDataProduct",
+      "RevenueRight",
+      "SettlementRecord",
+      "GOV-001..GOV-004"
+    ]
+  }
+}

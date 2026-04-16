@@ -23,6 +23,7 @@ This is the **self-contained reproduction artifact** for the ISWC 2026 paper. It
 | `reproduce_ontology_quality.py` | **Table 4** (§4.5) | Ontology quality: OOPS!-style pitfall scan, OWL DL consistency, CQ→construct mapping |
 | `reproduce_user_study.py` | **Table 11** (§7.9) | Pilot expert evaluation: 4 experts × 4 tasks × 3 interfaces |
 | `reproduce_validation.py` | **§5** | SHACL + SHACL-SPARQL governance validation coverage |
+| `port_autonomous_vehicle/` | **§8** (Generalizability) | Minimal port to the AV domain: ~40-line Turtle diff + retargeted SHACL shape + 20-drive toy benchmark. `run_av_port.py` produces `av_port_result.json`. |
 | `run.sh` | — | One-click reproduction (Linux/macOS) |
 | `run.ps1` | — | One-click reproduction (Windows) |
 | `requirements.txt` | — | Python dependencies |
@@ -109,6 +110,9 @@ python reproduce_user_study.py
 
 # Section 5: SHACL + governance validation coverage
 python reproduce_validation.py
+
+# Section 8: Generalizability — port to an autonomous-vehicle (AV) domain
+python port_autonomous_vehicle/run_av_port.py
 ```
 
 ### Output

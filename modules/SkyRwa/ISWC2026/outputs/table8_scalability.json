@@ -1,65 +1,65 @@
 {
   "n5": {
-    "pipeline_ms": 0.71,
-    "rdf_map_ms": 2.98,
-    "turtle_ms": 5.75,
-    "shacl_ms": 79.59,
+    "pipeline_ms": 0.69,
+    "rdf_map_ms": 3.02,
+    "turtle_ms": 5.74,
+    "shacl_ms": 82.0,
     "triples": 336,
     "triples_per_flight": 67.2
   },
   "n10": {
-    "pipeline_ms": 0.87,
-    "rdf_map_ms": 4.39,
-    "turtle_ms": 9.21,
-    "shacl_ms": 35.36,
+    "pipeline_ms": 0.84,
+    "rdf_map_ms": 4.49,
+    "turtle_ms": 9.16,
+    "shacl_ms": 35.33,
     "triples": 666,
     "triples_per_flight": 66.6
   },
   "n20": {
-    "pipeline_ms": 1.4,
-    "rdf_map_ms": 9.06,
-    "turtle_ms": 18.49,
-    "shacl_ms": 67.3,
+    "pipeline_ms": 1.44,
+    "rdf_map_ms": 8.75,
+    "turtle_ms": 18.05,
+    "shacl_ms": 66.27,
     "triples": 1326,
     "triples_per_flight": 66.3
   },
   "n50": {
-    "pipeline_ms": 18.84,
-    "rdf_map_ms": 20.62,
-    "turtle_ms": 45.4,
-    "shacl_ms": 181.27,
+    "pipeline_ms": 20.19,
+    "rdf_map_ms": 20.98,
+    "turtle_ms": 45.39,
+    "shacl_ms": 179.97,
     "triples": 3306,
     "triples_per_flight": 66.1
   },
   "n100": {
-    "pipeline_ms": 5.78,
-    "rdf_map_ms": 40.99,
-    "turtle_ms": 90.32,
-    "shacl_ms": 332.24,
+    "pipeline_ms": 5.76,
+    "rdf_map_ms": 43.0,
+    "turtle_ms": 91.24,
+    "shacl_ms": 349.17,
     "triples": 6606,
     "triples_per_flight": 66.1
   },
   "n200": {
-    "pipeline_ms": 13.15,
-    "rdf_map_ms": 104.85,
-    "turtle_ms": 180.51,
-    "shacl_ms": 1287.39,
+    "pipeline_ms": 14.6,
+    "rdf_map_ms": 108.45,
+    "turtle_ms": 189.85,
+    "shacl_ms": 682.05,
     "triples": 13206,
     "triples_per_flight": 66.0
   },
   "n500": {
-    "pipeline_ms": 311.62,
-    "rdf_map_ms": 1367.39,
-    "turtle_ms": 3398.09,
-    "shacl_ms": 10755.58,
+    "pipeline_ms": 30.63,
+    "rdf_map_ms": 259.55,
+    "turtle_ms": 484.64,
+    "shacl_ms": 1866.14,
     "triples": 33006,
     "triples_per_flight": 66.0
   },
   "n1000": {
-    "pipeline_ms": 373.83,
-    "rdf_map_ms": 1983.04,
-    "turtle_ms": 6661.46,
-    "shacl_ms": 18496.56,
+    "pipeline_ms": 58.38,
+    "rdf_map_ms": 540.16,
+    "turtle_ms": 983.51,
+    "shacl_ms": 3799.36,
     "triples": 66006,
     "triples_per_flight": 66.0
   }

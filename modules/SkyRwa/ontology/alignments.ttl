@@ -51,8 +51,11 @@ skyrwa:appliedToAsset rdfs:subPropertyOf prov:used .
 skyrwa:GovernedDataProduct rdfs:subClassOf dcat:Dataset .
 
 skyrwa:hasAssetClass rdfs:subPropertyOf dcat:theme .
-skyrwa:startTime rdfs:subPropertyOf dcat:startDate .
-skyrwa:endTime rdfs:subPropertyOf dcat:endDate .
+# DCAT 3 temporal extent uses dcat:startDate / dcat:endDate (xsd:date or dcterms:PeriodOfTime).
+# The SkyRwa datatypes are xsd:dateTime so we align at the informal level only.
+
+# Informal temporal alignment to DCAT 3 (dateTime precision retained on SkyRwa side)
+# skyrwa:startTime ~ dcat:startDate ; skyrwa:endTime ~ dcat:endDate .
 
 # ────────────────────────────────────────────────────────────────────────────
 # ODRL Alignments — usage policies and rights
@@ -73,6 +76,6 @@ odrl:Permission, each prohibited_use to an odrl:Prohibition."""@en .
 # ────────────────────────────────────────────────────────────────────────────
 
 skyrwa:flightId rdfs:subPropertyOf dcterms:identifier .
-skyrwa:startTime rdfs:subPropertyOf schema:startDate .
-skyrwa:endTime rdfs:subPropertyOf schema:endDate .
+skyrwa:startTime rdfs:subPropertyOf schema:startTime .
+skyrwa:endTime rdfs:subPropertyOf schema:endTime .
 skyrwa:estimatedValue rdfs:subPropertyOf schema:price .
