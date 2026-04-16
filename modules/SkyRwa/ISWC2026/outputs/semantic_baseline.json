@@ -1,0 +1,38 @@
+[
+  {
+    "task": "Governance trail",
+    "flat_loc": 14,
+    "life_loc": 6,
+    "flat_result": "Partial",
+    "life_result": "Empty",
+    "flat_count": 105,
+    "life_count": 0
+  },
+  {
+    "task": "Tier promotion lineage",
+    "flat_loc": "N/A",
+    "life_loc": 8,
+    "flat_result": "Inexpressible",
+    "life_result": "Empty",
+    "flat_count": 105,
+    "life_count": 0
+  },
+  {
+    "task": "Violation attribution",
+    "flat_loc": 12,
+    "life_loc": 7,
+    "flat_result": "Empty",
+    "life_result": "Complete",
+    "flat_count": 0,
+    "life_count": 6
+  },
+  {
+    "task": "Cross-product provenance",
+    "flat_loc": 16,
+    "life_loc": 9,
+    "flat_result": "Partial",
+    "life_result": "Empty",
+    "flat_count": 105,
+    "life_count": 0
+  }
+]

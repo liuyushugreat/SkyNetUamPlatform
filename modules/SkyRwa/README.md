@@ -116,23 +116,23 @@ See [`ISWC2026/README.md`](./ISWC2026/README.md) for detailed step-by-step instr
 
 | Paper Section | Experiment Script | What it Reproduces |
 |---------------|-------------------|--------------------|
-| §4.5 — Ontology Quality | `reproduce_ontology_quality.py` | Tables 3–4: OOPS! pitfalls, consistency, CQ mapping |
+| §4.5 — Ontology Quality | `reproduce_ontology_quality.py` | Table 4 + OOPS!-style pitfalls, OWL DL consistency, CQ mapping |
 | §5 — Governance & Validation | `reproduce_validation.py` | SHACL + SHACL-SPARQL rule coverage |
 | §7.1 — Benchmark Dataset | `reproduce_table5.py` | Table 5: 105 flights, 10 scenarios, 7007 triples |
 | §7.2 — JSON Baseline | `reproduce_table6.py` | Table 6: JSON-scan vs SPARQL (4 query tasks) |
 | §7.3 — Semantic Baseline | `reproduce_semantic_baseline.py` | Table 7: Lifecycle KG vs Flat KG (4 audit tasks) |
 | §7.4 — Governance Ablation | `reproduce_table7.py` | Table 8: Python vs SHACL vs Combined |
 | §7.5 — Scalability | `reproduce_table8.py` | Table 9: 5–1000 flights, ~66 triples/flight |
-| §7.6 — SPARQL Queryability | `reproduce_table9.py` | Table 10: CQ1–CQ6 competency questions |
-| §7.7 — Robustness | `reproduce_robustness.py` | Multi-run stability, scale sensitivity, threshold sweep |
+| §7.6 — Robustness | `reproduce_robustness.py` | Multi-run stability, scale sensitivity, threshold sweep |
+| §7.7 — SPARQL Queryability | `reproduce_table9.py` | Table 10: CQ1–CQ6 competency questions |
 | §7.8 — Case Studies | `reproduce_case_studies.py` | 4 cases: promotion, failure, audit, explainability |
-| §7.9 — Expert Evaluation | `reproduce_user_study.py` | Table 12: 4 experts × 4 tasks × 3 interfaces |
+| §7.9 — Expert Evaluation | `reproduce_user_study.py` | Table 11: 4 experts × 4 tasks × 3 interfaces |
 
 ---
 
 ## Key Results (from Paper)
 
-### Table 7: Governance Ablation
+### Table 8: Governance Ablation (§7.4)
 
 | ID | Violation Type | Python | SHACL | Combined |
 |----|----------------|:------:|:-----:|:--------:|
@@ -146,7 +146,7 @@ See [`ISWC2026/README.md`](./ISWC2026/README.md) for detailed step-by-step instr
 
 *V5 uses a SHACL-SPARQL constraint (`sh:sparql`), demonstrating the necessity of the SPARQL extension for conditional constraints.
 
-### Table 8: Scalability
+### Table 9: Scalability (§7.5)
 
 | N | Pipeline (ms) | RDF Map (ms) | SHACL (ms) | Triples | T/flight |
 |---|:---:|:---:|:---:|:---:|:---:|

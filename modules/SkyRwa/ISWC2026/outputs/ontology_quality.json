@@ -1,0 +1,149 @@
+{
+  "pitfalls": [
+    {
+      "pitfall": "P04",
+      "name": "Unconnected ontology element",
+      "severity": "Critical",
+      "count": 0,
+      "resolution": "---"
+    },
+    {
+      "pitfall": "P05",
+      "name": "Inverse relationships not explicitly declared",
+      "severity": "Minor",
+      "count": 18,
+      "resolution": "Added owl:inverseOf"
+    },
+    {
+      "pitfall": "P07",
+      "name": "Merging different concepts in the same class",
+      "severity": "Important",
+      "count": 0,
+      "resolution": "---"
+    },
+    {
+      "pitfall": "P08",
+      "name": "Missing annotations",
+      "severity": "Minor",
+      "count": 37,
+      "resolution": "Added rdfs:comment"
+    },
+    {
+      "pitfall": "P11",
+      "name": "Missing domain or range in properties",
+      "severity": "Important",
+      "count": 30,
+      "resolution": "---"
+    },
+    {
+      "pitfall": "P13",
+      "name": "Inverse relationships not explicitly declared",
+      "severity": "Minor",
+      "count": 0,
+      "resolution": "---"
+    },
+    {
+      "pitfall": "P19",
+      "name": "Defining multiple domains or ranges",
+      "severity": "Important",
+      "count": 0,
+      "resolution": "---"
+    },
+    {
+      "pitfall": "P24",
+      "name": "Using recursive definitions",
+      "severity": "Critical",
+      "count": 0,
+      "resolution": "---"
+    },
+    {
+      "pitfall": "P25",
+      "name": "Defining a relationship as inverse to itself",
+      "severity": "Critical",
+      "count": 0,
+      "resolution": "---"
+    }
+  ],
+  "consistency": {
+    "total_classes": 13,
+    "unsatisfiable": [],
+    "disjoint_violations": 0,
+    "consistent": true
+  },
+  "cq_mapping": [
+    {
+      "cq": "CQ1",
+      "question": "Which assets are tradable?",
+      "core_classes": [
+        "AssetCandidate",
+        "RightsProfile"
+      ],
+      "key_properties": [
+        "isTradable",
+        "hasRightsProfile"
+      ]
+    },
+    {
+      "cq": "CQ2",
+      "question": "Which require desensitization?",
+      "core_classes": [
+        "AssetCandidate",
+        "RightsProfile"
+      ],
+      "key_properties": [
+        "requiresDesensitization"
+      ]
+    },
+    {
+      "cq": "CQ3",
+      "question": "Product → evidence lineage?",
+      "core_classes": [
+        "GovernedDataProduct",
+        "AssetCandidate",
+        "FlightEvidence"
+      ],
+      "key_properties": [
+        "aggregatesCandidate",
+        "derivedFromEvidence"
+      ]
+    },
+    {
+      "cq": "CQ4",
+      "question": "Revenue per participant?",
+      "core_classes": [
+        "SettlementRecord",
+        "RevenueRight"
+      ],
+      "key_properties": [
+        "hasRevenueShare",
+        "partyId",
+        "amount"
+      ]
+    },
+    {
+      "cq": "CQ5",
+      "question": "Governance violations but tradable?",
+      "core_classes": [
+        "AssetCandidate",
+        "GovernanceDecision"
+      ],
+      "key_properties": [
+        "complianceScore",
+        "riskScore",
+        "isTradable"
+      ]
+    },
+    {
+      "cq": "CQ6",
+      "question": "Products from >1 candidate?",
+      "core_classes": [
+        "GovernedDataProduct",
+        "AssetCandidate"
+      ],
+      "key_properties": [
+        "aggregatesCandidate",
+        "hasAssetClass"
+      ]
+    }
+  ]
+}

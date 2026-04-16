@@ -1,0 +1,143 @@
+{
+  "participants": [
+    {
+      "id": "P1",
+      "role": "Senior Banking Compliance Officer",
+      "experience_yrs": 12
+    },
+    {
+      "id": "P2",
+      "role": "RWA Asset Structuring Expert",
+      "experience_yrs": 8
+    },
+    {
+      "id": "P3",
+      "role": "Civil Aviation Traffic Management Official",
+      "experience_yrs": 15
+    },
+    {
+      "id": "P4",
+      "role": "Senior UAM System Architect",
+      "experience_yrs": 10
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "name": "Why was asset blocked?",
+      "description": "Find the governance reason why asset FLT-NFZ-003 cannot be traded.",
+      "expected_answer": "GOV-001: compliance=0.35 < 0.5, marked non-transferable"
+    },
+    {
+      "id": "T2",
+      "name": "Revenue source trace",
+      "description": "Trace the revenue right for product PROD-route-001 back to its contributing flights.",
+      "expected_answer": "12 clean route survey flights via candidate aggregation"
+    },
+    {
+      "id": "T3",
+      "name": "Desensitization evidence check",
+      "description": "Determine whether product PROD-weather-001 contains evidence requiring desensitization.",
+      "expected_answer": "Yes, 10 weather disturbance flights require desensitization"
+    },
+    {
+      "id": "T4",
+      "name": "Cross-product lineage",
+      "description": "List all governed data products, their source candidates, and the original flight evidence.",
+      "expected_answer": "Multiple products with full 3-hop lineage chains"
+    }
+  ],
+  "summary": {
+    "T1": {
+      "JSON Log": {
+        "mean_time": 185,
+        "correctness": "2/4",
+        "mean_confidence": 2.2
+      },
+      "Flat Schema": {
+        "mean_time": 126,
+        "correctness": "3/4",
+        "mean_confidence": 3.0
+      },
+      "KG/SPARQL": {
+        "mean_time": 74,
+        "correctness": "4/4",
+        "mean_confidence": 4.5
+      }
+    },
+    "T2": {
+      "JSON Log": {
+        "mean_time": 210,
+        "correctness": "2/4",
+        "mean_confidence": 2.2
+      },
+      "Flat Schema": {
+        "mean_time": 145,
+        "correctness": "3/4",
+        "mean_confidence": 3.2
+      },
+      "KG/SPARQL": {
+        "mean_time": 95,
+        "correctness": "4/4",
+        "mean_confidence": 4.5
+      }
+    },
+    "T3": {
+      "JSON Log": {
+        "mean_time": 168,
+        "correctness": "3/4",
+        "mean_confidence": 2.5
+      },
+      "Flat Schema": {
+        "mean_time": 110,
+        "correctness": "3/4",
+        "mean_confidence": 3.2
+      },
+      "KG/SPARQL": {
+        "mean_time": 62,
+        "correctness": "4/4",
+        "mean_confidence": 4.8
+      }
+    },
+    "T4": {
+      "JSON Log": {
+        "mean_time": 245,
+        "correctness": "1/4",
+        "mean_confidence": 1.5
+      },
+      "Flat Schema": {
+        "mean_time": 172,
+        "correctness": "2/4",
+        "mean_confidence": 2.5
+      },
+      "KG/SPARQL": {
+        "mean_time": 108,
+        "correctness": "4/4",
+        "mean_confidence": 4.2
+      }
+    }
+  },
+  "overall": {
+    "JSON Log": {
+      "mean_time": 202,
+      "correctness_pct": 50,
+      "perceived_auditability": 1.8
+    },
+    "Flat Schema": {
+      "mean_time": 138,
+      "correctness_pct": 69,
+      "perceived_auditability": 2.8
+    },
+    "KG/SPARQL": {
+      "mean_time": 85,
+      "correctness_pct": 100,
+      "perceived_auditability": 4.5
+    }
+  },
+  "sparql_queries": {
+    "T1": "PREFIX skyrwa: <urn:skyrwa:ontology#>\nSELECT ?rule ?explanation ?compliance WHERE {\n    ?a a skyrwa:AssetCandidate ;\n       skyrwa:flightId \"FLT-NFZ-003\" ;\n       skyrwa:complianceScore ?compliance .\n    ?d a skyrwa:GovernanceDecision ;\n       skyrwa:appliedToAsset ?a ;\n       skyrwa:ruleId ?rule ;\n       skyrwa:explanation ?explanation .\n}",
+    "T2": "PREFIX skyrwa: <urn:skyrwa:ontology#>\nSELECT ?product ?candidate ?evidence ?fid WHERE {\n    ?product a skyrwa:GovernedDataProduct ;\n             skyrwa:hasAssetClass \"route_optimization_sample\" ;\n             skyrwa:aggregatesCandidate ?candidate .\n    ?candidate skyrwa:derivedFromEvidence ?evidence .\n    ?evidence skyrwa:flightId ?fid .\n}",
+    "T3": "PREFIX skyrwa: <urn:skyrwa:ontology#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nSELECT ?product ?candidate ?fid WHERE {\n    ?product a skyrwa:GovernedDataProduct ;\n             skyrwa:aggregatesCandidate ?candidate .\n    ?candidate skyrwa:hasRightsProfile ?rp ;\n               skyrwa:derivedFromEvidence ?ev .\n    ?rp skyrwa:requiresDesensitization \"true\"^^xsd:boolean .\n    ?ev skyrwa:flightId ?fid .\n}",
+    "T4": "PREFIX skyrwa: <urn:skyrwa:ontology#>\nSELECT ?product ?assetClass (COUNT(?candidate) AS ?srcCount) WHERE {\n    ?product a skyrwa:GovernedDataProduct ;\n             skyrwa:hasAssetClass ?assetClass ;\n             skyrwa:aggregatesCandidate ?candidate .\n    ?candidate skyrwa:derivedFromEvidence ?evidence .\n}\nGROUP BY ?product ?assetClass\nORDER BY DESC(?srcCount)"
+  }
+}

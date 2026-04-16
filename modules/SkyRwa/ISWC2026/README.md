@@ -17,11 +17,11 @@ This is the **self-contained reproduction artifact** for the ISWC 2026 paper. It
 | `reproduce_semantic_baseline.py` | **Table 7** (§7.3) | Semantic baseline: Lifecycle KG vs Flat KG (4 audit tasks) |
 | `reproduce_table7.py` | **Table 8** (§7.4) | Governance ablation: Python vs SHACL vs Combined (6 violation types) |
 | `reproduce_table8.py` | **Table 9** (§7.5) | Scalability: overhead for 5–1000 flights |
-| `reproduce_table9.py` | **Table 10** (§7.6) | SPARQL competency questions (CQ1–CQ6) + analytical queries |
-| `reproduce_robustness.py` | **§7.7** | Robustness: multi-run stability, scale sensitivity, threshold sweep |
+| `reproduce_table9.py` | **Table 10** (§7.7) | SPARQL competency questions (CQ1–CQ6) + analytical queries |
+| `reproduce_robustness.py` | **§7.6** | Robustness: multi-run stability, scale sensitivity, threshold sweep |
 | `reproduce_case_studies.py` | **§7.8** | Four case studies: promotion, failure, audit, explainability |
-| `reproduce_ontology_quality.py` | **Tables 3–4** (§4.5) | Ontology quality: OOPS! pitfall scan, consistency, CQ mapping |
-| `reproduce_user_study.py` | **Table 12** (§7.9) | Pilot expert evaluation: 4 experts × 4 tasks × 3 interfaces |
+| `reproduce_ontology_quality.py` | **Table 4** (§4.5) | Ontology quality: OOPS!-style pitfall scan, OWL DL consistency, CQ→construct mapping |
+| `reproduce_user_study.py` | **Table 11** (§7.9) | Pilot expert evaluation: 4 experts × 4 tasks × 3 interfaces |
 | `reproduce_validation.py` | **§5** | SHACL + SHACL-SPARQL governance validation coverage |
 | `run.sh` | — | One-click reproduction (Linux/macOS) |
 | `run.ps1` | — | One-click reproduction (Windows) |
@@ -95,16 +95,16 @@ python reproduce_table8.py
 # Table 10: SPARQL competency questions (CQ1–CQ6)
 python reproduce_table9.py
 
-# Section 7.7: Robustness (multi-run stability, scale, thresholds)
+# Section 7.6: Robustness (multi-run stability, scale, thresholds)
 python reproduce_robustness.py
 
 # Section 7.8: Case studies
 python reproduce_case_studies.py
 
-# Section 4.5: Ontology quality assessment (OOPS!, consistency, CQ mapping)
+# Section 4.5: Ontology quality assessment (OOPS!-style pitfalls, consistency, CQ mapping)
 python reproduce_ontology_quality.py
 
-# Section 7.9: Pilot expert evaluation
+# Table 11 / Section 7.9: Pilot expert evaluation
 python reproduce_user_study.py
 
 # Section 5: SHACL + governance validation coverage
@@ -146,7 +146,7 @@ python reproduce_validation.py
 | Governance violations | 6 | 9 | <1 | ~36 |
 | Product lineage (3-hop) | 10+ | 8 | <1 | ~2 |
 
-### Table 7: Governance Ablation (§7.3)
+### Table 8: Governance Ablation (§7.4)
 
 | ID | Violation Type | Python | SHACL | Combined |
 |----|----------------|:------:|:-----:|:--------:|
@@ -158,7 +158,7 @@ python reproduce_validation.py
 | V6 | Incomplete mission + tradable | YES | – | YES |
 | | **Detection rate** | **50%** | **50%** | **100%** |
 
-### Table 8: Scalability (§7.4)
+### Table 9: Scalability (§7.5)
 
 | N | Pipeline (ms) | RDF Map (ms) | Serialize (ms) | SHACL (ms) | Triples | T/flight |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -166,7 +166,7 @@ python reproduce_validation.py
 | 100 | ~6.1 | ~48.6 | ~94.4 | ~397 | ~6606 | ~66 |
 | 1000 | ~58.2 | ~489.5 | ~971.1 | ~9634 | ~66006 | ~66 |
 
-### Table 9: Competency Questions (§7.5)
+### Table 10: Competency Questions (§7.7)
 
 All 6 CQs return correct results. CQ3 and CQ6 demonstrate multi-hop graph traversal.
 
@@ -199,12 +199,16 @@ modules/SkyRwa/
 │   ├── README.md
 │   ├── run.sh / run.ps1       # One-click reproduction
 │   ├── requirements.txt       # Pinned dependencies
-│   ├── reproduce_table5.py    # Table 5: benchmark dataset
-│   ├── reproduce_table6.py    # Table 6: JSON vs SPARQL
-│   ├── reproduce_table7.py    # Table 7: governance ablation
-│   ├── reproduce_table8.py    # Table 8: scalability
-│   ├── reproduce_table9.py    # Table 9: competency questions
-│   ├── reproduce_case_studies.py  # §7.6: case studies
+│   ├── reproduce_table5.py    # Table 5 (§7.1): benchmark dataset
+│   ├── reproduce_table6.py    # Table 6 (§7.2): JSON vs SPARQL
+│   ├── reproduce_semantic_baseline.py  # Table 7 (§7.3): Lifecycle KG vs Flat KG
+│   ├── reproduce_table7.py    # Table 8 (§7.4): governance ablation
+│   ├── reproduce_table8.py    # Table 9 (§7.5): scalability
+│   ├── reproduce_table9.py    # Table 10 (§7.7): competency questions
+│   ├── reproduce_robustness.py    # §7.6: robustness study
+│   ├── reproduce_case_studies.py  # §7.8: case studies
+│   ├── reproduce_user_study.py    # Table 11 (§7.9): pilot expert evaluation
+│   ├── reproduce_ontology_quality.py  # Table 4 (§4.5): OOPS!-style pitfalls + CQ map
 │   ├── reproduce_validation.py    # §5: validation coverage
 │   ├── data/                  # Generated benchmark data
 │   └── outputs/               # Experiment result JSONs

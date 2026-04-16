@@ -1,0 +1,306 @@
+{
+  "exp1_stability": {
+    "seeds": [
+      42,
+      123,
+      456,
+      789,
+      1024
+    ],
+    "flights_per_run": 105,
+    "tradable_counts": [
+      45,
+      45,
+      45,
+      45,
+      45
+    ],
+    "shacl_violation_counts": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "graph_triples": [
+      7007,
+      7007,
+      7007,
+      7007,
+      7007
+    ],
+    "shacl_conforms": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "pipeline_ms_mean": 11.74,
+    "pipeline_ms_std": 5.37,
+    "shacl_ms_mean": 780.98,
+    "shacl_ms_std": 716.94,
+    "outcome_deterministic": true
+  },
+  "exp2_scale": {
+    "n10": {
+      "n": 10,
+      "graph_triples": 675,
+      "triples_per_flight": 67.5,
+      "shacl_ms": 164.6,
+      "pipeline_ms": 11.99,
+      "rdf_ms": 19.05,
+      "tradable_count": 10,
+      "non_tradable_count": 0,
+      "governance_violation_rate": 0.0,
+      "shacl_violation_count": 0,
+      "shacl_conforms": true
+    },
+    "n50": {
+      "n": 50,
+      "graph_triples": 3334,
+      "triples_per_flight": 66.7,
+      "shacl_ms": 660.63,
+      "pipeline_ms": 12.98,
+      "rdf_ms": 48.26,
+      "tradable_count": 16,
+      "non_tradable_count": 34,
+      "governance_violation_rate": 0.68,
+      "shacl_violation_count": 0,
+      "shacl_conforms": true
+    },
+    "n100": {
+      "n": 100,
+      "graph_triples": 6677,
+      "triples_per_flight": 66.8,
+      "shacl_ms": 1923.22,
+      "pipeline_ms": 20.3,
+      "rdf_ms": 116.83,
+      "tradable_count": 45,
+      "non_tradable_count": 55,
+      "governance_violation_rate": 0.55,
+      "shacl_violation_count": 0,
+      "shacl_conforms": true
+    },
+    "n200": {
+      "n": 200,
+      "graph_triples": 13318,
+      "triples_per_flight": 66.6,
+      "shacl_ms": 2545.0,
+      "pipeline_ms": 136.71,
+      "rdf_ms": 578.53,
+      "tradable_count": 86,
+      "non_tradable_count": 114,
+      "governance_violation_rate": 0.57,
+      "shacl_violation_count": 0,
+      "shacl_conforms": true
+    },
+    "n500": {
+      "n": 500,
+      "graph_triples": 33243,
+      "triples_per_flight": 66.5,
+      "shacl_ms": 8633.61,
+      "pipeline_ms": 169.43,
+      "rdf_ms": 1438.76,
+      "tradable_count": 211,
+      "non_tradable_count": 289,
+      "governance_violation_rate": 0.578,
+      "shacl_violation_count": 0,
+      "shacl_conforms": true
+    },
+    "n1000": {
+      "n": 1000,
+      "graph_triples": 66456,
+      "triples_per_flight": 66.5,
+      "shacl_ms": 18008.49,
+      "pipeline_ms": 895.9,
+      "rdf_ms": 3600.26,
+      "tradable_count": 424,
+      "non_tradable_count": 576,
+      "governance_violation_rate": 0.576,
+      "shacl_violation_count": 0,
+      "shacl_conforms": true
+    }
+  },
+  "exp3_threshold": {
+    "compliance_thresholds": [
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7
+    ],
+    "risk_thresholds": [
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      1.0
+    ],
+    "base_flights": 105,
+    "combinations": {
+      "c0.3_r0.6": {
+        "compliance_threshold": 0.3,
+        "risk_threshold": 0.6,
+        "flagged_non_tradable": 3,
+        "flag_rate": 0.029
+      },
+      "c0.3_r0.7": {
+        "compliance_threshold": 0.3,
+        "risk_threshold": 0.7,
+        "flagged_non_tradable": 2,
+        "flag_rate": 0.019
+      },
+      "c0.3_r0.8": {
+        "compliance_threshold": 0.3,
+        "risk_threshold": 0.8,
+        "flagged_non_tradable": 2,
+        "flag_rate": 0.019
+      },
+      "c0.3_r0.9": {
+        "compliance_threshold": 0.3,
+        "risk_threshold": 0.9,
+        "flagged_non_tradable": 0,
+        "flag_rate": 0.0
+      },
+      "c0.3_r1.0": {
+        "compliance_threshold": 0.3,
+        "risk_threshold": 1.0,
+        "flagged_non_tradable": 0,
+        "flag_rate": 0.0
+      },
+      "c0.4_r0.6": {
+        "compliance_threshold": 0.4,
+        "risk_threshold": 0.6,
+        "flagged_non_tradable": 3,
+        "flag_rate": 0.029
+      },
+      "c0.4_r0.7": {
+        "compliance_threshold": 0.4,
+        "risk_threshold": 0.7,
+        "flagged_non_tradable": 2,
+        "flag_rate": 0.019
+      },
+      "c0.4_r0.8": {
+        "compliance_threshold": 0.4,
+        "risk_threshold": 0.8,
+        "flagged_non_tradable": 2,
+        "flag_rate": 0.019
+      },
+      "c0.4_r0.9": {
+        "compliance_threshold": 0.4,
+        "risk_threshold": 0.9,
+        "flagged_non_tradable": 0,
+        "flag_rate": 0.0
+      },
+      "c0.4_r1.0": {
+        "compliance_threshold": 0.4,
+        "risk_threshold": 1.0,
+        "flagged_non_tradable": 0,
+        "flag_rate": 0.0
+      },
+      "c0.5_r0.6": {
+        "compliance_threshold": 0.5,
+        "risk_threshold": 0.6,
+        "flagged_non_tradable": 9,
+        "flag_rate": 0.086
+      },
+      "c0.5_r0.7": {
+        "compliance_threshold": 0.5,
+        "risk_threshold": 0.7,
+        "flagged_non_tradable": 8,
+        "flag_rate": 0.076
+      },
+      "c0.5_r0.8": {
+        "compliance_threshold": 0.5,
+        "risk_threshold": 0.8,
+        "flagged_non_tradable": 8,
+        "flag_rate": 0.076
+      },
+      "c0.5_r0.9": {
+        "compliance_threshold": 0.5,
+        "risk_threshold": 0.9,
+        "flagged_non_tradable": 6,
+        "flag_rate": 0.057
+      },
+      "c0.5_r1.0": {
+        "compliance_threshold": 0.5,
+        "risk_threshold": 1.0,
+        "flagged_non_tradable": 6,
+        "flag_rate": 0.057
+      },
+      "c0.6_r0.6": {
+        "compliance_threshold": 0.6,
+        "risk_threshold": 0.6,
+        "flagged_non_tradable": 9,
+        "flag_rate": 0.086
+      },
+      "c0.6_r0.7": {
+        "compliance_threshold": 0.6,
+        "risk_threshold": 0.7,
+        "flagged_non_tradable": 8,
+        "flag_rate": 0.076
+      },
+      "c0.6_r0.8": {
+        "compliance_threshold": 0.6,
+        "risk_threshold": 0.8,
+        "flagged_non_tradable": 8,
+        "flag_rate": 0.076
+      },
+      "c0.6_r0.9": {
+        "compliance_threshold": 0.6,
+        "risk_threshold": 0.9,
+        "flagged_non_tradable": 6,
+        "flag_rate": 0.057
+      },
+      "c0.6_r1.0": {
+        "compliance_threshold": 0.6,
+        "risk_threshold": 1.0,
+        "flagged_non_tradable": 6,
+        "flag_rate": 0.057
+      },
+      "c0.7_r0.6": {
+        "compliance_threshold": 0.7,
+        "risk_threshold": 0.6,
+        "flagged_non_tradable": 24,
+        "flag_rate": 0.229
+      },
+      "c0.7_r0.7": {
+        "compliance_threshold": 0.7,
+        "risk_threshold": 0.7,
+        "flagged_non_tradable": 23,
+        "flag_rate": 0.219
+      },
+      "c0.7_r0.8": {
+        "compliance_threshold": 0.7,
+        "risk_threshold": 0.8,
+        "flagged_non_tradable": 23,
+        "flag_rate": 0.219
+      },
+      "c0.7_r0.9": {
+        "compliance_threshold": 0.7,
+        "risk_threshold": 0.9,
+        "flagged_non_tradable": 21,
+        "flag_rate": 0.2
+      },
+      "c0.7_r1.0": {
+        "compliance_threshold": 0.7,
+        "risk_threshold": 1.0,
+        "flagged_non_tradable": 21,
+        "flag_rate": 0.2
+      }
+    },
+    "most_restrictive": {
+      "compliance_threshold": 0.7,
+      "risk_threshold": 0.6,
+      "flagged_non_tradable": 24,
+      "flag_rate": 0.229
+    },
+    "least_restrictive": {
+      "compliance_threshold": 0.3,
+      "risk_threshold": 0.9,
+      "flagged_non_tradable": 0,
+      "flag_rate": 0.0
+    }
+  }
+}
