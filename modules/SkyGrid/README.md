@@ -123,4 +123,4 @@ JSON verbatim — reviewers can diff two runs field-by-field.
 
 ## License
 
-Apache 2.0 — same as the parent SkyNetUamPlatform repository.
+This project is licensed under the Apache License 2.0.

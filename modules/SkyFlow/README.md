@@ -2,7 +2,7 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.2+](https://img.shields.io/badge/PyTorch-2.2+-EE4C2C.svg)](https://pytorch.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Conference: MobiHoc 2026](https://img.shields.io/badge/Conference-MobiHoc_2026-blue.svg)](https://www.sigmobile.org/mobihoc/2026/)
 [![Tests: 23 passed](https://img.shields.io/badge/tests-23_passed-brightgreen.svg)]()
 
@@ -186,4 +186,4 @@ SkyFlow/
 ---
 ## License
 
-This project is part of [SkyNetUamPlatform](https://github.com/liuyushugreat/SkyNetUamPlatform) and is released under the MIT License.
+This project is licensed under the Apache License 2.0.

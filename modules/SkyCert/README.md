@@ -335,4 +335,4 @@ By platform policy, paper PDF and TeX sources are not committed to the public re
 
 ## License
 
-Part of [SkyNetUamPlatform](https://github.com/liuyushugreat/SkyNetUamPlatform). Released under the Apache License 2.0.
+This project is licensed under the Apache License 2.0.

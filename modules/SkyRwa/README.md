@@ -2,7 +2,7 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Conference: ISWC 2026](https://img.shields.io/badge/Conference-ISWC_2026-green.svg)](https://iswc2026.semanticweb.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 > **ISWC 2026 Reviewers:** For paper reproduction, go directly to **[`ISWC2026/`](./ISWC2026)** and run `bash run.sh` (Linux/macOS) or `.\run.ps1` (Windows).
 
@@ -232,4 +232,4 @@ python -m pytest SkyRwa/tests/ -v
 
 ## License
 
-Part of [SkyNetUamPlatform](https://github.com/liuyushugreat/SkyNetUamPlatform). Released under MIT License.
+This project is licensed under the Apache License 2.0.

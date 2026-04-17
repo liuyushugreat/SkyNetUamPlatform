@@ -468,7 +468,7 @@ See `docs/neo4j.md` for how to start Neo4j via Docker and how to use it from the
 
 ## 📄 License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License 2.0.
 
 ---
 *Developed by the SkyNet Research Team.*

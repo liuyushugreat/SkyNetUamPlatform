@@ -1,7 +1,7 @@
 # SkyGov: Evidence-Driven Multi-Agent Collaborative Reasoning for UAM Compliance Governance
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Target: 计算机研究与发展 / WISA 2026](https://img.shields.io/badge/Target-CRAD%20%2F%20WISA%202026-orange.svg)]()
 
 > **SkyGov** — 面向低空交通合规治理的证据驱动多智能体协同推理系统
@@ -185,4 +185,4 @@ The latest evaluation pipeline writes structured outputs to `outputs/`, includin
 
 ## License
 
-Part of [SkyNetUamPlatform](https://github.com/liuyushugreat/SkyNetUamPlatform). Released under MIT License.
+This project is licensed under the Apache License 2.0.
