@@ -1,0 +1,28 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+.venv/
+build/
+dist/
+*.egg-info/
+
+# Locally-overridden configs that may reference internal data.
+configs/*_internal.yaml
+
+# LaTeX build artifacts (but keep the PDF)
+paper/*.aux
+paper/*.log
+paper/*.blg
+paper/*.bbl
+paper/*.out
+paper/*.toc
+paper/*.synctex.gz
+
+# Override repo-global *.tex / *.bib / *.cls / *.bst block for this
+# module so reviewers get the full, self-contained paper source
+# alongside the compiled PDF and the artifact-evaluation figures.
+!paper/*.tex
+!paper/*.bib
+!paper/*.cls
+!paper/*.bst

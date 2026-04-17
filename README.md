@@ -18,6 +18,8 @@
 
 > **ICPP 2026 Reviewers:** The SkyGrid distributed edge-cloud runtime (STP partitioner + COP placer + ABP pipeline, with a deterministic discrete-event simulator, 7-config main table, component ablations, and scaling curves) and its one-click reproduction artifact are at **[`modules/SkyGrid/`](./modules/SkyGrid)**. Run `cd modules/SkyGrid && python -m pip install -e . && python scripts/run_experiment.py --config configs/default.yaml --out outputs/metrics.json` to reproduce the main table in ~3 minutes on a single CPU core; see [`modules/SkyGrid/README.md`](./modules/SkyGrid/README.md) for the full pipeline.
 
+> **RTSS 2026 Reviewers:** The SkyShield deadline-aware counter-UAV interception runtime (RM+EDF+slack scheduler, covariance-weighted multi-radar fusion, runtime safety guard, 200 ms abort path) and its one-click reproduction artifact are at **[`modules/SkyShield/`](./modules/SkyShield)**. It reproduces a verbatim 10-sortie field trial (80 % mission success), reports mean end-to-end latency 405 ms / $p_{99}$ 491 ms / 0 deadline misses over 900 synthetic sorties, 100 % false-launch suppression, and 100 % on-time operator aborts. Run `cd modules/SkyShield && bash run.sh` (or `.\run.ps1` on Windows) to regenerate every paper number, figure, and PDF in ≲ 60 s on a single CPU core; see [`modules/SkyShield/README.md`](./modules/SkyShield/README.md).
+
 ---
 
 > **Official implementation** of our Drones submission (2025): a mission-lifecycle-aware operational platform for scalable low-altitude UAM/drone operations.  
@@ -36,6 +38,7 @@
 *   **SkyGov compliance governance** *(NEW)*: evidence-driven four-agent LLM governance pipeline for low-altitude regulatory compliance with hard-rule veto, explanation auditing, trust negotiation, and decision traceability — see [modules/SkyGov](./modules/SkyGov).
 *   **SkyRwa semantic lifecycle modeling** *(NEW)*: four-tier governance lifecycle (Evidence → Candidate → Product → Revenue Right) where governance transitions are first-class KG entities, validated by SHACL + SHACL-SPARQL constraints, with 100% violation-type coverage — see [modules/SkyRwa](./modules/SkyRwa).
 *   **SkyCert conformal assurance layer** *(NEW)*: uncertainty-calibrated neuro-symbolic risk reasoning for UAM — split-conformal prediction with finite-sample coverage, hybrid-nonconformity test-martingales for online shift detection, and an abstention/alert/escalation policy that emits machine-readable audit artifacts — see [modules/SkyCert](./modules/SkyCert).
+*   **SkyShield counter-UAV real-time runtime** *(NEW)*: deadline-aware runtime for radar-guided kinetic counter-UAV interception — RM+EDF+slack-stealing scheduler enforcing a 1.5 s end-to-end deadline and a 200 ms hard abort deadline, covariance-weighted multi-radar fusion with explicit handoff latency, and a runtime safety guard that gates every launch on authorization, geofence, friendly-airspace, and classification-confidence preconditions; validated on a verbatim 10-sortie field trial with a $300\,\text{km}^2$ urban replay benchmark — see [modules/SkyShield](./modules/SkyShield).
 
 ## 🏗️ System Architecture
 

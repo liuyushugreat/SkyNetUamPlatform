@@ -1,0 +1,80 @@
+# SkyShield default reviewer configuration (RTSS 2026).
+# 300 km^2 urban defense scenario, 4 PLFM-style radar nodes,
+# deadline budget per pipeline stage, deterministic seed.
+# CPU-only, ~5 minutes end-to-end on a modern single core.
+
+seed: 20260418
+
+scenario:
+  name: urban_300km2
+  area_km2: 300.0           # 17.32 km x 17.32 km square
+  duration_s: 600.0         # 10-minute virtual horizon per run
+  num_sorties: 50           # synthetic / augmented sorties on top of the 10 real
+  population_density: 4200  # informational; affects no-fly zone density
+  no_fly_zones: 6           # fixed obstacles forbidding interception
+
+radar:
+  num_nodes: 4              # placed on the corners of a 17 km grid
+  range_km: 12.0            # PLFM-style detection range against 0.01 m^2 RCS
+  azimuth_dwell_ms: 35.0    # time to scan a 360 deg sector, full revisit
+  detection_pd_at_max: 0.78 # nominal probability of detection at max range
+  false_alarm_per_min: 0.6  # nominal false alarms per radar per minute
+  packet_jitter_ms_std: 4.0 # per-packet jitter on the radar -> fusion link
+  packet_dropout_pct: 0.5   # baseline packet dropout (%)
+
+tracker:
+  model: imm_kf             # {imm_kf, cv_kf}
+  process_noise_q: 1.5
+  measurement_noise_r: 6.0
+  m_of_n_m: 4               # confirm if 4 of last
+  m_of_n_n: 6               # ... 6 dwells produced detections
+  max_track_age_ms: 1500    # drop a track after this much silence
+
+fusion:
+  method: covariance_weighted   # {covariance_weighted, nearest_radar}
+  handoff_overlap_m: 800.0      # spatial handoff hysteresis
+  handoff_budget_ms: 35.0       # tail bound for handoff latency
+
+deadline:
+  scheduler: rm_edf_slack       # {rm, edf, rm_edf_slack}
+  end_to_end_ms: 1500           # R1: sense-to-launch deadline
+  detection_ms: 60
+  track_confirm_ms: 80
+  fusion_ms: 25
+  decision_ms: 30
+  launch_actuation_ms: 120
+  interceptor_reaction_ms: 250
+  abort_deadline_ms: 200        # R3: abort must complete inside 200 ms
+  p99_target_ms: 1450
+  miss_target_pct: 0.5
+
+decision:
+  threat_score_threshold: 0.62
+  prioritization: weighted_threat   # {weighted_threat, fifo, edf_only}
+  multi_target_max: 8
+  authorization_check_ms_mean: 18.0
+  authorization_check_ms_std: 6.0
+  geofence_buffer_m: 200.0
+
+interceptor:
+  max_speed_kmh: 350.0
+  cruise_speed_kmh: 200.0
+  endurance_s: 210.0
+  hit_prob_base: 0.80           # from §3.1 spec sheet (strike accuracy)
+  return_safe: true
+  reload_time_s: 15.0
+  base_lat_lon: [0.0, 0.0]      # arbitrary in 300 km^2 grid
+
+safety_guard:
+  require_authorization: true
+  require_friendly_airspace_clear: true
+  require_class_confidence: 0.7
+  require_geofence_clear: true
+  abort_on_lost_lock: true
+  false_launch_suppression_target_pct: 99.5
+
+telemetry:
+  trace_events: true
+  emit_per_sortie_record: true
+
+output_dir: outputs

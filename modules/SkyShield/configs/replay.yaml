@@ -1,0 +1,20 @@
+# Replay-based stress regimes for E3.
+
+seed: 20260418
+scenario:
+  name: urban_300km2
+  area_km2: 300.0
+  duration_s: 180.0
+  num_sorties: 20
+
+regimes:
+  - {name: nominal,           maneuver_g: 0.5,  packet_dropout_pct: 0.5,  jitter_ms_std:  4.0, auth_delay_ms_mean: 18, comm_jitter_ms: 1.5}
+  - {name: maneuver_2g,       maneuver_g: 2.0,  packet_dropout_pct: 0.5,  jitter_ms_std:  4.0, auth_delay_ms_mean: 18, comm_jitter_ms: 1.5}
+  - {name: maneuver_4g,       maneuver_g: 4.0,  packet_dropout_pct: 0.5,  jitter_ms_std:  4.0, auth_delay_ms_mean: 18, comm_jitter_ms: 1.5}
+  - {name: dropout_3pct,      maneuver_g: 0.5,  packet_dropout_pct: 3.0,  jitter_ms_std:  4.0, auth_delay_ms_mean: 18, comm_jitter_ms: 1.5}
+  - {name: dropout_8pct,      maneuver_g: 0.5,  packet_dropout_pct: 8.0,  jitter_ms_std:  4.0, auth_delay_ms_mean: 18, comm_jitter_ms: 1.5}
+  - {name: jitter_high,       maneuver_g: 0.5,  packet_dropout_pct: 0.5,  jitter_ms_std: 12.0, auth_delay_ms_mean: 18, comm_jitter_ms: 4.5}
+  - {name: auth_delay_long,   maneuver_g: 0.5,  packet_dropout_pct: 0.5,  jitter_ms_std:  4.0, auth_delay_ms_mean: 80, comm_jitter_ms: 1.5}
+  - {name: comm_jitter_high,  maneuver_g: 0.5,  packet_dropout_pct: 0.5,  jitter_ms_std:  4.0, auth_delay_ms_mean: 18, comm_jitter_ms: 8.0}
+
+output_dir: outputs

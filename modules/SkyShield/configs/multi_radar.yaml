@@ -1,0 +1,24 @@
+# Multi-radar deployment sweep over the 300 km^2 urban scenario.
+# Used by scripts/run_multi_radar.py (E4).
+#
+# Inherits the default config; only the sweep matters here.
+
+seed: 20260418
+scenario:
+  name: urban_300km2
+  area_km2: 300.0
+  duration_s: 240.0
+  num_sorties: 24
+
+sweep:
+  radar_counts: [1, 2, 4, 6, 8, 12]
+  target_counts: [1, 2, 4, 8]
+  metrics:
+    - coverage_pct
+    - mean_handoff_ms
+    - p99_end_to_end_ms
+    - detection_pd_mean
+    - cross_node_packets
+
+# Defaults reused from configs/default.yaml at runtime.
+output_dir: outputs
