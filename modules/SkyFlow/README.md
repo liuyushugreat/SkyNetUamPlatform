@@ -183,26 +183,7 @@ SkyFlow/
 ├── pyproject.toml                 # Package metadata & dependencies
 └── requirements.txt               # Pinned dependencies (alternative)
 ```
-
 ---
-
-## Citation
-
-```bibtex
-@inproceedings{liu2026skyflow,
-  title     = {SkyFlow: Temporal Relational Graph Attention for Real-Time
-               UAV Conflict Detection},
-  author    = {Liu, Yushu and Wang, Longbiao and Du, Chenglin and Zhai, Haixiao},
-  booktitle = {Proceedings of the Twenty-seventh ACM International Symposium
-               on Mobile Ad Hoc Networking and Computing (MobiHoc)},
-  year      = {2026}
-}
-```
-
-## Contact
-
-For technical questions regarding system deployment or network communication overhead, please open an issue or contact [yushuliu@outlook.com](mailto:yushuliu@outlook.com).
-
 ## License
 
 This project is part of [SkyNetUamPlatform](https://github.com/liuyushugreat/SkyNetUamPlatform) and is released under the MIT License.

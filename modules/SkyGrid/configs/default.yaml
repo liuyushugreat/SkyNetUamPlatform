@@ -1,0 +1,87 @@
+# SkyGrid default reviewer configuration (ICPP 2026).
+# Reproduces the main Table 2 / Fig. 3 / Fig. 4 results.
+# CPU-only, ~60 seconds end-to-end on a modern single core.
+
+seed: 20260928
+
+workload:
+  # "M" regime from the paper (10k entities, 4 edges, 60s virtual time).
+  name: city_medium
+  num_entities: 10000
+  area_km: 8.0                  # square side length
+  duration_s: 60.0
+  event_rate_per_entity_s: 1.5  # average events emitted per entity per second
+  mobility:
+    model: corridor             # {corridor, random_waypoint, levy}
+    speed_mps: 12.0
+    corridor_sigma: 0.02
+  jitter:
+    # Multiplicative burstiness applied to the event rate over 5s windows.
+    cov: 0.35
+
+dag:
+  # Hybrid NN + symbolic DAG: per-event pipeline.
+  # Each op has (compute_cost_flops, input_bytes, output_bytes, prefers).
+  ops:
+    - {name: feat_extract, kind: nn,      cost_flops: 2.0e6, input_bytes: 512,  output_bytes: 256, prefers: edge,  batchable: true,  batch_sweet: 32}
+    - {name: risk_score,   kind: nn,      cost_flops: 1.2e8, input_bytes: 256,  output_bytes: 64,  prefers: cloud, batchable: true,  batch_sweet: 64}
+    - {name: rule_check,   kind: symbolic,cost_flops: 5.0e5, input_bytes: 320,  output_bytes: 32,  prefers: edge,  batchable: false, batch_sweet: 1}
+    - {name: conformal,    kind: symbolic,cost_flops: 8.0e5, input_bytes:  96,  output_bytes: 32,  prefers: edge,  batchable: false, batch_sweet: 1}
+    - {name: audit,        kind: symbolic,cost_flops: 2.0e5, input_bytes:  64,  output_bytes: 16,  prefers: edge,  batchable: false, batch_sweet: 1}
+  edges:
+    - [feat_extract, risk_score]
+    - [feat_extract, rule_check]
+    - [risk_score,   rule_check]
+    - [rule_check,   conformal]
+    - [conformal,    audit]
+
+fabric:
+  # Fabric is intentionally *undersized* on the cloud so the placement
+  # decision is non-trivial.  A single cloud replica saturates roughly at
+  # the aggregate offered load of the M regime; the four edges together
+  # outperform the cloud on batched symbolic ops, so COP must choose
+  # wisely.  See §5.1 for the sensitivity sweep (Fig. 7).
+  cloud:
+    num_devices: 1
+    tflops: 2.4                   # ~2x one edge; shared by all tenants
+    queue_capacity: 20000
+  edge:
+    num_nodes: 4
+    tflops: 1.2                   # per-edge; 4x1.2 = 4.8 TFLOPS aggregate
+    queue_capacity: 2048
+  network:
+    edge_cloud_latency_ms: 12.0   # one-way
+    edge_cloud_bw_gbps: 1.0
+    edge_edge_latency_ms: 4.0
+    edge_edge_bw_gbps: 0.5
+    jitter_ms: 1.5                # gaussian jitter on every hop
+
+partition:
+  method: stp                    # {stp, ldg, hash, random}
+  grid:
+    cells_per_side: 16
+  stp:
+    alpha_spatial: 1.0
+    beta_ruledep: 0.6
+    gamma_balance: 0.4
+    refine_iters: 2
+  rebalance:
+    trigger_imbalance: 1.25      # if max/avg > this, trigger FM pass
+    amortize_every_s: 10.0
+
+placement:
+  method: cop                    # {cop, static, ilp, random, all_cloud, all_edge}
+  cop:
+    epsilon: 0.10                # greedy + swap approximation slack
+    max_swaps: 64
+
+pipeline:
+  method: abp                    # {abp, sync}
+  abp:
+    microbatch_max: 64
+    microbatch_timeout_ms: 8.0
+    staleness_bound: 2           # max # pending micro-batches per edge
+    backpressure_watermark_high: 0.85
+    backpressure_watermark_low: 0.55
+
+output_dir: outputs

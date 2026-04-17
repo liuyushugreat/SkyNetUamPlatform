@@ -1,0 +1,21 @@
+# Scaling sweep. run_scaling.py iterates over (num_entities, num_edges) pairs
+# and invokes run_experiment.py internally with each override.
+
+seed: 20260928
+
+sweeps:
+  weak:                          # entities and edges scale together
+    - {num_entities:   1000, num_edges:  1}
+    - {num_entities:   2000, num_edges:  2}
+    - {num_entities:   4000, num_edges:  4}
+    - {num_entities:   8000, num_edges:  8}
+    - {num_entities:  16000, num_edges: 16}
+  strong:                        # entities fixed, edges grow
+    num_entities: 8000
+    num_edges: [1, 2, 4, 8, 16]
+  entity_scale:                  # fix edges, push entities (claim cap)
+    num_edges: 16
+    num_entities: [1000, 5000, 25000, 100000]
+
+duration_s: 10.0                 # shorter per-point duration
+output_dir: outputs/scaling

@@ -1,0 +1,12 @@
+# Ablation sweep inherits workload/DAG/fabric from default.yaml.
+# Four variants toggle the three SkyGrid mechanisms in turn.
+
+seed: 20260928
+
+variants:
+  full:           {partition: stp,    placement: cop,    pipeline: abp}
+  no_stp:         {partition: ldg,    placement: cop,    pipeline: abp}
+  no_cop:         {partition: stp,    placement: static, pipeline: abp}
+  no_abp:         {partition: stp,    placement: cop,    pipeline: sync}
+
+output_dir: outputs/ablation

@@ -230,19 +230,6 @@ python -m pytest SkyRwa/tests/ -v
 
 ---
 
-## Citation
-
-```bibtex
-@inproceedings{liu2026skyrwa,
-  title     = {Modeling Governable Flight-to-Asset Lifecycles
-               with Knowledge Graphs, SHACL, and Provenance},
-  author    = {Liu, Yushu and Wang, Longbiao and Du, Chenglin and Zhai, Haixiao},
-  booktitle = {Proceedings of the 25th International Semantic Web
-               Conference (ISWC)},
-  year      = {2026}
-}
-```
-
 ## License
 
 Part of [SkyNetUamPlatform](https://github.com/liuyushugreat/SkyNetUamPlatform). Released under MIT License.

@@ -16,6 +16,8 @@
 
 > **ESORICS 2026 Reviewers:** The SkyCert assurance-layer code (conformal prediction + martingale monitoring + abstention policy for neuro-symbolic UAM risk reasoning) and its one-click reproduction artifact are at **[`modules/SkyCert/`](./modules/SkyCert)**. Run `cd modules/SkyCert && bash run.sh` (or `.\run.ps1` on Windows) to reproduce all paper tables and figures in ≈30 s on a single CPU core.
 
+> **ICPP 2026 Reviewers:** The SkyGrid distributed edge-cloud runtime (STP partitioner + COP placer + ABP pipeline, with a deterministic discrete-event simulator, 7-config main table, component ablations, and scaling curves) and its one-click reproduction artifact are at **[`modules/SkyGrid/`](./modules/SkyGrid)**. Run `cd modules/SkyGrid && python -m pip install -e . && python scripts/run_experiment.py --config configs/default.yaml --out outputs/metrics.json` to reproduce the main table in ~3 minutes on a single CPU core; see [`modules/SkyGrid/README.md`](./modules/SkyGrid/README.md) for the full pipeline.
+
 ---
 
 > **Official implementation** of our Drones submission (2025): a mission-lifecycle-aware operational platform for scalable low-altitude UAM/drone operations.  
@@ -242,6 +244,84 @@ python reproduce_case_studies.py # §7.7: case studies
 ```
 
 See [`modules/SkyRwa/README.md`](./modules/SkyRwa/README.md) for module details.
+
+## 🌐 SkyGrid: Distributed Edge-Cloud Runtime for City-Scale Neuro-Symbolic UAM Reasoning
+
+**SkyGrid** ([`modules/SkyGrid`](./modules/SkyGrid)) is the *parallel/distributed runtime layer* of the platform.
+It takes a hybrid neural + symbolic reasoning DAG and schedules it across a realistic edge-cloud fabric
+so that city-scale UAM telemetry can be reasoned about at 12 K ops/s with bounded tail latency and an
+order-of-magnitude less cross-edge traffic than cloud-only serving.
+
+```
+Entities (105 entities, 60 s)                ┌──────────────┐
+  │ telemetry stream                          │   STP        │ spatial grid + FM refinement
+  ▼                                           │ partitioner  │ (bounded imbalance, low cut)
+ ┌────────────┐   ┌───────────────┐           └──────┬───────┘
+ │ feat_extract│─►│ risk_score(NN)│──┐               │
+ └────────────┘   └───────────────┘  │        ┌──────▼─────────┐
+                                      ├──────►│  COP placer    │ closed-form cost model
+ ┌────────────┐   ┌───────────────┐  │        │ greedy + swap  │ (compute+transfer+queue)
+ │ rule_check │──►│  conformal    │──┤        └──────┬─────────┘
+ └────────────┘   └───────────────┘  │               │
+                                      ▼        ┌─────▼──────┐
+                                  ┌──────┐    │  ABP       │ micro-batching, bounded
+                                  │ audit│    │  pipeline  │ staleness, per-stage
+                                  └──────┘    └────────────┘ backpressure
+```
+
+### SkyGrid Highlights
+
+*   **Spatio-Temporal Partitioning (STP)**: spatial-grid partitioner with rule-dependency-aware FM refinement;
+    reduces edge cut from 0.761 to **0.077** (10×) and spatial compactness from 29.4 to **12.4** at the
+    default 10 K-entity regime.
+*   **Cost-aware Operator Placement (COP)**: closed-form compute + transfer + queueing cost model with
+    a greedy initializer and bounded local-swap search; within ε of the ILP optimum on the paper workloads,
+    but runs in milliseconds instead of minutes.
+*   **Asynchronous Batched Pipeline (ABP)**: per-stage micro-batchers with bounded staleness and
+    back-pressure that keep the hybrid DAG stable at 12 K ops/s with sub-60 ms p99 latency.
+*   **Fully-simulated fabric**: a discrete-event simulator models GPU batch-efficiency curves, link
+    serialization + jitter, and queue dynamics; all numbers in the paper are seed-pinned and
+    deterministically reproducible on a single CPU core.
+*   **One-click reviewer pipeline**: `run_experiment.py` → `run_ablation.py` → `run_scaling.py` →
+    `plot_results.py` regenerates every table and figure of the ICPP 2026 paper in under 10 minutes.
+
+### Key Results (default config, 10 K entities, 60 s virtual horizon, `seed 20260928`)
+
+| Configuration | p50 (ms) | p95 (ms) | p99 (ms) | Cross-edge bytes | Throughput |
+|---|:---:|:---:|:---:|:---:|:---:|
+| cloud-only                       | 64.0 | 76.3 | 84.5 | 1 215 MB | 12.17 K ops/s |
+| edge-only                        | 33.5 | 53.2 | 58.3 |   351 MB | 12.16 K ops/s |
+| hash + static                    | 75.5 | 85.6 | 88.7 | 1 475 MB | 12.16 K ops/s |
+| LDG + static                     | 75.2 | 85.5 | 88.7 | 1 471 MB | 12.16 K ops/s |
+| LDG + COP                        | 33.7 | 53.1 | 58.2 |   348 MB | 12.16 K ops/s |
+| **SkyGrid (STP + COP + ABP)**   | **32.3** | **49.3** | **55.6** | **150 MB** | 12.16 K ops/s |
+
+Against the strongest static baseline, SkyGrid delivers **−29 % p95 tail**, **−37 % p99 tail**, and
+**−88 % cross-edge traffic** (150 MB vs. 1.22 GB for cloud-only) without losing throughput.
+
+### 1-Click Reproducibility
+
+```bash
+cd modules/SkyGrid
+
+python -m pip install -r requirements.txt
+python -m pip install -e .
+
+# Full reproduction — main table + ablations + scaling + figures (~5–10 min, CPU-only)
+python scripts/run_experiment.py --config configs/default.yaml --out outputs/metrics.json
+python scripts/run_ablation.py   --config configs/default.yaml --out outputs/ablation
+python scripts/run_scaling.py    --config configs/scaling.yaml --out outputs/scaling
+python scripts/plot_results.py   --metrics outputs/metrics.json \
+                                 --ablation outputs/ablation \
+                                 --scaling outputs/scaling \
+                                 --out outputs/figs
+
+# Unit tests (18 cases)
+pytest -q
+```
+
+See [`modules/SkyGrid/README.md`](./modules/SkyGrid/README.md) for module internals, extension points,
+and the ICPP 2026 paper source at [`pressRequire/SkyGrid/SkyGrid_ICPP2026`](../pressRequire/SkyGrid/SkyGrid_ICPP2026).
 
 ## 🛡️ SkyCert: Uncertainty-Calibrated Neuro-Symbolic Reasoning with Conformal Prediction for UAM
 
