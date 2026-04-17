@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+.venv/
+build/
+dist/
+*.egg-info/
+
+# Experiment artifacts are large and easily regenerated.
+outputs/
+
+# Any locally-overridden config that might reference internal data.
+configs/*_internal.yaml

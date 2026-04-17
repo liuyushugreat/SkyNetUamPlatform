@@ -1,0 +1,54 @@
+# SkyCert default experiment configuration.
+# Reproduces the main results reported in the ESORICS 2026 paper.
+
+seed: 20260417
+
+data:
+  num_train: 4000          # training pool for the base risk scorer
+  num_calib: 1500          # held-out calibration set for conformal
+  num_test: 3000           # evaluation pool
+  num_features: 16         # synthetic UAM operation features
+  num_classes: 4           # risk levels: {LOW, MEDIUM, HIGH, CRITICAL}
+  class_prior: [0.55, 0.25, 0.15, 0.05]
+
+base_model:
+  type: logistic           # {logistic, mlp}
+  hidden: 64
+  l2: 0.0005
+  max_iter: 500
+
+symbolic:
+  # Weight of the symbolic prior relative to the neural scorer.
+  # Final score: softmax( logit_neural + lambda * logit_symbolic ).
+  lambda: 0.35
+  # Toy UAM knowledge-graph slice: each rule maps a feature condition
+  # to a risk class delta.
+  rules:
+    - {feature: 0, op: ">",  thr: 0.8, delta: [0.0,  0.0,  0.6,  1.0]}  # weather severity
+    - {feature: 1, op: ">",  thr: 0.7, delta: [0.0,  0.4,  0.8,  0.2]}  # airspace density
+    - {feature: 2, op: ">",  thr: 0.6, delta: [0.0,  0.3,  0.5,  0.1]}  # vertiport congestion
+    - {feature: 3, op: "<",  thr: 0.2, delta: [0.0, -0.2, -0.3, -0.2]}  # low battery (inverse)
+    - {feature: 4, op: ">",  thr: 0.5, delta: [0.0,  0.2,  0.4,  0.3]}  # noise-sensitive area
+
+assurance:
+  conformal:
+    alpha: 0.1             # target 90% marginal coverage
+    score: aps             # {aps, lac}
+  martingale:
+    type: simple_jumper    # {simple_jumper, power}
+    epsilon: 0.92
+    threshold: 20.0        # raise ALERT when martingale exceeds this
+  policy:
+    # Abstain when prediction set is larger than this fraction of classes.
+    max_set_fraction: 0.75
+    # Escalate when martingale breaches threshold AND set is ambiguous.
+    escalate_on_martingale: true
+
+threats:
+  - {name: clean,            kind: none}
+  - {name: kg_corrupt,       kind: rule_flip,      strength: 0.5}
+  - {name: rule_poison,      kind: rule_inject,    strength: 0.3}
+  - {name: input_manipulate, kind: feature_attack, strength: 0.15}
+  - {name: distribution_shift, kind: covariate_shift, strength: 0.8}
+
+output_dir: outputs

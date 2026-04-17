@@ -14,6 +14,8 @@
 
 > **SkyGov Reviewers / Readers:** The evidence-driven multi-agent governance module for UAM compliance is located at **[`modules/SkyGov/`](./modules/SkyGov)**. For a quick demo run `cd modules/SkyGov && python scripts/run_governance.py`; for the latest evaluation pipeline run `python scripts/run_full_eval.py --scenarios 1000`.
 
+> **ESORICS 2026 Reviewers:** The SkyCert assurance-layer code (conformal prediction + martingale monitoring + abstention policy for neuro-symbolic UAM risk reasoning) and its one-click reproduction artifact are at **[`modules/SkyCert/`](./modules/SkyCert)**. Run `cd modules/SkyCert && bash run.sh` (or `.\run.ps1` on Windows) to reproduce all paper tables and figures in ≈30 s on a single CPU core.
+
 ---
 
 > **Official implementation** of our Drones submission (2025): a mission-lifecycle-aware operational platform for scalable low-altitude UAM/drone operations.  
@@ -31,6 +33,7 @@
 *   **SkyFlow conflict detection** *(NEW)*: Temporal Relational Graph Attention Network (TR-GAT) for real-time multi-UAV conflict detection in dense low-altitude airspace — see [modules/SkyFlow](./modules/SkyFlow).
 *   **SkyGov compliance governance** *(NEW)*: evidence-driven four-agent LLM governance pipeline for low-altitude regulatory compliance with hard-rule veto, explanation auditing, trust negotiation, and decision traceability — see [modules/SkyGov](./modules/SkyGov).
 *   **SkyRwa semantic lifecycle modeling** *(NEW)*: four-tier governance lifecycle (Evidence → Candidate → Product → Revenue Right) where governance transitions are first-class KG entities, validated by SHACL + SHACL-SPARQL constraints, with 100% violation-type coverage — see [modules/SkyRwa](./modules/SkyRwa).
+*   **SkyCert conformal assurance layer** *(NEW)*: uncertainty-calibrated neuro-symbolic risk reasoning for UAM — split-conformal prediction with finite-sample coverage, hybrid-nonconformity test-martingales for online shift detection, and an abstention/alert/escalation policy that emits machine-readable audit artifacts — see [modules/SkyCert](./modules/SkyCert).
 
 ## 🏗️ System Architecture
 
@@ -240,6 +243,67 @@ python reproduce_case_studies.py # §7.7: case studies
 
 See [`modules/SkyRwa/README.md`](./modules/SkyRwa/README.md) for module details.
 
+## 🛡️ SkyCert: Uncertainty-Calibrated Neuro-Symbolic Reasoning with Conformal Prediction for UAM
+
+**SkyCert** ([`modules/SkyCert`](./modules/SkyCert)) is the *assurance layer* of the platform. It wraps any neuro-symbolic risk reasoner (neural scorer + symbolic rule engine over a UAM knowledge-graph slice) with three complementary mechanisms that turn opaque risk scores into auditable, certification-friendly decisions:
+
+```
+Neural scorer ─┐                ┌─ Conformal Risk Set ─┐                      ┌─ ACCEPT ─┐
+Rule engine ───┼─► logits/trace ┤                      ├─► Assurance Policy ──┼─ ABSTAIN │
+Feature stream ┘                └─ Martingale Monitor ─┘                      ├─ ALERT   │
+                                      (hybrid NC score)                       └─ ESCALATE┘
+                                                                       │
+                                                               Audit artifact (JSONL)
+```
+
+### SkyCert Highlights
+
+*   **Conformal coverage guarantee**: split-conformal prediction with APS nonconformity; marginal coverage stays within ±0.03 of the `1 − α` target under KG corruption, rule poisoning, and feature attack.
+*   **Online shift detection**: hybrid-nonconformity test-martingale (confidence slack + standardized input drift) with simple-jumper betting; warm-started from the calibration set so it is a valid conformal test-martingale from the first test point.
+*   **Safety-aware decision gating**: four-way ACCEPT / ABSTAIN / ALERT / ESCALATE policy — halves the critical-class miss rate under covariate shift (0.494 → 0.290).
+*   **Explicit threat model**: knowledge-graph corruption (T1), rule poisoning (T2), feature manipulation (T3), and covariate shift (T4), each reproduced by a deterministic injector in `skycert/data/threats.py`.
+*   **Machine-readable audit artifacts**: every decision is persisted as a JSONL record (rule trace + conformal set + martingale trajectory + verdict) to back an offline certification argument.
+*   **Reproducibility**: CPU-only, seed-pinned (`20260417`), ≈30 s end-to-end, no GPU / API key / network access required.
+
+### Key Results (default reviewer config, `seed 20260417`)
+
+| Scenario | Coverage | Crit. err. base → after abstain | Alert | M_max | Delay |
+|---|:---:|:---:|:---:|:---:|:---:|
+| T0 Clean            | 0.899 | 0.364 → **0.312** | 0.000 | 7.10 | — |
+| T1 KG corruption    | 0.905 | 0.240 → **0.179** | 0.000 | 4.69 | — |
+| T2 Rule poisoning   | 0.909 | 0.403 → **0.348** | 0.000 | 6.53 | — |
+| T3 Feature attack   | 0.881 | 0.351 → **0.267** | 0.358 | 2.2 × 10⁸ | 413 |
+| T4 Covariate shift  | 0.691 | 0.494 → **0.290** | 0.486 | 1.3 × 10⁵⁵ | 40 |
+
+Ablation under T4 — the full SkyCert configuration dominates every variant on the safety-critical metric:
+
+| Variant | Crit. err. after abstain |
+|---|:---:|
+| `no_conformal`  | 0.320 |
+| `no_martingale` | 0.329 |
+| `no_abstention` | 0.376 |
+| **`full` SkyCert** | **0.275** |
+
+### 1-Click Reproducibility
+
+```bash
+cd modules/SkyCert
+
+pip install -r requirements.txt
+
+# Full reproduction — unit tests + 5-threat experiment + ablation + 3 figures (~30 s, CPU-only)
+bash run.sh          # Linux/macOS
+# .\run.ps1          # Windows PowerShell
+
+# Individual steps
+python -m pytest tests -q                                   # 9 unit tests
+python -m scripts.run_experiment --config configs/default.yaml  # Table 1 + audit/
+python -m scripts.run_ablation   --config configs/default.yaml  # Table 2
+python -m scripts.plot_results   --config configs/default.yaml  # Fig. 3–5 (PDF)
+```
+
+See [`modules/SkyCert/README.md`](./modules/SkyCert/README.md) for module details, threat-model definitions, and the full paper-to-code mapping.
+
 ## 🧪 Experiments & Reproduction
 
 This repository includes the source code and simulation environment for our research on Low-Altitude Intelligent Internet storage architectures.
@@ -292,14 +356,23 @@ SkyNetUamPlatform/
 │   │   ├── configs/         #   default thresholds and model settings
 │   │   ├── outputs/         #   generated evaluation summaries
 │   │   └── tests/           #   agent/workflow/governance tests
-│   └── SkyFlow/             # TR-GAT conflict detection (MobiHoc 2026)
-│       ├── skyflow/models/  #   TR-GAT, temporal encoding, conflict head, PGD resolution
-│       ├── skyflow/data/    #   TKG builder, UrbanAir-500 simulator, SDD adapter
-│       ├── skyflow/baselines/  # 6 comparison methods (parameter-matched)
-│       ├── skyflow/training/#   AdamW + warmup + cosine, focal loss, regime metrics
-│       ├── scripts/         #   1-click bash scripts, train, evaluate, reproduce
-│       ├── configs/         #   Hyperparameter YAML (Table 2)
-│       └── tests/           #   23 unit tests
+│   ├── SkyFlow/             # TR-GAT conflict detection (MobiHoc 2026)
+│   │   ├── skyflow/models/  #   TR-GAT, temporal encoding, conflict head, PGD resolution
+│   │   ├── skyflow/data/    #   TKG builder, UrbanAir-500 simulator, SDD adapter
+│   │   ├── skyflow/baselines/  # 6 comparison methods (parameter-matched)
+│   │   ├── skyflow/training/#   AdamW + warmup + cosine, focal loss, regime metrics
+│   │   ├── scripts/         #   1-click bash scripts, train, evaluate, reproduce
+│   │   ├── configs/         #   Hyperparameter YAML (Table 2)
+│   │   └── tests/           #   23 unit tests
+│   └── SkyCert/             # Conformal + martingale assurance layer (ESORICS 2026)
+│       ├── skycert/base/    #   Neural scorer + symbolic rule engine (+ fused reasoner)
+│       ├── skycert/assurance/ # Conformal risk set, martingale monitor, policy, audit logger
+│       ├── skycert/data/    #   Synthetic UAM dataset + T1–T4 threat injectors
+│       ├── skycert/pipeline.py #  End-to-end SkyCertPipeline (fit / calibrate / step)
+│       ├── scripts/         #   run_experiment, run_ablation, plot_results
+│       ├── configs/         #   default.yaml (reviewer-facing, seed 20260417)
+│       ├── run.sh / run.ps1 #   One-click reproduction (Linux/macOS / Windows)
+│       └── tests/           #   9 unit tests (conformal, martingale, policy)
 ├── nexus_core/              # Python core: MARL, economics, data fabric
 ├── packages/                # Shared TS packages (auth, ui, utils)
 ├── research/                # Simulation experiments & MADDPG
