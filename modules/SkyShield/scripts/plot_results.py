@@ -73,12 +73,42 @@ def plot_stress(out_dir: Path, figs_dir: Path) -> None:
     data = _load(out_dir / "replay_stress.json")
     if data is None:
         return
-    fig, ax = plt.subplots(figsize=(5.4, 3.2))
-    for r in data["regimes"]:
-        ax.scatter(r["p99_ms"], r["deadline_miss"] * 100,
-                   s=45, alpha=0.85)
-        ax.annotate(r["regime"], (r["p99_ms"], r["deadline_miss"] * 100),
-                    xytext=(4, 3), textcoords="offset points", fontsize=7)
+    fig, ax = plt.subplots(figsize=(5.6, 3.4))
+    regimes = list(data["regimes"])
+
+    xs = [r["p99_ms"] for r in regimes]
+    ys = [r["deadline_miss"] * 100 for r in regimes]
+    ax.scatter(xs, ys, s=55, alpha=0.85, color="#225577", zorder=3)
+
+    # Stagger labels vertically so they don't overlap.
+    # Sort by x so we alternate offsets only for nearby neighbours.
+    order = sorted(range(len(regimes)), key=lambda i: xs[i])
+    y_off_cycle = [14, -14, 22, -22, 30, -30]
+    x_off_cycle = [6, 6, -6, -6, 6, -6]
+    for rank, i in enumerate(order):
+        dx = x_off_cycle[rank % len(x_off_cycle)]
+        dy = y_off_cycle[rank % len(y_off_cycle)]
+        ha = "left" if dx > 0 else "right"
+        ax.annotate(
+            regimes[i]["regime"],
+            (xs[i], ys[i]),
+            xytext=(dx, dy),
+            textcoords="offset points",
+            fontsize=8,
+            ha=ha,
+            arrowprops=dict(arrowstyle="-", color="0.55",
+                            lw=0.6, shrinkA=1, shrinkB=2),
+        )
+
+    x_min = min(xs)
+    x_max = max(xs)
+    y_min = min(ys)
+    y_max = max(ys)
+    x_pad = max(30.0, 0.08 * (x_max - x_min + 1e-6))
+    y_pad = max(1.0, 0.18 * (y_max - y_min + 1e-6))
+    ax.set_xlim(x_min - x_pad, x_max + 1.6 * x_pad)
+    ax.set_ylim(min(0.0, y_min - y_pad), y_max + 2.2 * y_pad)
+
     ax.set_xlabel("P99 end-to-end latency (ms)")
     ax.set_ylabel("Deadline-miss rate (%)")
     ax.set_title("E3 replay stress regimes")
