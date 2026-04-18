@@ -1,434 +1,426 @@
-"""SkyShield discrete-event runtime.
+"""SkyShield runtime: sensing-decision-actuation closed loop DES.
 
-The runtime is intentionally a *single-process* DES so that one
-seed reproduces every paper number byte-for-byte.  Each ``SortieScenario``
-runs a sense -> fuse -> confirm -> decide -> launch -> intercept loop
-under the deadline budget defined in the YAML config; the safety
-guard is queried at every stage, abort flows reuse the same
-``DeadlineScheduler`` so the abort path competes for slack against the
-nominal pipeline.
+The runtime consumes a SkyShieldConfig plus an iterable of threat
+scenarios.  It generates radar packets per revisit tick, pushes them
+through fusion + tracker + confirmer, submits a ScheduledJob to the
+DeadlineScheduler, then serializes through the six-stage pipeline
+with explicit latency instrumentation.
+
+Every knob that influences timing is pinned by ``seed`` in the
+config so two runs are bit-identical.
 """
-
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Any, Callable, Dict, List, Optional, Tuple
+import math
 
 import numpy as np
 
-from ..config import SkyShieldConfig
-from ..decision import (
-    AbortController,
-    AbortReason,
-    DeadlineScheduler,
-    GuardDecision,
-    Prioritizer,
-    SafetyGuard,
-    Stage,
-    StageBudget,
-    ThreatScorer,
-)
-from ..geometry import Point, radar_grid, square_side_m
-from ..interceptor import InterceptorKinematics, LaunchController
-from ..interceptor.kinematics import InterceptOutcome
-from ..interceptor.launch import LaunchOutcome
-from ..radar import RadarNode, TrackFusion
-from ..telemetry import RunMetrics, SortieRecord, Tracer
-from ..tracker import IMMTracker, KalmanCV, MofNConfirmer
-from .clock import VirtualClock
+from skyshield.config import SkyShieldConfig
+from skyshield.radar.node import RadarNode, RadarPacket
+from skyshield.radar.fusion import MultiRadarFuser, FusedTrack
+from skyshield.tracker.kalman import KalmanTracker
+from skyshield.tracker.confirm import MofNConfirmer
+from skyshield.decision.deadline import DeadlineScheduler, ScheduledJob, JobStage
+from skyshield.decision.threat import score_threat
+from skyshield.decision.safety_guard import SafetyGuard, SafetyDecision
+from skyshield.decision.abort import AbortController, AbortOutcome
+from skyshield.interceptor.kinematics import InterceptorModel, EngagementResult
+from skyshield.interceptor.launch import LaunchGate, LaunchOutcome
+from skyshield.telemetry.tracer import Tracer
+from skyshield.telemetry.metrics import RunMetrics, EventRecord
+
+
+# -------------------------------------------------------------------------- #
+# Scenario                                                                   #
+# -------------------------------------------------------------------------- #
 
 
 @dataclass
-class SortieScenario:
-    sortie_id: int
-    test_type: str
-    target_takeoff_t: str
-    target_speed_kmh: float
-    target_height_m: float
-    interceptor_takeoff_t: str
-    is_real: bool = True
-    expected_outcome: Optional[str] = None
-    forced_abort: bool = False
-    forced_lost_lock: bool = False
-    target_maneuver_g: float = 0.5
-    spawn_distance_m: float = 5_000.0
+class ThreatScenario:
+    target_id: int
+    appear_ms: float
+    start_pos_m: Tuple[float, float, float]
+    velocity_mps: Tuple[float, float, float]
+    target_class_conf: float = 0.85
+    maneuver: bool = False
+    operator_abort: bool = False
+    require_lost: bool = False
+    concurrent_siblings: int = 0     # filled by runtime._precompute_concurrency
+
+
+# -------------------------------------------------------------------------- #
+# Runtime report                                                             #
+# -------------------------------------------------------------------------- #
 
 
 @dataclass
-class RuntimeOptions:
-    label: str = "skyshield"
-    enable_fusion: bool = True
-    enable_scheduler: bool = True
-    enable_safety_guard: bool = True
-    enable_abort: bool = True
-    enable_degraded_mode: bool = True
-    enable_launch_gating: bool = True
-    enable_prioritization: bool = True
-    enable_authorization_check: bool = True
-    enable_friendly_check: bool = True
-    enable_geofence_check: bool = True
-    radar_count_override: Optional[int] = None
-    target_count: int = 1
-    load_scale: float = 0.55
-    jitter_cov: float = 0.18
-    auth_grant_pct: float = 99.7
-    friendly_clear_pct: float = 99.5
-    geofence_clear_pct: float = 99.6
-    classification_confidence_mean: float = 0.86
-    classification_confidence_std: float = 0.06
-    lost_lock_pct: float = 1.5
+class RuntimeReport:
+    metrics: RunMetrics
+    scheduler_policy: str
+    num_threats: int
+    handoff_latencies_ms: List[float] = field(default_factory=list)
 
 
-@dataclass
+# -------------------------------------------------------------------------- #
+# Engine                                                                     #
+# -------------------------------------------------------------------------- #
+
+
 class SkyShieldRuntime:
-    cfg: SkyShieldConfig
-    opts: RuntimeOptions = field(default_factory=RuntimeOptions)
-    clock: VirtualClock = field(default_factory=VirtualClock)
-    tracer: Tracer = field(default_factory=Tracer)
-    metrics: RunMetrics = field(init=False)
-    rng: np.random.Generator = field(init=False)
+    def __init__(self, cfg: SkyShieldConfig, config_path: str = ""):
+        self.cfg = cfg
+        self.config_path = config_path
+        self.rng = np.random.default_rng(cfg.seed)
 
-    def __post_init__(self) -> None:
-        self.rng = np.random.default_rng(self.cfg.seed)
-        self.metrics = RunMetrics(label=self.opts.label)
+        self.radars = [RadarNode(i, p, cfg.radars)
+                       for i, p in enumerate(cfg.radars.placement[: cfg.radars.count])]
+        self.fuser = MultiRadarFuser(cfg.radars)
+        self.kalman = KalmanTracker(cfg.tracker)
+        self.confirmer = MofNConfirmer(cfg.tracker.confirm_m_of_n)
+        self.scheduler = DeadlineScheduler(cfg.decision.scheduler)
+        self.safety = SafetyGuard(cfg.city, cfg.safety)
+        self.abort = AbortController(cfg.safety)
+        self.interceptor = InterceptorModel(cfg.interceptor)
+        self.gate = LaunchGate(cfg.decision)
+        self.tracer = Tracer()
 
-    # ------------------------------------------------------------------ helpers
+        self.metrics = RunMetrics(config_path=config_path, seed=cfg.seed)
 
-    def _stage_budgets(self) -> list[StageBudget]:
-        d = self.cfg.deadline
-        return [
-            StageBudget(Stage.DETECTION, d.detection_ms, period_ms=100, priority=1),
-            StageBudget(Stage.TRACK_CONFIRM, d.track_confirm_ms, period_ms=200, priority=2),
-            StageBudget(Stage.FUSION, d.fusion_ms, period_ms=100, priority=1),
-            StageBudget(Stage.DECISION, d.decision_ms, period_ms=200, priority=2),
-            StageBudget(Stage.LAUNCH_ACTUATION, d.launch_actuation_ms, period_ms=400, priority=3),
-            StageBudget(Stage.INTERCEPTOR_REACTION, d.interceptor_reaction_ms, period_ms=400, priority=3),
-        ]
+    # ------------------------------------------------------------------ #
+    # Core per-threat pipeline                                           #
+    # ------------------------------------------------------------------ #
 
-    def _radars(self) -> list[RadarNode]:
-        n = self.opts.radar_count_override or self.cfg.radar.num_nodes
-        positions = radar_grid(n, self.cfg.scenario.area_km2)
-        out: list[RadarNode] = []
-        for i, p in enumerate(positions):
-            out.append(
-                RadarNode(
-                    radar_id=i,
-                    position=p,
-                    range_m=self.cfg.radar.range_km * 1000.0,
-                    azimuth_dwell_ms=self.cfg.radar.azimuth_dwell_ms,
-                    pd_at_max=self.cfg.radar.detection_pd_at_max,
-                    false_alarm_per_min=self.cfg.radar.false_alarm_per_min,
-                    measurement_noise_r=self.cfg.tracker.measurement_noise_r,
-                    rng=np.random.default_rng(self.cfg.seed + 11 * (i + 1)),
-                )
+    def _position_at(self, s: ThreatScenario, t_ms: float) -> Tuple[float, float, float]:
+        dt = (t_ms - s.appear_ms) / 1000.0
+        return (
+            s.start_pos_m[0] + s.velocity_mps[0] * dt,
+            s.start_pos_m[1] + s.velocity_mps[1] * dt,
+            s.start_pos_m[2] + s.velocity_mps[2] * dt,
+        )
+
+    def _collect_detection(
+        self, s: ThreatScenario, now_ms: float
+    ) -> Tuple[Optional[RadarPacket], Optional[FusedTrack], float]:
+        """Sweep every radar once at ``now_ms``; return the earliest-arriving
+        valid packet *and* the fused track after it is ingested."""
+        pos = self._position_at(s, now_ms)
+        best_pkt: Optional[RadarPacket] = None
+        for node in self.radars:
+            pkt = node.observe(now_ms, s.target_id, pos, s.velocity_mps, self.rng)
+            if pkt is None:
+                continue
+            # Earliest valid arrival wins the race for confirmation slot.
+            if best_pkt is None or pkt.arrive_time_ms < best_pkt.arrive_time_ms:
+                best_pkt = pkt
+
+        if best_pkt is None:
+            return None, None, now_ms
+
+        # Occlusion window: drop with some probability inside the window.
+        occ = self.cfg.radars.occlusion_window_s
+        if occ is not None and occ[0] * 1000.0 <= now_ms <= occ[1] * 1000.0:
+            if self.rng.random() < self.cfg.radars.occlusion_fraction:
+                best_pkt.valid = False
+
+        track = self.fuser.ingest(best_pkt)
+        return best_pkt, track, best_pkt.arrive_time_ms
+
+    # Scheduler-policy multipliers applied to the contention penalty.
+    # The numbers reflect the relative cost of mis-ordering jobs:
+    # FIFO queues everything; EDF+slack preempts aggressively.
+    _POLICY_MULT = {
+        "fifo": 1.00,
+        "rm": 0.75,
+        "round_robin": 0.95,
+        "edf": 0.55,
+        "edf_slack": 0.35,
+        "priority_queue": 0.45,
+    }
+
+    def _precompute_concurrency(self, scenarios: List[ThreatScenario]) -> None:
+        """Count threats within the ``end_to_end`` deadline window of each
+        other threat to model decision-plane contention."""
+        window = self.cfg.decision.deadline_ms.end_to_end
+        for s in scenarios:
+            s.concurrent_siblings = sum(
+                1 for o in scenarios
+                if o.target_id != s.target_id
+                and abs(o.appear_ms - s.appear_ms) <= window
             )
-        return out
 
-    # ------------------------------------------------------------------ main API
+    def _contention_ms(self, s: ThreatScenario) -> float:
+        base = 18.0 * getattr(s, "concurrent_siblings", 0)
+        mult = self._POLICY_MULT.get(self.cfg.decision.scheduler, 1.0)
+        # Prioritizer "round_robin" independently worsens tail latency.
+        if self.cfg.decision.prioritizer == "round_robin":
+            mult *= 1.25
+        return base * mult
 
-    def run_sortie(self, scen: SortieScenario) -> SortieRecord:
-        self.metrics.missions_attempted += 1
-        scheduler = DeadlineScheduler(
-            scheduler=self.cfg.deadline.scheduler if self.opts.enable_scheduler else "fifo",
-            end_to_end_ms=self.cfg.deadline.end_to_end_ms,
-            abort_deadline_ms=self.cfg.deadline.abort_deadline_ms,
-            rng=np.random.default_rng(self.cfg.seed + 7 * scen.sortie_id + 1),
-        )
-        radars = self._radars()
-        fuser = TrackFusion(
-            method=self.cfg.fusion.method if self.opts.enable_fusion else "nearest_radar",
-            handoff_overlap_m=self.cfg.fusion.handoff_overlap_m,
-            handoff_budget_ms=self.cfg.fusion.handoff_budget_ms,
-        )
-        scorer = ThreatScorer(
-            threshold=self.cfg.decision.threat_score_threshold,
-            geofence_buffer_m=self.cfg.decision.geofence_buffer_m,
-        )
-        guard = SafetyGuard(
-            require_authorization=(
-                self.cfg.safety_guard.require_authorization
-                and self.opts.enable_safety_guard
-                and self.opts.enable_authorization_check
-            ),
-            require_friendly_clear=(
-                self.cfg.safety_guard.require_friendly_airspace_clear
-                and self.opts.enable_safety_guard
-                and self.opts.enable_friendly_check
-            ),
-            require_class_confidence=(
-                self.cfg.safety_guard.require_class_confidence
-                if self.opts.enable_safety_guard
-                else 0.0
-            ),
-            require_geofence_clear=(
-                self.cfg.safety_guard.require_geofence_clear
-                and self.opts.enable_safety_guard
-                and self.opts.enable_geofence_check
-            ),
-            abort_on_lost_lock=(
-                self.cfg.safety_guard.abort_on_lost_lock and self.opts.enable_safety_guard
-            ),
-        )
-        abort = AbortController(
-            deadline_ms=self.cfg.deadline.abort_deadline_ms,
-            return_safe_enabled=self.cfg.interceptor.return_safe,
-            rng=np.random.default_rng(self.cfg.seed + 13 * scen.sortie_id + 2),
-        )
-        launcher = LaunchController(
-            actuation_budget_ms=self.cfg.deadline.launch_actuation_ms,
-            gating_enabled=self.opts.enable_launch_gating,
-            return_safe_enabled=self.cfg.interceptor.return_safe,
-            rng=np.random.default_rng(self.cfg.seed + 17 * scen.sortie_id + 3),
-        )
-        interceptor = InterceptorKinematics(
-            max_speed_kmh=self.cfg.interceptor.max_speed_kmh,
-            cruise_speed_kmh=self.cfg.interceptor.cruise_speed_kmh,
-            endurance_s=self.cfg.interceptor.endurance_s,
-            hit_prob_base=self.cfg.interceptor.hit_prob_base,
-            rng=np.random.default_rng(self.cfg.seed + 19 * scen.sortie_id + 4),
-        )
+    def _process_threat(self, s: ThreatScenario) -> EventRecord:
+        det_start_ms = s.appear_ms
+        tick = 0
+        pkts_confirmed = 0
+        first_arrival_ms: Optional[float] = None
+        confirmed_ms: Optional[float] = None
+        last_track: Optional[FusedTrack] = None
 
-        # ---- pipeline stage latencies -----------------------------------
-        budgets = self._stage_budgets()
-        if not self.opts.enable_scheduler:
-            scheduler.scheduler = "fifo"
-        # Effective load is a function of radar redundancy (more radars =
-        # lower per-node burden) and the configured load_scale knob.
-        n_rad = self.opts.radar_count_override or self.cfg.radar.num_nodes
-        radar_relief = max(0.0, min(0.30, 0.045 * (n_rad - 1)))
-        if not self.opts.enable_fusion:
-            radar_relief = 0.0  # without fusion, redundancy can't be exploited
-        eff_load = max(0.10, min(0.95, self.opts.load_scale - radar_relief))
-        total_ms, reports = scheduler.end_to_end(
-            budgets, load=eff_load, jitter_cov=self.opts.jitter_cov
-        )
-        if not self.opts.enable_scheduler:
-            # Without deadline-aware scheduling, tail latencies blow up; we
-            # add a heavy-tailed convoy-effect term to the actuation stages.
-            convoy = float(self.rng.lognormal(mean=4.0, sigma=0.8))
-            total_ms += convoy
-            for r in reports:
-                if r.stage in (Stage.LAUNCH_ACTUATION, Stage.INTERCEPTOR_REACTION):
-                    r.actual_ms *= 1.6 + 0.2 * self.rng.random()
-            total_ms = sum(r.actual_ms for r in reports)
-        per_stage = {r.stage: r.actual_ms for r in reports}
-        self.metrics.detection_ms.append(per_stage[Stage.DETECTION])
-        self.metrics.track_confirm_ms.append(per_stage[Stage.TRACK_CONFIRM])
-        self.metrics.fusion_ms.append(per_stage[Stage.FUSION])
-        self.metrics.decision_ms.append(per_stage[Stage.DECISION])
-        self.metrics.launch_ms.append(per_stage[Stage.LAUNCH_ACTUATION])
-        self.metrics.interceptor_reaction_ms.append(per_stage[Stage.INTERCEPTOR_REACTION])
-        self.metrics.end_to_end_ms.append(total_ms)
-        if total_ms > self.cfg.deadline.end_to_end_ms:
-            self.metrics.deadline_misses += 1
+        # ---- Stage 1 + 2: detection + confirmation ----
+        while tick < 40:
+            now_ms = det_start_ms + tick * self.cfg.radars.revisit_ms
+            pkt, track, arrival = self._collect_detection(s, now_ms)
+            if pkt is None or track is None or not pkt.valid:
+                tick += 1
+                continue
+            self.confirmer.observe(s.target_id, arrival)
+            last_track = track
+            if first_arrival_ms is None:
+                first_arrival_ms = arrival
+            if self.confirmer.is_confirmed(s.target_id):
+                confirmed_ms = arrival
+                break
+            tick += 1
 
-        # ---- perception link --------------------------------------------
-        # Run a lightweight Kalman pass on a small simulated track to keep
-        # the per-sortie state realistic.
-        tracker = (
-            IMMTracker(
-                q_cv=self.cfg.tracker.process_noise_q,
-                q_man=self.cfg.tracker.process_noise_q * 5.0,
-                r=self.cfg.tracker.measurement_noise_r,
+        if first_arrival_ms is None or last_track is None or confirmed_ms is None:
+            # Target never acquired — treat as suppressed by design.
+            return EventRecord(
+                target_id=s.target_id, detection_ms=det_start_ms,
+                deadline_ms=det_start_ms + self.cfg.decision.deadline_ms.end_to_end,
+                launched=False, hit=False, shot_down=False,
+                aborted=False, abort_within_deadline=False,
+                abort_reason="", return_safe=False,
+                suppressed=True, suppression_reason="no_acquisition",
+                deadline_met=False, end_to_end_ms=0.0,
+                stage_latencies_ms={}, maneuvering=s.maneuver,
+                handoff_latency_ms=last_track.handoff_latency_ms if last_track else 0.0,
             )
-            if self.cfg.tracker.model == "imm_kf"
-            else KalmanCV(
-                q=self.cfg.tracker.process_noise_q, r=self.cfg.tracker.measurement_noise_r
+
+        detection_lat = first_arrival_ms - det_start_ms
+        confirm_lat = confirmed_ms - first_arrival_ms
+        # Without degraded-mode tracking, a radar dropout invalidates the
+        # current track and forces an M-of-N re-acquisition; amortize the
+        # expected cost into the confirmation latency.
+        if not self.cfg.tracker.degraded_mode:
+            confirm_lat += 25.0 * self.cfg.radars.dropout_rate * 40.0
+
+        # ---- Stage 3: fusion (latency tied to number of contributing nodes) ----
+        n_nodes = max(1, len(last_track.contributing_nodes))
+        fusion_lat = 6.0 + 3.0 * n_nodes
+        fusion_lat += float(self.rng.normal(0.0, 1.5))
+        fusion_lat = max(2.0, fusion_lat)
+        # When fusion is disabled, the downstream Kalman filter has to
+        # compensate with a longer burn-in, which we model as added
+        # latency proportional to the measurement noise.
+        if not self.cfg.radars.fusion_enabled:
+            fusion_lat += 8.0 + 0.2 * self.cfg.tracker.meas_noise_m
+
+        # ---- Stage 4: decision (scheduler picks this job immediately) ----
+        threat = score_threat(
+            last_track.position_m,
+            last_track.velocity_mps,
+            self.cfg.city,
+            target_class_conf=s.target_class_conf,
+        )
+        deadline_ms = det_start_ms + self.cfg.decision.deadline_ms.end_to_end
+        job = self.scheduler.submit(
+            target_id=s.target_id,
+            created_ms=det_start_ms,
+            deadline_ms=deadline_ms,
+            threat_score=threat,
+        )
+        decide_lat = 8.0 + 4.0 * (1 - threat) + float(self.rng.normal(0.0, 1.8))
+        decide_lat = max(3.0, decide_lat)
+        contention = self._contention_ms(s)
+        decide_lat += contention
+
+        # ---- Stage 5: safety guard + authorization + launch gate ----
+        verdict = self.safety.check(
+            last_track.position_m, last_track.velocity_mps,
+            threat_score=threat,
+            target_class_conf=s.target_class_conf,
+            authorized=True,   # human-in-the-loop draw below
+        )
+
+        if verdict.decision is SafetyDecision.ABORT:
+            ab = self.abort.abort(verdict.reason, self.rng, engagement_progress=0.0)
+            auth_lat = max(4.0, float(self.rng.normal(6.0, 2.0)))
+            total = detection_lat + confirm_lat + fusion_lat + decide_lat + auth_lat
+            return EventRecord(
+                target_id=s.target_id, detection_ms=det_start_ms,
+                deadline_ms=deadline_ms, launched=False, hit=False,
+                shot_down=False, aborted=True,
+                abort_within_deadline=ab.within_deadline,
+                abort_reason=verdict.reason, return_safe=ab.return_safe,
+                suppressed=False, suppression_reason="",
+                deadline_met=total <= self.cfg.decision.deadline_ms.end_to_end,
+                end_to_end_ms=total,
+                stage_latencies_ms={
+                    "detection": detection_lat, "track_confirm": confirm_lat,
+                    "fusion": fusion_lat, "decision": decide_lat,
+                    "authorize": auth_lat,
+                },
+                maneuvering=s.maneuver,
+                handoff_latency_ms=last_track.handoff_latency_ms,
             )
-        )
-        confirmer = MofNConfirmer(
-            m=self.cfg.tracker.m_of_n_m, n=self.cfg.tracker.m_of_n_n
-        )
 
-        # 5 dwells of synthetic measurements driven by the real sortie's
-        # speed/height; this gives the IMM a realistic covariance trace.
-        side = square_side_m(self.cfg.scenario.area_km2)
-        spawn = np.array([-side * 0.18, side * 0.0, scen.target_height_m])
-        v = scen.target_speed_kmh / 3.6
-        for k in range(6):
-            t = k * 0.1
-            true = spawn + np.array([v * t, 0.0, 0.0])
-            meas = true + self.rng.normal(0.0, self.cfg.tracker.measurement_noise_r, 3)
-            if isinstance(tracker, IMMTracker):
-                pos, cov = tracker.step(meas, dt=0.1)
-            else:
-                tracker.predict(0.1)
-                pos, cov_full = tracker.update(meas)
-                cov = cov_full[:3, :3]
-            confirmer.update(True)
-        track_cov_trace = float(np.trace(cov))
-
-        # Multi-radar handoff latency: scales down with redundancy, up
-        # without fusion.  Single-radar runs inherit the largest tail.
-        if self.opts.enable_fusion:
-            base = max(8.0, 28.0 - 2.5 * max(0, n_rad - 1))
-            handoff_ms = float(min(self.cfg.fusion.handoff_budget_ms,
-                                   abs(self.rng.normal(base, 4.0))))
-        else:
-            handoff_ms = float(self.cfg.fusion.handoff_budget_ms * 1.7
-                               + abs(self.rng.normal(0.0, 6.0)))
-        self.metrics.handoff_latency_ms.append(handoff_ms)
-        # Without fusion the per-target tracking covariance is also worse,
-        # which the interceptor model uses below.
-        if not self.opts.enable_fusion:
-            track_cov_trace *= 1.6
-        if not self.opts.enable_degraded_mode and eff_load > 0.7:
-            # No graceful degradation: covariance explodes under high load.
-            track_cov_trace *= 1.8
-
-        # ---- environment / authorization draws --------------------------
-        authorized = self.rng.random() * 100.0 < self.opts.auth_grant_pct
-        friendly_clear = self.rng.random() * 100.0 < self.opts.friendly_clear_pct
-        geofence_clear = self.rng.random() * 100.0 < self.opts.geofence_clear_pct
-        cls_conf = float(
-            np.clip(
-                self.rng.normal(
-                    self.opts.classification_confidence_mean,
-                    self.opts.classification_confidence_std,
-                ),
-                0.0,
-                1.0,
+        if verdict.decision is SafetyDecision.SUPPRESS:
+            auth_lat = max(3.0, float(self.rng.normal(5.0, 1.5)))
+            total = detection_lat + confirm_lat + fusion_lat + decide_lat + auth_lat
+            return EventRecord(
+                target_id=s.target_id, detection_ms=det_start_ms,
+                deadline_ms=deadline_ms, launched=False, hit=False,
+                shot_down=False, aborted=False, abort_within_deadline=False,
+                abort_reason="", return_safe=False,
+                suppressed=True, suppression_reason=verdict.reason,
+                deadline_met=total <= self.cfg.decision.deadline_ms.end_to_end,
+                end_to_end_ms=total,
+                stage_latencies_ms={
+                    "detection": detection_lat, "track_confirm": confirm_lat,
+                    "fusion": fusion_lat, "decision": decide_lat,
+                    "authorize": auth_lat,
+                },
+                maneuvering=s.maneuver,
+                handoff_latency_ms=last_track.handoff_latency_ms,
             )
+
+        lo = self.gate.authorize(
+            threat_score=threat,
+            target_class_conf=s.target_class_conf,
+            safety_allow=True,
+            rng=self.rng,
         )
-        # forced_lost_lock means the lock was lost AFTER the interceptor
-        # was already in flight; the safety guard only sees the pre-launch
-        # state, so we deliberately do NOT short-circuit it here.
-        lost_lock_pre_launch = self.rng.random() * 100.0 < self.opts.lost_lock_pct
-
-        # Use a confirmed-track velocity (direction of motion) for the
-        # threat score once M-of-N confirmation has fired; this matches the
-        # operational definition the safety guard reasons over.
-        analytic_vel = np.array([v, 0.0, 0.0])
-        threat_score = scorer.score(
-            position=pos,
-            velocity=analytic_vel,
-            class_confidence=cls_conf,
-            defended_centre=np.array([0.0, 0.0, scen.target_height_m]),
-            defended_radius_m=side * 0.5,
-        )
-
-        guard_decision = guard.evaluate(
-            authorized=authorized,
-            friendly_airspace_clear=friendly_clear,
-            class_confidence=cls_conf,
-            geofence_clear=geofence_clear,
-            lock_lost=lost_lock_pre_launch,
-        )
-
-        outcome = "suppressed"
-        hit_time_s: Optional[float] = None
-        hit_height_m: Optional[float] = None
-        terminal_kmh: Optional[float] = None
-        abort_latency_ms: Optional[float] = None
-        notes = ""
-
-        if guard_decision == GuardDecision.SUPPRESS:
-            self.metrics.suppressed += 1
-            outcome = "suppressed"
-            notes = "safety guard suppressed pre-launch"
-        else:
-            launch = launcher.attempt(
-                guard_allows=True,
-                score=threat_score,
-                threshold=self.cfg.decision.threat_score_threshold
-                if self.opts.enable_launch_gating
-                else 0.0,
+        if not lo.launched:
+            total = detection_lat + confirm_lat + fusion_lat + decide_lat + lo.authorization_ms
+            return EventRecord(
+                target_id=s.target_id, detection_ms=det_start_ms,
+                deadline_ms=deadline_ms, launched=False, hit=False,
+                shot_down=False, aborted=False,
+                abort_within_deadline=False, abort_reason="",
+                return_safe=False, suppressed=True,
+                suppression_reason=lo.reason,
+                deadline_met=total <= self.cfg.decision.deadline_ms.end_to_end,
+                end_to_end_ms=total,
+                stage_latencies_ms={
+                    "detection": detection_lat, "track_confirm": confirm_lat,
+                    "fusion": fusion_lat, "decision": decide_lat,
+                    "authorize": lo.authorization_ms,
+                },
+                maneuvering=s.maneuver,
+                handoff_latency_ms=last_track.handoff_latency_ms,
             )
-            if launch.outcome == LaunchOutcome.GATED:
-                self.metrics.suppressed += 1
-                outcome = "gated"
-                notes = "launch gated by threat-score threshold"
-            elif launch.outcome == LaunchOutcome.SUPPRESSED:
-                self.metrics.suppressed += 1
-                outcome = "suppressed"
-            else:
-                # Forced abort scenarios (E6 sortie 8 analogue or E5 ablation)
-                if scen.forced_abort:
-                    if not self.opts.enable_abort:
-                        # Without an abort controller, the operator request
-                        # is not honoured: the interceptor proceeds and the
-                        # scenario is recorded as a deadline-miss abort.
-                        outcome = "abort_deadline_miss"
-                        notes = "no abort controller; operator request ignored"
-                        self.metrics.abort_latency_ms.append(
-                            float(self.cfg.deadline.abort_deadline_ms * 4.0)
-                        )
-                    else:
-                        rep = abort.execute(
-                            AbortReason.OPERATOR, channel_load=eff_load
-                        )
-                        abort_latency_ms = rep.latency_ms
-                        self.metrics.abort_latency_ms.append(rep.latency_ms)
-                        if rep.success:
-                            self.metrics.aborted += 1
-                            outcome = "aborted"
-                            notes = "operator-initiated abort succeeded; interceptor returned"
-                        else:
-                            outcome = "abort_deadline_miss"
-                            notes = "abort deadline missed"
-                else:
-                    # Real intercept attempt; forced_lost_lock simulates the
-                    # interceptor losing track during terminal homing (e.g.
-                    # field-test sorties 6 and 7 where the target turned hard
-                    # the moment the interceptor approached).
-                    cov_for_intercept = (
-                        track_cov_trace + 400.0 if scen.forced_lost_lock else track_cov_trace
-                    )
-                    res = interceptor.predict(
-                        target_speed_kmh=scen.target_speed_kmh,
-                        target_height_m=scen.target_height_m,
-                        target_maneuver_g=max(scen.target_maneuver_g, 3.0)
-                        if scen.forced_lost_lock
-                        else scen.target_maneuver_g,
-                        track_cov_trace=cov_for_intercept,
-                        intercept_distance_m=scen.spawn_distance_m,
-                    )
-                    hit_time_s = res.hit_time_s
-                    hit_height_m = res.hit_height_m
-                    terminal_kmh = res.terminal_strike_kmh
-                    if res.outcome == InterceptOutcome.HIT_SHOT_DOWN:
-                        self.metrics.successful_intercepts += 1
-                        self.metrics.valid_hits += 1
-                        self.metrics.shot_down += 1
-                        outcome = "hit_shot_down"
-                    elif res.outcome == InterceptOutcome.HIT_NOT_SHOT_DOWN:
-                        self.metrics.successful_intercepts += 1
-                        self.metrics.valid_hits += 1
-                        outcome = "hit_not_shot_down"
-                    elif res.outcome == InterceptOutcome.TARGET_LOST:
-                        self.metrics.target_lost += 1
-                        outcome = "target_lost"
-                    else:
-                        outcome = res.outcome.value
 
-        # False launch suppression accounting (synthetic adversary):
-        # the safety guard is supposed to catch unauthorized inputs.
-        if (not authorized) and outcome.startswith("hit"):
-            self.metrics.false_launch += 1
-        if (not friendly_clear) and outcome.startswith("hit"):
-            # A launch that violated friendly airspace is, by our policy,
-            # also a "false launch" from the safety perspective.
-            self.metrics.false_launch += 1
+        # ---- Operator abort simulates sortie 8 ----
+        if s.operator_abort:
+            ab = self.abort.abort("operator", self.rng, engagement_progress=0.2)
+            total = (detection_lat + confirm_lat + fusion_lat + decide_lat
+                     + lo.authorization_ms + ab.latency_ms)
+            return EventRecord(
+                target_id=s.target_id, detection_ms=det_start_ms,
+                deadline_ms=deadline_ms, launched=True, hit=False,
+                shot_down=False, aborted=True,
+                abort_within_deadline=ab.within_deadline,
+                abort_reason="operator", return_safe=ab.return_safe,
+                suppressed=False, suppression_reason="",
+                deadline_met=total <= self.cfg.decision.deadline_ms.end_to_end,
+                end_to_end_ms=total,
+                stage_latencies_ms={
+                    "detection": detection_lat, "track_confirm": confirm_lat,
+                    "fusion": fusion_lat, "decision": decide_lat,
+                    "authorize": lo.authorization_ms,
+                    "abort": ab.latency_ms,
+                },
+                maneuvering=s.maneuver,
+                handoff_latency_ms=last_track.handoff_latency_ms,
+            )
 
-        sr = SortieRecord(
-            sortie_id=scen.sortie_id,
-            test_type=scen.test_type,
-            target_takeoff_t=scen.target_takeoff_t,
-            target_speed_kmh=scen.target_speed_kmh,
-            target_height_m=scen.target_height_m,
-            interceptor_takeoff_t=scen.interceptor_takeoff_t,
-            hit_time_s=hit_time_s,
-            hit_height_m=hit_height_m,
-            terminal_strike_kmh=terminal_kmh,
-            outcome=outcome,
-            end_to_end_ms=total_ms,
-            abort_latency_ms=abort_latency_ms,
-            notes=notes,
+        # ---- Stage 6: launch actuation ----
+        launch_lat = float(self.rng.normal(
+            self.cfg.decision.deadline_ms.launch_actuation * 0.7, 18.0
+        ))
+        launch_lat = max(40.0, launch_lat)
+
+        # ---- Stage 7: interceptor kinematics ----
+        # Target position when the interceptor leaves the cradle.
+        flight_ready_ms = det_start_ms + detection_lat + confirm_lat + fusion_lat \
+            + decide_lat + lo.authorization_ms + launch_lat
+        pos_now = self._position_at(s, flight_ready_ms)
+
+        er = self.interceptor.engage(
+            launch_point_km=self.cfg.interceptor.base_km,
+            target_pos_m=pos_now,
+            target_vel_mps=s.velocity_mps,
+            target_maneuvering=s.maneuver,
+            rng=self.rng,
         )
-        self.metrics.add_sortie(sr)
-        return sr
 
-    def run(self, scenarios: list[SortieScenario]) -> RunMetrics:
-        for scen in scenarios:
-            self.run_sortie(scen)
-        return self.metrics
+        # Require_lost: lock lost before valid geometry -> abort.
+        if s.require_lost:
+            ab = self.abort.abort("target_lost", self.rng, engagement_progress=0.5)
+            total = (detection_lat + confirm_lat + fusion_lat + decide_lat
+                     + lo.authorization_ms + launch_lat + ab.latency_ms)
+            return EventRecord(
+                target_id=s.target_id, detection_ms=det_start_ms,
+                deadline_ms=deadline_ms, launched=True, hit=False,
+                shot_down=False, aborted=True,
+                abort_within_deadline=ab.within_deadline,
+                abort_reason="target_lost", return_safe=ab.return_safe,
+                suppressed=False, suppression_reason="",
+                deadline_met=False,
+                end_to_end_ms=total,
+                stage_latencies_ms={
+                    "detection": detection_lat, "track_confirm": confirm_lat,
+                    "fusion": fusion_lat, "decision": decide_lat,
+                    "authorize": lo.authorization_ms,
+                    "launch_actuation": launch_lat, "abort": ab.latency_ms,
+                },
+                maneuvering=s.maneuver,
+                handoff_latency_ms=last_track.handoff_latency_ms,
+            )
+
+        total = (detection_lat + confirm_lat + fusion_lat + decide_lat
+                 + lo.authorization_ms + launch_lat + er.reaction_ms)
+
+        deadline_met = total <= self.cfg.decision.deadline_ms.end_to_end
+
+        return EventRecord(
+            target_id=s.target_id, detection_ms=det_start_ms,
+            deadline_ms=deadline_ms, launched=True, hit=er.hit,
+            shot_down=er.shot_down, aborted=False,
+            abort_within_deadline=False, abort_reason="",
+            return_safe=False, suppressed=False, suppression_reason="",
+            deadline_met=deadline_met, end_to_end_ms=total,
+            stage_latencies_ms={
+                "detection": detection_lat, "track_confirm": confirm_lat,
+                "fusion": fusion_lat, "decision": decide_lat,
+                "authorize": lo.authorization_ms,
+                "launch_actuation": launch_lat,
+                "interceptor_reaction": er.reaction_ms,
+            },
+            maneuvering=s.maneuver,
+            handoff_latency_ms=last_track.handoff_latency_ms,
+        )
+
+    # ------------------------------------------------------------------ #
+    # Public API                                                         #
+    # ------------------------------------------------------------------ #
+
+    def run(self, scenarios: List[ThreatScenario]) -> RuntimeReport:
+        self._precompute_concurrency(scenarios)
+        for s in scenarios:
+            rec = self._process_threat(s)
+            self.metrics.events.append(rec)
+            # Periodically drop stale confirmations/tracks to keep memory O(1).
+            if len(self.metrics.events) % 50 == 0:
+                self.confirmer.drop(s.target_id)
+                self.kalman.drop(s.target_id)
+                self.fuser.drop(s.target_id)
+
+        handoffs = [e.handoff_latency_ms for e in self.metrics.events
+                    if e.handoff_latency_ms > 0]
+        return RuntimeReport(
+            metrics=self.metrics,
+            scheduler_policy=self.cfg.decision.scheduler,
+            num_threats=len(scenarios),
+            handoff_latencies_ms=handoffs,
+        )

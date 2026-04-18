@@ -1,57 +1,65 @@
-"""Runtime safety guard.
+"""Runtime safety guard enforced between ``decide`` and ``authorize``.
 
-Enforces hard preconditions before any launch command leaves the
-decision plane.  Any failure routes the request to ``AbortController``
-under a 200 ms abort deadline.
+The guard returns a ``SafetyVerdict`` that carries both a decision
+(``ALLOW`` / ``ABORT`` / ``SUPPRESS``) and an auditable reason code.
+The engine wires ``SUPPRESS`` directly to the false-launch suppression
+bookkeeping without paying the launch actuation cost.
 """
-
 from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import Sequence, Tuple
+import math
+
+from skyshield.config import CityConfig, SafetyConfig
 
 
-class GuardDecision(str, Enum):
-    LAUNCH = "launch"
-    SUPPRESS = "suppress"           # silently drop (no actuation, no abort)
-    ABORT_AFTER_LAUNCH = "abort"    # the launch already left, abort it
+class SafetyDecision(str, Enum):
+    ALLOW = "allow"
+    ABORT = "abort"
+    SUPPRESS = "suppress"
 
 
 @dataclass
+class SafetyVerdict:
+    decision: SafetyDecision
+    reason: str = ""
+
+
 class SafetyGuard:
-    require_authorization: bool = True
-    require_friendly_clear: bool = True
-    require_class_confidence: float = 0.7
-    require_geofence_clear: bool = True
-    abort_on_lost_lock: bool = True
+    def __init__(self, city: CityConfig, cfg: SafetyConfig):
+        self.city = city
+        self.cfg = cfg
 
-    def evaluate(
+    def check(
         self,
-        *,
+        track_pos_m: Sequence[float],
+        track_vel_mps: Sequence[float],
+        threat_score: float,
+        target_class_conf: float,
         authorized: bool,
-        friendly_airspace_clear: bool,
-        class_confidence: float,
-        geofence_clear: bool,
-        lock_lost: bool,
-        already_launched: bool = False,
-    ) -> GuardDecision:
-        if already_launched:
-            if self.abort_on_lost_lock and lock_lost:
-                return GuardDecision.ABORT_AFTER_LAUNCH
-            if self.require_authorization and not authorized:
-                return GuardDecision.ABORT_AFTER_LAUNCH
-            if self.require_friendly_clear and not friendly_airspace_clear:
-                return GuardDecision.ABORT_AFTER_LAUNCH
-            return GuardDecision.LAUNCH
+    ) -> SafetyVerdict:
+        if not self.cfg.guard_enabled:
+            return SafetyVerdict(SafetyDecision.ALLOW, "guard_disabled")
 
-        if self.require_authorization and not authorized:
-            return GuardDecision.SUPPRESS
-        if self.require_friendly_clear and not friendly_airspace_clear:
-            return GuardDecision.SUPPRESS
-        if self.require_geofence_clear and not geofence_clear:
-            return GuardDecision.SUPPRESS
-        if class_confidence < self.require_class_confidence:
-            return GuardDecision.SUPPRESS
-        if self.abort_on_lost_lock and lock_lost:
-            return GuardDecision.SUPPRESS
-        return GuardDecision.LAUNCH
+        if not authorized:
+            return SafetyVerdict(SafetyDecision.SUPPRESS, "not_authorized")
+
+        if target_class_conf < self.cfg.target_class_conf_min:
+            return SafetyVerdict(SafetyDecision.SUPPRESS, "low_class_confidence")
+
+        # Geofence margin check: do not allow engagement when the engagement
+        # vector would cross a friendly no-fly zone's *outside* margin.
+        for zone in self.city.no_fly_zones:
+            dx_km = track_pos_m[0] / 1000.0 - zone.center_km[0]
+            dy_km = track_pos_m[1] / 1000.0 - zone.center_km[1]
+            r_km = math.hypot(dx_km, dy_km)
+            buffer_km = (self.cfg.geofence_margin_m / 1000.0)
+            if r_km + buffer_km < zone.radius_km:
+                return SafetyVerdict(SafetyDecision.ABORT, "friendly_airspace")
+
+        if threat_score < 0.25:
+            return SafetyVerdict(SafetyDecision.SUPPRESS, "subthreshold_threat")
+
+        return SafetyVerdict(SafetyDecision.ALLOW, "clean")

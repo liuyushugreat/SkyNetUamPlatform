@@ -1,25 +1,21 @@
-"""Pytest configuration: ensure the in-tree ``skyshield`` package is importable
-without installation, and expose a deterministic config fixture."""
-
+"""Test fixtures shared across the SkyShield pytest suite."""
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from skyshield.config import SkyShieldConfig  # noqa: E402
+from skyshield.config import load_config
 
 
-@pytest.fixture(scope="session")
-def default_config() -> SkyShieldConfig:
-    return SkyShieldConfig.load(ROOT / "configs" / "default.yaml")
+ROOT = Path(__file__).parent.parent
 
 
-@pytest.fixture(scope="session")
-def module_root() -> Path:
-    return ROOT
+@pytest.fixture()
+def default_cfg():
+    return load_config(ROOT / "configs" / "default.yaml")
+
+
+@pytest.fixture()
+def field_sorties_path():
+    return ROOT / "data" / "field_sorties.json"

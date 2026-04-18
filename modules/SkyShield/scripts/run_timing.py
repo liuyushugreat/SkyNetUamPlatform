@@ -1,72 +1,69 @@
-"""E2: end-to-end timing.  Runs many synthetic sorties and serializes
-per-stage latency distributions for Table I and Fig. 6.
-"""
+"""E2: End-to-end timing evaluation.
 
+Generates a Poisson stream of threats and records the six stage
+latencies + overall end-to-end latency.  Writes
+``outputs/timing.json`` with CDF-ready samples and percentile table.
+"""
 from __future__ import annotations
 
-import argparse
+import json
 from pathlib import Path
+from typing import List
 
-from _common import MODULE_ROOT, augmented_scenarios, default_config_path, real_scenarios
+from skyshield.config import load_config
+from skyshield.runtime.engine import SkyShieldRuntime
+from skyshield.utils import summarize_latency
+from skyshield.workload import generate
 
-from skyshield.config import SkyShieldConfig
-from skyshield.runtime import RuntimeOptions, SkyShieldRuntime
-from skyshield.utils import dump_json
+from scripts._common import arg_parser, ensure_outputs, write_json
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--config", default=str(default_config_path()))
-    ap.add_argument("--out", default=str(MODULE_ROOT / "outputs" / "timing.json"))
-    ap.add_argument("--repeats", type=int, default=20,
-                    help="number of times the (10 real + 50 augmented) loop is run "
-                         "with seed perturbation -- bigger = tighter percentiles")
-    args = ap.parse_args()
+def main() -> None:
+    parser = arg_parser("SkyShield E2: end-to-end timing.")
+    parser.add_argument("--duration", type=float, default=300.0)
+    parser.add_argument("--concurrency", type=int, default=1)
+    args = parser.parse_args()
 
-    cfg = SkyShieldConfig.load(Path(args.config))
+    cfg = load_config(args.config)
+    out_dir = ensure_outputs(args.out)
 
-    rt = SkyShieldRuntime(cfg, RuntimeOptions(label="timing"))
-    base = real_scenarios() + augmented_scenarios(rng_seed=cfg.seed)
-    for r in range(args.repeats):
-        # Re-seed the runtime RNGs for each repeat so percentile estimates
-        # converge (cheap because each sortie touches a tiny amount of state).
-        cfg2 = SkyShieldConfig.load(Path(args.config))
-        cfg2.seed = cfg.seed + r * 91
-        rt2 = SkyShieldRuntime(cfg2, RuntimeOptions(label=f"timing_run_{r}"))
-        rt2.run(base)
-        # Merge into rt
-        rt.metrics.end_to_end_ms.extend(rt2.metrics.end_to_end_ms)
-        rt.metrics.detection_ms.extend(rt2.metrics.detection_ms)
-        rt.metrics.track_confirm_ms.extend(rt2.metrics.track_confirm_ms)
-        rt.metrics.fusion_ms.extend(rt2.metrics.fusion_ms)
-        rt.metrics.decision_ms.extend(rt2.metrics.decision_ms)
-        rt.metrics.launch_ms.extend(rt2.metrics.launch_ms)
-        rt.metrics.interceptor_reaction_ms.extend(rt2.metrics.interceptor_reaction_ms)
-        rt.metrics.handoff_latency_ms.extend(rt2.metrics.handoff_latency_ms)
-        rt.metrics.abort_latency_ms.extend(rt2.metrics.abort_latency_ms)
-        rt.metrics.deadline_misses += rt2.metrics.deadline_misses
-        rt.metrics.missions_attempted += rt2.metrics.missions_attempted
-        rt.metrics.successful_intercepts += rt2.metrics.successful_intercepts
-        rt.metrics.aborted += rt2.metrics.aborted
-        rt.metrics.suppressed += rt2.metrics.suppressed
-        rt.metrics.target_lost += rt2.metrics.target_lost
-        rt.metrics.shot_down += rt2.metrics.shot_down
-        rt.metrics.valid_hits += rt2.metrics.valid_hits
+    seeds = json.loads(
+        Path("data/augmented_seeds.json").read_text(encoding="utf-8")
+    )["seeds"]
 
-    payload = {
+    scenarios = generate(cfg, duration_s=args.duration,
+                         concurrency=args.concurrency,
+                         seed=seeds["timing_stress"])
+
+    rt = SkyShieldRuntime(cfg, config_path=str(args.config))
+    rep = rt.run(scenarios)
+
+    stage_names = ["detection", "track_confirm", "fusion", "decision",
+                   "authorize", "launch_actuation", "interceptor_reaction"]
+    stage_samples = {s: [] for s in stage_names}
+    e2e = []
+    for e in rep.metrics.events:
+        if not e.launched:
+            continue
+        e2e.append(e.end_to_end_ms)
+        for s in stage_names:
+            if s in e.stage_latencies_ms:
+                stage_samples[s].append(e.stage_latencies_ms[s])
+
+    table = {s: summarize_latency(xs) for s, xs in stage_samples.items()}
+    table["end_to_end"] = summarize_latency(e2e)
+
+    out = {
         "config_path": str(args.config),
-        "repeats": args.repeats,
-        "metrics": rt.metrics.to_json(),
-        "end_to_end_samples": list(rt.metrics.end_to_end_ms),
-        "abort_samples": list(rt.metrics.abort_latency_ms),
+        "num_threats": len(scenarios),
+        "num_launched": len(e2e),
+        "stage_latency_ms": table,
+        "samples": {s: stage_samples[s] for s in stage_names},
+        "end_to_end_samples_ms": e2e,
     }
-    dump_json(args.out, payload)
-    h = payload["metrics"]["latency_ms"]["end_to_end"]
-    print(f"[SkyShield][E2] wrote {args.out}  N={len(rt.metrics.end_to_end_ms)}")
-    print(f"  e2e mean={h['mean']:.1f} p50={h['p50']:.1f} p95={h['p95']:.1f} p99={h['p99']:.1f} ms"
-          f"   miss%={payload['metrics']['headline']['deadline_miss_pct']:.3f}")
-    return 0
+    write_json(out, out_dir / "timing.json")
+    print(f"[E2] launched={len(e2e)} p99={table['end_to_end']['p99']:.1f} ms")
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

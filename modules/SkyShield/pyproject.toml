@@ -5,14 +5,16 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "skyshield"
 version = "0.1.0"
-description = "Field-Validated Radar-Guided Real-Time Counter-UAV Interception Artifact (RTSS 2026)"
+description = "Radar-Guided Real-Time Counter-UAV Interception for Urban Low-Altitude Defense"
 readme = "README.md"
 license = { text = "Apache-2.0" }
 requires-python = ">=3.10"
 authors = [{ name = "SkyNet Research Team" }]
 dependencies = [
     "numpy>=1.24",
+    "scipy>=1.10",
     "pyyaml>=6.0",
+    "tqdm>=4.65",
     "matplotlib>=3.7",
 ]
 

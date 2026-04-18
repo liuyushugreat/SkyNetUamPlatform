@@ -1,88 +1,66 @@
-"""E3: replay-based stress regimes (manoeuvre, dropout, jitter, auth delay)."""
+"""E3: Replay-based stress evaluation.
 
+Runs the system under each regime declared in configs/replay.yaml and
+records the resulting deadline-miss ratio + tail-latency table.
+"""
 from __future__ import annotations
 
-import argparse
+import json
 from pathlib import Path
 
 import yaml
 
-from _common import MODULE_ROOT, augmented_scenarios, real_scenarios
+from skyshield.config import load_config
+from skyshield.runtime.engine import SkyShieldRuntime
+from skyshield.workload import generate
 
-from skyshield.config import SkyShieldConfig
-from skyshield.runtime import RuntimeOptions, SkyShieldRuntime
-from skyshield.utils import dump_json
+from scripts._common import arg_parser, ensure_outputs, write_json
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--config", default=str(MODULE_ROOT / "configs" / "replay.yaml"))
-    ap.add_argument("--base-config", default=str(MODULE_ROOT / "configs" / "default.yaml"))
-    ap.add_argument("--out", default=str(MODULE_ROOT / "outputs" / "stress.json"))
-    args = ap.parse_args()
+def main() -> None:
+    parser = arg_parser("SkyShield E3: replay stress regimes.")
+    parser.add_argument("--duration", type=float, default=180.0)
+    args = parser.parse_args()
 
-    cfg = SkyShieldConfig.load(Path(args.base_config))
+    out_dir = ensure_outputs(args.out)
     raw = yaml.safe_load(Path(args.config).read_text(encoding="utf-8"))
-    regimes = raw["regimes"]
+    base_path = Path(args.config).parent / raw["base"]
+    base_cfg_path = str(base_path)
 
-    base_scens = real_scenarios() + augmented_scenarios(rng_seed=cfg.seed)
+    seeds = json.loads(
+        Path("data/augmented_seeds.json").read_text(encoding="utf-8")
+    )["seeds"]
+
     rows = []
-    for reg in regimes:
-        # Apply regime to the per-radar/per-link parameters
-        cfg2 = SkyShieldConfig.load(Path(args.base_config))
-        cfg2.radar.packet_dropout_pct = float(reg["packet_dropout_pct"])
-        cfg2.radar.packet_jitter_ms_std = float(reg["jitter_ms_std"])
-        cfg2.decision.authorization_check_ms_mean = float(reg["auth_delay_ms_mean"])
-        load_scale = 0.55
-        if reg["maneuver_g"] >= 2.0:
-            load_scale = 0.72
-        if reg["maneuver_g"] >= 4.0:
-            load_scale = 0.86
-        if reg["packet_dropout_pct"] >= 5.0:
-            load_scale += 0.10
-        if reg["jitter_ms_std"] >= 10.0:
-            load_scale += 0.12
-        if reg["auth_delay_ms_mean"] >= 60:
-            load_scale += 0.08
-        if reg["comm_jitter_ms"] >= 6.0:
-            load_scale += 0.07
-        opts = RuntimeOptions(label=reg["name"], load_scale=min(0.92, load_scale))
-        rt = SkyShieldRuntime(cfg2, opts)
-        # mutate scenarios with the manoeuvre g-load
-        scens = []
-        for s in base_scens:
-            scens.append(
-                type(s)(
-                    sortie_id=s.sortie_id,
-                    test_type=s.test_type,
-                    target_takeoff_t=s.target_takeoff_t,
-                    target_speed_kmh=s.target_speed_kmh,
-                    target_height_m=s.target_height_m,
-                    interceptor_takeoff_t=s.interceptor_takeoff_t,
-                    is_real=s.is_real,
-                    expected_outcome=s.expected_outcome,
-                    forced_abort=s.forced_abort,
-                    forced_lost_lock=s.forced_lost_lock,
-                    target_maneuver_g=float(reg["maneuver_g"]),
-                    spawn_distance_m=s.spawn_distance_m,
-                )
-            )
-        rt.run(scens)
-        h = rt.metrics.to_json()
-        rows.append({
-            "regime": reg["name"],
-            "params": reg,
-            "metrics": h["headline"],
-            "latency": h["latency_ms"],
-        })
-        print(f"[SkyShield][E3] {reg['name']:<18} p99={h['latency_ms']['end_to_end']['p99']:.1f}ms "
-              f"miss%={h['headline']['deadline_miss_pct']:.2f}")
+    for regime in raw["regimes"]:
+        name = regime["name"]
+        overrides = regime.get("override", {}) or {}
+        base_cfg = load_config(base_cfg_path)
+        cfg = base_cfg.with_overrides(overrides)
 
-    payload = {"regimes": rows}
-    dump_json(args.out, payload)
-    print(f"[SkyShield][E3] wrote {args.out}")
-    return 0
+        scenarios = generate(cfg, duration_s=args.duration, concurrency=2,
+                             seed=seeds["replay_stress"])
+        rt = SkyShieldRuntime(cfg, config_path=str(args.config))
+        rep = rt.run(scenarios)
+        s = rep.metrics.summary()
+        rows.append({
+            "regime": name,
+            "description": regime.get("description", ""),
+            "num_events": s["num_events"],
+            "mission_success": s["mission_success_rate"],
+            "valid_intercept": s["valid_intercept_rate"],
+            "deadline_miss": s["deadline_miss_ratio"],
+            "p50_ms": s["latency_ms"]["p50"],
+            "p95_ms": s["latency_ms"]["p95"],
+            "p99_ms": s["latency_ms"]["p99"],
+            "abort_success": s["abort_success_rate"],
+        })
+        print(f"[E3] {name:<22} p99={s['latency_ms']['p99']:.1f} ms "
+              f"miss={s['deadline_miss_ratio']:.4f}")
+
+    write_json({"config_path": str(args.config), "regimes": rows},
+               out_dir / "replay_stress.json")
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

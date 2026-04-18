@@ -1,122 +1,109 @@
 """PLFM-style radar node model.
 
-Each ``RadarNode`` produces ``RadarPacket`` records on a fixed dwell
-schedule.  Detection probability is a smooth function of slant range,
-calibrated so that ``detection_pd_at_max`` is reached at ``range_km``.
-A small Gaussian measurement-noise floor is applied so the downstream
-Kalman filter has a meaningful innovation covariance.
-
-The model is intentionally lightweight: SkyShield is a *systems*
-artifact and the paper does not claim contributions to radar physics.
-The numbers feeding into our timing budget come from the PLFM_RADAR
-project referenced in `pressRequire/SkyShield/论文要求.md` §3.2.
+A radar node emits range/azimuth detections of an intruder at a fixed
+revisit rate.  SNR follows an inverse fourth-power law on range; once
+the geometric range exceeds ``range_km_max`` the node stops detecting.
+Packetization introduces a bounded stochastic delay plus Bernoulli
+dropout.  No wavelength-specific physics — this is the level of
+abstraction required by a real-time CPS evaluation, which cares about
+packet-level timing rather than waveform processing.
 """
-
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Optional
+from dataclasses import dataclass
+from typing import Optional, Tuple
 
+import math
 import numpy as np
 
-from ..geometry import Point
+from skyshield.config import RadarConfig
 
 
 @dataclass
 class RadarPacket:
-    radar_id: int
+    node_id: int
+    emit_time_ms: float          # when the radar generated the packet
+    arrive_time_ms: float        # when the fusion plane receives it
     target_id: int
-    t_emit_ms: float       # virtual time the dwell completed
-    t_recv_ms: float       # virtual time the packet arrived at fusion
-    measurement: np.ndarray  # (3,) noisy position estimate (m)
+    position_m: Tuple[float, float, float]   # x, y, alt in metres
+    velocity_mps: Tuple[float, float, float]
     snr_db: float
-    pd: float              # instantaneous detection probability
-    is_dropout: bool = False
-    is_false_alarm: bool = False
+    valid: bool                  # False if the packet is a radar dropout
+    meas_sigma_m: float          # measurement sigma used downstream
 
 
-@dataclass
 class RadarNode:
-    radar_id: int
-    position: Point
-    range_m: float
-    azimuth_dwell_ms: float
-    pd_at_max: float
-    false_alarm_per_min: float
-    measurement_noise_r: float
-    rng: np.random.Generator = field(default_factory=lambda: np.random.default_rng(0))
+    """A single anchored PLFM-style radar node."""
 
-    def detection_probability(self, target: Point) -> float:
-        d = self.position.slant_distance(target)
-        if d > self.range_m:
-            return 0.0
-        # smooth roll-off: pd = 1 at d=0 -> pd_at_max at d=range
-        x = d / self.range_m
-        return float(1.0 - (1.0 - self.pd_at_max) * (x ** 2))
+    def __init__(self, node_id: int, position_km: Tuple[float, float],
+                 cfg: RadarConfig):
+        self.node_id = node_id
+        self.position_km = position_km
+        self.cfg = cfg
+        self._last_emit_ms = -cfg.revisit_ms
 
-    def snr_db(self, target: Point) -> float:
-        """Toy SNR: 30 dB at range 0, falls off as 40 log10(range/range_max)."""
-        d = max(1.0, self.position.slant_distance(target))
-        rel = max(1e-3, d / self.range_m)
-        snr = 30.0 - 40.0 * np.log10(rel)
-        return float(snr)
+    def in_coverage(self, target_km: Tuple[float, float]) -> bool:
+        dx = target_km[0] - self.position_km[0]
+        dy = target_km[1] - self.position_km[1]
+        r = math.hypot(dx, dy)
+        return r <= self.cfg.range_km_max
 
-    def measure(
+    def can_emit(self, now_ms: float) -> bool:
+        return now_ms - self._last_emit_ms >= self.cfg.revisit_ms
+
+    def _snr_db(self, range_km: float) -> float:
+        # R^4 falloff; 25 dB at 1 km, floor at 5 dB at range_km_max.
+        if range_km <= 0.01:
+            return 40.0
+        snr = 25.0 - 40.0 * math.log10(range_km)
+        return max(snr, 4.0)
+
+    def measurement_sigma(self, range_km: float) -> float:
+        # Range-gate-driven measurement sigma in metres.  The sigma grows
+        # roughly linearly with range (classical range-gate uncertainty)
+        # plus a small dwell-time term.
+        return max(2.0, 2.0 + 1.5 * range_km + 0.05 * self.cfg.dwell_ms)
+
+    def observe(
         self,
+        now_ms: float,
         target_id: int,
-        target: Point,
-        t_emit_ms: float,
-        link_jitter_ms_std: float,
-        link_dropout_pct: float,
+        target_pos_m: Tuple[float, float, float],
+        target_vel_mps: Tuple[float, float, float],
+        rng: np.random.Generator,
     ) -> Optional[RadarPacket]:
-        pd = self.detection_probability(target)
-        if pd <= 0.0:
+        target_km = (target_pos_m[0] / 1000.0, target_pos_m[1] / 1000.0)
+        if not self.in_coverage(target_km):
             return None
-        # Bernoulli detection draw
-        if self.rng.random() > pd:
+        if not self.can_emit(now_ms):
             return None
-        # measurement: ground truth + Gaussian noise scaled by 1/SNR
-        snr = self.snr_db(target)
-        noise_sigma = self.measurement_noise_r * (1.0 + max(0.0, (20.0 - snr) / 20.0))
-        meas = target.as_array() + self.rng.normal(0.0, noise_sigma, 3)
-        # link transport delay: dwell-driven base + jitter
-        jitter = abs(self.rng.normal(0.0, link_jitter_ms_std))
-        t_recv_ms = t_emit_ms + jitter
-        is_dropout = self.rng.random() * 100.0 < link_dropout_pct
-        if is_dropout:
-            return RadarPacket(
-                radar_id=self.radar_id,
-                target_id=target_id,
-                t_emit_ms=t_emit_ms,
-                t_recv_ms=t_recv_ms,
-                measurement=meas,
-                snr_db=snr,
-                pd=pd,
-                is_dropout=True,
-            )
-        return RadarPacket(
-            radar_id=self.radar_id,
-            target_id=target_id,
-            t_emit_ms=t_emit_ms,
-            t_recv_ms=t_recv_ms,
-            measurement=meas,
-            snr_db=snr,
-            pd=pd,
+        self._last_emit_ms = now_ms
+
+        # Packet transit latency: truncated Gaussian at >= 0.5 ms.
+        delay = max(0.5, rng.normal(self.cfg.packet_mean_ms,
+                                    self.cfg.packet_jitter_ms))
+        dropped = bool(rng.random() < self.cfg.dropout_rate)
+
+        dx_km = target_km[0] - self.position_km[0]
+        dy_km = target_km[1] - self.position_km[1]
+        range_km = math.hypot(dx_km, dy_km)
+        sigma_m = self.measurement_sigma(range_km)
+
+        # Noisy measurement.
+        noisy = (
+            target_pos_m[0] + rng.normal(0.0, sigma_m),
+            target_pos_m[1] + rng.normal(0.0, sigma_m),
+            target_pos_m[2] + rng.normal(0.0, sigma_m),
         )
 
-    def maybe_emit_false_alarm(self, t_ms: float, dt_ms: float) -> Optional[RadarPacket]:
-        rate = self.false_alarm_per_min / 60_000.0  # per ms
-        p = rate * dt_ms
-        if self.rng.random() < p:
-            jitter = abs(self.rng.normal(0.0, 1.0))
-            return RadarPacket(
-                radar_id=self.radar_id,
-                target_id=-1,
-                t_emit_ms=t_ms,
-                t_recv_ms=t_ms + jitter,
-                measurement=self.position.as_array() + self.rng.normal(0, 30.0, 3),
-                snr_db=10.0,
-                pd=0.0,
-                is_false_alarm=True,
-            )
-        return None
+        return RadarPacket(
+            node_id=self.node_id,
+            emit_time_ms=now_ms,
+            arrive_time_ms=now_ms + delay,
+            target_id=target_id,
+            position_m=noisy,
+            velocity_mps=target_vel_mps,
+            snr_db=self._snr_db(range_km),
+            valid=not dropped,
+            meas_sigma_m=sigma_m,
+        )

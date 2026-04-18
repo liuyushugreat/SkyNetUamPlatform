@@ -1,23 +1,33 @@
-# Ablation matrix for SkyShield (E5).
-#
-# Each variant turns off exactly one capability; "full" is the
-# complete SkyShield system reported in the headline numbers.
-
-seed: 20260418
-scenario:
-  name: urban_300km2
-  area_km2: 300.0
-  duration_s: 240.0
-  num_sorties: 30
-
+# E5: Ablation study — each variant disables exactly one component.
+base: default.yaml
 variants:
-  - {name: full,                     fusion: true,  scheduler: true, safety: true, abort: true, degraded: true, gating: true, prio: true}
-  - {name: no_multi_radar_fusion,    fusion: false, scheduler: true, safety: true, abort: true, degraded: true, gating: true, prio: true}
-  - {name: no_deadline_scheduler,    fusion: true,  scheduler: false,safety: true, abort: true, degraded: true, gating: true, prio: true}
-  - {name: no_runtime_safety_guard,  fusion: true,  scheduler: true, safety: false,abort: true, degraded: true, gating: true, prio: true}
-  - {name: no_abort_controller,      fusion: true,  scheduler: true, safety: true, abort: false,degraded: true, gating: true, prio: true}
-  - {name: no_degraded_tracking,     fusion: true,  scheduler: true, safety: true, abort: true, degraded: false,gating: true, prio: true}
-  - {name: no_launch_gating,         fusion: true,  scheduler: true, safety: true, abort: true, degraded: true, gating: false,prio: true}
-  - {name: no_prioritization,        fusion: true,  scheduler: true, safety: true, abort: true, degraded: true, gating: true, prio: false}
-
-output_dir: outputs
+  - name: "full"
+    description: "Full SkyShield with all guardrails enabled."
+  - name: "no_fusion"
+    description: "Disable multi-radar track-level fusion (single-best node)."
+    override:
+      radars.fusion_enabled: false
+  - name: "no_deadline_aware"
+    description: "FIFO scheduling instead of EDF + slack stealing."
+    override:
+      decision.scheduler: "fifo"
+  - name: "no_safety_guard"
+    description: "Disable runtime safety guard (authorize all confirmed tracks)."
+    override:
+      safety.guard_enabled: false
+  - name: "no_abort"
+    description: "Remove abort controller (no recall / return-safe)."
+    override:
+      safety.return_safe_enabled: false
+  - name: "no_degraded_mode"
+    description: "Disable degraded-tracking mode under packet dropout."
+    override:
+      tracker.degraded_mode: false
+  - name: "no_launch_gating"
+    description: "Disable false-launch suppression before launch ack."
+    override:
+      decision.false_launch_block: false
+  - name: "no_prioritization"
+    description: "Treat all threats with equal priority (no slack stealing)."
+    override:
+      decision.prioritizer: "round_robin"

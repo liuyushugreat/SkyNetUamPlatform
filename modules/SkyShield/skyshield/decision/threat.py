@@ -1,46 +1,69 @@
-"""Per-track threat scoring.
+"""Threat scoring for a confirmed track.
 
-Threat is a smooth function of (proximity to defended area, closing
-speed, residual flight time, target classification confidence).  Used
-both as a launch gate (must exceed ``threat_score_threshold``) and as
-the prioritization key when more than one threat is present.
+The score is a bounded combination of (i) closing speed toward a
+protected zone, (ii) altitude band fit, (iii) distance to the nearest
+no-fly polygon.  This intentionally skips classifier-level semantics:
+RTSS cares about *timing* rather than perception IP.  The score is in
+[0, 1] and clipped.
 """
-
 from __future__ import annotations
 
-from dataclasses import dataclass
+from typing import Sequence, Tuple
+import math
 
 import numpy as np
 
+from skyshield.config import CityConfig
 
-@dataclass
-class ThreatScorer:
-    threshold: float = 0.62
-    geofence_buffer_m: float = 200.0
 
-    def score(
-        self,
-        position: np.ndarray,
-        velocity: np.ndarray,
-        class_confidence: float,
-        defended_centre: np.ndarray,
-        defended_radius_m: float,
-    ) -> float:
-        d = float(np.linalg.norm(position[:2] - defended_centre[:2]))
-        prox = max(0.0, 1.0 - d / max(1.0, defended_radius_m))
-        # closing speed component (positive = approaching defended centre)
-        if d < 1e-3:
-            closing = 0.0
-        else:
-            radial = (defended_centre[:2] - position[:2]) / d
-            v2 = velocity[:2]
-            closing = float(np.dot(v2, radial))
-        speed_norm = max(0.0, min(1.0, closing / 60.0))
-        cls_norm = max(0.0, min(1.0, class_confidence))
-        # Weighted combination: a confirmed-track baseline, proximity dominates,
-        # closing speed amplifies, and classification confidence trims tail.
-        score = 0.30 + 0.40 * prox + 0.20 * speed_norm + 0.10 * cls_norm
-        return float(min(1.0, max(0.0, score)))
+def _closing_speed(pos_m: Sequence[float], vel_mps: Sequence[float],
+                   target_km: Tuple[float, float]) -> float:
+    tgt_m = (target_km[0] * 1000.0, target_km[1] * 1000.0)
+    dx = tgt_m[0] - pos_m[0]
+    dy = tgt_m[1] - pos_m[1]
+    dist = math.hypot(dx, dy)
+    if dist < 1.0:
+        return math.hypot(vel_mps[0], vel_mps[1])
+    # Project velocity onto the direction-to-target.
+    u = (dx / dist, dy / dist)
+    return vel_mps[0] * u[0] + vel_mps[1] * u[1]
 
-    def is_launch_eligible(self, score: float) -> bool:
-        return score >= self.threshold
+
+def score_threat(
+    pos_m: Sequence[float],
+    vel_mps: Sequence[float],
+    city: CityConfig,
+    target_class_conf: float = 1.0,
+) -> float:
+    # Altitude band: 30-300 m is "suspicious" for counter-UAV work.
+    alt = pos_m[2]
+    band = 1.0 if 30.0 <= alt <= 300.0 else max(0.0, 1.0 - abs(alt - 160.0) / 400.0)
+
+    # Distance to nearest no-fly zone.
+    if city.no_fly_zones:
+        nearest = min(
+            max(0.0, math.hypot(pos_m[0] / 1000.0 - z.center_km[0],
+                                pos_m[1] / 1000.0 - z.center_km[1]) - z.radius_km)
+            for z in city.no_fly_zones
+        )
+    else:
+        nearest = 5.0
+    dist_term = max(0.0, 1.0 - nearest / 2.5)
+
+    # Closing speed toward the nearest zone (m/s); turn into [0, 1].
+    if city.no_fly_zones:
+        tgt = min(city.no_fly_zones,
+                  key=lambda z: math.hypot(pos_m[0] / 1000.0 - z.center_km[0],
+                                           pos_m[1] / 1000.0 - z.center_km[1]))
+        closing = max(0.0, _closing_speed(pos_m, vel_mps, tgt.center_km))
+    else:
+        closing = math.hypot(vel_mps[0], vel_mps[1])
+    closing_term = 1.0 / (1.0 + math.exp(-(closing - 20.0) / 6.0))
+
+    # A confirmed track *inside the defended bbox* with valid class is
+    # inherently suspicious.  Weights are tuned so that (i) a confirmed
+    # low-altitude intruder over the district scores > 0.55 and (ii)
+    # a far / high / slow contact with weak classification stays < 0.55.
+    score = (0.35 * band + 0.15 * dist_term + 0.20 * closing_term
+             + 0.30 * target_class_conf)
+    return float(np.clip(score, 0.0, 1.0))

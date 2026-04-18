@@ -1,74 +1,38 @@
-"""Tests for the deadline-aware scheduler and schedulability bounds."""
-
 from __future__ import annotations
 
-import numpy as np
+import pytest
 
-from skyshield.decision.deadline import DeadlineScheduler, Stage, StageBudget
-
-
-def _budgets():
-    return [
-        StageBudget(stage=Stage.DETECTION, budget_ms=60.0, period_ms=120.0, priority=1),
-        StageBudget(stage=Stage.TRACK_CONFIRM, budget_ms=80.0, period_ms=160.0, priority=2),
-        StageBudget(stage=Stage.FUSION, budget_ms=25.0, period_ms=120.0, priority=2),
-        StageBudget(stage=Stage.DECISION, budget_ms=30.0, period_ms=160.0, priority=3),
-        StageBudget(stage=Stage.LAUNCH_ACTUATION, budget_ms=120.0, period_ms=400.0, priority=4),
-        StageBudget(stage=Stage.INTERCEPTOR_REACTION, budget_ms=250.0, period_ms=800.0, priority=4),
-    ]
+from skyshield.decision.deadline import DeadlineScheduler, JobStage
 
 
-def test_rm_edf_slack_clamps_per_stage_to_one_one_x_budget():
-    sched = DeadlineScheduler(scheduler="rm_edf_slack",
-                              rng=np.random.default_rng(0))
-    budgets = _budgets()
-    samples = []
-    for _ in range(2000):
-        _, reports = sched.end_to_end(budgets, load=0.85, jitter_cov=0.25)
-        for r in reports:
-            samples.append(r.actual_ms / r.budget_ms)
-    arr = np.array(samples)
-    assert arr.max() <= 1.1 + 1e-9, (
-        f"RM+EDF+slack must clamp stage at 1.1x budget, observed {arr.max():.3f}"
-    )
+def _setup():
+    s = DeadlineScheduler("edf_slack")
+    low = s.submit(1, created_ms=0.0, deadline_ms=1500.0, threat_score=0.3)
+    high = s.submit(2, created_ms=0.0, deadline_ms=500.0, threat_score=0.9)
+    return s, low, high
 
 
-def test_fifo_exhibits_convoy_effect():
-    rm = DeadlineScheduler(scheduler="rm_edf_slack",
-                           rng=np.random.default_rng(1))
-    fifo = DeadlineScheduler(scheduler="fifo",
-                             rng=np.random.default_rng(1))
-    budgets = _budgets()
-    rm_p99 = []
-    fifo_p99 = []
-    for _ in range(800):
-        _, rrep = rm.end_to_end(budgets, load=0.8)
-        _, frep = fifo.end_to_end(budgets, load=0.8)
-        rm_p99.append(sum(r.actual_ms for r in rrep))
-        fifo_p99.append(sum(r.actual_ms for r in frep))
-    assert np.percentile(fifo_p99, 99) > np.percentile(rm_p99, 99) * 1.05
+def test_edf_slack_picks_earliest_deadline_first():
+    s, low, high = _setup()
+    picked = s.pick_next(now_ms=0.0)
+    assert picked.job_id == high.job_id
 
 
-def test_schedulability_bounds():
-    light = [
-        StageBudget(stage=Stage.DETECTION, budget_ms=10.0, period_ms=120.0, priority=1),
-        StageBudget(stage=Stage.DECISION,  budget_ms=10.0, period_ms=160.0, priority=2),
-        StageBudget(stage=Stage.LAUNCH_ACTUATION, budget_ms=20.0, period_ms=400.0,
-                    priority=3),
-    ]
-    assert DeadlineScheduler.is_schedulable_rm(light)
-    assert DeadlineScheduler.is_schedulable_edf(light)
-    heavy = light + [
-        StageBudget(stage=Stage.INTERCEPTOR_REACTION, budget_ms=400.0, period_ms=200.0,
-                    priority=4)
-    ]
-    assert not DeadlineScheduler.is_schedulable_rm(heavy)
-    assert not DeadlineScheduler.is_schedulable_edf(heavy)
+def test_fifo_picks_oldest():
+    s = DeadlineScheduler("fifo")
+    a = s.submit(1, created_ms=0.0, deadline_ms=1500.0, threat_score=0.9)
+    _ = s.submit(2, created_ms=5.0, deadline_ms=400.0, threat_score=0.95)
+    picked = s.pick_next(now_ms=6.0)
+    assert picked.job_id == a.job_id
 
 
-def test_end_to_end_total_matches_sum_of_reports():
-    sched = DeadlineScheduler(scheduler="rm_edf_slack",
-                              rng=np.random.default_rng(2))
-    total, reports = sched.end_to_end(_budgets(), load=0.6)
-    assert abs(total - sum(r.actual_ms for r in reports)) < 1e-9
-    assert len(reports) == 6
+def test_stage_advance_records_latency():
+    s, _, high = _setup()
+    s.finish_stage(high, JobStage.FUSION, now_ms=12.0)
+    assert high.latencies_ms["confirm"] == pytest.approx(12.0)
+    assert high.stage == JobStage.FUSION
+
+
+def test_unknown_policy_rejected():
+    with pytest.raises(ValueError):
+        DeadlineScheduler("weighted_fair")

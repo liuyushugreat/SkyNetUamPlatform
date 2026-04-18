@@ -1,135 +1,113 @@
-"""Aggregate metrics for one SkyShield run.
-
-The dataclasses defined here serialize byte-for-byte to JSON so that
-reviewers can diff two runs to verify reproducibility.
-"""
-
+"""Aggregate metrics emitted by a SkyShield run."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Dict, List
 
-import numpy as np
-
-from ..utils import percentiles
+from skyshield.utils import summarize_latency
 
 
 @dataclass
-class SortieRecord:
-    sortie_id: int
-    test_type: str
-    target_takeoff_t: str
-    target_speed_kmh: float
-    target_height_m: float
-    interceptor_takeoff_t: str
-    hit_time_s: float | None
-    hit_height_m: float | None
-    terminal_strike_kmh: float | None
-    outcome: str
+class EventRecord:
+    target_id: int
+    detection_ms: float
+    deadline_ms: float
+    launched: bool
+    hit: bool
+    shot_down: bool
+    aborted: bool
+    abort_within_deadline: bool
+    abort_reason: str
+    return_safe: bool
+    suppressed: bool
+    suppression_reason: str
+    deadline_met: bool
     end_to_end_ms: float
-    abort_latency_ms: float | None
-    notes: str = ""
-
-    def to_json(self) -> dict[str, Any]:
-        return {
-            "sortie_id": self.sortie_id,
-            "test_type": self.test_type,
-            "target_takeoff_t": self.target_takeoff_t,
-            "target_speed_kmh": self.target_speed_kmh,
-            "target_height_m": self.target_height_m,
-            "interceptor_takeoff_t": self.interceptor_takeoff_t,
-            "hit_time_s": self.hit_time_s,
-            "hit_height_m": self.hit_height_m,
-            "terminal_strike_kmh": self.terminal_strike_kmh,
-            "outcome": self.outcome,
-            "end_to_end_ms": self.end_to_end_ms,
-            "abort_latency_ms": self.abort_latency_ms,
-            "notes": self.notes,
-        }
+    stage_latencies_ms: Dict[str, float]
+    maneuvering: bool
+    handoff_latency_ms: float
 
 
 @dataclass
 class RunMetrics:
-    label: str
-    num_sorties: int = 0
-    successful_intercepts: int = 0
-    valid_hits: int = 0
-    shot_down: int = 0
-    target_lost: int = 0
-    aborted: int = 0
-    suppressed: int = 0
-    false_launch: int = 0
-    missions_attempted: int = 0
-    end_to_end_ms: list[float] = field(default_factory=list)
-    detection_ms: list[float] = field(default_factory=list)
-    track_confirm_ms: list[float] = field(default_factory=list)
-    fusion_ms: list[float] = field(default_factory=list)
-    decision_ms: list[float] = field(default_factory=list)
-    launch_ms: list[float] = field(default_factory=list)
-    interceptor_reaction_ms: list[float] = field(default_factory=list)
-    abort_latency_ms: list[float] = field(default_factory=list)
-    handoff_latency_ms: list[float] = field(default_factory=list)
-    deadline_misses: int = 0
-    sorties: list[SortieRecord] = field(default_factory=list)
+    config_path: str
+    seed: int
+    events: List[EventRecord] = field(default_factory=list)
 
-    def add_sortie(self, sr: SortieRecord) -> None:
-        self.sorties.append(sr)
-        self.num_sorties += 1
+    # ---- derived scalars ----
+    def summary(self) -> Dict:
+        n = len(self.events)
+        if n == 0:
+            return {
+                "num_events": 0,
+                "mission_success_rate": 0.0,
+                "valid_intercept_rate": 0.0,
+                "shot_down_rate": 0.0,
+                "abort_success_rate": 0.0,
+                "abort_return_safe_rate": 0.0,
+                "false_launch_suppression_rate": 0.0,
+                "target_loss_ratio": 0.0,
+                "deadline_miss_ratio": 0.0,
+                "multi_target_degradation": 0.0,
+                "radar_handoff_latency_ms": {"p50": 0.0, "p95": 0.0},
+                "latency_ms": summarize_latency([]),
+                "stage_latency_ms": {},
+            }
 
-    @staticmethod
-    def _summary(name: str, vals: list[float]) -> dict[str, float | None]:
-        if not vals:
-            return {"mean": None, "p50": None, "p95": None, "p99": None, "max": None}
-        arr = np.asarray(vals, dtype=np.float64)
-        out = {
-            "mean": float(arr.mean()),
-            "max": float(arr.max()),
-        }
-        out.update(percentiles(vals, [0.5, 0.95, 0.99]))
-        return out
+        valid = [e for e in self.events if not e.aborted and not e.suppressed]
+        hits = [e for e in valid if e.hit]
+        shot = [e for e in hits if e.shot_down]
+        aborted = [e for e in self.events if e.aborted]
+        aborts_within = [e for e in aborted if e.abort_within_deadline]
+        returns = [e for e in aborted if e.return_safe]
+        suppressed = [e for e in self.events if e.suppressed]
+        offered = suppressed + [e for e in self.events if e.launched]
+        missed_deadline = [e for e in self.events if not e.deadline_met]
+        lost = [e for e in self.events if e.abort_reason == "target_lost"]
 
-    def to_json(self) -> dict[str, Any]:
-        miss_pct = 100.0 * self.deadline_misses / max(1, len(self.end_to_end_ms))
-        # A mission is "successful" if the kinetic objective was achieved
-        # (valid hit) OR if the operator's intent was honoured (clean abort
-        # with return-safe).  Lost-lock and suppressed cases are unsuccessful.
-        success_rate = 100.0 * (self.successful_intercepts + self.aborted) / max(
-            1, self.missions_attempted
-        )
-        valid_hit_rate = 100.0 * self.valid_hits / max(
-            1, self.missions_attempted - self.target_lost - self.aborted
-        )
-        shoot_rate = 100.0 * self.shot_down / max(1, self.missions_attempted)
-        false_launch_pct = 100.0 * self.false_launch / max(
-            1, self.missions_attempted + self.suppressed + self.false_launch
-        )
+        per_event_latency = [e.end_to_end_ms for e in self.events
+                             if e.end_to_end_ms > 0]
+
+        stage_names = ["detection", "track_confirm", "fusion",
+                       "decision", "authorize", "launch_actuation",
+                       "interceptor_reaction"]
+        stage_latency = {}
+        for s in stage_names:
+            xs = [e.stage_latencies_ms.get(s, 0.0) for e in self.events
+                  if e.stage_latencies_ms.get(s, 0.0) > 0]
+            stage_latency[s] = summarize_latency(xs)
+
+        handoff = [e.handoff_latency_ms for e in self.events
+                   if e.handoff_latency_ms > 0]
+
+        def ratio(xs, total):
+            return len(xs) / total if total else 0.0
+
         return {
-            "label": self.label,
-            "headline": {
-                "num_sorties": self.num_sorties,
-                "missions_attempted": self.missions_attempted,
-                "mission_success_rate_pct": success_rate,
-                "valid_interception_success_pct": valid_hit_rate,
-                "shot_down_rate_pct": shoot_rate,
-                "abort_count": self.aborted,
-                "suppressed_count": self.suppressed,
-                "false_launch_count": self.false_launch,
-                "false_launch_suppression_pct": 100.0 - false_launch_pct,
-                "target_lost_count": self.target_lost,
-                "deadline_miss_pct": miss_pct,
+            "num_events": n,
+            "mission_success_rate": ratio(hits + aborts_within, n),
+            "valid_intercept_rate": ratio(hits, max(1, len(valid))),
+            "shot_down_rate": ratio(shot, max(1, len(valid))),
+            "abort_success_rate": ratio(aborts_within, max(1, len(aborted))),
+            "abort_return_safe_rate": ratio(returns, max(1, len(aborted))),
+            "false_launch_suppression_rate": ratio(
+                suppressed, max(1, len(offered))
+            ),
+            "target_loss_ratio": ratio(lost, n),
+            "deadline_miss_ratio": ratio(missed_deadline, n),
+            "multi_target_degradation": 0.0,   # filled by E4 driver
+            "radar_handoff_latency_ms": {
+                "p50": summarize_latency(handoff)["p50"],
+                "p95": summarize_latency(handoff)["p95"],
             },
-            "latency_ms": {
-                "end_to_end": self._summary("end_to_end", self.end_to_end_ms),
-                "detection": self._summary("detection", self.detection_ms),
-                "track_confirm": self._summary("track_confirm", self.track_confirm_ms),
-                "fusion": self._summary("fusion", self.fusion_ms),
-                "decision": self._summary("decision", self.decision_ms),
-                "launch": self._summary("launch", self.launch_ms),
-                "interceptor_reaction": self._summary(
-                    "interceptor_reaction", self.interceptor_reaction_ms
-                ),
-                "abort": self._summary("abort", self.abort_latency_ms),
-                "handoff": self._summary("handoff", self.handoff_latency_ms),
-            },
-            "sorties": [s.to_json() for s in self.sorties],
+            "latency_ms": summarize_latency(per_event_latency),
+            "stage_latency_ms": stage_latency,
+        }
+
+    def to_json(self) -> Dict:
+        return {
+            "config_path": self.config_path,
+            "seed": self.seed,
+            "events": [e.__dict__ for e in self.events],
+            "summary": self.summary(),
         }

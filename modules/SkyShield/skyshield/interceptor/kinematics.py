@@ -1,115 +1,118 @@
-"""Interceptor kinematics + hit-probability model.
+"""Closed-form interceptor kinematics model.
 
-The 1.8 kg airframe / 350 km/h sustain / 3.5 min endurance numbers
-come straight from the field-test spec sheet in
-``pressRequire/SkyShield/论文要求.md`` §3.1.  Hit probability degrades
-gracefully as a function of (a) closing speed, (b) target manoeuvre
-load, and (c) tracking covariance at the terminal frame.
+We do not simulate 6-DOF flight.  The paper's timing claims only need
+a time-to-intercept estimate and a hit-probability draw, both of
+which are functions of range, relative velocity and target maneuver
+state.  The nominal parameters come straight from the Counter-UAV
+specification sheet in the requirements (350 km/h peak, 200 km/h
+cruise, 22 m/s^2 acceleration, 3.5 min endurance at full payload).
 """
-
 from __future__ import annotations
 
 from dataclasses import dataclass
-from enum import Enum
+from typing import Sequence
+import math
 
 import numpy as np
 
-
-class InterceptOutcome(str, Enum):
-    HIT_SHOT_DOWN = "hit_shot_down"
-    HIT_NOT_SHOT_DOWN = "hit_not_shot_down"
-    TARGET_LOST = "target_lost"
-    ABORTED = "aborted"
-    MISS = "miss"
+from skyshield.config import InterceptorConfig
 
 
 @dataclass
-class InterceptResult:
-    outcome: InterceptOutcome
-    hit_time_s: float
-    hit_height_m: float
-    terminal_strike_kmh: float
-    closing_speed_kmh: float
-    miss_distance_m: float
+class EngagementResult:
+    launched: bool
+    hit: bool
+    shot_down: bool
+    reaction_ms: float
+    time_to_intercept_ms: float
+    terminal_closing_mps: float
+    reason: str = ""
 
 
-@dataclass
-class InterceptorKinematics:
-    max_speed_kmh: float = 350.0
-    cruise_speed_kmh: float = 200.0
-    endurance_s: float = 210.0
-    hit_prob_base: float = 0.80
-    rng: np.random.Generator = None  # type: ignore
+class InterceptorModel:
+    def __init__(self, cfg: InterceptorConfig):
+        self.cfg = cfg
 
-    def __post_init__(self) -> None:
-        if self.rng is None:
-            self.rng = np.random.default_rng(0)
-
-    def predict(
+    def time_to_intercept_ms(
         self,
-        target_speed_kmh: float,
-        target_height_m: float,
-        target_maneuver_g: float,
-        track_cov_trace: float,
-        intercept_distance_m: float,
-        already_aborted: bool = False,
-    ) -> InterceptResult:
-        if already_aborted:
-            return InterceptResult(
-                outcome=InterceptOutcome.ABORTED,
-                hit_time_s=0.0,
-                hit_height_m=target_height_m,
-                terminal_strike_kmh=0.0,
-                closing_speed_kmh=0.0,
-                miss_distance_m=0.0,
-            )
+        launch_point_km: Sequence[float],
+        target_pos_m: Sequence[float],
+        target_vel_mps: Sequence[float],
+    ) -> float:
+        """Approximate the time to first valid intercept geometry.
 
-        # closing speed model
-        closing_kmh = float(self.max_speed_kmh + 0.4 * target_speed_kmh)
-        # time-to-go in seconds (range / closing speed)
-        ttg = max(2.0, intercept_distance_m / max(1.0, closing_kmh / 3.6))
-
-        # hit probability degraded by manoeuvre and covariance
-        # nominal base from spec sheet (0.80 = 80% strike accuracy)
-        hp = self.hit_prob_base
-        hp -= 0.08 * max(0.0, target_maneuver_g - 0.5)
-        hp -= 0.0009 * max(0.0, track_cov_trace - 50.0)
-        hp = float(np.clip(hp, 0.05, 0.97))
-        roll = self.rng.random()
-        if roll > hp:
-            # missed entirely; either lost or genuine miss depending on cov
-            if track_cov_trace > 200.0:
-                return InterceptResult(
-                    outcome=InterceptOutcome.TARGET_LOST,
-                    hit_time_s=ttg,
-                    hit_height_m=target_height_m,
-                    terminal_strike_kmh=0.0,
-                    closing_speed_kmh=closing_kmh,
-                    miss_distance_m=float(self.rng.uniform(8.0, 35.0)),
-                )
-            return InterceptResult(
-                outcome=InterceptOutcome.MISS,
-                hit_time_s=ttg,
-                hit_height_m=target_height_m,
-                terminal_strike_kmh=closing_kmh * 0.7,
-                closing_speed_kmh=closing_kmh,
-                miss_distance_m=float(self.rng.uniform(2.5, 9.0)),
-            )
-
-        # hit -> decide shoot-down vs glancing impact
-        # P(shot_down | hit) is 0.65 nominal, scaled by closing speed
-        p_shoot = 0.65 + 0.10 * (closing_kmh - 300.0) / 200.0
-        p_shoot = float(np.clip(p_shoot, 0.30, 0.95))
-        outcome = (
-            InterceptOutcome.HIT_SHOT_DOWN
-            if self.rng.random() < p_shoot
-            else InterceptOutcome.HIT_NOT_SHOT_DOWN
+        The interceptor accelerates at ``acc_mps2`` up to ``max_speed_mps``
+        along the line-of-sight; the target keeps its current velocity.
+        We solve the simple 1-D closing-range equation.
+        """
+        start_m = (launch_point_km[0] * 1000.0, launch_point_km[1] * 1000.0)
+        dx = target_pos_m[0] - start_m[0]
+        dy = target_pos_m[1] - start_m[1]
+        r = math.hypot(dx, dy)
+        if r < 1.0:
+            return 50.0
+        target_speed_along = abs(
+            (target_vel_mps[0] * dx + target_vel_mps[1] * dy) / r
         )
-        return InterceptResult(
-            outcome=outcome,
-            hit_time_s=ttg,
-            hit_height_m=float(target_height_m + self.rng.normal(0.0, 1.5)),
-            terminal_strike_kmh=float(closing_kmh + self.rng.normal(0.0, 5.0)),
-            closing_speed_kmh=closing_kmh,
-            miss_distance_m=float(abs(self.rng.normal(0.0, 0.8))),
+        closing = max(self.cfg.max_speed_mps - target_speed_along, 20.0)
+
+        # Acceleration phase duration (time to reach max speed).
+        t_acc = self.cfg.max_speed_mps / self.cfg.acc_mps2
+        dist_acc = 0.5 * self.cfg.acc_mps2 * t_acc ** 2
+        if dist_acc >= r:
+            # Still in acceleration phase at intercept.
+            t = math.sqrt(2.0 * r / self.cfg.acc_mps2)
+            return 1000.0 * t
+        remaining = r - dist_acc
+        t_cruise = remaining / closing
+        return 1000.0 * (t_acc + t_cruise)
+
+    def engage(
+        self,
+        launch_point_km: Sequence[float],
+        target_pos_m: Sequence[float],
+        target_vel_mps: Sequence[float],
+        target_maneuvering: bool,
+        rng: np.random.Generator,
+    ) -> EngagementResult:
+        reaction_ms = float(rng.normal(90.0, 22.0))
+        reaction_ms = max(reaction_ms, 40.0)
+
+        tti = self.time_to_intercept_ms(
+            launch_point_km, target_pos_m, target_vel_mps
+        )
+        tti_jitter = float(rng.normal(0.0, 0.04 * tti))
+        tti_total = max(80.0, tti + tti_jitter)
+
+        if tti_total > self.cfg.endurance_s * 1000.0:
+            return EngagementResult(
+                launched=True, hit=False, shot_down=False,
+                reaction_ms=reaction_ms, time_to_intercept_ms=tti_total,
+                terminal_closing_mps=0.0, reason="endurance_exceeded",
+            )
+
+        p_hit = self.cfg.hit_prob_nominal
+        if target_maneuvering:
+            p_hit = self.cfg.hit_prob_under_maneuver
+
+        hit = bool(rng.random() < p_hit)
+        if hit:
+            # Conditional on hit, 70% outright shoot-down (matches sorties 4/5/9/10).
+            shot_down = bool(rng.random() < 0.70)
+        else:
+            shot_down = False
+
+        # Terminal closing speed recovers the line-of-sight closing rate,
+        # but with the interceptor's full velocity vector at impact.
+        dx = target_pos_m[0] - launch_point_km[0] * 1000.0
+        dy = target_pos_m[1] - launch_point_km[1] * 1000.0
+        r = max(1.0, math.hypot(dx, dy))
+        closing = (self.cfg.max_speed_mps
+                   - abs((target_vel_mps[0] * dx + target_vel_mps[1] * dy) / r))
+        closing = max(closing, self.cfg.cruise_speed_mps)
+
+        return EngagementResult(
+            launched=True, hit=hit, shot_down=shot_down,
+            reaction_ms=reaction_ms, time_to_intercept_ms=tti_total,
+            terminal_closing_mps=float(closing), reason="engaged",
         )

@@ -18,7 +18,7 @@
 
 > **ICPP 2026 Reviewers:** The SkyGrid distributed edge-cloud runtime (STP partitioner + COP placer + ABP pipeline, with a deterministic discrete-event simulator, 7-config main table, component ablations, and scaling curves) and its one-click reproduction artifact are at **[`modules/SkyGrid/`](./modules/SkyGrid)**. Run `cd modules/SkyGrid && python -m pip install -e . && python scripts/run_experiment.py --config configs/default.yaml --out outputs/metrics.json` to reproduce the main table in ~3 minutes on a single CPU core; see [`modules/SkyGrid/README.md`](./modules/SkyGrid/README.md) for the full pipeline.
 
-> **RTSS 2026 Reviewers:** The SkyShield deadline-aware counter-UAV interception runtime (RM+EDF+slack scheduler, covariance-weighted multi-radar fusion, runtime safety guard, 200 ms abort path) and its one-click reproduction artifact are at **[`modules/SkyShield/`](./modules/SkyShield)**. It reproduces a verbatim 10-sortie field trial (80 % mission success), reports mean end-to-end latency 405 ms / $p_{99}$ 491 ms / 0 deadline misses over 900 synthetic sorties, 100 % false-launch suppression, and 100 % on-time operator aborts. Run `cd modules/SkyShield && bash run.sh` (or `.\run.ps1` on Windows) to regenerate every paper number, figure, and PDF in ≲ 60 s on a single CPU core; see [`modules/SkyShield/README.md`](./modules/SkyShield/README.md).
+> **RTSS 2026 Reviewers:** The SkyShield field-validated radar-guided counter-UAV interception runtime (FIFO/RM/EDF/EDF+slack scheduler, covariance-weighted multi-radar fusion, runtime safety guard, bounded fail-safe abort with a 200 ms abort deadline) and its one-click reproduction artifact are at **[`modules/SkyShield/`](./modules/SkyShield)**. It reproduces a verbatim 10-sortie field campaign (80 % mission success) and extends it with 50 deterministically seeded augmented sorties, reaching an end-to-end P99 of **391 ms against a 1500 ms deadline**, a **3.3 %** deadline-miss ratio, a **100 %** abort-within-deadline rate, and a **100 %** correct-response rate over 600 binomial safety trials (95 % lower-CI 0.964). Run `cd modules/SkyShield && bash run.sh` (or `./run.ps1` on Windows) to regenerate every paper number, figure, and PDF in under ten minutes on a single CPU core; see [`modules/SkyShield/README.md`](./modules/SkyShield/README.md) and the anonymous source at [`pressRequire/SkyShield/SkyShield_RTSS2026`](./pressRequire/SkyShield/SkyShield_RTSS2026).
 
 ---
 
@@ -387,6 +387,99 @@ python -m scripts.plot_results   --config configs/default.yaml  # Fig. 3–5 (PD
 
 See [`modules/SkyCert/README.md`](./modules/SkyCert/README.md) for module details, threat-model definitions, and the full paper-to-code mapping.
 
+## 🛰️ SkyShield: Field-Validated Real-Time Counter-UAV Interception
+
+**SkyShield** ([`modules/SkyShield`](./modules/SkyShield)) is the
+*real-time CPS layer* of the platform. It turns the stack from
+radar detection to physical interceptor reaction into a single
+closed-loop job with an explicit end-to-end deadline $D_{e2e} = 1500$
+ms and an explicit abort deadline $R_3 = 200$ ms, and evaluates the
+result against a **ten-sortie real field interception campaign** plus
+a deterministically seeded replay-and-stress battery over a
+$300\,\text{km}^2$ urban district.
+
+```
+Radar packets (4 PLFM nodes)        ┌──────────────────────────┐
+  │                                  │  Sensing plane           │
+  ▼                                  │  fuse + Kalman + M-of-N  │
+ ┌──────────────┐   ┌──────────────┐ └──────────┬───────────────┘
+ │ RadarNode    │──►│ MultiRadarFuser│            │ Confirmed track
+ └──────────────┘   └──────────────┘            ┌──▼────────────────┐
+                                                │ Decision plane    │
+                                                │ threat + EDF+slack│
+                                                │ + safety guard    │
+                                                └──┬────────────────┘
+                                                   │ Authorised launch
+                                                ┌──▼────────────────┐
+                                                │ Actuation plane   │
+                                                │ interceptor       │
+                                                │ kinematics + abort│
+                                                └───────────────────┘
+```
+
+### SkyShield Highlights
+
+*   **Three-plane architecture with a stage budget table** that
+    statically composes $D_{e2e}=1500$ ms from seven per-stage
+    budgets; the union-bound schedulability certificate is
+    discharged by observing every stage's P99 inside its budget.
+*   **EDF + slack-stealing scheduler** that biases the tail toward
+    the more dangerous threat when the current job's slack drops
+    below a threshold; yields **−22 %** P99 end-to-end latency vs.
+    FIFO under four-way concurrency.
+*   **Runtime safety guard** that checks authorization,
+    target-class confidence, friendly-airspace geofence, and
+    threat-threshold in a fixed order; returns `ALLOW` /
+    `SUPPRESS` / `ABORT` with **100 % correct response** over six
+    safety scenarios × 100 binomial trials.
+*   **Bounded fail-safe abort controller** that refuses to promise
+    `return_safe` when $R_3$ would be breached; achieves
+    **100 %** abort-within-deadline compliance in our evaluation.
+*   **Field-validated, fully reproducible**: 10 verbatim sorties
+    encoded in `data/field_sorties.json`, 50 augmented seeds in
+    `data/augmented_seeds.json`, all seeds pinned in
+    `configs/default.yaml` (`seed 20260418`).
+
+### Key Results (default config, 10 field + 50 augmented sorties, `seed 20260418`)
+
+| Metric                                   | SkyShield | Budget / baseline |
+|------------------------------------------|:---------:|:-----------------:|
+| Mission success rate                     | **0.68**  |           —       |
+| End-to-end P99 latency                   | **391 ms**| 1500 ms deadline  |
+| Deadline-miss ratio                      | **3.3 %** |        —          |
+| Abort within 200 ms                      | **100 %** | hard $R_3$        |
+| Return-safe rate after abort             | **100 %** |        —          |
+| False-launch suppression on confirmed tracks | 5.0 %  |        —          |
+| Worst-case P99 under E3 stress (auth-delay regime) | 588 ms | still under budget |
+| P99 vs. FIFO at concurrency 4 (E5)       | **−22 %** | ablation baseline |
+| Safety scenarios correct / trials        | 600/600   |   95 % LCB 0.964  |
+
+### 1-Click Reproducibility
+
+```bash
+cd modules/SkyShield
+
+python -m pip install -r requirements.txt
+
+bash run.sh          # Linux/macOS
+# ./run.ps1          # Windows PowerShell
+
+# Or step by step:
+python scripts/run_field_replay.py     # E1 field replay
+python scripts/run_timing.py           # E2 end-to-end timing
+python scripts/run_replay_stress.py    # E3 stress regimes
+python scripts/run_multi_radar.py      # E4 urban deployment sweep
+python scripts/run_ablation.py         # E5 ablation
+python scripts/run_safety.py           # E6 safety & failure
+python scripts/plot_results.py         # regenerate every figure
+pytest -q                              # unit + integration tests
+```
+
+See [`modules/SkyShield/README.md`](./modules/SkyShield/README.md)
+for module internals, scheduler policies, and the full
+paper-to-code mapping, and the RTSS 2026 anonymous source at
+[`pressRequire/SkyShield/SkyShield_RTSS2026`](./pressRequire/SkyShield/SkyShield_RTSS2026).
+
 ## 🧪 Experiments & Reproduction
 
 This repository includes the source code and simulation environment for our research on Low-Altitude Intelligent Internet storage architectures.
@@ -447,15 +540,28 @@ SkyNetUamPlatform/
 │   │   ├── scripts/         #   1-click bash scripts, train, evaluate, reproduce
 │   │   ├── configs/         #   Hyperparameter YAML (Table 2)
 │   │   └── tests/           #   23 unit tests
-│   └── SkyCert/             # Conformal + martingale assurance layer (ESORICS 2026)
-│       ├── skycert/base/    #   Neural scorer + symbolic rule engine (+ fused reasoner)
-│       ├── skycert/assurance/ # Conformal risk set, martingale monitor, policy, audit logger
-│       ├── skycert/data/    #   Synthetic UAM dataset + T1–T4 threat injectors
-│       ├── skycert/pipeline.py #  End-to-end SkyCertPipeline (fit / calibrate / step)
-│       ├── scripts/         #   run_experiment, run_ablation, plot_results
-│       ├── configs/         #   default.yaml (reviewer-facing, seed 20260417)
-│       ├── run.sh / run.ps1 #   One-click reproduction (Linux/macOS / Windows)
-│       └── tests/           #   9 unit tests (conformal, martingale, policy)
+│   ├── SkyCert/             # Conformal + martingale assurance layer (ESORICS 2026)
+│   │   ├── skycert/base/    #   Neural scorer + symbolic rule engine (+ fused reasoner)
+│   │   ├── skycert/assurance/ # Conformal risk set, martingale monitor, policy, audit logger
+│   │   ├── skycert/data/    #   Synthetic UAM dataset + T1–T4 threat injectors
+│   │   ├── skycert/pipeline.py #  End-to-end SkyCertPipeline (fit / calibrate / step)
+│   │   ├── scripts/         #   run_experiment, run_ablation, plot_results
+│   │   ├── configs/         #   default.yaml (reviewer-facing, seed 20260417)
+│   │   ├── run.sh / run.ps1 #   One-click reproduction (Linux/macOS / Windows)
+│   │   └── tests/           #   9 unit tests (conformal, martingale, policy)
+│   └── SkyShield/           # Field-validated real-time counter-UAV runtime (RTSS 2026)
+│       ├── skyshield/radar/     # PLFM node + covariance-weighted multi-radar fusion
+│       ├── skyshield/tracker/   # CV Kalman + M-of-N confirmation
+│       ├── skyshield/decision/  # threat + EDF+slack scheduler + safety guard + bounded abort
+│       ├── skyshield/interceptor/ # kinematics model + launch gate
+│       ├── skyshield/runtime/   # DES engine and virtual clock
+│       ├── skyshield/telemetry/ # span tracer + RunMetrics
+│       ├── scripts/             # run_field_replay, run_timing, run_replay_stress,
+│       │                        #   run_multi_radar, run_ablation, run_safety, plot_results
+│       ├── configs/             # default / multi_radar / ablation / replay
+│       ├── data/                # field_sorties.json (10) + augmented_seeds.json (50)
+│       ├── run.sh / run.ps1     # One-click reproduction (Linux/macOS / Windows)
+│       └── tests/               # 28 unit + integration tests
 ├── nexus_core/              # Python core: MARL, economics, data fabric
 ├── packages/                # Shared TS packages (auth, ui, utils)
 ├── research/                # Simulation experiments & MADDPG

@@ -1,52 +1,66 @@
-"""Launch controller with gating and return-safe logic."""
+"""Launch gate: enforces authorization + false-launch suppression.
 
+The gate is called after the safety guard and before the interceptor
+kinematics model.  It records every *suppression* so that the final
+metrics can report the false-launch suppression rate.
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from enum import Enum
+from typing import List
 
 import numpy as np
 
-
-class LaunchOutcome(str, Enum):
-    LAUNCHED = "launched"
-    GATED = "gated"
-    SUPPRESSED = "suppressed"
+from skyshield.config import DecisionConfig
 
 
 @dataclass
-class LaunchRecord:
-    outcome: LaunchOutcome
-    actuation_ms: float
-    return_safe: bool
+class LaunchOutcome:
+    authorized: bool
+    launched: bool
+    authorization_ms: float
+    reason: str = ""
 
 
 @dataclass
-class LaunchController:
-    actuation_budget_ms: float = 120.0
-    gating_enabled: bool = True
-    return_safe_enabled: bool = True
-    rng: np.random.Generator = None  # type: ignore
-    _busy: bool = field(default=False)
+class LaunchGateStats:
+    total_offered: int = 0
+    total_launched: int = 0
+    suppressed: int = 0
+    suppression_reasons: List[str] = field(default_factory=list)
 
-    def __post_init__(self) -> None:
-        if self.rng is None:
-            self.rng = np.random.default_rng(0)
 
-    def attempt(
+class LaunchGate:
+    def __init__(self, cfg: DecisionConfig):
+        self.cfg = cfg
+        self.stats = LaunchGateStats()
+
+    def authorize(
         self,
-        *,
-        guard_allows: bool,
-        score: float,
-        threshold: float,
-    ) -> LaunchRecord:
-        if not guard_allows:
-            return LaunchRecord(LaunchOutcome.SUPPRESSED, 0.0, False)
-        if self.gating_enabled and score < threshold:
-            return LaunchRecord(LaunchOutcome.GATED, 0.0, False)
-        # actuation latency: log-normal centred at 75% of budget
-        mean_ms = self.actuation_budget_ms * 0.75
-        sigma = mean_ms * 0.20
-        actuation = float(self.rng.normal(mean_ms, sigma))
-        actuation = max(20.0, min(actuation, self.actuation_budget_ms * 1.4))
-        return LaunchRecord(LaunchOutcome.LAUNCHED, actuation, self.return_safe_enabled)
+        threat_score: float,
+        target_class_conf: float,
+        safety_allow: bool,
+        rng: np.random.Generator,
+    ) -> LaunchOutcome:
+        self.stats.total_offered += 1
+
+        if not safety_allow:
+            self.stats.suppressed += 1
+            self.stats.suppression_reasons.append("safety_guard_block")
+            return LaunchOutcome(False, False, 0.0, "safety_guard_block")
+
+        if self.cfg.false_launch_block and threat_score < self.cfg.threat_threshold:
+            self.stats.suppressed += 1
+            self.stats.suppression_reasons.append("threat_below_threshold")
+            return LaunchOutcome(False, False, 0.0, "threat_below_threshold")
+
+        if target_class_conf < 0.55:
+            self.stats.suppressed += 1
+            self.stats.suppression_reasons.append("low_class_confidence")
+            return LaunchOutcome(False, False, 0.0, "low_class_confidence")
+
+        delay = float(rng.normal(self.cfg.authorization_ms_mean,
+                                 self.cfg.authorization_ms_std))
+        delay = max(5.0, delay)
+        self.stats.total_launched += 1
+        return LaunchOutcome(True, True, float(delay), "authorized")

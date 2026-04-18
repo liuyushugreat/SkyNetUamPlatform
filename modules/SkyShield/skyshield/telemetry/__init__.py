@@ -1,4 +1,4 @@
-from .metrics import RunMetrics, SortieRecord
-from .tracer import Tracer
+from skyshield.telemetry.tracer import Tracer, Span
+from skyshield.telemetry.metrics import RunMetrics
 
-__all__ = ["RunMetrics", "SortieRecord", "Tracer"]
+__all__ = ["Tracer", "Span", "RunMetrics"]

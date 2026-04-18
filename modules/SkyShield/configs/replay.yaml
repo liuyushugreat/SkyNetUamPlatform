@@ -1,20 +1,41 @@
-# Replay-based stress regimes for E3.
-
-seed: 20260418
-scenario:
-  name: urban_300km2
-  area_km2: 300.0
-  duration_s: 180.0
-  num_sorties: 20
-
+# E3: Replay-based stress evaluation.
+# Each regime perturbs exactly one axis of the sense-decide-act loop.
+base: default.yaml
 regimes:
-  - {name: nominal,           maneuver_g: 0.5,  packet_dropout_pct: 0.5,  jitter_ms_std:  4.0, auth_delay_ms_mean: 18, comm_jitter_ms: 1.5}
-  - {name: maneuver_2g,       maneuver_g: 2.0,  packet_dropout_pct: 0.5,  jitter_ms_std:  4.0, auth_delay_ms_mean: 18, comm_jitter_ms: 1.5}
-  - {name: maneuver_4g,       maneuver_g: 4.0,  packet_dropout_pct: 0.5,  jitter_ms_std:  4.0, auth_delay_ms_mean: 18, comm_jitter_ms: 1.5}
-  - {name: dropout_3pct,      maneuver_g: 0.5,  packet_dropout_pct: 3.0,  jitter_ms_std:  4.0, auth_delay_ms_mean: 18, comm_jitter_ms: 1.5}
-  - {name: dropout_8pct,      maneuver_g: 0.5,  packet_dropout_pct: 8.0,  jitter_ms_std:  4.0, auth_delay_ms_mean: 18, comm_jitter_ms: 1.5}
-  - {name: jitter_high,       maneuver_g: 0.5,  packet_dropout_pct: 0.5,  jitter_ms_std: 12.0, auth_delay_ms_mean: 18, comm_jitter_ms: 4.5}
-  - {name: auth_delay_long,   maneuver_g: 0.5,  packet_dropout_pct: 0.5,  jitter_ms_std:  4.0, auth_delay_ms_mean: 80, comm_jitter_ms: 1.5}
-  - {name: comm_jitter_high,  maneuver_g: 0.5,  packet_dropout_pct: 0.5,  jitter_ms_std:  4.0, auth_delay_ms_mean: 18, comm_jitter_ms: 8.0}
-
-output_dir: outputs
+  - name: "nominal"
+    override: {}
+  - name: "target_maneuver_heavy"
+    description: "Target performs a 3 g evasive turn probability doubled."
+    override:
+      workload.maneuver_prob: 0.35
+  - name: "target_fast"
+    description: "Intruder cruise speed raised to 60 m/s (216 km/h)."
+    override:
+      workload.target_speed_mps.mean: 60.0
+  - name: "radar_packet_delay"
+    description: "Radar packet latency doubled, jitter tripled."
+    override:
+      radars.packet_mean_ms: 10.0
+      radars.packet_jitter_ms: 6.0
+  - name: "sensor_dropout"
+    description: "Raise packet dropout to 8%."
+    override:
+      radars.dropout_rate: 0.08
+  - name: "occlusion"
+    description: "A temporary 30% coverage gap between 80 s and 140 s."
+    override:
+      radars.occlusion_window_s: [80.0, 140.0]
+      radars.occlusion_fraction: 0.3
+  - name: "auth_delay"
+    description: "Authorization latency mean raised from 45 ms to 160 ms."
+    override:
+      decision.authorization_ms_mean: 160.0
+      decision.authorization_ms_std: 40.0
+  - name: "launch_delay"
+    description: "Launch actuation latency raised from 120 ms to 220 ms."
+    override:
+      decision.deadline_ms.launch_actuation: 220.0
+  - name: "comm_jitter"
+    description: "Command-link jitter tripled."
+    override:
+      decision.cmd_jitter_ms: 18.0

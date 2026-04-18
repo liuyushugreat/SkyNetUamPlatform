@@ -1,69 +1,53 @@
-#!/usr/bin/env pwsh
-# One-click reviewer reproduction for SkyShield (RTSS 2026) on Windows.
-$ErrorActionPreference = "Stop"
+# SkyShield one-click reproduction for RTSS 2026 reviewers (PowerShell).
 
+$ErrorActionPreference = "Stop"
 Set-Location -Path $PSScriptRoot
 
-python -m pip install -r requirements.txt
-python -m pip install -e . --quiet
+Write-Host "[SkyShield] Installing dependencies ..." -ForegroundColor Cyan
+python -m pip install --quiet -r requirements.txt
 
-New-Item -ItemType Directory -Force -Path outputs | Out-Null
+Write-Host "[SkyShield] Running unit tests ..." -ForegroundColor Cyan
+python -m pytest tests -q
 
-Write-Host "[SkyShield] E1 field replay (10 real + 50 augmented sorties)"
-python scripts/run_field_replay.py --config configs/default.yaml `
-    --out outputs/field_replay.json
+Write-Host "[SkyShield] E1 - Field replay ..." -ForegroundColor Cyan
+python -m scripts.run_field_replay --config configs/default.yaml
 
-Write-Host "[SkyShield] E2 end-to-end timing"
-python scripts/run_timing.py --config configs/default.yaml `
-    --out outputs/timing.json
+Write-Host "[SkyShield] E2 - End-to-end timing ..." -ForegroundColor Cyan
+python -m scripts.run_timing --config configs/default.yaml
 
-Write-Host "[SkyShield] E3 replay-based stress"
-python scripts/run_replay_stress.py --config configs/replay.yaml `
-    --out outputs/stress.json
+Write-Host "[SkyShield] E3 - Replay-based stress ..." -ForegroundColor Cyan
+python -m scripts.run_replay_stress --config configs/replay.yaml
 
-Write-Host "[SkyShield] E4 multi-radar deployment sweep"
-python scripts/run_multi_radar.py --config configs/multi_radar.yaml `
-    --out outputs/multi_radar.json
+Write-Host "[SkyShield] E4 - Multi-radar deployment ..." -ForegroundColor Cyan
+python -m scripts.run_multi_radar --config configs/multi_radar.yaml
 
-Write-Host "[SkyShield] E5 ablation"
-python scripts/run_ablation.py --config configs/ablation.yaml `
-    --out outputs/ablation.json
+Write-Host "[SkyShield] E5 - Ablation study ..." -ForegroundColor Cyan
+python -m scripts.run_ablation --config configs/ablation.yaml
 
-Write-Host "[SkyShield] E6 safety / abort / suppression"
-python scripts/run_safety.py --config configs/default.yaml `
-    --out outputs/safety.json
+Write-Host "[SkyShield] E6 - Safety and failure analysis ..." -ForegroundColor Cyan
+python -m scripts.run_safety --config configs/default.yaml
 
-Write-Host "[SkyShield] aggregate metrics + figures"
-python scripts/plot_results.py --outdir outputs
+Write-Host "[SkyShield] Rendering paper figures ..." -ForegroundColor Cyan
+python -m scripts.plot_results --outputs outputs
 
-Write-Host "[SkyShield] pytest"
-python -m pytest -q
+Write-Host "[SkyShield] Summary:" -ForegroundColor Cyan
+$py = @'
+import json, pathlib
+p = pathlib.Path("outputs/metrics.json")
+if not p.exists():
+    print("outputs/metrics.json not found"); raise SystemExit(0)
+data = json.loads(p.read_text())
+s = data["summary"]
+print(f"  mission_success      = {s['mission_success_rate']:.3f}")
+print(f"  valid_intercept      = {s['valid_intercept_rate']:.3f}")
+print(f"  shot_down            = {s['shot_down_rate']:.3f}")
+print(f"  end_to_end_p50_ms    = {s['latency_ms']['p50']:.1f}")
+print(f"  end_to_end_p95_ms    = {s['latency_ms']['p95']:.1f}")
+print(f"  end_to_end_p99_ms    = {s['latency_ms']['p99']:.1f}")
+print(f"  deadline_miss_ratio  = {s['deadline_miss_ratio']:.4f}")
+print(f"  abort_success        = {s['abort_success_rate']:.3f}")
+print(f"  false_launch_suppr   = {s['false_launch_suppression_rate']:.4f}")
+'@
+python -c $py
 
-$drawio = "C:\Program Files\draw.io\draw.io.exe"
-if (Test-Path $drawio) {
-    Write-Host "[SkyShield] exporting draw.io diagrams to PDF"
-    $prevPref = $ErrorActionPreference
-    $ErrorActionPreference = "Continue"
-    foreach ($name in @("arch","sensing","loop","test","urban")) {
-        & $drawio -x -f pdf -o "diagrams\$name.pdf" "diagrams\$name.drawio" 2>$null | Out-Null
-    }
-    $ErrorActionPreference = $prevPref
-} else {
-    Write-Host "[SkyShield] draw.io desktop not found; skipping diagram export"
-}
-
-$xelatex = "C:\texlive\2025\bin\windows\xelatex.exe"
-$bibtex  = "C:\texlive\2025\bin\windows\bibtex.exe"
-if ((Test-Path $xelatex) -and (Test-Path $bibtex)) {
-    Write-Host "[SkyShield] compiling paper PDF"
-    Push-Location paper
-    & $xelatex -interaction=nonstopmode SkyShield_RTSS2026.tex | Out-Null
-    & $bibtex SkyShield_RTSS2026 | Out-Null
-    & $xelatex -interaction=nonstopmode SkyShield_RTSS2026.tex | Out-Null
-    & $xelatex -interaction=nonstopmode SkyShield_RTSS2026.tex | Out-Null
-    Pop-Location
-} else {
-    Write-Host "[SkyShield] xelatex not found at C:\texlive\2025; skipping paper build"
-}
-
-Write-Host "[SkyShield] DONE -> outputs/metrics.json + outputs/figs/*.pdf + paper/SkyShield_RTSS2026.pdf"
+Write-Host "[SkyShield] Done. Artifacts are in .\outputs\" -ForegroundColor Green

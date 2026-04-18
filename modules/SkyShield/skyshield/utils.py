@@ -1,63 +1,54 @@
-"""Shared helpers: deterministic RNG, JSON-safe dumping, percentile macros."""
-
+"""Small pure-Python helpers (stats, geometry, RNG)."""
 from __future__ import annotations
 
-import json
+from dataclasses import asdict, is_dataclass
+from typing import Any, Dict, Iterable, List, Sequence, Tuple
+
 import math
-import os
-from pathlib import Path
-from typing import Any, Iterable
 
 import numpy as np
 
 
-def ensure_dir(path: str | os.PathLike) -> Path:
-    p = Path(path)
-    p.mkdir(parents=True, exist_ok=True)
-    return p
+def percentile(xs: Sequence[float], q: float) -> float:
+    if not xs:
+        return float("nan")
+    return float(np.percentile(np.asarray(xs, dtype=float), q))
 
 
-def safe_json(obj: Any) -> Any:
-    """Convert numpy / math.inf / tuples so ``json.dumps`` never raises."""
-    if isinstance(obj, (np.floating, np.integer)):
-        return obj.item()
-    if isinstance(obj, np.ndarray):
-        return obj.tolist()
-    if isinstance(obj, float) and (math.isinf(obj) or math.isnan(obj)):
-        return None
-    if isinstance(obj, dict):
-        return {str(k): safe_json(v) for k, v in obj.items()}
-    if isinstance(obj, (list, tuple)):
-        return [safe_json(v) for v in obj]
-    return obj
-
-
-def dump_json(path: str | os.PathLike, data: Any) -> None:
-    p = Path(path)
-    ensure_dir(p.parent)
-    with p.open("w", encoding="utf-8") as f:
-        json.dump(safe_json(data), f, indent=2)
-
-
-def load_json(path: str | os.PathLike) -> Any:
-    return json.loads(Path(path).read_text(encoding="utf-8"))
-
-
-def percentiles(values: Iterable[float], ps: Iterable[float]) -> dict[str, float]:
-    arr = np.asarray(list(values), dtype=np.float64)
+def summarize_latency(samples: Sequence[float]) -> Dict[str, float]:
+    arr = np.asarray(samples, dtype=float)
     if arr.size == 0:
-        return {f"p{int(p*100)}": float("nan") for p in ps}
-    return {f"p{int(p*100)}": float(np.percentile(arr, p * 100.0)) for p in ps}
+        return {"n": 0, "mean": float("nan"), "p50": float("nan"),
+                "p95": float("nan"), "p99": float("nan"), "max": float("nan")}
+    return {
+        "n": int(arr.size),
+        "mean": float(arr.mean()),
+        "p50": float(np.percentile(arr, 50)),
+        "p95": float(np.percentile(arr, 95)),
+        "p99": float(np.percentile(arr, 99)),
+        "max": float(arr.max()),
+    }
 
 
-def make_rng(seed: int) -> np.random.Generator:
+def euclid_km(a: Sequence[float], b: Sequence[float]) -> float:
+    return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
+
+
+def rng_from_seed(seed: int) -> np.random.Generator:
     return np.random.default_rng(seed)
 
 
-def deterministic_hash(s: str) -> int:
-    """Stable 64-bit hash (no PYTHONHASHSEED dependency)."""
-    h = 1469598103934665603
-    for c in s.encode("utf-8"):
-        h = (h ^ c) * 1099511628211
-        h &= (1 << 64) - 1
-    return h
+def dataclass_to_json(obj: Any) -> Any:
+    if is_dataclass(obj):
+        return {k: dataclass_to_json(v) for k, v in asdict(obj).items()}
+    if isinstance(obj, dict):
+        return {k: dataclass_to_json(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [dataclass_to_json(v) for v in obj]
+    if isinstance(obj, (np.integer,)):
+        return int(obj)
+    if isinstance(obj, (np.floating,)):
+        return float(obj)
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    return obj

@@ -1,53 +1,65 @@
-"""Abort controller: enforces the R3 abort deadline (<=200 ms)."""
+"""Abort controller: recalls an in-flight interceptor, enforces the
+abort-deadline budget, and records a return-safe outcome.
 
+An abort can originate from:
+  * the safety guard (``friendly_airspace``),
+  * a loss-of-track during the engagement window,
+  * operator intervention (``manual`` / simulating sortie 8),
+  * a timeout on the authorization channel.
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass
-from enum import Enum
+from typing import Optional
 
 import numpy as np
 
-
-class AbortReason(str, Enum):
-    OPERATOR = "operator"
-    LOST_LOCK = "lost_lock"
-    AUTHORIZATION_REVOKED = "authorization_revoked"
-    FRIENDLY_AIRSPACE_VIOLATION = "friendly_airspace_violation"
-    DEADLINE_MISS = "deadline_miss"
+from skyshield.config import SafetyConfig
 
 
 @dataclass
-class AbortReport:
-    success: bool
-    reason: AbortReason
+class AbortOutcome:
+    aborted: bool
+    reason: str
     latency_ms: float
+    within_deadline: bool
     return_safe: bool
-    deadline_ms: float
 
 
-@dataclass
 class AbortController:
-    deadline_ms: float = 200.0
-    return_safe_enabled: bool = True
-    rng: np.random.Generator = None  # type: ignore
+    def __init__(self, cfg: SafetyConfig):
+        self.cfg = cfg
 
-    def __post_init__(self) -> None:
-        if self.rng is None:
-            self.rng = np.random.default_rng(0)
+    def abort(
+        self,
+        reason: str,
+        rng: np.random.Generator,
+        engagement_progress: float,
+    ) -> AbortOutcome:
+        if not self.cfg.return_safe_enabled:
+            # If return-safe is disabled, abort still succeeds but the
+            # interceptor self-terminates instead of returning home.
+            latency = float(rng.normal(120.0, 25.0))
+            latency = max(latency, 40.0)
+            return AbortOutcome(
+                aborted=True, reason=reason, latency_ms=latency,
+                within_deadline=latency <= self.cfg.abort_deadline_ms,
+                return_safe=False,
+            )
 
-    def execute(self, reason: AbortReason, channel_load: float = 0.4) -> AbortReport:
-        # latency: mean = 90 ms baseline + 60 ms*load with bounded tail
-        mean_ms = 90.0 + 60.0 * max(0.0, min(1.0, channel_load))
-        sigma = 14.0
-        latency = float(self.rng.normal(mean_ms, sigma))
-        latency = max(20.0, latency)
-        # Slack-stealing on the abort path keeps tail under 1.6x mean
-        latency = min(latency, mean_ms * 1.6)
-        success = latency <= self.deadline_ms
-        return AbortReport(
-            success=success,
+        # Command-link RTT + control-chain settle time.
+        base = float(rng.normal(85.0, 20.0))
+        base = max(base, 30.0)
+        # Engagement progress penalty: recall takes longer once the
+        # interceptor is past its cruise phase.
+        progress_penalty = 70.0 * max(0.0, engagement_progress - 0.35)
+        latency = base + progress_penalty
+
+        within = latency <= self.cfg.abort_deadline_ms
+        return AbortOutcome(
+            aborted=True,
             reason=reason,
-            latency_ms=latency,
-            return_safe=self.return_safe_enabled and success,
-            deadline_ms=self.deadline_ms,
+            latency_ms=float(latency),
+            within_deadline=bool(within),
+            return_safe=True,
         )

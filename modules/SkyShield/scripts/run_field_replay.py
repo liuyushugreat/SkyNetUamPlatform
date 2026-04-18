@@ -1,91 +1,81 @@
-"""E1: replay the 10 real sorties + 50 augmented (replay-extended) sorties.
+"""E1: Field replay.
 
-Outputs ``outputs/field_replay.json`` with one row per sortie (Table II)
-and a separate failure-taxonomy aggregate (Table III).
+Replay the 10 real sorties, then extend with 50 replay-only scenarios
+seeded by data/augmented_seeds.json.  Writes
+``outputs/field_replay.json`` and updates the top-level
+``outputs/metrics.json`` with the summary (also used by the timing
+experiment).
 """
-
 from __future__ import annotations
 
-import argparse
+import json
 from pathlib import Path
 
-from _common import MODULE_ROOT, augmented_scenarios, default_config_path, real_scenarios
+from skyshield.config import load_config
+from skyshield.runtime.engine import SkyShieldRuntime
+from skyshield.workload import from_field_sorties
 
-from skyshield.config import SkyShieldConfig
-from skyshield.runtime import RuntimeOptions, SkyShieldRuntime
-from skyshield.utils import dump_json
-
-
-FAILURE_KEYS = (
-    "target_lost",
-    "operator_abort",
-    "abort_deadline_miss",
-    "suppressed",
-    "gated",
-    "miss",
-)
+from scripts._common import arg_parser, ensure_outputs, write_json
 
 
-def failure_taxonomy(metrics) -> dict:
-    counts = {k: 0 for k in FAILURE_KEYS}
-    for s in metrics.sorties:
-        if s.outcome == "target_lost":
-            counts["target_lost"] += 1
-        elif s.outcome == "aborted":
-            counts["operator_abort"] += 1
-        elif s.outcome == "abort_deadline_miss":
-            counts["abort_deadline_miss"] += 1
-        elif s.outcome == "suppressed":
-            counts["suppressed"] += 1
-        elif s.outcome == "gated":
-            counts["gated"] += 1
-        elif s.outcome == "miss":
-            counts["miss"] += 1
-    return counts
+def main() -> None:
+    parser = arg_parser("SkyShield E1: real-field + replay-extended sorties.")
+    parser.add_argument("--augment", type=int, default=50,
+                        help="Number of replay-extended sorties to append.")
+    args = parser.parse_args()
 
+    cfg = load_config(args.config)
+    out_dir = ensure_outputs(args.out)
 
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--config", default=str(default_config_path()))
-    ap.add_argument("--out", default=str(MODULE_ROOT / "outputs" / "field_replay.json"))
-    args = ap.parse_args()
+    seeds = json.loads(
+        Path("data/augmented_seeds.json").read_text(encoding="utf-8")
+    )["seeds"]
 
-    cfg = SkyShieldConfig.load(Path(args.config))
+    scenarios = from_field_sorties(
+        Path("data/field_sorties.json"),
+        cfg,
+        augment=args.augment,
+        seed=seeds["field_replay_augment_50"],
+    )
 
-    real = real_scenarios()
-    aug = augmented_scenarios(rng_seed=cfg.seed)
+    rt = SkyShieldRuntime(cfg, config_path=str(args.config))
+    rep = rt.run(scenarios)
 
-    rt_real = SkyShieldRuntime(cfg, RuntimeOptions(label="field_real_10"))
-    rt_real.run(real)
+    field_events = [e for e in rep.metrics.events if e.target_id < 1000]
+    augmented_events = [e for e in rep.metrics.events if e.target_id >= 1000]
 
-    rt_aug = SkyShieldRuntime(cfg, RuntimeOptions(label="field_replay_extended_50"))
-    rt_aug.run(aug)
+    def bucket(xs):
+        hit = sum(1 for e in xs if e.hit)
+        shot = sum(1 for e in xs if e.shot_down)
+        aborted_ok = sum(1 for e in xs if e.aborted and e.abort_within_deadline)
+        lost = sum(1 for e in xs if e.abort_reason == "target_lost")
+        return {
+            "count": len(xs),
+            "hits": hit,
+            "shot_down": shot,
+            "aborted_within_deadline": aborted_ok,
+            "target_lost": lost,
+        }
 
-    payload = {
+    result = {
         "config_path": str(args.config),
-        "real": {
-            "metrics": rt_real.metrics.to_json(),
-            "failure_taxonomy": failure_taxonomy(rt_real.metrics),
-        },
-        "augmented": {
-            "metrics": rt_aug.metrics.to_json(),
-            "failure_taxonomy": failure_taxonomy(rt_aug.metrics),
-        },
+        "summary": rep.metrics.summary(),
+        "field_breakdown": bucket(field_events),
+        "augmented_breakdown": bucket(augmented_events),
+        "events": [e.__dict__ for e in rep.metrics.events],
     }
-    dump_json(args.out, payload)
-    print(f"[SkyShield][E1] wrote {args.out}")
-    print(
-        "  real    -> success", payload["real"]["metrics"]["headline"]["mission_success_rate_pct"],
-        "%, shot_down", payload["real"]["metrics"]["headline"]["shot_down_rate_pct"], "%",
+
+    write_json(result, out_dir / "field_replay.json")
+    write_json(
+        {
+            "config_path": str(args.config),
+            "seed": cfg.seed,
+            "summary": rep.metrics.summary(),
+        },
+        out_dir / "metrics.json",
     )
-    print(
-        "  aug 50  -> success",
-        round(payload["augmented"]["metrics"]["headline"]["mission_success_rate_pct"], 1),
-        "%, shot_down",
-        round(payload["augmented"]["metrics"]["headline"]["shot_down_rate_pct"], 1), "%",
-    )
-    return 0
+    print(f"[E1] field={bucket(field_events)} augmented={bucket(augmented_events)}")
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

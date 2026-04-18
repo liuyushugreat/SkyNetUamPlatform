@@ -1,4 +1,4 @@
-from .kinematics import InterceptorKinematics, InterceptResult
-from .launch import LaunchController
+from skyshield.interceptor.kinematics import InterceptorModel, EngagementResult
+from skyshield.interceptor.launch import LaunchGate
 
-__all__ = ["InterceptorKinematics", "InterceptResult", "LaunchController"]
+__all__ = ["InterceptorModel", "EngagementResult", "LaunchGate"]

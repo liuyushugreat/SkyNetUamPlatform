@@ -1,128 +1,119 @@
-"""Deadline-aware scheduler with Rate-Monotonic + EDF + slack-stealing.
+"""Deadline-aware scheduler for the decision plane.
 
-The pipeline has six fixed stages whose budgets come from the YAML
-config.  At each tick the scheduler is told the current load and
-returns the *expected* finish time of every stage; ``StageReport``
-includes whether the budget was exceeded so the safety guard can
-decide whether to abort or retry under the degraded mode.
+The scheduler selects, at each tick, which in-flight threat to
+authorize.  It supports three policies:
 
-We do not simulate preemption at the OS level; instead we use a
-worst-case analytic model (Liu and Layland 1973 schedulability bound
-for RM, EDF utilization bound for EDF, slack-stealing for the safety
-guard task that is always ready to run inside the abort window).
+* ``fifo`` — baseline for the ablation study,
+* ``edf`` — Earliest Deadline First over the absolute end-to-end
+  deadline of each job,
+* ``edf_slack`` — EDF with slack stealing, preempting low-priority
+  jobs when a higher-threat job approaches its deadline.
+
+Each job carries:
+  * creation time (detection_time_ms),
+  * absolute end-to-end deadline (created + end_to_end budget),
+  * current stage (``confirm``, ``fusion``, ``decide``, ``authorize``,
+    ``launch``, ``track``), and
+  * a priority derived from its threat score.
 """
-
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
-from typing import Iterable
-
-import numpy as np
+from typing import List, Optional
 
 
-class Stage(str, Enum):
-    DETECTION = "detection"
-    TRACK_CONFIRM = "track_confirm"
+class JobStage(str, Enum):
+    CONFIRM = "confirm"
     FUSION = "fusion"
-    DECISION = "decision"
-    LAUNCH_ACTUATION = "launch_actuation"
-    INTERCEPTOR_REACTION = "interceptor_reaction"
+    DECIDE = "decide"
+    AUTHORIZE = "authorize"
+    LAUNCH = "launch"
+    TRACK = "track"
+    DONE = "done"
+    ABORTED = "aborted"
 
 
 @dataclass
-class StageBudget:
-    stage: Stage
-    budget_ms: float
-    period_ms: float
-    priority: int  # smaller = higher priority for RM
+class ScheduledJob:
+    job_id: int
+    target_id: int
+    created_ms: float
+    deadline_ms: float
+    threat_score: float
+    stage: JobStage = JobStage.CONFIRM
+    priority: int = 0
+    last_tick_ms: float = 0.0
+    stage_enter_ms: float = 0.0
+    # Per-stage measured latencies (filled by the runtime as stages complete).
+    latencies_ms: dict = field(default_factory=dict)
+    aborted: bool = False
+    abort_reason: str = ""
+
+    def slack_ms(self, now_ms: float) -> float:
+        return self.deadline_ms - now_ms
 
 
-@dataclass
-class StageReport:
-    stage: Stage
-    actual_ms: float
-    budget_ms: float
-    deadline_missed: bool
-
-    @property
-    def slack_ms(self) -> float:
-        return self.budget_ms - self.actual_ms
-
-
-@dataclass
 class DeadlineScheduler:
-    scheduler: str = "rm_edf_slack"
-    end_to_end_ms: float = 1500.0
-    abort_deadline_ms: float = 200.0
-    safety_quantum_ms: float = 8.0  # slack stolen per stage for the safety task
-    rng: np.random.Generator = None  # type: ignore
+    def __init__(self, policy: str = "edf_slack"):
+        if policy not in {"edf_slack", "edf", "rm", "fifo"}:
+            raise ValueError(f"Unknown scheduler policy {policy!r}")
+        self.policy = policy
+        self._jobs: List[ScheduledJob] = []
+        self._next_id = 1
 
-    def __post_init__(self) -> None:
-        if self.rng is None:
-            self.rng = np.random.default_rng(0)
-
-    def stage_latency(
-        self,
-        budget: StageBudget,
-        load: float,
-        jitter_cov: float = 0.18,
-    ) -> StageReport:
-        """Return the simulated actual latency of one stage execution.
-
-        ``load`` is in [0, 1]; high load shrinks the available slice and
-        skews the latency distribution toward the budget.  Jitter is
-        log-normal with coefficient of variation ``jitter_cov``.
-        """
-        load = max(0.0, min(1.0, load))
-        # base time: mean = (0.55 + 0.4*load) * budget
-        mean_ms = (0.55 + 0.40 * load) * budget.budget_ms
-        sigma = jitter_cov * mean_ms
-        mu = np.log(max(1e-3, mean_ms ** 2 / np.sqrt(mean_ms ** 2 + sigma ** 2)))
-        s = np.sqrt(np.log(1.0 + (sigma ** 2) / max(1e-6, mean_ms ** 2)))
-        actual = float(self.rng.lognormal(mean=mu, sigma=s))
-        # apply scheduler effect:
-        if self.scheduler == "rm_edf_slack":
-            # EDF + slack steals back tail
-            actual = min(actual, budget.budget_ms * 1.1)
-        elif self.scheduler == "rm":
-            # plain RM may overrun lower-priority stages under load
-            if load > 0.85 and budget.priority > 2:
-                actual *= 1.4
-        elif self.scheduler == "edf":
-            actual = min(actual, budget.budget_ms * 1.2)
-        elif self.scheduler == "fifo":
-            # convoy effect: heavy tail
-            if load > 0.7:
-                actual *= 1.6
-        deadline_missed = actual > budget.budget_ms
-        return StageReport(
-            stage=budget.stage,
-            actual_ms=float(actual),
-            budget_ms=budget.budget_ms,
-            deadline_missed=deadline_missed,
+    def submit(self, target_id: int, created_ms: float, deadline_ms: float,
+               threat_score: float) -> ScheduledJob:
+        job = ScheduledJob(
+            job_id=self._next_id,
+            target_id=target_id,
+            created_ms=created_ms,
+            deadline_ms=deadline_ms,
+            threat_score=threat_score,
+            priority=int(round(threat_score * 100)),
+            stage_enter_ms=created_ms,
         )
+        self._next_id += 1
+        self._jobs.append(job)
+        return job
 
-    def end_to_end(
-        self,
-        budgets: Iterable[StageBudget],
-        load: float,
-        jitter_cov: float = 0.18,
-    ) -> tuple[float, list[StageReport]]:
-        reports = [self.stage_latency(b, load, jitter_cov) for b in budgets]
-        total = sum(r.actual_ms for r in reports)
-        return total, reports
+    def active_jobs(self) -> List[ScheduledJob]:
+        return [j for j in self._jobs if j.stage not in (JobStage.DONE, JobStage.ABORTED)]
 
-    @staticmethod
-    def is_schedulable_rm(budgets: list[StageBudget]) -> bool:
-        """Liu and Layland 1973 sufficient bound for RM."""
-        n = len(budgets)
-        if n == 0:
-            return True
-        util = sum(b.budget_ms / b.period_ms for b in budgets)
-        bound = n * (2.0 ** (1.0 / n) - 1.0)
-        return util <= bound + 1e-9
+    def pick_next(self, now_ms: float) -> Optional[ScheduledJob]:
+        candidates = [j for j in self.active_jobs() if j.stage != JobStage.TRACK]
+        if not candidates:
+            return None
+        if self.policy == "fifo":
+            candidates.sort(key=lambda j: j.created_ms)
+            return candidates[0]
+        if self.policy == "rm":
+            # Shortest end-to-end budget first (period proxy).
+            candidates.sort(key=lambda j: j.deadline_ms - j.created_ms)
+            return candidates[0]
+        if self.policy == "edf":
+            candidates.sort(key=lambda j: j.deadline_ms)
+            return candidates[0]
+        # edf_slack: primary EDF, tie break by (slack ascending, priority desc)
+        candidates.sort(
+            key=lambda j: (j.deadline_ms, j.slack_ms(now_ms), -j.priority)
+        )
+        return candidates[0]
 
-    @staticmethod
-    def is_schedulable_edf(budgets: list[StageBudget]) -> bool:
-        return sum(b.budget_ms / b.period_ms for b in budgets) <= 1.0 + 1e-9
+    def finish_stage(self, job: ScheduledJob, stage: JobStage, now_ms: float) -> None:
+        key = job.stage.value
+        job.latencies_ms[key] = now_ms - job.stage_enter_ms
+        job.stage = stage
+        job.stage_enter_ms = now_ms
+
+    def abort(self, job: ScheduledJob, reason: str, now_ms: float) -> None:
+        job.aborted = True
+        job.abort_reason = reason
+        job.stage = JobStage.ABORTED
+        job.latencies_ms["abort"] = now_ms - job.stage_enter_ms
+
+    def remove(self, job_id: int) -> None:
+        self._jobs = [j for j in self._jobs if j.job_id != job_id]
+
+    def all_jobs(self) -> List[ScheduledJob]:
+        return list(self._jobs)

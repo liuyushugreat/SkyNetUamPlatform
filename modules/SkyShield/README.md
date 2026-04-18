@@ -1,54 +1,97 @@
-# SkyShield
+# SkyShield — Field-Validated Real-Time Counter-UAV Interception Runtime
 
 > **RTSS 2026 reviewers:** this directory is the complete, anonymous
-> reproduction artifact for our submission *"SkyShield: A Deadline-Aware,
-> Safety-Guarded Counter-UAV Interception Runtime Validated on a 10-Sortie
-> Field Trial and a $300\,\text{km}^2$ Urban Replay Benchmark"*. Run
-> `bash run.sh` on Linux/macOS or `.\run.ps1` on Windows to regenerate every
-> paper number, figure, and PDF in under a minute on a laptop.
+> reproduction artifact for our submission
+> *"SkyShield: A Field-Validated Radar-Guided Real-Time Counter-UAV
+> Interception System for Urban Low-Altitude Defense"*
+> (`pressRequire/SkyShield/SkyShield_RTSS2026/`).
+> Run `bash run.sh` on Linux/macOS or `./run.ps1` on Windows to
+> regenerate every number, figure, and PDF used in the paper in
+> under ten minutes on a single CPU core.  No GPU, no network, no
+> API keys.
 
-SkyShield is a deadline-aware runtime for radar-guided kinetic
-counter-UAV (C-UAV) interception over a $300\,\text{km}^2$ urban area.
-It is built as a single-process, deterministic discrete-event simulator so
-that one seed reproduces every reported number byte-for-byte.
+SkyShield is a deadline-aware, safety-guarded, radar-guided
+real-time counter-UAV (C-UAV) interception runtime for a
+$300\,\text{km}^2$ urban low-altitude district.  It is implemented
+as a single-process deterministic **discrete-event simulator (DES)**
+so that one seed reproduces every reported number bit-for-bit.
 
 The runtime composes:
 
-* a PLFM-style multi-radar sensing link with $M$-of-$N$ confirmation,
-  covariance-weighted track-to-track fusion, and explicit handoff-latency
-  accounting;
-* a Rate-Monotonic + EDF + slack-stealing deadline scheduler that enforces
-  a 1.5 s end-to-end deadline and a 200 ms hard abort deadline;
-* a runtime safety guard that gates every launch on authorization,
-  geofence, friendly-airspace, and classification-confidence
-  preconditions;
-* an abort controller with `return_safe` kinematics.
+* a PLFM-style **multi-radar sensing plane** with $M$-of-$N$
+  confirmation, covariance-weighted track-to-track fusion, and
+  explicit handoff-latency accounting;
+* a **deadline-aware decision plane** with FIFO / RM / EDF /
+  EDF+slack-stealing policies, enforcing a $1.5$-second end-to-end
+  deadline and a hard $200$-ms abort deadline;
+* a **runtime safety guard** that gates every launch on
+  authorization, geofence, friendly-airspace, and classification
+  confidence preconditions;
+* a **bounded fail-safe abort controller** with `return_safe`
+  kinematics.
 
-All six experiment axes in the paper (field replay, end-to-end timing,
-replay-based stress, multi-radar urban scaling, ablation, safety) are
-driven by the same runtime and aggregated by a single
-`plot_results.py` script into `outputs/metrics.json`.
+All six experiments in the paper (field replay, end-to-end timing,
+replay-based stress, multi-radar urban deployment, ablation, safety)
+are driven by the same runtime and aggregated by
+`scripts/plot_results.py` into `outputs/*.json` and `outputs/*.pdf`.
+
+## At a glance
+
+| Contribution | Role | Measurable effect |
+|---|---|---|
+| **Three-plane architecture** | Explicit stage-budget table that composes $D_{e2e}=1500$ ms | End-to-end P99 **391 ms**; every stage P99 $\leq 2\times$ its P50 |
+| **EDF + slack stealing** | Threat-prioritised queue under HIL authorization delay | **−22 %** P99 latency vs. FIFO under concurrency 4 |
+| **Runtime safety guard** | Friendly-airspace / low-confidence / subthreshold checks before the launch gate | **100 % correct** over $6 \times 100$ binomial trials ($95 \%$ LCB $0.964$) |
+| **Bounded fail-safe abort** | Engagement-progress-aware recall, refuses return-safe when $R_3$ would miss | **100 %** abort-within-deadline across all field + augmented sorties |
+| **Multi-radar urban deployment** | $300\,\text{km}^2$ district, $1$–$12$ radar sweep $\times$ $1$–$8$ target concurrency | Deadline miss $0.72 \to 0.00$ going $1 \to 6$ radars at concurrency $1$ |
+
+End-to-end, on the $10$-field-sortie + $50$-augmented-sortie
+workload at the default configuration:
+
+| Metric                                 | Value |
+|----------------------------------------|-------|
+| Mission success rate                   | **0.68** |
+| \etae P99 latency                      | **391 ms** (budget $1500$ ms) |
+| Deadline miss ratio                    | **3.3 %** |
+| Abort-within-deadline rate             | **1.00** |
+| Return-safe rate after abort           | **1.00** |
+| False-launch suppression rate          | **5.0 %** |
+| Replay-stress worst-case P99 (auth-delay) | 588 ms (still under budget) |
 
 ## Repository layout
 
 ```
 modules/SkyShield/
-├── configs/                # YAML configs: default / multi_radar / ablation / replay
-├── data/                   # field_sorties.json (10 real sorties) + augmented_seeds.json (50)
-├── diagrams/               # 5 draw.io architecture diagrams + PDF exports
-├── outputs/                # generated JSON metrics, figures, and aggregate metrics.json
-├── paper/                  # IEEE-conference anonymous source + compiled PDF
-├── scripts/                # run_field_replay / run_timing / run_replay_stress /
-│                           # run_multi_radar / run_ablation / run_safety / plot_results
-├── skyshield/              # the Python package
-│   ├── radar/              #   PLFM-style sensing + covariance-weighted fusion
-│   ├── tracker/            #   Kalman CV + IMM + M-of-N confirmation
-│   ├── decision/           #   threat scoring + RM/EDF/slack + safety guard + abort
-│   ├── interceptor/        #   kinematic Ph model + launch controller
-│   ├── runtime/            #   the discrete-event engine
-│   └── telemetry/          #   Tracer + RunMetrics + SortieRecord
-├── tests/                  # pytest suite: kalman, fusion, scheduler, abort, end-to-end
-├── run.sh / run.ps1        # one-click reproduction
+├── configs/
+│   ├── default.yaml          # nominal 4-radar district + 1.5 s deadline
+│   ├── multi_radar.yaml      # E4 deployment sweep parameters
+│   ├── ablation.yaml         # E5 component toggles
+│   └── replay.yaml           # E3 stress regimes
+├── data/
+│   ├── field_sorties.json    # 10 real interception sorties (verbatim)
+│   └── augmented_seeds.json  # deterministic augmentation seeds
+├── scripts/
+│   ├── run_field_replay.py   # E1
+│   ├── run_timing.py         # E2
+│   ├── run_replay_stress.py  # E3
+│   ├── run_multi_radar.py    # E4
+│   ├── run_ablation.py       # E5
+│   ├── run_safety.py         # E6
+│   └── plot_results.py       # regenerates all paper figures
+├── skyshield/
+│   ├── radar/                # PLFM node + covariance-weighted fusion
+│   ├── tracker/              # CV Kalman + M-of-N confirmation
+│   ├── decision/             # threat scoring + deadline scheduler +
+│   │                         # safety guard + bounded abort
+│   ├── interceptor/          # kinematics model + launch gate
+│   ├── runtime/              # DES engine and virtual clock
+│   ├── telemetry/            # span tracer + RunMetrics
+│   ├── workload.py           # field/augmented/synthetic generators
+│   ├── config.py             # YAML loader + dataclasses
+│   └── utils.py
+├── tests/                    # 28 pytest cases
+├── outputs/                  # generated JSON + PDF (gitignored)
+├── run.sh / run.ps1          # one-click reproduction
 ├── pyproject.toml
 └── requirements.txt
 ```
@@ -58,80 +101,101 @@ modules/SkyShield/
 ```bash
 cd modules/SkyShield
 python -m pip install -r requirements.txt
-bash run.sh               # or:  .\run.ps1     (Windows PowerShell)
+bash run.sh          # Linux/macOS
+./run.ps1            # Windows PowerShell
 ```
 
 The script will, in order:
 
-1. run each of the six experiment scripts
-   (`run_field_replay`, `run_timing`, `run_replay_stress`,
-   `run_multi_radar`, `run_ablation`, `run_safety`);
-2. aggregate the per-axis outputs into `outputs/metrics.json` and plot
-   `fig_cdf.pdf`, `fig_tail.pdf`, `fig_scaling.pdf`, `fig_failure.pdf`;
-3. run the 24-test `pytest` suite;
-4. export the five `.drawio` diagrams to PDF via
-   `C:\Program Files\draw.io\draw.io.exe`;
-5. compile the paper with `xelatex + bibtex + xelatex + xelatex`.
+1. install dependencies;
+2. run the `pytest` suite;
+3. run experiments E1–E6 (`run_field_replay`, `run_timing`,
+   `run_replay_stress`, `run_multi_radar`, `run_ablation`,
+   `run_safety`) and write JSON outputs to `outputs/`;
+4. regenerate every Matplotlib figure used in the paper
+   (`fig_timing_cdf.pdf`, `fig_stress_tradeoff.pdf`,
+   `fig_multi_radar_scaling.pdf`, `fig_ablation_bars.pdf`,
+   `fig_safety_ci.pdf`) to `outputs/`;
+5. print a summary table with the headline numbers.
 
-Expect a runtime of ≲ 60 s on a single CPU core.
-
-## Headline numbers (from `outputs/metrics.json`)
-
-| metric                                  | value           |
-| --------------------------------------- | --------------- |
-| real-field (10-sortie) success rate     | **80 %**        |
-| augmented (50-sortie) success rate      | 70 %            |
-| $N=900$ end-to-end mean latency         | **405 ms**      |
-| $N=900$ end-to-end $p_{99}$             | **491 ms**      |
-| end-to-end deadline misses ($N=900$)    | **0**           |
-| false-launch suppression (adversary)    | **100 %**       |
-| operator-abort success within 200 ms    | **100 %** (78/78)|
-| $p_{99}$ drop, 1→12 radars, $T=8$       | $-8$ % (583→536 ms) |
-| handoff drop, 1→12 radars, $T=8$        | $-68$ % (28→8 ms)   |
-| $p_{99}$ inflation with no scheduler    | $+53$ % (497→761 ms)|
+Expect a total runtime of under ten minutes on a single CPU core.
 
 ## Running individual experiments
 
 ```bash
-python scripts/run_field_replay.py          # E1 field replay
-python scripts/run_timing.py --repeats 15   # E2 end-to-end timing (900 sorties)
-python scripts/run_replay_stress.py         # E3 stress regimes
-python scripts/run_multi_radar.py           # E4 urban scaling
-python scripts/run_ablation.py              # E5 ablation
-python scripts/run_safety.py                # E6 safety & failure
-python scripts/plot_results.py              # aggregate + figures
+python scripts/run_field_replay.py                     # E1
+python scripts/run_timing.py --duration 300            # E2
+python scripts/run_replay_stress.py                    # E3
+python scripts/run_multi_radar.py                      # E4
+python scripts/run_ablation.py                         # E5
+python scripts/run_safety.py                           # E6
+python scripts/plot_results.py                         # figures
 ```
 
-All scripts accept a `--seed` flag (default: 20260418, from
-`configs/default.yaml`).
+Every script accepts `--config configs/default.yaml` (or a sibling
+config) and `--out outputs/<name>.json`.  Seeds flow through
+`configs/default.yaml` (default `20260418`) and
+`data/augmented_seeds.json`; a reviewer who changes a seed will
+see a different sample path but the same contract-level numbers.
 
 ## Testing
 
 ```bash
-pytest                    # 24 tests: kalman, fusion, scheduler, abort, runtime
+pytest -q
 ```
+
+Covers the Kalman tracker, M-of-N confirmer, covariance-weighted
+fuser, radar node range/sigma model, deadline scheduler, safety
+guard, bounded abort controller, interceptor kinematics, threat
+scoring, and the full end-to-end runtime.  All tests are CPU-only
+and deterministic.
 
 ## Mapping from artifact to paper
 
-| paper element             | file                                     |
-| ------------------------- | ---------------------------------------- |
-| Fig. 1 (architecture)     | `diagrams/arch.drawio` / `arch.pdf`      |
-| Fig. 2 (sensing)          | `diagrams/sensing.drawio` / `sensing.pdf`|
-| Fig. 3 (real-time loop)   | `diagrams/loop.drawio` / `loop.pdf`      |
-| Fig. 4 (urban deployment) | `diagrams/urban.drawio` / `urban.pdf`    |
-| Fig. 5 (CDF)              | `outputs/figs/fig_cdf.pdf`               |
-| Fig. 6 (tail under stress)| `outputs/figs/fig_tail.pdf`              |
-| Fig. 7 (scaling)          | `outputs/figs/fig_scaling.pdf`           |
-| Fig. 8 (failure)          | `outputs/figs/fig_failure.pdf`           |
-| Fig. 9 (experiment matrix)| `diagrams/test.drawio` / `test.pdf`      |
-| Tab. I (field replay)     | `data/field_sorties.json`                |
-| Tab. II (timing)          | `outputs/timing.json`                    |
-| Tab. III (stress)         | `outputs/stress.json`                    |
-| Tab. IV (scaling)         | `outputs/multi_radar.json`               |
-| Tab. V (ablation)         | `outputs/ablation.json`                  |
-| Tab. VI (safety)          | `outputs/safety.json`                    |
-| Compiled paper            | `paper/SkyShield_RTSS2026.pdf`           |
+| Paper element                             | File                                            |
+|-------------------------------------------|-------------------------------------------------|
+| Fig. 1 – System architecture              | `pressRequire/SkyShield/.../fig_arch.pdf`       |
+| Fig. 2 – Perception link                  | `pressRequire/SkyShield/.../fig_sensing.pdf`    |
+| Fig. 3 – Real-time closed loop            | `pressRequire/SkyShield/.../fig_loop.pdf`       |
+| Fig. 4 – Physical interception test flow  | `pressRequire/SkyShield/.../fig_test.pdf`       |
+| Fig. 5 – E2 timing CDF                    | `outputs/fig_timing_cdf.pdf`                    |
+| Fig. 6 – E3 stress trade-off              | `outputs/fig_stress_tradeoff.pdf`               |
+| Fig. 7 – E4 multi-radar scaling           | `outputs/fig_multi_radar_scaling.pdf`           |
+| Fig. 8 – Urban deployment                 | `pressRequire/SkyShield/.../fig_urban.pdf`      |
+| Fig. 9 – E5 ablation bars                 | `outputs/fig_ablation_bars.pdf`                 |
+| Fig. 10 – E6 safety CIs                   | `outputs/fig_safety_ci.pdf`                     |
+| Tab. I – Stage budget                     | `skyshield/runtime/engine.py` (`_POLICY_MULT`)  |
+| Tab. II – Field replay                    | `data/field_sorties.json` + `outputs/field_replay.json` |
+| Tab. III – E2 stage latencies             | `outputs/timing.json`                           |
+| Tab. IV – E3 stress regimes               | `outputs/replay_stress.json`                    |
+| Tab. V – E4 deadline-miss sweep           | `outputs/multi_radar.json`                      |
+| Tab. VI – E5 ablation                     | `outputs/ablation.json`                         |
+| Tab. VII – E6 safety CIs                  | `outputs/safety.json`                           |
+| Compiled paper PDF                        | `pressRequire/SkyShield/SkyShield_RTSS2026/skyshield_rtss2026.pdf` |
+
+## Extending SkyShield
+
+* **New scheduler policy.** Add a branch to
+  `skyshield/decision/deadline.py::DeadlineScheduler.pick_next`
+  and a corresponding entry in
+  `skyshield/runtime/engine.py::_POLICY_MULT`.
+* **New radar physics.** Replace
+  `skyshield/radar/node.py::RadarNode.observe`.  The fuser,
+  tracker and confirmer are agnostic to the underlying physics.
+* **New safety scenario.** Add a scenario factory to
+  `scripts/run_safety.py` (see
+  `_friendly_airspace`, `_low_confidence`, ...) and re-run
+  E6; the binomial CI machinery will pick it up automatically.
+
+## Reproducibility guarantee
+
+Every number in the paper (abstract, tables, figures, footnotes) is
+a direct output of the scripts above running against
+`configs/default.yaml` and `data/augmented_seeds.json`.
+`SkyShieldRuntime` emits a `RunMetrics` dataclass that serialises
+to JSON verbatim — reviewers can diff two runs field-by-field.
 
 ## License
 
-Apache 2.0, matching the rest of the SkyNetUAM platform.
+This project is licensed under the Apache License 2.0, matching
+the rest of the SkyNetUAM platform.
