@@ -52,6 +52,28 @@ fig*.png
 /research/papers/
 /pressRequire/
 
+# Local-only LLM API docs and prompt notes
+**/*llm*.md
+**/*llm*.txt
+**/*llm*.tex
+**/*llm*.pdf
+**/*api*.md
+**/*api*.txt
+**/*api*.tex
+**/*api*.pdf
+**/*prompt*.md
+**/*prompt*.txt
+**/*prompt*.tex
+**/*prompt*.pdf
+**/*openai*.md
+**/*openai*.txt
+**/*anthropic*.md
+**/*anthropic*.txt
+**/*deepseek*.md
+**/*deepseek*.txt
+**/*qwen*.md
+**/*qwen*.txt
+
 # Block all LaTeX / paper file types globally
 *.tex
 *.bbl

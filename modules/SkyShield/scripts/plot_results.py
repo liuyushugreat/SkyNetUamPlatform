@@ -73,29 +73,37 @@ def plot_stress(out_dir: Path, figs_dir: Path) -> None:
     data = _load(out_dir / "replay_stress.json")
     if data is None:
         return
-    fig, ax = plt.subplots(figsize=(5.6, 3.4))
+    fig, ax = plt.subplots(figsize=(5.8, 3.8))
     regimes = list(data["regimes"])
 
     xs = [r["p99_ms"] for r in regimes]
     ys = [r["deadline_miss"] * 100 for r in regimes]
     ax.scatter(xs, ys, s=55, alpha=0.85, color="#225577", zorder=3)
 
-    # Stagger labels vertically so they don't overlap.
-    # Sort by x so we alternate offsets only for nearby neighbours.
+    # Every label gets a unique vertical level so labels cannot overlap.
+    # We sort points by x-axis position and alternate them above/below the
+    # marker, moving further from the axis for each successive rank.
     order = sorted(range(len(regimes)), key=lambda i: xs[i])
-    y_off_cycle = [14, -14, 22, -22, 30, -30]
-    x_off_cycle = [6, 6, -6, -6, 6, -6]
+    n = len(order)
+    base_dy = 22      # points
+    step_dy = 22      # points
+    tier_signs = [+1, -1]
+    y_offsets = [0.0] * n
     for rank, i in enumerate(order):
-        dx = x_off_cycle[rank % len(x_off_cycle)]
-        dy = y_off_cycle[rank % len(y_off_cycle)]
-        ha = "left" if dx > 0 else "right"
+        tier = rank // 2 + 1
+        sign = tier_signs[rank % 2]
+        y_offsets[i] = sign * (base_dy + (tier - 1) * step_dy)
+
+    for i, r in enumerate(regimes):
+        dy = y_offsets[i]
         ax.annotate(
-            regimes[i]["regime"],
+            r["regime"],
             (xs[i], ys[i]),
-            xytext=(dx, dy),
+            xytext=(0.0, dy),
             textcoords="offset points",
             fontsize=8,
-            ha=ha,
+            ha="center",
+            va="bottom" if dy > 0 else "top",
             arrowprops=dict(arrowstyle="-", color="0.55",
                             lw=0.6, shrinkA=1, shrinkB=2),
         )
@@ -104,10 +112,11 @@ def plot_stress(out_dir: Path, figs_dir: Path) -> None:
     x_max = max(xs)
     y_min = min(ys)
     y_max = max(ys)
-    x_pad = max(30.0, 0.08 * (x_max - x_min + 1e-6))
-    y_pad = max(1.0, 0.18 * (y_max - y_min + 1e-6))
-    ax.set_xlim(x_min - x_pad, x_max + 1.6 * x_pad)
-    ax.set_ylim(min(0.0, y_min - y_pad), y_max + 2.2 * y_pad)
+    x_pad = max(40.0, 0.12 * (x_max - x_min + 1e-6))
+    ax.set_xlim(x_min - x_pad, x_max + x_pad)
+    # Generous vertical padding: annotate offsets are in points but we also
+    # need enough data-space room so labels never touch the title or x-axis.
+    ax.set_ylim(y_min - 3.2, y_max + 3.8)
 
     ax.set_xlabel("P99 end-to-end latency (ms)")
     ax.set_ylabel("Deadline-miss rate (%)")
