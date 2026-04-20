@@ -55,7 +55,7 @@ The neural scorer and the rule engine are both treated as *untrusted* — SkyCer
 modules/SkyCert/
 ├── README.md                 ← You are here (reviewer entry point)
 ├── run.sh / run.ps1          ← One-click reproduction (Linux/macOS / Windows)
-├── pyproject.toml            ← Package metadata (skycert, MIT/Apache-compatible)
+├── pyproject.toml            ← Package metadata (skycert, Apache-2.0)
 ├── requirements.txt          ← Pinned runtime + dev dependencies
 ├── .gitignore                ← Excludes outputs/, caches, internal configs
 │
@@ -124,7 +124,7 @@ Expected artifacts (all under `outputs/`, gitignored by design):
 
 | File | What it contains |
 |------|-----------------|
-| `outputs/metrics.json` | 5 threat scenarios × {coverage, avg set size, ECE, top-1 accuracy, critical-error rate before/after abstention, abstain/alert/escalation rates, martingale max, detection delay, false-alarm rate} |
+| `outputs/metrics.json` | 5 threat scenarios × {coverage, avg set size, ECE, top-1 accuracy, critical-error rate before/after abstention, abstain/alert/escalation rates, martingale max, detection delay, false-alarm rate, avg decision latency, throughput} |
 | `outputs/ablation.json` | 4 ablation variants under the covariate-shift threat |
 | `outputs/audit/audit_<scenario>.jsonl` | Per-decision audit artifacts (1 JSON object per UAM operation) |
 | `outputs/audit_ablation/<variant>.jsonl` | Per-decision audit artifacts for each ablation variant |
@@ -153,7 +153,7 @@ python -m scripts.run_ablation   --config configs/default.yaml
 python -m scripts.plot_results   --config configs/default.yaml
 ```
 
-All randomness is seeded from `configs/default.yaml` (`seed: 20260417`); re-running on the same Python/NumPy version yields bit-identical `metrics.json`.
+All stochastic components are seeded from `configs/default.yaml` (`seed: 20260417`), including a deterministic per-threat seed. Re-running on the same Python/NumPy version reproduces the same safety and calibration metrics; the timing fields in `metrics.json` vary modestly with host load.
 
 ---
 
@@ -184,24 +184,24 @@ Target marginal coverage `1 − α = 0.90`; calibration is held fixed across thr
 | Scenario | Coverage | Set size | ECE | Top-1 | Crit. err. (base) | Crit. err. (after abstain) | Abstain | Alert | Escal. | M_max | Delay |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | **T0 Clean**            | 0.899 | 2.08 | 0.124 | 0.617 | 0.364 | **0.312** | 0.269 | 0.000 | 0.000 | 7.10      | — |
-| **T1 KG corruption**    | 0.905 | 2.07 | 0.119 | 0.615 | 0.240 | **0.179** | 0.276 | 0.000 | 0.000 | 4.69      | — |
-| **T2 Rule poisoning**   | 0.909 | 2.27 | 0.092 | 0.585 | 0.403 | **0.348** | 0.405 | 0.000 | 0.000 | 6.53      | — |
-| **T3 Feature attack**   | 0.881 | 2.06 | 0.097 | 0.589 | 0.351 | **0.267** | 0.528 | 0.358 | 0.097 | 2.2 × 10⁸ | 413 |
-| **T4 Covariate shift**  | 0.691 | 1.97 | 0.076 | 0.442 | 0.494 | **0.290** | 0.623 | 0.486 | 0.093 | 1.3 × 10⁵⁵| 40 |
+| **T1 KG corruption**    | 0.902 | 2.09 | 0.117 | 0.614 | 0.253 | **0.180** | 0.287 | 0.000 | 0.000 | 6.45      | — |
+| **T2 Rule poisoning**   | 0.902 | 2.02 | 0.115 | 0.618 | 0.318 | **0.266** | 0.251 | 0.000 | 0.000 | 7.14      | — |
+| **T3 Feature attack**   | 0.878 | 2.05 | 0.100 | 0.593 | 0.344 | **0.266** | 0.580 | 0.423 | 0.098 | 2.3 × 10⁸ | 232 |
+| **T4 Covariate shift**  | 0.685 | 1.97 | 0.079 | 0.440 | 0.474 | **0.279** | 0.617 | 0.481 | 0.091 | 1.2 × 10⁵³| 56 |
 
 Key takeaways reported in the paper:
 
-- Empirical coverage stays within `±0.03` of the 90% target on T0–T3 (conformal guarantee honored even under KG corruption and rule poisoning).
-- Under T4 the i.i.d. assumption is *visibly* broken (coverage drops to 0.691) — but the martingale detects the shift within **40 steps** and the policy layer **halves** the critical-class miss rate (0.494 → 0.290) via abstention/alerting.
-- Under T3 the martingale still reaches `2.2 × 10⁸` (far above the registered threshold of 20) with zero false alarms on T0–T2.
+- Empirical coverage stays within `±0.03` of the 90% target on T0–T3 (conformal behavior remains stable under rule corruption and poisoning).
+- Under T4 the i.i.d. assumption is visibly broken (coverage drops to 0.685), but the martingale still detects the shift within **56 steps** and the policy layer cuts the critical-class miss rate from 0.474 to **0.279**.
+- Under T3 the martingale reaches `2.3 × 10⁸` with zero false alarms on T0–T2 and raises an alert after **232** post-change operations.
 
 ### Table 2 — Ablation under T4 covariate shift
 
 | Variant | Coverage | Avg set size | Crit. err. (after abstain) | Abstain rate |
 |---|---:|---:|---:|---:|
 | `no_conformal`  (set = all classes) | 1.000 | 4.00 | 0.320 | 0.483 |
-| `no_martingale` (only set-size abstention) | 0.679 | 1.96 | 0.329 | 0.542 |
-| `no_abstention` (raw argmax)        | 0.679 | 1.96 | 0.376 | 0.386 |
+| `no_martingale` (only set-size abstention) | 0.679 | 1.96 | 0.449 | 0.226 |
+| `no_abstention` (raw argmax)        | 0.679 | 1.96 | 0.500 | 0.000 |
 | **`full` SkyCert**                  | 0.679 | 1.96 | **0.275** | 0.620 |
 
 The full SkyCert configuration dominates every ablation variant on the safety-critical metric (post-abstention critical-class miss rate).
@@ -309,7 +309,7 @@ Real CAAC / FAA UAM operational data cannot currently be publicly redistributed.
 Yes — the conformal guarantee holds whenever calibration and test data are exchangeable. Table 1 shows coverage staying within `±0.03` of `1 − α` on T0–T3 (exchangeability preserved). Under T4 exchangeability is *intentionally* broken; the guarantee necessarily degrades, and this is exactly what the martingale is designed to flag (which it does in 40 steps).
 
 **Q. What happens if I disable the martingale?**
-See the `no_martingale` row of the ablation. Coverage and set size are unaffected, but the critical-class miss rate rises from **0.275** to **0.329**, because the policy layer no longer receives the online distribution-shift signal.
+See the `no_martingale` row of the ablation. Coverage and set size are unchanged, but the post-abstention critical-class miss rate rises from **0.275** to **0.449**, because the policy layer no longer receives the online distribution-shift signal.
 
 **Q. Is there a GPU / API dependency?**
 No. The base model is a NumPy multinomial logistic regression; the symbolic engine is a pure-Python rule evaluator; the assurance layer is algebraic. `run.sh` finishes in ~30 s on a single CPU core.

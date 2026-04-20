@@ -135,18 +135,18 @@ def main(argv: list[str] | None = None) -> None:
              audit_dir / "no_conformal.jsonl")
     )
 
-    # (b) no martingale: raise threshold so it never fires.
+    # (b) no martingale: use an infinite threshold so it never fires.
     cfg_b = copy.deepcopy(config)
-    cfg_b.assurance.martingale.threshold = 1e18
+    cfg_b.assurance.martingale.threshold = float("inf")
     results.append(
         _run("no_martingale", cfg_b, neural, symbolic, calib, stream,
              audit_dir / "no_martingale.jsonl")
     )
 
-    # (c) no abstention: set fraction 1.01 (impossible) and threshold huge.
+    # (c) no abstention: disable both the set-size and martingale branches.
     cfg_c = copy.deepcopy(config)
     cfg_c.assurance.policy.max_set_fraction = 1.01
-    cfg_c.assurance.martingale.threshold = 1e18
+    cfg_c.assurance.martingale.threshold = float("inf")
     results.append(
         _run("no_abstention", cfg_c, neural, symbolic, calib, stream,
              audit_dir / "no_abstention.jsonl")

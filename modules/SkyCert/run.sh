@@ -44,6 +44,8 @@ for r in data["runs"]:
           f"{r['critical_error_rate_base']:>12.3f}"
           f"{r['critical_error_rate_after_abstain']:>12.3f}"
           f"{r['martingale_max']:>14.2e}")
+lat = [r["avg_decision_ms"] for r in data["runs"]]
+print(f"\nmean end-to-end decision latency: {sum(lat)/len(lat):.3f} ms")
 PY
 
 echo "[SkyCert] Done. Artifacts are in ./outputs/"

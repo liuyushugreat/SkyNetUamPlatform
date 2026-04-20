@@ -25,6 +25,11 @@ from skycert.utils import ensure_dir
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Render SkyCert figures")
     parser.add_argument("--config", required=True)
+    parser.add_argument(
+        "--output-dir",
+        default=None,
+        help="directory to write rendered figures (defaults to <config.output_dir>/figs)",
+    )
     args = parser.parse_args(argv)
 
     config = SkyCertConfig.load(args.config)
@@ -32,7 +37,9 @@ def main(argv: list[str] | None = None) -> None:
     with open(out_dir / "metrics.json", "r", encoding="utf-8") as fh:
         metrics = json.load(fh)
     runs = metrics["runs"]
-    figs = ensure_dir(out_dir / "figs")
+    figs = ensure_dir(
+        Path(args.output_dir) if args.output_dir is not None else out_dir / "figs"
+    )
 
     names = [r["threat"]["name"] for r in runs]
     coverage = [r["coverage"] for r in runs]

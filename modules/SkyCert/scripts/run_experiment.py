@@ -18,7 +18,9 @@ Steps:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import time
 from pathlib import Path
 from typing import Any
 
@@ -53,7 +55,10 @@ def _run_single_threat(
     y_test: np.ndarray,
     audit_dir: Path,
 ) -> dict[str, Any]:
-    rng = np.random.default_rng(config.seed + hash(threat.name) % (2**32))
+    threat_seed = int.from_bytes(
+        hashlib.sha256(threat.name.encode("utf-8")).digest()[:4], "little"
+    )
+    rng = np.random.default_rng(config.seed + threat_seed)
     X_eval = X_test.copy()
     reasoner = base_reasoner
     change_point: int | None = None
@@ -91,7 +96,9 @@ def _run_single_threat(
     pipeline.calibrate(_CALIB_CACHE["X"], _CALIB_CACHE["y"])
 
     # Drive the online pipeline sample-by-sample.
+    t0 = time.perf_counter()
     decisions = pipeline.run_batch(X_stream)
+    elapsed_s = time.perf_counter() - t0
     pipeline.close()
 
     # Vectorised metrics.
@@ -125,6 +132,8 @@ def _run_single_threat(
         "escalation_rate": float(escalations.mean()),
         "detection": detection_metrics(alerts, change_point),
         "martingale_max": pipeline.monitor.max_value(),
+        "avg_decision_ms": 1000.0 * elapsed_s / X_stream.shape[0],
+        "throughput_ops_per_s": X_stream.shape[0] / elapsed_s,
     }
     return metrics
 
