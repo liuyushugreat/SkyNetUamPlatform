@@ -50,22 +50,30 @@ def main(argv: list[str] | None = None) -> None:
     abstain = [r["abstain_rate"] for r in runs]
 
     # Figure 1: coverage and ECE per threat.
-    fig, ax1 = plt.subplots(figsize=(6.5, 3.2))
+    fig, ax1 = plt.subplots(figsize=(6.5, 3.4))
     x = np.arange(len(names))
     width = 0.35
     ax1.bar(x - width / 2, coverage, width, label="Coverage",
             color="#4C72B0")
     ax1.axhline(1 - config.assurance.conformal.alpha, color="black",
                 linestyle="--", linewidth=0.8, label="Target 1-α")
-    ax1.set_ylim(0.0, 1.05)
+    ax1.set_ylim(0.0, 1.35)
+    ax1.set_yticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
     ax1.set_ylabel("Empirical coverage")
     ax1.set_xticks(x)
     ax1.set_xticklabels(names, rotation=20, ha="right")
     ax2 = ax1.twinx()
     ax2.bar(x + width / 2, ece, width, label="ECE", color="#DD8452")
+    ece_max = max(ece) if ece else 0.2
+    ax2.set_ylim(0.0, max(1.0, ece_max * 5.0))
     ax2.set_ylabel("Expected Calibration Error")
-    ax1.legend(loc="upper left")
-    ax2.legend(loc="upper right")
+    # Combine both axes' handles into a single legend placed in the
+    # reserved headroom above the bars so it never overlaps them.
+    h1, l1 = ax1.get_legend_handles_labels()
+    h2, l2 = ax2.get_legend_handles_labels()
+    ax1.legend(h1 + h2, l1 + l2, loc="upper center",
+               bbox_to_anchor=(0.5, 1.00), ncol=3, frameon=False,
+               handlelength=1.6, columnspacing=1.2)
     fig.tight_layout()
     fig.savefig(figs / "coverage_vs_threat.pdf")
     plt.close(fig)
