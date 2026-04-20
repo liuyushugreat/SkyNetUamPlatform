@@ -1,4 +1,4 @@
-# SkyCert: Uncertainty-Calibrated Neuro-Symbolic Reasoning with Conformal Prediction for Certifiable Risk Assessment in Urban Air Mobility
+# SkyCert: Conformal and Martingale-Based Runtime Assurance for Neuro-Symbolic Risk Reasoning in Urban Air Mobility
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Conference: ESORICS 2026](https://img.shields.io/badge/Conference-ESORICS_2026-green.svg)](https://esorics2026.org/)
@@ -28,7 +28,7 @@ Every decision is persisted as a **machine-readable audit artifact** (JSON Lines
 
 This module is the companion artifact for the ESORICS 2026 submission:
 
-> *SkyCert: Uncertainty-Calibrated Neuro-Symbolic Reasoning with Conformal Prediction for Certifiable Risk Assessment in Urban Air Mobility.*
+> *SkyCert: Conformal and Martingale-Based Runtime Assurance for Neuro-Symbolic Risk Reasoning in Urban Air Mobility.*
 
 Following the SkyNetUamPlatform contribution policy, **no paper PDF/TeX source, internal safety-case document, or proprietary KG slice is committed to this repository** — only the open-source module and the default reviewer configuration (`configs/default.yaml`).
 
@@ -85,10 +85,11 @@ modules/SkyCert/
 │       ├── policy.py         ←   AssurancePolicy (ACCEPT / ABSTAIN / ALERT / ESCALATE)
 │       └── audit.py          ←   AuditLogger (JSONL artifacts)
 │
-├── scripts/                  ← Experiment entry points (all CPU-only, <30 s total)
+├── scripts/                  ← Experiment entry points (all CPU-only, <60 s total)
 │   ├── run_experiment.py     ←   Main: 5 threat scenarios → metrics.json + audit/
 │   ├── run_ablation.py       ←   Ablation: 4 variants under T4 → ablation.json
-│   └── plot_results.py       ←   Renders 3 paper figures to outputs/figs/
+│   ├── run_baselines.py      ←   Baseline comparison (MSP, entropy, conformal-only) → baselines.json
+│   └── plot_results.py       ←   Renders paper figures to outputs/figs/ (incl. Pareto)
 │
 └── tests/                    ← pytest suite (9 tests, runs in <3 s)
     ├── test_conformal.py     ←   Marginal coverage, top-1 inclusion
@@ -149,7 +150,10 @@ python -m scripts.run_experiment --config configs/default.yaml
 # 4. ablation study             →  outputs/ablation.json, outputs/audit_ablation/
 python -m scripts.run_ablation   --config configs/default.yaml
 
-# 5. paper figures              →  outputs/figs/*.pdf
+# 5. baseline comparison        →  outputs/baselines.json
+python -m scripts.run_baselines  --config configs/default.yaml
+
+# 6. paper figures              →  outputs/figs/*.pdf (incl. Pareto curve)
 python -m scripts.plot_results   --config configs/default.yaml
 ```
 
@@ -199,12 +203,23 @@ Key takeaways reported in the paper:
 
 | Variant | Coverage | Avg set size | Crit. err. (after abstain) | Abstain rate |
 |---|---:|---:|---:|---:|
-| `no_conformal`  (set = all classes) | 1.000 | 4.00 | 0.320 | 0.483 |
-| `no_martingale` (only set-size abstention) | 0.679 | 1.96 | 0.449 | 0.226 |
-| `no_abstention` (raw argmax)        | 0.679 | 1.96 | 0.500 | 0.000 |
-| **`full` SkyCert**                  | 0.679 | 1.96 | **0.275** | 0.620 |
+| `no_conformal`  (set = all classes) | 1.000 | 4.00 | 0.333 | 0.481 |
+| `no_martingale` (only set-size abstention) | 0.685 | 1.97 | 0.392 | 0.227 |
+| `no_abstention` (raw argmax)        | 0.685 | 1.97 | 0.474 | 0.000 |
+| **`full` SkyCert**                  | 0.685 | 1.97 | **0.279** | 0.617 |
 
 The full SkyCert configuration dominates every ablation variant on the safety-critical metric (post-abstention critical-class miss rate).
+
+### Table 3 — Baseline comparison under T4 (matched abstention ≈ 0.617)
+
+| Method | Cov. | \|C\| | Crit. base | Crit. after | Abstain |
+|---|---:|---:|---:|---:|---:|
+| MSP threshold | — | 1.0 | 0.474 | 0.317 | 0.617 |
+| Entropy threshold | — | 1.0 | 0.474 | 0.265 | 0.617 |
+| Conformal-only | 0.685 | 1.97 | 0.474 | 0.392 | 0.227 |
+| **full SkyCert** | **0.685** | **1.97** | **0.474** | **0.279** | **0.617** |
+
+At matched abstention rates, entropy thresholding achieves a comparable miss rate (0.265 vs 0.279) but provides no coverage guarantee, no sequential drift detection, and no audit trail.
 
 ---
 
@@ -309,7 +324,7 @@ Real CAAC / FAA UAM operational data cannot currently be publicly redistributed.
 Yes — the conformal guarantee holds whenever calibration and test data are exchangeable. Table 1 shows coverage staying within `±0.03` of `1 − α` on T0–T3 (exchangeability preserved). Under T4 exchangeability is *intentionally* broken; the guarantee necessarily degrades, and this is exactly what the martingale is designed to flag (which it does in 40 steps).
 
 **Q. What happens if I disable the martingale?**
-See the `no_martingale` row of the ablation. Coverage and set size are unchanged, but the post-abstention critical-class miss rate rises from **0.275** to **0.449**, because the policy layer no longer receives the online distribution-shift signal.
+See the `no_martingale` row of the ablation. Coverage and set size are unchanged, but the post-abstention critical-class miss rate rises from **0.279** to **0.392**, because the policy layer no longer receives the online distribution-shift signal.
 
 **Q. Is there a GPU / API dependency?**
 No. The base model is a NumPy multinomial logistic regression; the symbolic engine is a pure-Python rule evaluator; the assurance layer is algebraic. `run.sh` finishes in ~30 s on a single CPU core.
@@ -323,9 +338,8 @@ By platform policy, paper PDF and TeX sources are not committed to the public re
 
 ```bibtex
 @inproceedings{liu2026skycert,
-  title     = {SkyCert: Uncertainty-Calibrated Neuro-Symbolic Reasoning with
-               Conformal Prediction for Certifiable Risk Assessment in
-               Urban Air Mobility},
+  title     = {SkyCert: Conformal and Martingale-Based Runtime Assurance
+               for Neuro-Symbolic Risk Reasoning in Urban Air Mobility},
   author    = {Liu, Yushu and Wang, Longbiao and Du, Chenglin and Zhai, Haixiao},
   booktitle = {Proceedings of the 31st European Symposium on Research in
                Computer Security (ESORICS)},

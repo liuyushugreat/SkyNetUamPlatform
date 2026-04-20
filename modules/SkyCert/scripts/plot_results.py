@@ -101,6 +101,41 @@ def main(argv: list[str] | None = None) -> None:
     fig.savefig(figs / "critical_error.pdf")
     plt.close(fig)
 
+    # Figure 4: Pareto curve (abstain rate vs critical error) if baselines.json exists.
+    baseline_path = out_dir / "baselines.json"
+    if baseline_path.exists():
+        with open(baseline_path, "r", encoding="utf-8") as fh:
+            bl = json.load(fh)
+        pareto = bl["pareto"]
+        fig, ax = plt.subplots(figsize=(5.0, 3.5))
+        for key, label, color, marker in [
+            ("msp", "MSP threshold", "#C44E52", "v"),
+            ("entropy", "Entropy threshold", "#DD8452", "^"),
+            ("skycert", "SkyCert (sweep γ)", "#4C72B0", "o"),
+        ]:
+            pts = pareto.get(key, [])
+            if not pts:
+                continue
+            xs = [p["abstain_rate"] for p in pts]
+            ys = [p["critical_error_after_abstain"] for p in pts]
+            ax.plot(xs, ys, marker=marker, markersize=4, label=label,
+                    color=color, linewidth=1.2, alpha=0.85)
+        bl_items = bl["baselines"]
+        for item in bl_items:
+            if item["method"] == "full SkyCert":
+                ax.plot(item["abstain_rate"],
+                        item["critical_error_rate_after_abstain"],
+                        marker="*", markersize=12, color="#4C72B0",
+                        zorder=5)
+        ax.set_xlabel("Abstention rate")
+        ax.set_ylabel("Critical-class miss rate (after abstention)")
+        ax.legend(fontsize=8)
+        ax.set_xlim(-0.02, 1.0)
+        ax.set_ylim(0.0, None)
+        fig.tight_layout()
+        fig.savefig(figs / "pareto_abstention.pdf")
+        plt.close(fig)
+
     print(f"[SkyCert] wrote figures under {figs}")
 
 

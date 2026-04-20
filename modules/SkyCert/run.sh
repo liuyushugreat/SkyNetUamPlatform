@@ -27,6 +27,9 @@ python -m scripts.run_experiment --config configs/default.yaml
 echo "[SkyCert] Running ablation study ..."
 python -m scripts.run_ablation   --config configs/default.yaml
 
+echo "[SkyCert] Running baseline comparison ..."
+python -m scripts.run_baselines  --config configs/default.yaml
+
 echo "[SkyCert] Rendering paper figures ..."
 python -m scripts.plot_results   --config configs/default.yaml
 

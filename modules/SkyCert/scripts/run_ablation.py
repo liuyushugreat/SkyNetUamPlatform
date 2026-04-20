@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -111,15 +112,21 @@ def main(argv: list[str] | None = None) -> None:
     )
 
     # Use a stressed stream (covariate shift) so ablations really bite.
-    rng = np.random.default_rng(config.seed + 1)
+    # Seed matches run_experiment.py so that full-SkyCert numbers are
+    # identical in Table 1 and Table 2.
+    threat_seed = int.from_bytes(
+        hashlib.sha256(b"distribution_shift").digest()[:4], "little"
+    )
+    rng = np.random.default_rng(config.seed + threat_seed)
     X_stream = data.X_test.copy()
+    half = X_stream.shape[0] // 2
     updates = apply_threat(
         "covariate_shift",
-        X=X_stream[X_stream.shape[0] // 2 :],
+        X=X_stream[half:],
         strength=0.8,
         rng=rng,
     )
-    X_stream[X_stream.shape[0] // 2 :] = updates["X"]
+    X_stream[half:] = updates["X"]
     stream = (X_stream, data.y_test)
     calib = (data.X_calib, data.y_calib)
 

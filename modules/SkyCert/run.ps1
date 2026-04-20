@@ -25,6 +25,9 @@ python -m scripts.run_experiment --config configs/default.yaml
 Write-Host "[SkyCert] Running ablation study ..." -ForegroundColor Cyan
 python -m scripts.run_ablation   --config configs/default.yaml
 
+Write-Host "[SkyCert] Running baseline comparison ..." -ForegroundColor Cyan
+python -m scripts.run_baselines  --config configs/default.yaml
+
 Write-Host "[SkyCert] Rendering paper figures ..." -ForegroundColor Cyan
 python -m scripts.plot_results   --config configs/default.yaml
 
