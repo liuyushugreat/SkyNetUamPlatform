@@ -93,18 +93,26 @@ def main(argv: list[str] | None = None) -> None:
     plt.close(fig)
 
     # Figure 3: critical error rate before/after abstention + abstain rate.
-    fig, ax = plt.subplots(figsize=(6.5, 3.2))
+    fig, ax = plt.subplots(figsize=(6.5, 3.8))
     ax.bar(x - width / 2, crit_before, width, label="Critical error (no abstain)",
            color="#C44E52")
     ax.bar(x + width / 2, crit_after, width, label="Critical error (after abstain)",
            color="#8172B2")
-    for xi, a in zip(x, abstain):
-        ax.text(xi, max(crit_before[0], 0.01) + 0.02,
-                f"abstain={a:.2f}", ha="center", fontsize=8, rotation=0)
+    # Position each "abstain=..." label just above the taller of the two
+    # bars for that scenario so it never overlaps either bar.
+    for xi, a, cb, ca in zip(x, abstain, crit_before, crit_after):
+        y_top = max(cb, ca) + 0.015
+        ax.text(xi, y_top, f"abstain={a:.2f}",
+                ha="center", va="bottom", fontsize=8, rotation=0)
+    # Reserve vertical headroom so the legend (placed above the data
+    # area) does not overlap any bar or "abstain=..." annotation.
+    y_upper = max(max(crit_before), max(crit_after)) + 0.05
+    ax.set_ylim(0.0, y_upper * 1.55)
     ax.set_xticks(x)
     ax.set_xticklabels(names, rotation=20, ha="right")
     ax.set_ylabel("Critical-class miss rate")
-    ax.legend(loc="upper left")
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, 1.00), ncol=2,
+              frameon=False, handlelength=1.6, columnspacing=1.2)
     fig.tight_layout()
     fig.savefig(figs / "critical_error.pdf")
     plt.close(fig)
