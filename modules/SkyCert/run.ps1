@@ -28,6 +28,12 @@ python -m scripts.run_ablation   --config configs/default.yaml
 Write-Host "[SkyCert] Running baseline comparison ..." -ForegroundColor Cyan
 python -m scripts.run_baselines  --config configs/default.yaml
 
+Write-Host "[SkyCert] Running extension experiments (lambda sweep, attack-strength sweep, failure cases, MLP) ..." -ForegroundColor Cyan
+python -m scripts.run_extensions --config configs/default.yaml
+
+Write-Host "[SkyCert] Running 5-seed aggregation (Tables 1/2/3 mean+-std) ..." -ForegroundColor Cyan
+python -m scripts.run_multi_seed --config configs/default.yaml
+
 Write-Host "[SkyCert] Rendering paper figures ..." -ForegroundColor Cyan
 python -m scripts.plot_results   --config configs/default.yaml
 

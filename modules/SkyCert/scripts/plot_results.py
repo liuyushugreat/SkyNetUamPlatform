@@ -136,6 +136,59 @@ def main(argv: list[str] | None = None) -> None:
         fig.savefig(figs / "pareto_abstention.pdf")
         plt.close(fig)
 
+    # Figure 5: lambda_drift sweep and beta4 attack-strength sweep, if
+    # extensions.json is present.
+    ext_path = out_dir / "extensions.json"
+    if ext_path.exists():
+        with open(ext_path, "r", encoding="utf-8") as fh:
+            ext = json.load(fh)
+
+        # Lambda sweep.
+        lam_runs = ext.get("lambda_sweep", [])
+        if lam_runs:
+            fig, ax = plt.subplots(figsize=(5.0, 3.0))
+            lams = [r["lambda_drift"] for r in lam_runs]
+            crit = [r["critical_error_rate_after_abstain"] for r in lam_runs]
+            abst = [r["abstain_rate"] for r in lam_runs]
+            ax.plot(lams, crit, marker="o", color="#4C72B0",
+                    label="Critical miss (after abstention)")
+            ax.plot(lams, abst, marker="s", color="#8172B2",
+                    label="Abstention rate", alpha=0.8)
+            ax.set_xlabel(r"$\lambda_{\mathrm{drift}}$")
+            ax.set_ylabel("Rate")
+            ax.legend(fontsize=8, loc="best")
+            ax.set_ylim(0.0, None)
+            fig.tight_layout()
+            fig.savefig(figs / "lambda_sweep.pdf")
+            plt.close(fig)
+
+        # Attack-strength sweeps.
+        sweep = ext.get("attack_strength_sweep", {})
+        if sweep:
+            fig, axes = plt.subplots(1, 2, figsize=(7.5, 3.0))
+            for ax, key, xlabel in [
+                (axes[0], "beta3", r"$\beta_3$ (feature attack $\ell_\infty$)"),
+                (axes[1], "beta4", r"$\beta_4$ (covariate shift strength)"),
+            ]:
+                runs = sweep.get(key, [])
+                xs = [r["strength"] for r in runs]
+                base = [r["critical_error_rate_base"] for r in runs]
+                after = [r["critical_error_rate_after_abstain"] for r in runs]
+                abst = [r["abstain_rate"] for r in runs]
+                ax.plot(xs, base, marker="o", color="#C44E52",
+                        label="Critical miss (no abstain)")
+                ax.plot(xs, after, marker="s", color="#8172B2",
+                        label="Critical miss (after abstain)")
+                ax.plot(xs, abst, marker="^", color="#4C72B0",
+                        linestyle=":", label="Abstain rate", alpha=0.8)
+                ax.set_xlabel(xlabel)
+                ax.set_ylabel("Rate")
+                ax.set_ylim(0.0, None)
+                ax.legend(fontsize=7, loc="best")
+            fig.tight_layout()
+            fig.savefig(figs / "attack_strength_sweep.pdf")
+            plt.close(fig)
+
     print(f"[SkyCert] wrote figures under {figs}")
 
 

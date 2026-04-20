@@ -62,9 +62,13 @@ def _entropy(probs: np.ndarray) -> np.ndarray:
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Run baseline comparison")
     parser.add_argument("--config", required=True)
+    parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--output-name", default="baselines.json")
     args = parser.parse_args(argv)
 
     config = SkyCertConfig.load(args.config)
+    if args.seed is not None:
+        config.seed = int(args.seed)
     out_dir = ensure_dir(config.output_dir)
 
     data = make_uam_dataset(
@@ -81,6 +85,8 @@ def main(argv: list[str] | None = None) -> None:
         num_classes=data.num_classes,
         l2=config.base_model.l2,
         max_iter=config.base_model.max_iter,
+        model_type=config.base_model.type,
+        hidden=config.base_model.hidden,
     ).fit(data.X_train, data.y_train)
     symbolic = SymbolicRuleEngine(
         rules=config.symbolic.rules, num_classes=data.num_classes
@@ -235,9 +241,11 @@ def main(argv: list[str] | None = None) -> None:
         "pareto": pareto,
     }
 
-    with open(out_dir / "baselines.json", "w", encoding="utf-8") as fh:
+    out_path = out_dir / args.output_name
+    output["seed"] = config.seed
+    with open(out_path, "w", encoding="utf-8") as fh:
         json.dump(safe_json(output), fh, indent=2)
-    print(f"[SkyCert] wrote {out_dir / 'baselines.json'}")
+    print(f"[SkyCert] wrote {out_path}")
 
 
 if __name__ == "__main__":

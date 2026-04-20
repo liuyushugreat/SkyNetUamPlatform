@@ -30,6 +30,12 @@ python -m scripts.run_ablation   --config configs/default.yaml
 echo "[SkyCert] Running baseline comparison ..."
 python -m scripts.run_baselines  --config configs/default.yaml
 
+echo "[SkyCert] Running extension experiments (lambda sweep, attack-strength sweep, failure cases, MLP) ..."
+python -m scripts.run_extensions --config configs/default.yaml
+
+echo "[SkyCert] Running 5-seed aggregation (Tables 1/2/3 mean+-std) ..."
+python -m scripts.run_multi_seed --config configs/default.yaml
+
 echo "[SkyCert] Rendering paper figures ..."
 python -m scripts.plot_results   --config configs/default.yaml
 

@@ -41,6 +41,8 @@ from skycert.metrics import (
     detection_metrics,
     empirical_coverage,
     expected_calibration_error,
+    fp_fn_critical,
+    per_class_coverage,
 )
 from skycert.pipeline import SkyCertPipeline
 from skycert.utils import ensure_dir, safe_json
@@ -113,6 +115,7 @@ def _run_single_threat(
     alerts = np.array([d.martingale_alert for d in decisions])
     escalations = np.array([d.kind == DecisionKind.ESCALATE for d in decisions])
 
+    num_classes = config.data.num_classes
     metrics = {
         "threat": {
             "name": threat.name,
@@ -120,6 +123,7 @@ def _run_single_threat(
             "strength": threat.strength,
         },
         "coverage": empirical_coverage(set_mask, y_test),
+        "per_class_coverage": per_class_coverage(set_mask, y_test, num_classes),
         "average_set_size": average_set_size(set_mask),
         "ece": expected_calibration_error(probs, y_test),
         "top1_accuracy": float((preds == y_test).mean()),
@@ -127,6 +131,7 @@ def _run_single_threat(
         "critical_error_rate_after_abstain": abstain_error_rate(
             preds, y_test, abstained
         ),
+        "fp_fn": fp_fn_critical(preds, y_test, abstained),
         "abstain_rate": float(abstained.mean()),
         "alert_rate": float(alerts.mean()),
         "escalation_rate": float(escalations.mean()),
@@ -144,11 +149,29 @@ _CALIB_CACHE: dict[str, np.ndarray] = {}
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Run SkyCert main experiment")
     parser.add_argument("--config", required=True, help="path to YAML config")
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="override the seed declared in the YAML config",
+    )
+    parser.add_argument(
+        "--output-name",
+        default="metrics.json",
+        help="file name for the metrics JSON written under <output_dir>",
+    )
+    parser.add_argument(
+        "--audit-dir-name",
+        default="audit",
+        help="directory name for audit logs under <output_dir>",
+    )
     args = parser.parse_args(argv)
 
     config = SkyCertConfig.load(args.config)
+    if args.seed is not None:
+        config.seed = int(args.seed)
     out_dir = ensure_dir(config.output_dir)
-    audit_dir = ensure_dir(out_dir / "audit")
+    audit_dir = ensure_dir(out_dir / args.audit_dir_name)
 
     data = make_uam_dataset(
         num_train=config.data.num_train,
@@ -166,6 +189,8 @@ def main(argv: list[str] | None = None) -> None:
         num_classes=data.num_classes,
         l2=config.base_model.l2,
         max_iter=config.base_model.max_iter,
+        model_type=config.base_model.type,
+        hidden=config.base_model.hidden,
     ).fit(data.X_train, data.y_train)
     symbolic = SymbolicRuleEngine(
         rules=config.symbolic.rules, num_classes=data.num_classes
@@ -187,10 +212,13 @@ def main(argv: list[str] | None = None) -> None:
         )
         all_metrics.append(metrics)
 
-    with open(out_dir / "metrics.json", "w", encoding="utf-8") as fh:
-        json.dump(safe_json({"runs": all_metrics}), fh, indent=2)
+    out_path = out_dir / args.output_name
+    with open(out_path, "w", encoding="utf-8") as fh:
+        json.dump(
+            safe_json({"seed": config.seed, "runs": all_metrics}), fh, indent=2
+        )
 
-    print(f"[SkyCert] wrote {out_dir/'metrics.json'}")
+    print(f"[SkyCert] wrote {out_path}")
     print(f"[SkyCert] wrote audit logs under {audit_dir}")
 
 

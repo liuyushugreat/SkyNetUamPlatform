@@ -128,7 +128,8 @@ class SkyCertPipeline:
             return conf
         z = (x - self._feature_mean) / self._feature_scale
         drift = float(np.sqrt(np.mean(z * z)))
-        return conf + drift
+        lam = float(getattr(self.config.assurance.martingale, "lambda_drift", 1.0))
+        return conf + lam * drift
 
     def step(
         self,

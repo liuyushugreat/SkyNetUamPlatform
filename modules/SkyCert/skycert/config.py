@@ -60,6 +60,10 @@ class MartingaleConfig:
     type: str = "simple_jumper"
     epsilon: float = 0.92
     threshold: float = 20.0
+    # Relative weight of the input-drift term in the hybrid nonconformity
+    # score. lambda_drift = 1.0 reproduces the default equal-weight design;
+    # the lambda-sweep experiment varies it in {0.3, 0.5, 1.0, 2.0, 3.0}.
+    lambda_drift: float = 1.0
 
 
 @dataclass

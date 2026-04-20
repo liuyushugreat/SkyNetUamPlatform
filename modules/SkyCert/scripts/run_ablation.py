@@ -86,11 +86,16 @@ def _run(
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Run SkyCert ablation study")
     parser.add_argument("--config", required=True)
+    parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--output-name", default="ablation.json")
+    parser.add_argument("--audit-dir-name", default="audit_ablation")
     args = parser.parse_args(argv)
 
     config = SkyCertConfig.load(args.config)
+    if args.seed is not None:
+        config.seed = int(args.seed)
     out_dir = ensure_dir(config.output_dir)
-    audit_dir = ensure_dir(out_dir / "audit_ablation")
+    audit_dir = ensure_dir(out_dir / args.audit_dir_name)
 
     data = make_uam_dataset(
         num_train=config.data.num_train,
@@ -106,6 +111,8 @@ def main(argv: list[str] | None = None) -> None:
         num_classes=data.num_classes,
         l2=config.base_model.l2,
         max_iter=config.base_model.max_iter,
+        model_type=config.base_model.type,
+        hidden=config.base_model.hidden,
     ).fit(data.X_train, data.y_train)
     symbolic = SymbolicRuleEngine(
         rules=config.symbolic.rules, num_classes=data.num_classes
@@ -165,9 +172,10 @@ def main(argv: list[str] | None = None) -> None:
              audit_dir / "full.jsonl")
     )
 
-    with open(out_dir / "ablation.json", "w", encoding="utf-8") as fh:
-        json.dump(safe_json({"runs": results}), fh, indent=2)
-    print(f"[SkyCert] wrote {out_dir/'ablation.json'}")
+    out_path = out_dir / args.output_name
+    with open(out_path, "w", encoding="utf-8") as fh:
+        json.dump(safe_json({"seed": config.seed, "runs": results}), fh, indent=2)
+    print(f"[SkyCert] wrote {out_path}")
 
 
 if __name__ == "__main__":
