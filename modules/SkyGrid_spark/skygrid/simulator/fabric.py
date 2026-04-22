@@ -7,6 +7,7 @@ import numpy as np
 from ..config import FabricConfig
 from .network import Network
 from .node import CloudNode, EdgeNode
+from .state_tier import StateTierModel
 
 
 class Fabric:
@@ -24,6 +25,7 @@ class Fabric:
                 tflops=cfg.edge.tflops,
                 queue_capacity=cfg.edge.queue_capacity,
                 edge_id=i,
+                state_tier=StateTierModel(cfg.state_tier),
             )
             for i in range(cfg.edge.num_nodes)
         ]
@@ -49,4 +51,5 @@ class Fabric:
             "edge_util": [e.utilization() for e in self.edges],
             "cloud_occ": self.cloud.occupancy(),
             "edge_occ": [e.occupancy() for e in self.edges],
+            "state_tier": [e.state_snapshot() for e in self.edges],
         }

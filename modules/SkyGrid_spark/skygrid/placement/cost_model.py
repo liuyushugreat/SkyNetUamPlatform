@@ -1,21 +1,23 @@
-"""Closed-form cost model for a per-op placement decision (§5.2).
+"""Closed-form cost model for a per-op placement decision — COP-H (§4.2).
 
 The cost of placing operator ``o`` at site ``s`` when its producer
 operator ``p`` is at site ``s'`` is the sum of:
 
-*   **Compute time**  = ``flops(o) / tflops(s)``
-*   **Transfer time** = ``bytes(o) / bw(s', s) + latency(s', s)``
-*   **Queueing time** = ``queue_depth(s) / service_rate(s)``
+*   **Compute time**    = ``flops(o) / tflops(s)``
+*   **Transfer time**   = ``bytes(o) / bw(s', s) + latency(s', s)``
+*   **State-access**    = ``state_refs(o) × E[tier_latency]``
+*   **Queueing time**   = ``queue_depth(s) / service_rate(s)``
 
-The model is intentionally simple so that §5.2's approximation analysis
-goes through.  The simulator validates it empirically.
+The state-access term is the key addition in COP-H: it captures the
+penalty of reading spatial state from the three-tier store (hot → DGX
+unified memory, warm → GP Spark NVMe-oF, cold → remote cloud fetch).
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ..config import FabricConfig
+from ..config import FabricConfig, StateTierConfig
 from ..workload.dag import Op, TaskDAG
 
 
@@ -23,23 +25,29 @@ from ..workload.dag import Op, TaskDAG
 class OpCost:
     compute_ms: float
     transfer_ms: float
+    state_ms: float
     queue_ms: float
 
     @property
     def total_ms(self) -> float:
-        return self.compute_ms + self.transfer_ms + self.queue_ms
+        return self.compute_ms + self.transfer_ms + self.state_ms + self.queue_ms
 
 
 class CostModel:
-    """Per-site closed-form cost estimator.
+    """Per-site closed-form cost estimator (COP-H).
 
     ``sites`` is the list ``["cloud"] + ["edge-0", "edge-1", …]``; given
     an op ``o``, a candidate site ``s`` and the currently-placed site of
     the immediate producer, the method returns an :class:`OpCost`.
+
+    The ``state_tier`` configuration controls the expected latency per
+    state reference.  When state tiering is disabled the model degrades
+    gracefully to the original COP cost function.
     """
 
     def __init__(self, fabric: FabricConfig) -> None:
         self.fabric = fabric
+        self.state_tier_cfg: StateTierConfig = fabric.state_tier
         self.site_names = ["cloud"] + [
             f"edge-{i}" for i in range(fabric.edge.num_nodes)
         ]
@@ -59,11 +67,32 @@ class CostModel:
             return (net.edge_cloud_latency_ms, net.edge_cloud_bw_gbps)
         return (net.edge_edge_latency_ms, net.edge_edge_bw_gbps)
 
+    def _state_latency_ms(self, op: Op, site: str) -> float:
+        """Expected state-access penalty for one invocation of *op* at *site*.
+
+        Only *symbolic* ops that consume spatial state incur this cost.
+        Cloud sites always pay ``cold_latency_ms`` per reference because
+        the hot/warm tiers are edge-local.
+        """
+        st = self.state_tier_cfg
+        if not st.enabled:
+            return 0.0
+        state_refs = getattr(op, "state_refs", 0)
+        if state_refs <= 0:
+            return 0.0
+        if site == "cloud":
+            return state_refs * st.cold_latency_ms
+        h, w = st.hot_hit_rate, st.warm_hit_rate
+        per_ref = (
+            h * st.hot_latency_ms
+            + w * st.warm_latency_ms
+            + (1.0 - h - w) * st.cold_latency_ms
+        )
+        return state_refs * per_ref
+
     # --------------------------------------------------------------- cost
 
     def op_cost(self, op: Op, site: str, producer_site: str | None) -> OpCost:
-        # Compute time: flops / tflops.  tflops is in TFLOP/s so we
-        # multiply flops by 1e-12 before dividing.
         tflops = self.tflops[site]
         compute_s = op.cost_flops / (tflops * 1e12)
         compute_ms = compute_s * 1e3
@@ -74,11 +103,12 @@ class CostModel:
             transfer_s = (op.input_bytes * 8.0) / (bw * 1e9)
             transfer_ms = lat + transfer_s * 1e3
 
-        # Queue time: simple M/M/1 approximation: depth / service_rate.
+        state_ms = self._state_latency_ms(op, site)
+
         service_rate = max(1e-6, tflops * 1e12 / max(op.cost_flops, 1.0))
         queue_ms = 1e3 * self.queue_depth[site] / service_rate
 
-        return OpCost(compute_ms, transfer_ms, queue_ms)
+        return OpCost(compute_ms, transfer_ms, state_ms, queue_ms)
 
     def total_cost(self, dag: TaskDAG, placement: dict[str, str]) -> float:
         """End-to-end critical-path cost of a full per-op placement.

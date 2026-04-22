@@ -22,12 +22,13 @@ workload:
 dag:
   # Hybrid NN + symbolic DAG: per-event pipeline.
   # Each op has (compute_cost_flops, input_bytes, output_bytes, prefers).
+  # state_refs: number of spatial-state lookups per invocation (for COP-H).
   ops:
-    - {name: feat_extract, kind: nn,      cost_flops: 2.0e6, input_bytes: 512,  output_bytes: 256, prefers: edge,  batchable: true,  batch_sweet: 32}
-    - {name: risk_score,   kind: nn,      cost_flops: 1.2e8, input_bytes: 256,  output_bytes: 64,  prefers: cloud, batchable: true,  batch_sweet: 64}
-    - {name: rule_check,   kind: symbolic,cost_flops: 5.0e5, input_bytes: 320,  output_bytes: 32,  prefers: edge,  batchable: false, batch_sweet: 1}
-    - {name: conformal,    kind: symbolic,cost_flops: 8.0e5, input_bytes:  96,  output_bytes: 32,  prefers: edge,  batchable: false, batch_sweet: 1}
-    - {name: audit,        kind: symbolic,cost_flops: 2.0e5, input_bytes:  64,  output_bytes: 16,  prefers: edge,  batchable: false, batch_sweet: 1}
+    - {name: feat_extract, kind: nn,      cost_flops: 2.0e6, input_bytes: 512,  output_bytes: 256, prefers: edge,  batchable: true,  batch_sweet: 32, state_refs: 0}
+    - {name: risk_score,   kind: nn,      cost_flops: 1.2e8, input_bytes: 256,  output_bytes: 64,  prefers: cloud, batchable: true,  batch_sweet: 64, state_refs: 0}
+    - {name: rule_check,   kind: symbolic,cost_flops: 5.0e5, input_bytes: 320,  output_bytes: 32,  prefers: edge,  batchable: false, batch_sweet: 1,  state_refs: 8}
+    - {name: conformal,    kind: symbolic,cost_flops: 8.0e5, input_bytes:  96,  output_bytes: 32,  prefers: edge,  batchable: false, batch_sweet: 1,  state_refs: 4}
+    - {name: audit,        kind: symbolic,cost_flops: 2.0e5, input_bytes:  64,  output_bytes: 16,  prefers: edge,  batchable: false, batch_sweet: 1,  state_refs: 2}
   edges:
     - [feat_extract, risk_score]
     - [feat_extract, rule_check]
@@ -36,25 +37,33 @@ dag:
     - [conformal,    audit]
 
 fabric:
-  # Fabric is intentionally *undersized* on the cloud so the placement
-  # decision is non-trivial.  A single cloud replica saturates roughly at
-  # the aggregate offered load of the M regime; the four edges together
-  # outperform the cloud on batched symbolic ops, so COP must choose
-  # wisely.  See §5.1 for the sensitivity sweep (Fig. 7).
+  # Hardware calibration: DGX Spark (compute) + GP Spark (storage).
   cloud:
     num_devices: 1
     tflops: 2.4                   # ~2x one edge; shared by all tenants
     queue_capacity: 20000
   edge:
     num_nodes: 4
-    tflops: 1.2                   # per-edge; 4x1.2 = 4.8 TFLOPS aggregate
+    tflops: 1.0                   # DGX Spark (normalized sim scale)
     queue_capacity: 2048
+    memory_gb: 128.0              # DGX Spark unified memory
+    storage_iops: 1500000         # GP Spark NVMe-oF peak random-read
+    rdma_bw_gbps: 100.0           # ConnectX-7 per-port
   network:
     edge_cloud_latency_ms: 12.0   # one-way
     edge_cloud_bw_gbps: 1.0
     edge_edge_latency_ms: 4.0
     edge_edge_bw_gbps: 0.5
     jitter_ms: 1.5                # gaussian jitter on every hop
+  state_tier:
+    hot_capacity: 10000           # entries in DGX unified memory
+    hot_latency_ms: 0.001         # ~1 µs
+    warm_capacity: 100000         # entries on GP Spark NVMe
+    warm_latency_ms: 0.020        # ~20 µs (GDS/RDMA)
+    cold_latency_ms: 12.0         # remote cloud fetch (== edge→cloud RTT)
+    hot_hit_rate: 0.70
+    warm_hit_rate: 0.25
+    enabled: true
 
 partition:
   method: stp                    # {stp, ldg, hash, random}

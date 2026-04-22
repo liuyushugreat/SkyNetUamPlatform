@@ -1,0 +1,90 @@
+# Scale-up configuration: 8 edge units, ~30k entities.
+# Inherits most settings from default.yaml via SkyGridConfig defaults;
+# only the fields that differ are listed here.
+
+seed: 20260928
+
+workload:
+  name: city_large_8
+  num_entities: 30000
+  area_km: 12.0
+  duration_s: 60.0
+  event_rate_per_entity_s: 1.5
+  mobility:
+    model: corridor
+    speed_mps: 12.0
+    corridor_sigma: 0.02
+  jitter:
+    cov: 0.35
+
+dag:
+  ops:
+    - {name: feat_extract, kind: nn,      cost_flops: 2.0e6, input_bytes: 512,  output_bytes: 256, prefers: edge,  batchable: true,  batch_sweet: 32, state_refs: 0}
+    - {name: risk_score,   kind: nn,      cost_flops: 1.2e8, input_bytes: 256,  output_bytes: 64,  prefers: cloud, batchable: true,  batch_sweet: 64, state_refs: 0}
+    - {name: rule_check,   kind: symbolic,cost_flops: 5.0e5, input_bytes: 320,  output_bytes: 32,  prefers: edge,  batchable: false, batch_sweet: 1,  state_refs: 8}
+    - {name: conformal,    kind: symbolic,cost_flops: 8.0e5, input_bytes:  96,  output_bytes: 32,  prefers: edge,  batchable: false, batch_sweet: 1,  state_refs: 4}
+    - {name: audit,        kind: symbolic,cost_flops: 2.0e5, input_bytes:  64,  output_bytes: 16,  prefers: edge,  batchable: false, batch_sweet: 1,  state_refs: 2}
+  edges:
+    - [feat_extract, risk_score]
+    - [feat_extract, rule_check]
+    - [risk_score,   rule_check]
+    - [rule_check,   conformal]
+    - [conformal,    audit]
+
+fabric:
+  cloud:
+    num_devices: 1
+    tflops: 4.8
+    queue_capacity: 40000
+  edge:
+    num_nodes: 8
+    tflops: 1.0
+    queue_capacity: 2048
+    memory_gb: 128.0
+    storage_iops: 1500000
+    rdma_bw_gbps: 100.0
+  network:
+    edge_cloud_latency_ms: 12.0
+    edge_cloud_bw_gbps: 2.0
+    edge_edge_latency_ms: 4.0
+    edge_edge_bw_gbps: 0.5
+    jitter_ms: 1.5
+  state_tier:
+    hot_capacity: 10000
+    hot_latency_ms: 0.001
+    warm_capacity: 100000
+    warm_latency_ms: 0.020
+    cold_latency_ms: 12.0
+    hot_hit_rate: 0.70
+    warm_hit_rate: 0.25
+    enabled: true
+
+partition:
+  method: stp
+  grid:
+    cells_per_side: 24
+  stp:
+    alpha_spatial: 1.0
+    beta_ruledep: 0.6
+    gamma_balance: 0.4
+    refine_iters: 3
+  rebalance:
+    trigger_imbalance: 1.25
+    amortize_every_s: 10.0
+
+placement:
+  method: cop
+  cop:
+    epsilon: 0.10
+    max_swaps: 128
+
+pipeline:
+  method: abp
+  abp:
+    microbatch_max: 64
+    microbatch_timeout_ms: 8.0
+    staleness_bound: 3
+    backpressure_watermark_high: 0.85
+    backpressure_watermark_low: 0.55
+
+output_dir: outputs/scale_8

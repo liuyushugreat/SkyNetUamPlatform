@@ -26,6 +26,9 @@ class RunMetrics:
     cloud_util: float = 0.0
     edge_util: list[float] = field(default_factory=list)
     rebalance_moves: int = 0
+    state_tier_hit_ratio: float = 0.0
+    state_tier_avg_ms: float = 0.0
+    state_tier_total_ms: float = 0.0
 
     def to_json(self) -> dict:
         return safe_json(self.__dict__)
@@ -48,6 +51,15 @@ def summarize(
     mean = float(np.mean(lat)) if lat else float("nan")
     mx = float(np.max(lat)) if lat else float("nan")
     throughput = completed / duration_s if duration_s > 0 else 0.0
+    # Aggregate state tier stats across all edge nodes.
+    st_snaps = fabric_snapshot.get("state_tier", [])
+    if st_snaps:
+        total_hr = sum(s.get("hit_ratio", 0.0) for s in st_snaps) / len(st_snaps)
+        total_avg = sum(s.get("avg_access_ms", 0.0) for s in st_snaps) / len(st_snaps)
+        total_st_ms = sum(s.get("total_access_ms", 0.0) for s in st_snaps)
+    else:
+        total_hr, total_avg, total_st_ms = 0.0, 0.0, 0.0
+
     return RunMetrics(
         label=label,
         duration_s=float(duration_s),
@@ -68,4 +80,7 @@ def summarize(
         cloud_util=float(fabric_snapshot.get("cloud_util", 0.0)),
         edge_util=[float(u) for u in fabric_snapshot.get("edge_util", [])],
         rebalance_moves=int(rebalance_moves),
+        state_tier_hit_ratio=float(total_hr),
+        state_tier_avg_ms=float(total_avg),
+        state_tier_total_ms=float(total_st_ms),
     )

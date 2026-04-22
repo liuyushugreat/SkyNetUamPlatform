@@ -1,4 +1,4 @@
-"""Ablation sweep: ``full``, ``-STP``, ``-COP``, ``-ABP``."""
+"""Ablation sweep: ``full``, ``-STP``, ``-COP``, ``-ABP``, ``-state_tier``, ``-local_cache``."""
 
 from __future__ import annotations
 
@@ -37,14 +37,24 @@ def main() -> int:
         cfg.partition.method = spec["partition"]
         cfg.placement.method = spec["placement"]
         cfg.pipeline.method  = spec["pipeline"]
+
+        # State tier toggle
+        st_enabled = spec.get("state_tier", True)
+        cfg.fabric.state_tier.enabled = bool(st_enabled)
+        if "hot_hit_rate" in spec:
+            cfg.fabric.state_tier.hot_hit_rate = float(spec["hot_hit_rate"])
+        if "warm_hit_rate" in spec:
+            cfg.fabric.state_tier.warm_hit_rate = float(spec["warm_hit_rate"])
+
         dag = TaskDAG.from_config(cfg.dag)
         w = CityScaleWorkload(cfg.workload, dag, seed=cfg.seed,
                               cells_per_side=cfg.partition.grid.cells_per_side)
         rt = SkyGridRuntime(cfg, RuntimeConfig(label=name))
         m = rt.run(w)
         rows.append({"variant": name, "spec": spec, "metrics": m.to_json()})
-        print(f"[ablation] {name:<10} p99={m.latency_ms['p99']:.2f}ms "
-              f"tput={m.throughput_ops:.1f}ops/s cross_edge={m.cross_edge_bytes:.0f}B",
+        print(f"[ablation] {name:<16} p99={m.latency_ms['p99']:.2f}ms "
+              f"tput={m.throughput_ops:.1f}ops/s cross_edge={m.cross_edge_bytes:.0f}B "
+              f"state_hr={m.state_tier_hit_ratio:.3f}",
               flush=True)
 
     dump_json(out_path, {

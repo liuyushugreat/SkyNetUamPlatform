@@ -26,6 +26,7 @@ class Op:
     prefers: str                 # "cloud" | "edge"
     batchable: bool
     batch_sweet: int
+    state_refs: int = 0          # spatial state lookups per invocation
 
     @classmethod
     def from_spec(cls, s: OpSpec) -> "Op":
@@ -38,6 +39,7 @@ class Op:
             prefers=s.prefers,
             batchable=bool(s.batchable),
             batch_sweet=int(s.batch_sweet),
+            state_refs=int(getattr(s, "state_refs", 0)),
         )
 
 

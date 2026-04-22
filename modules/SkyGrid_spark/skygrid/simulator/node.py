@@ -13,7 +13,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Optional
 
+from ..config import StateTierConfig
 from ..workload.dag import Op
+from .state_tier import StateTierModel
 
 
 @dataclass
@@ -96,3 +98,21 @@ class CloudNode(ComputeNode):
 class EdgeNode(ComputeNode):
     edge_id: int = 0
     partition_load: int = 0      # # entities currently assigned here
+    state_tier: StateTierModel = field(default_factory=StateTierModel)
+
+    def state_access_ms(self, op: Op, batch_size: int = 1) -> float:
+        """Return state-access latency for *op* on this edge node.
+
+        State reads across events in a micro-batch are pipelined by
+        the RDMA NIC; the per-batch latency equals the per-event
+        latency (not multiplied by batch_size).  We still account
+        for total references in the stats.
+        """
+        refs = getattr(op, "state_refs", 0)
+        if refs <= 0 or not self.state_tier.enabled:
+            return 0.0
+        self.state_tier.access_latency_ms(refs * batch_size)
+        return self.state_tier.expected_latency_ms(refs)
+
+    def state_snapshot(self) -> dict:
+        return self.state_tier.snapshot()

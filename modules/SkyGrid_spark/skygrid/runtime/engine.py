@@ -238,6 +238,12 @@ class SkyGridRuntime:
                 max_tms = tms
         arrival_ms = arrival_ms + max_tms
 
+        # State-access penalty: symbolic ops reading spatial state incur a
+        # tier-dependent latency (hot → unified memory, warm → NVMe, cold → cloud).
+        from ..simulator.node import EdgeNode as _EN
+        if isinstance(node, _EN):
+            arrival_ms += node.state_access_ms(op, batch_size=len(mb.events))
+
         finish_ms = node.enqueue(arrival_ms, op, batch_size=len(mb.events))
         node.sample_utilization(finish_ms)
         self.pipeline.observe_occupancy(mb.site, node.occupancy())

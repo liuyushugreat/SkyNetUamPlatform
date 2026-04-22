@@ -53,6 +53,7 @@ class OpSpec:
     prefers: str                # "cloud" or "edge"
     batchable: bool = False
     batch_sweet: int = 1
+    state_refs: int = 0         # spatial state lookups per invocation
 
 
 @dataclass
@@ -74,8 +75,24 @@ class CloudConfig:
 @dataclass
 class EdgeConfig:
     num_nodes: int = 4
-    tflops: float = 1.2
+    tflops: float = 1.0
     queue_capacity: int = 2048
+    memory_gb: float = 128.0        # DGX Spark unified memory
+    storage_iops: int = 1_500_000   # GP Spark NVMe-oF peak random-read
+    rdma_bw_gbps: float = 100.0     # ConnectX-7 per-port
+
+
+@dataclass
+class StateTierConfig:
+    """Three-tier state access: hot (unified mem) / warm (NVMe) / cold (cloud)."""
+    hot_capacity: int = 10_000
+    hot_latency_ms: float = 0.001       # DGX Spark unified memory (~1 µs)
+    warm_capacity: int = 100_000
+    warm_latency_ms: float = 0.020      # GP Spark NVMe-oF / RDMA (~20 µs)
+    cold_latency_ms: float = 12.0       # edge→cloud RTT
+    hot_hit_rate: float = 0.70
+    warm_hit_rate: float = 0.25
+    enabled: bool = True
 
 
 @dataclass
@@ -92,6 +109,7 @@ class FabricConfig:
     cloud: CloudConfig = field(default_factory=CloudConfig)
     edge: EdgeConfig = field(default_factory=EdgeConfig)
     network: NetworkConfig = field(default_factory=NetworkConfig)
+    state_tier: StateTierConfig = field(default_factory=StateTierConfig)
 
 
 # ---------------------------------------------------------------------- STP / COP / ABP
@@ -193,10 +211,31 @@ class SkyGridConfig:
         dag = DAGConfig(ops=ops, edges=edges)
 
         fab = raw.get("fabric", {})
+        edge_raw = fab.get("edge", {})
+        edge = EdgeConfig(
+            num_nodes=int(edge_raw.get("num_nodes", 4)),
+            tflops=float(edge_raw.get("tflops", 1.0)),
+            queue_capacity=int(edge_raw.get("queue_capacity", 2048)),
+            memory_gb=float(edge_raw.get("memory_gb", 128.0)),
+            storage_iops=int(edge_raw.get("storage_iops", 1_500_000)),
+            rdma_bw_gbps=float(edge_raw.get("rdma_bw_gbps", 100.0)),
+        )
+        st_raw = fab.get("state_tier", {})
+        state_tier = StateTierConfig(
+            hot_capacity=int(st_raw.get("hot_capacity", 10_000)),
+            hot_latency_ms=float(st_raw.get("hot_latency_ms", 0.001)),
+            warm_capacity=int(st_raw.get("warm_capacity", 100_000)),
+            warm_latency_ms=float(st_raw.get("warm_latency_ms", 0.020)),
+            cold_latency_ms=float(st_raw.get("cold_latency_ms", 12.0)),
+            hot_hit_rate=float(st_raw.get("hot_hit_rate", 0.70)),
+            warm_hit_rate=float(st_raw.get("warm_hit_rate", 0.25)),
+            enabled=bool(st_raw.get("enabled", True)),
+        )
         fabric = FabricConfig(
             cloud=CloudConfig(**fab.get("cloud", {})),
-            edge=EdgeConfig(**fab.get("edge", {})),
+            edge=edge,
             network=NetworkConfig(**fab.get("network", {})),
+            state_tier=state_tier,
         )
 
         part = raw.get("partition", {})
