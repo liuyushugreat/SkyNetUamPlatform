@@ -61,9 +61,19 @@ class SkyGridRuntime:
         self.dag = TaskDAG.from_config(cfg.dag)
         self.fabric = Fabric(cfg.fabric, seed=cfg.seed)
         self.cost_model = CostModel(cfg.fabric)
+        # Capacity weights derived from per-edge TFLOPS (falls back to
+        # uniform 1/K in the homogeneous case).  Used by STP to match
+        # partition mass to compute capacity and by the rebalancer to
+        # evict entities from degraded edges.
+        per_node = cfg.fabric.edge.tflops_per_node
+        self._capacity_weights = (
+            list(per_node) if per_node is not None
+            else [cfg.fabric.edge.tflops] * cfg.fabric.edge.num_nodes
+        )
         self.partitioner = build_partitioner(
             cfg.partition.method,
             num_edges=cfg.fabric.edge.num_nodes,
+            capacity_weights=self._capacity_weights,
         )
         self.pipeline = (
             build_pipeline(cfg.pipeline.method, cfg=cfg.pipeline.abp)
@@ -126,12 +136,16 @@ class SkyGridRuntime:
                 if mb is not None:
                     self._dispatch(mb, now_ms)
 
-            # Periodic rebalance (amortized).
+            # Periodic rebalance (amortized, capacity-aware).
             if (now_ms - last_rebalance_ms) >= (
                 cfg.partition.rebalance.amortize_every_s * 1e3
             ):
-                if self.rebalancer.needs_rebalance(self._part):
-                    new_part, moves = self.rebalancer.rebalance(self._part)
+                if self.rebalancer.needs_rebalance(
+                    self._part, self._capacity_weights
+                ):
+                    new_part, moves = self.rebalancer.rebalance(
+                        self._part, self._capacity_weights
+                    )
                     rebalance_moves += moves
                     self._part = new_part
                 last_rebalance_ms = now_ms

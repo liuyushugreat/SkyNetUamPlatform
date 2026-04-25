@@ -45,15 +45,28 @@ class CostModel:
     gracefully to the original COP cost function.
     """
 
-    def __init__(self, fabric: FabricConfig) -> None:
+    def __init__(
+        self,
+        fabric: FabricConfig,
+        override_state_tier_enabled: bool | None = None,
+    ) -> None:
         self.fabric = fabric
         self.state_tier_cfg: StateTierConfig = fabric.state_tier
+        if override_state_tier_enabled is not None:
+            # Produce a shallow copy so the outside fabric is not mutated.
+            from dataclasses import replace as _replace
+            self.state_tier_cfg = _replace(
+                fabric.state_tier, enabled=bool(override_state_tier_enabled)
+            )
         self.site_names = ["cloud"] + [
             f"edge-{i}" for i in range(fabric.edge.num_nodes)
         ]
         self.tflops = {self.site_names[0]: fabric.cloud.tflops}
-        for s in self.site_names[1:]:
-            self.tflops[s] = fabric.edge.tflops
+        per_node = fabric.edge.tflops_per_node
+        for i, s in enumerate(self.site_names[1:]):
+            self.tflops[s] = (
+                per_node[i] if per_node is not None else fabric.edge.tflops
+            )
         self.queue_depth = {s: 0.0 for s in self.site_names}
 
     # --------------------------------------------------------------- helpers

@@ -1,0 +1,96 @@
+# Compute-bound regime: heavier NN stage to saturate edge compute.
+# Used to show throughput/goodput differentiation which is invisible
+# under the default network-bound M regime.
+#
+# Differences from default.yaml:
+#   * risk_score FLOPs scaled 10x  (1.2e8 -> 1.2e9)
+#   * event rate doubled           (1.5 -> 3.0 events/entity/s)
+#   * 20k entities on 4 edges
+#   * shorter virtual horizon to keep the run under 2 min wall-clock
+
+seed: 20260928
+
+workload:
+  name: city_compute_bound
+  num_entities: 20000
+  area_km: 8.0
+  duration_s: 30.0
+  event_rate_per_entity_s: 3.0
+  mobility:
+    model: corridor
+    speed_mps: 12.0
+    corridor_sigma: 0.02
+  jitter:
+    cov: 0.35
+
+dag:
+  ops:
+    - {name: feat_extract, kind: nn,      cost_flops: 4.0e6, input_bytes: 512,  output_bytes: 256, prefers: edge,  batchable: true,  batch_sweet: 32, state_refs: 0}
+    - {name: risk_score,   kind: nn,      cost_flops: 1.2e9, input_bytes: 256,  output_bytes: 64,  prefers: cloud, batchable: true,  batch_sweet: 64, state_refs: 0}
+    - {name: rule_check,   kind: symbolic,cost_flops: 5.0e5, input_bytes: 320,  output_bytes: 32,  prefers: edge,  batchable: false, batch_sweet: 1,  state_refs: 8}
+    - {name: conformal,    kind: symbolic,cost_flops: 8.0e5, input_bytes:  96,  output_bytes: 32,  prefers: edge,  batchable: false, batch_sweet: 1,  state_refs: 4}
+    - {name: audit,        kind: symbolic,cost_flops: 2.0e5, input_bytes:  64,  output_bytes: 16,  prefers: edge,  batchable: false, batch_sweet: 1,  state_refs: 2}
+  edges:
+    - [feat_extract, risk_score]
+    - [feat_extract, rule_check]
+    - [risk_score,   rule_check]
+    - [rule_check,   conformal]
+    - [conformal,    audit]
+
+fabric:
+  cloud:
+    num_devices: 1
+    tflops: 2.4
+    queue_capacity: 40000
+  edge:
+    num_nodes: 4
+    tflops: 1.0
+    queue_capacity: 4096
+    memory_gb: 128.0
+    storage_iops: 1500000
+    rdma_bw_gbps: 100.0
+  network:
+    edge_cloud_latency_ms: 12.0
+    edge_cloud_bw_gbps: 1.0
+    edge_edge_latency_ms: 4.0
+    edge_edge_bw_gbps: 0.5
+    jitter_ms: 1.5
+  state_tier:
+    hot_capacity: 10000
+    hot_latency_ms: 0.001
+    warm_capacity: 100000
+    warm_latency_ms: 0.020
+    cold_latency_ms: 12.0
+    hot_hit_rate: 0.70
+    warm_hit_rate: 0.25
+    enabled: true
+
+partition:
+  method: stp
+  grid:
+    cells_per_side: 16
+  stp:
+    alpha_spatial: 1.0
+    beta_ruledep: 0.6
+    gamma_balance: 0.4
+    refine_iters: 2
+  rebalance:
+    trigger_imbalance: 1.25
+    amortize_every_s: 10.0
+
+placement:
+  method: cop
+  cop:
+    epsilon: 0.10
+    max_swaps: 64
+
+pipeline:
+  method: abp
+  abp:
+    microbatch_max: 64
+    microbatch_timeout_ms: 8.0
+    staleness_bound: 2
+    backpressure_watermark_high: 0.85
+    backpressure_watermark_low: 0.55
+
+output_dir: outputs/compute_bound

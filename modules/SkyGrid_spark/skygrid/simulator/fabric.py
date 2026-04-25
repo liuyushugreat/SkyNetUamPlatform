@@ -19,10 +19,16 @@ class Fabric:
             tflops=cfg.cloud.tflops,
             queue_capacity=cfg.cloud.queue_capacity,
         )
+        per_node = cfg.edge.tflops_per_node
+        if per_node is not None and len(per_node) != cfg.edge.num_nodes:
+            raise ValueError(
+                f"tflops_per_node length {len(per_node)} != num_nodes "
+                f"{cfg.edge.num_nodes}"
+            )
         self.edges: list[EdgeNode] = [
             EdgeNode(
                 name=f"edge-{i}",
-                tflops=cfg.edge.tflops,
+                tflops=(per_node[i] if per_node is not None else cfg.edge.tflops),
                 queue_capacity=cfg.edge.queue_capacity,
                 edge_id=i,
                 state_tier=StateTierModel(cfg.state_tier),

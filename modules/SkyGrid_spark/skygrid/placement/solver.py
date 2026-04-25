@@ -25,6 +25,18 @@ from ..workload.dag import TaskDAG
 from .cost_model import CostModel
 
 
+def _cost_model_without_state_tier(base: CostModel) -> CostModel:
+    """Return a sibling CostModel whose state-tier term is disabled.
+
+    The returned model shares ``base.fabric`` by reference but overrides
+    the cached ``StateTierConfig`` so the placer chooses based on
+    compute + transfer + queue only.  This lets us express a "locality-
+    aware but tier-agnostic" baseline (``LocAwarePlacement``) without
+    mutating the caller's fabric.
+    """
+    return CostModel(base.fabric, override_state_tier_enabled=False)
+
+
 @dataclass
 class COPConfigLocal:
     epsilon: float = 0.10
@@ -92,6 +104,15 @@ class COPSolver:
             placement[op.name] = best_site
         return placement
 
+    # -------------------------------------------------- with-penalty helper
+
+    def _penalty(self, op, cost_total: float, site: str) -> float:
+        if (op.prefers == "cloud" and site != "cloud") or (
+            op.prefers == "edge" and site == "cloud"
+        ):
+            return 0.05 * cost_total
+        return 0.0
+
     # -------------------------------------------------------- bounded swaps
 
     def _local_swaps(self, placement: dict[str, str]) -> dict[str, str]:
@@ -116,3 +137,23 @@ class COPSolver:
             if not moved:
                 break
         return placement
+
+
+class LocAwareSolver(COPSolver):
+    """Locality-aware but state-tier-agnostic placement baseline.
+
+    ``LocAware`` is identical to COP except that its cost model has the
+    state-tier term disabled.  This isolates the marginal contribution
+    of the tiered storage cost in \\(\\bar\\tau(s)\\): any remaining
+    improvement of SkyGrid over LocAware is attributable to the state-
+    tier awareness of the placer.
+    """
+
+    def __init__(
+        self,
+        dag: TaskDAG,
+        cost_model: CostModel,
+        config: COPConfigLocal | None = None,
+    ) -> None:
+        tier_blind = _cost_model_without_state_tier(cost_model)
+        super().__init__(dag, tier_blind, config)

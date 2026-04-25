@@ -1,8 +1,8 @@
-# SkyShield — Field-Validated Real-Time Counter-UAV Interception Runtime
+# SkyShield — Field-Anchored Real-Time Counter-UAV Interception Runtime
 
 > **RTSS 2026 reviewers:** this directory is the complete, anonymous
 > reproduction artifact for our submission
-> *"SkyShield: A Field-Validated Radar-Guided Real-Time Counter-UAV
+> *"SkyShield: A Field-Anchored Radar-Guided Real-Time Counter-UAV
 > Interception System for Urban Low-Altitude Defense"*
 > (`pressRequire/SkyShield/SkyShield_RTSS2026/`).
 > Run `bash run.sh` on Linux/macOS or `./run.ps1` on Windows to
@@ -41,8 +41,8 @@ are driven by the same runtime and aggregated by
 |---|---|---|
 | **Three-plane architecture** | Explicit stage-budget table that composes $D_{e2e}=1500$ ms | End-to-end P99 **391 ms**; every stage P99 $\leq 2\times$ its P50 |
 | **EDF + slack stealing** | Threat-prioritised queue under HIL authorization delay | **−22 %** P99 latency vs. FIFO under concurrency 4 |
-| **Runtime safety guard** | Friendly-airspace / low-confidence / subthreshold checks before the launch gate | **100 % correct** over $6 \times 100$ binomial trials ($95 \%$ LCB $0.964$) |
-| **Bounded fail-safe abort** | Engagement-progress-aware recall, refuses return-safe when $R_3$ would miss | **100 %** abort-within-deadline across all field + augmented sorties |
+| **Runtime safety guard** | Friendly-airspace / low-confidence / subthreshold checks before the launch gate | Correct response for five of six modeled scenarios over $6 \times 100$ binomial trials ($95 \%$ LCB $0.964$) |
+| **Bounded fail-safe abort** | Engagement-progress-aware recall, refuses return-safe when $R_3$ would miss | **100 %** abort-within-deadline across the field-anchored replay workload |
 | **Multi-radar urban deployment** | $300\,\text{km}^2$ district, $1$–$12$ radar sweep $\times$ $1$–$8$ target concurrency | Deadline miss $0.72 \to 0.00$ going $1 \to 6$ radars at concurrency $1$ |
 
 End-to-end, on the $10$-field-sortie + $50$-augmented-sortie
@@ -157,13 +157,12 @@ and deterministic.
 | Fig. 1 – System architecture              | `pressRequire/SkyShield/.../fig_arch.pdf`       |
 | Fig. 2 – Perception link                  | `pressRequire/SkyShield/.../fig_sensing.pdf`    |
 | Fig. 3 – Real-time closed loop            | `pressRequire/SkyShield/.../fig_loop.pdf`       |
-| Fig. 4 – Physical interception test flow  | `pressRequire/SkyShield/.../fig_test.pdf`       |
-| Fig. 5 – E2 timing CDF                    | `outputs/fig_timing_cdf.pdf`                    |
-| Fig. 6 – E3 stress trade-off              | `outputs/fig_stress_tradeoff.pdf`               |
-| Fig. 7 – E4 multi-radar scaling           | `outputs/fig_multi_radar_scaling.pdf`           |
-| Fig. 8 – Urban deployment                 | `pressRequire/SkyShield/.../fig_urban.pdf`      |
-| Fig. 9 – E5 ablation bars                 | `outputs/fig_ablation_bars.pdf`                 |
-| Fig. 10 – E6 safety CIs                   | `outputs/fig_safety_ci.pdf`                     |
+| Fig. 4 – E2 timing CDF                    | `outputs/fig_timing_cdf.pdf`                    |
+| Fig. 5 – E3 stress trade-off              | `outputs/fig_stress_tradeoff.pdf`               |
+| Fig. 6 – E4 multi-radar scaling           | `outputs/fig_multi_radar_scaling.pdf`           |
+| Fig. 7 – Urban deployment                 | `pressRequire/SkyShield/.../fig_urban.pdf`      |
+| Fig. 8 – E5 ablation bars                 | `outputs/fig_ablation_bars.pdf`                 |
+| Fig. 9 – E6 safety CIs                    | `outputs/fig_safety_ci.pdf`                     |
 | Tab. I – Stage budget                     | `skyshield/runtime/engine.py` (`_POLICY_MULT`)  |
 | Tab. II – Field replay                    | `data/field_sorties.json` + `outputs/field_replay.json` |
 | Tab. III – E2 stage latencies             | `outputs/timing.json`                           |
@@ -187,7 +186,7 @@ and deterministic.
   `_friendly_airspace`, `_low_confidence`, ...) and re-run
   E6; the binomial CI machinery will pick it up automatically.
 
-## Reproducibility guarantee
+## Reproducibility contract
 
 Every number in the paper (abstract, tables, figures, footnotes) is
 a direct output of the scripts above running against

@@ -80,6 +80,12 @@ class EdgeConfig:
     memory_gb: float = 128.0        # DGX Spark unified memory
     storage_iops: int = 1_500_000   # GP Spark NVMe-oF peak random-read
     rdma_bw_gbps: float = 100.0     # ConnectX-7 per-port
+    # Optional per-edge TFLOPS override used for heterogeneous or
+    # degraded-mode experiments. When None, every edge uses ``tflops``.
+    # When a list of length ``num_nodes`` is provided, each edge gets
+    # its own compute capacity, enabling hetero / graceful-degradation
+    # studies without changing the rest of the fabric.
+    tflops_per_node: list[float] | None = None
 
 
 @dataclass
@@ -212,6 +218,9 @@ class SkyGridConfig:
 
         fab = raw.get("fabric", {})
         edge_raw = fab.get("edge", {})
+        tflops_per_node = edge_raw.get("tflops_per_node")
+        if tflops_per_node is not None:
+            tflops_per_node = [float(x) for x in tflops_per_node]
         edge = EdgeConfig(
             num_nodes=int(edge_raw.get("num_nodes", 4)),
             tflops=float(edge_raw.get("tflops", 1.0)),
@@ -219,6 +228,7 @@ class SkyGridConfig:
             memory_gb=float(edge_raw.get("memory_gb", 128.0)),
             storage_iops=int(edge_raw.get("storage_iops", 1_500_000)),
             rdma_bw_gbps=float(edge_raw.get("rdma_bw_gbps", 100.0)),
+            tflops_per_node=tflops_per_node,
         )
         st_raw = fab.get("state_tier", {})
         state_tier = StateTierConfig(

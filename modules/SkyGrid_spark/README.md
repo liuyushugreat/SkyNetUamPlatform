@@ -1,44 +1,44 @@
 # SkyGrid — Distributed Edge-Cloud Runtime for Neuro-Symbolic UAM Reasoning
 
-SkyGrid is the **parallel/distributed runtime** of the SkyNetUAM
-platform.  It is the companion artifact of our ICPP 2026 submission:
+SkyGrid is the **parallel/distributed runtime** evaluated in the
+ICPP 2026 submission:
 
-> *SkyGrid: Spatio-Temporal Partitioning, Cost-aware Operator
-> Placement, and Asynchronous Batched Pipelines for City-Scale
-> Neuro-Symbolic UAM Reasoning*
+> *SkyGrid: Hardware-Aware Spatio-Temporal Partitioning and Placement
+> for Hybrid Neural-Symbolic Pipelines on Edge-Cloud Fabrics*
 
 The module answers a single question that the rest of the platform
 leaves open:
 
-> *How do we schedule a hybrid neural + symbolic DAG over a real
-> edge-cloud fabric so that 12 K ops/s of UAM telemetry can be
-> reasoned about with 55 ms p99 latency and 8× less cross-edge
-> traffic than a cloud-only baseline?*
+> *How do we schedule a hybrid neural + symbolic DAG over an edge-cloud
+> fabric so that city-scale UAM telemetry stays near a 100 ms p99 SLO
+> while reducing cross-edge traffic and remaining robust to degraded
+> edge capacity?*
 
 ## At a glance
 
 | Contribution | Role | Measurable effect (default config) |
 |---|---|---|
-| **STP** Spatio-Temporal Partitioning | Spatial grid + FM refinement bounded by $(1{+}\gamma)\bar n$ | Edge cut 0.761 → **0.077** (10×), spatial compactness 29.4 → **12.4** |
-| **COP** Cost-aware Operator Placement | Closed-form compute + transfer + queueing cost, greedy + local swap | p99 latency 84.5 ms (cloud-only) → **55.6 ms** (−34 %) |
-| **ABP** Asynchronous Batched Pipeline | Micro-batching with bounded staleness + backpressure per stage | All 729 K events complete within a 60 s virtual horizon at 12 K ops/s |
+| **STP** Spatio-Temporal Partitioning | Spatial grid + FM refinement bounded by $(1{+}\gamma)\bar n$ | Edge cut 0.680 -> **0.077** vs. LDG and cross-edge traffic **397.8 MB -> 173.9 MB** |
+| **COP-H** Hardware-aware Operator Placement | Closed-form compute + transfer + state-tier + queueing cost, greedy + local swap | p99 latency **~100.5 ms -> 72.1 ms** vs. static placement |
+| **ABP** Asynchronous Batched Pipeline | Micro-batching with bounded staleness + hysteretic backpressure per stage | Provides bounded overlap/backpressure; sync is also reported because it is faster at unsaturated M-load |
 
 End-to-end, SkyGrid delivers:
 
-- **p50 / p95 / p99 = 32.3 / 49.3 / 55.6 ms** at 12.16 K ops/s.
-- **149.7 MB** of cross-edge traffic vs. **1.22 GB** for cloud-only
-  (−88 %).
+- **p50 / p95 / p99 = 48.42 / 65.31 / 72.14 ms** at 13.94 K ops/s
+  in the three-seed M-regime summary.
+- **173.9 MB** of cross-edge traffic vs. **397.8 MB** for LDG+COP-H
+  and **~1.68 GB** for static-placement baselines.
 - **Partition reassignment cost is amortized**: 493 boundary-cell
   moves across the whole 60 s window.
 - Deterministic and CPU-only: one seed reproduces every number.
 
 Full details and the evaluation tables are in the ICPP 2026 paper at
-[`pressRequire/SkyGrid/SkyGrid_ICPP2026/skygrid_icpp2026.tex`](../../../pressRequire/SkyGrid/SkyGrid_ICPP2026).
+[`pressRequire/SkyGrid_spark/skygrid_spark.tex`](../../../pressRequire/SkyGrid_spark/skygrid_spark.tex).
 
 ## Repository layout
 
 ```
-modules/SkyGrid/
+modules/SkyGrid_spark/
 ├── configs/                  # YAML configs (default / ablation / scaling)
 ├── scripts/
 │   ├── run_experiment.py     # main Table-1 runs (7 configs, batched)
@@ -65,7 +65,7 @@ The artifact is pure Python + NumPy.  No GPU, no network, no API keys.
 ### 1. Install
 
 ```bash
-cd modules/SkyGrid
+cd modules/SkyGrid_spark
 python -m pip install -r requirements.txt
 python -m pip install -e .
 ```
@@ -73,22 +73,42 @@ python -m pip install -e .
 ### 2. Reproduce all paper results (~5–10 min on one CPU core)
 
 ```bash
-# Main table (7 configurations): Table 1 of the paper
+# Main table (8 configurations): Table 2 of the paper
 python scripts/run_experiment.py --config configs/default.yaml \
-    --out outputs/metrics.json
+    --output outputs/metrics.json
 
-# Ablations: STP / COP / ABP isolated
+# Three-seed aggregate for Table 2
+python scripts/run_multiseed.py --config configs/default.yaml \
+    --seeds 20260928 20260929 20260930 \
+    --out outputs/multiseed.json
+
+# Ablations: STP / COP-H / ABP / state locality isolated
 python scripts/run_ablation.py --config configs/default.yaml \
-    --out outputs/ablation
+    --output outputs/ablation/ablation.json
 
 # Scaling (weak / strong / entity)
 python scripts/run_scaling.py --config configs/scaling.yaml \
-    --out outputs/scaling
+    --output outputs/scaling/scaling.json
+
+# Fault/degradation and cost-model validation
+python scripts/run_fault.py --config configs/default.yaml \
+    --out outputs/fault/fault.json
+python scripts/run_validation.py --config configs/default.yaml \
+    --out outputs/validation/validation.json
+
+# Pipeline stress: ABP vs synchronous execution under bursty load
+python scripts/run_pipeline_stress.py --config configs/default.yaml \
+    --out outputs/burst_pipeline.json
+
+# Placement stress: state-tier-aware COP-H vs tier-blind LocAware
+python scripts/run_placement_stress.py --config configs/default.yaml \
+    --out outputs/placement_stress.json
 
 # Figures 2–5 (bars, tail-CDF, cross-edge traffic, scaling curves)
 python scripts/plot_results.py --metrics outputs/metrics.json \
-    --ablation outputs/ablation --scaling outputs/scaling \
-    --out outputs/figs
+    --ablation outputs/ablation/ablation.json \
+    --scaling outputs/scaling/scaling.json \
+    --outdir outputs/figs
 ```
 
 ### 3. Run the unit-test suite (18 cases)
@@ -115,11 +135,11 @@ Expected output: `18 passed` in ~12 s.
 
 ## Reproducibility guarantee
 
-Every number in the paper (tables, figures, footnotes) is a direct
-output of the scripts in `scripts/` on top of the YAML configs in
-`configs/`.  Seeds are pinned in each config (default `20260928`).
-`SkyGridRuntime` emits `RunMetrics` dataclasses that serialize to
-JSON verbatim — reviewers can diff two runs field-by-field.
+Every number in the paper is generated by scripts under `scripts/`
+from YAML configs under `configs/`.  Seeds are pinned in each config
+(default `20260928`), and `SkyGridRuntime` emits `RunMetrics`
+dataclasses that serialize to JSON verbatim, so reviewers can diff two
+runs field-by-field.
 
 ## License
 

@@ -26,11 +26,12 @@ from skygrid.workload.dag import TaskDAG
 BASELINES: list[dict[str, Any]] = [
     {"label": "cloud-only",      "partition": "hash", "placement": "all_cloud", "pipeline": "abp"},
     {"label": "edge-only",       "partition": "hash", "placement": "all_edge",  "pipeline": "abp"},
-    {"label": "hash+static",     "partition": "hash",   "placement": "static", "pipeline": "abp"},
-    {"label": "random+static",   "partition": "random", "placement": "static", "pipeline": "abp"},
-    {"label": "ldg+static",      "partition": "ldg",    "placement": "static", "pipeline": "abp"},
-    {"label": "ldg+cop",         "partition": "ldg",    "placement": "cop",    "pipeline": "abp"},
-    {"label": "skygrid (stp+cop+abp)", "partition": "stp", "placement": "cop", "pipeline": "abp"},
+    {"label": "hash+static",     "partition": "hash",   "placement": "static",    "pipeline": "abp"},
+    {"label": "random+static",   "partition": "random", "placement": "static",    "pipeline": "abp"},
+    {"label": "ldg+static",      "partition": "ldg",    "placement": "static",    "pipeline": "abp"},
+    {"label": "ldg+cop",         "partition": "ldg",    "placement": "cop",       "pipeline": "abp"},
+    {"label": "ldg+locaware",    "partition": "ldg",    "placement": "loc_aware", "pipeline": "abp"},
+    {"label": "skygrid (stp+cop+abp)", "partition": "stp", "placement": "cop",    "pipeline": "abp"},
 ]
 
 

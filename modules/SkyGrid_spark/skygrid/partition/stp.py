@@ -42,10 +42,23 @@ class SpatioTemporalPartitioner:
         num_edges: int,
         params: STPParams | None = None,
         seed: int = 20260928,
+        capacity_weights: list[float] | None = None,
     ) -> None:
         self.num_edges = int(num_edges)
         self.params = params or STPParams()
         self.seed = int(seed)
+        # Per-edge capacity weights (e.g. normalized TFLOPS).  When
+        # ``None``, every edge is assigned an equal ``1/K`` share of
+        # the global capacity.  A heterogeneous fabric (or a degraded
+        # edge) is expressed as non-uniform weights, and STP then
+        # matches cell mass to capacity so slow/failing edges receive
+        # proportionally fewer entities.
+        if capacity_weights is None:
+            self.capacity_weights = np.full(self.num_edges, 1.0 / self.num_edges)
+        else:
+            w = np.asarray(capacity_weights, dtype=np.float64)
+            w = w / max(1e-9, w.sum())
+            self.capacity_weights = w
 
     # ------------------------------------------------------------------ API
 
@@ -53,6 +66,7 @@ class SpatioTemporalPartitioner:
         N = len(entities)
         C = self.params.cells_per_side ** 2
         K = self.num_edges
+        cw = self.capacity_weights
 
         cells = np.array([e.home_cell for e in entities], dtype=np.int32)
         cell_counts = np.bincount(cells, minlength=C)
@@ -86,14 +100,16 @@ class SpatioTemporalPartitioner:
         center_cols = cols[centers]
 
         # ---------------- cell → edge scoring
-        cap_target = N / K
+        # Per-edge capacity budget: cap_per_edge[k] = w[k] * N.  In the
+        # homogeneous case w = 1/K for every edge and cap_per_edge
+        # reduces to N/K.
+        cap_per_edge = cw * float(N)
+        cap_target_avg = float(np.mean(cap_per_edge))
         load = np.zeros(K, dtype=np.float64)
         cell_to_edge = np.full(C, -1, dtype=np.int32)
 
-        # Hard capacity cap: a partition must not exceed (1 + γ) · cap_target.
-        # Tighter than a soft penalty; the FM pass will trade a few cuts to
-        # keep the imbalance within the guaranteed envelope.
-        hard_cap = (1.0 + self.params.gamma_balance) * cap_target
+        # Hard capacity cap: partition k must not exceed (1 + γ) · cap_per_edge[k].
+        hard_cap = (1.0 + self.params.gamma_balance) * cap_per_edge
 
         # Sort cells by density descending so the densest cells choose first.
         order = np.argsort(-cell_counts)
@@ -118,11 +134,14 @@ class SpatioTemporalPartitioner:
             ruledep = ruledep / max(1.0, float(cell_counts.max()))
 
             # Balance term: strictly negative for every partition whose
-            # load exceeds the *average*, scaled so that it can outweigh
-            # the unit-magnitude spatial term when load is materially over.
-            balance = -np.maximum(0.0, load - cap_target) / max(1.0, cap_target)
+            # load exceeds its per-edge cap, scaled so that it can
+            # outweigh the unit-magnitude spatial term when an edge is
+            # materially over-budget.
+            balance = -np.maximum(0.0, load - cap_per_edge) / max(1.0, cap_target_avg)
 
-            # Hard constraint: mask out candidates that would overflow.
+            # Hard constraint: mask out candidates that would overflow
+            # their *per-edge* cap (so a degraded edge with low weight
+            # reaches its cap early and is excluded).
             forbidden = (load + cell_counts[cell]) > hard_cap
             if forbidden.all():
                 # Fall back to the least-loaded partition.
@@ -145,7 +164,7 @@ class SpatioTemporalPartitioner:
             a, sizes = _fm_refine(
                 a, sizes, cells, cell_to_edge,
                 side, cell_counts, self.params,
-                num_edges=K, cap_target=cap_target,
+                num_edges=K, cap_per_edge=cap_per_edge,
             )
 
         return Partition(K, a.astype(np.int32), sizes.astype(np.int32))
@@ -164,7 +183,7 @@ def _fm_refine(
     params: STPParams,
     *,
     num_edges: int,
-    cap_target: float,
+    cap_per_edge: np.ndarray,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Single FM pass: for each *boundary cell*, try moving it to an
     adjacent edge if doing so reduces the STP cost (spatial + ruledep +
@@ -206,13 +225,13 @@ def _fm_refine(
         for p in candidates:
             delta = _delta_cost(
                 cell, cur, p, cell_to_edge, cell_counts,
-                sizes, side, params, cap_target,
+                sizes, side, params, cap_per_edge,
             )
             if delta < best_delta:
                 best_delta = delta
                 best_p = p
         if best_p != cur and sizes[best_p] + cell_counts[cell] <= (
-            (1.0 + params.gamma_balance) * cap_target + 0.5
+            (1.0 + params.gamma_balance) * cap_per_edge[best_p] + 0.5
         ):
             cell_to_edge[cell] = best_p
             moved = cell_counts[cell]
@@ -233,7 +252,7 @@ def _delta_cost(
     sizes: np.ndarray,
     side: int,
     params: STPParams,
-    cap_target: float,
+    cap_per_edge: np.ndarray,
 ) -> float:
     r0, c0 = cell // side, cell % side
     cut_now = 0
@@ -251,15 +270,19 @@ def _delta_cost(
                 cut_new += int(cell_counts[nb])
     spatial_delta = params.alpha_spatial * (cut_new - cut_now)
 
-    # Balance delta: sum of squared overload before vs. after
+    # Balance delta: sum of overload before vs. after, against each
+    # partition's *own* capacity cap (supports heterogeneous fabrics).
     new_cur = max(0, sizes[cur] - cell_counts[cell])
     new_cand = sizes[cand] + cell_counts[cell]
-    cur_overload = max(0.0, sizes[cur] - cap_target)
-    cand_overload = max(0.0, sizes[cand] - cap_target)
-    new_cur_ov = max(0.0, new_cur - cap_target)
-    new_cand_ov = max(0.0, new_cand - cap_target)
+    cap_cur = float(cap_per_edge[cur])
+    cap_cand = float(cap_per_edge[cand])
+    cur_overload  = max(0.0, sizes[cur]  - cap_cur)
+    cand_overload = max(0.0, sizes[cand] - cap_cand)
+    new_cur_ov  = max(0.0, new_cur  - cap_cur)
+    new_cand_ov = max(0.0, new_cand - cap_cand)
+    scale = max(1.0, float(np.mean(cap_per_edge)))
     bal_delta = params.gamma_balance * (
         (new_cur_ov + new_cand_ov) - (cur_overload + cand_overload)
-    ) / max(1.0, cap_target)
+    ) / scale
 
     return spatial_delta + bal_delta

@@ -4,11 +4,13 @@
 seed: 20260928
 
 variants:
-  full:           {partition: stp,    placement: cop,    pipeline: abp,  state_tier: true}
-  no_stp:         {partition: ldg,    placement: cop,    pipeline: abp,  state_tier: true}
-  no_cop:         {partition: stp,    placement: static, pipeline: abp,  state_tier: true}
-  no_abp:         {partition: stp,    placement: cop,    pipeline: sync, state_tier: true}
-  no_state_tier:  {partition: stp,    placement: cop,    pipeline: abp,  state_tier: false}
-  no_local_cache: {partition: stp,    placement: cop,    pipeline: abp,  state_tier: true, hot_hit_rate: 0.0, warm_hit_rate: 0.0}
+  full:           {partition: stp,    placement: cop,       pipeline: abp,  state_tier: true}
+  no_stp:         {partition: random, placement: cop,       pipeline: abp,  state_tier: true}
+  no_stp_ldg:     {partition: ldg,    placement: cop,       pipeline: abp,  state_tier: true}
+  no_cop:         {partition: stp,    placement: static,    pipeline: abp,  state_tier: true}
+  tier_blind:     {partition: stp,    placement: loc_aware, pipeline: abp,  state_tier: true}
+  no_abp:         {partition: stp,    placement: cop,       pipeline: sync, state_tier: true}
+  no_state_tier:  {partition: stp,    placement: cop,       pipeline: abp,  state_tier: false}
+  no_local_cache: {partition: stp,    placement: cop,       pipeline: abp,  state_tier: true, hot_hit_rate: 0.0, warm_hit_rate: 0.0}
 
 output_dir: outputs/ablation
