@@ -133,7 +133,9 @@ class SkyShieldRuntime:
     _POLICY_MULT = {
         "fifo": 1.00,
         "rm": 0.75,
+        "ros2_callback": 0.82,
         "round_robin": 0.95,
+        "threat_priority": 0.62,
         "edf": 0.55,
         "edf_slack": 0.35,
         "priority_queue": 0.45,

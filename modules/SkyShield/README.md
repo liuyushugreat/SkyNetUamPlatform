@@ -1,9 +1,9 @@
-# SkyShield — Field-Anchored Real-Time Counter-UAV Interception Runtime
+# SkyShield — Field-Calibrated Real-Time Counter-UAV Interception Runtime
 
 > **RTSS 2026 reviewers:** this directory is the complete, anonymous
 > reproduction artifact for our submission
-> *"SkyShield: A Field-Anchored Radar-Guided Real-Time Counter-UAV
-> Interception System for Urban Low-Altitude Defense"*
+> *"SkyShield: Field-Calibrated Real-Time Scheduling and Safety Control
+> for Radar-Guided Counter-UAV Interception"*
 > (`pressRequire/SkyShield/SkyShield_RTSS2026/`).
 > Run `bash run.sh` on Linux/macOS or `./run.ps1` on Windows to
 > regenerate every number, figure, and PDF used in the paper in
@@ -22,15 +22,16 @@ The runtime composes:
   confirmation, covariance-weighted track-to-track fusion, and
   explicit handoff-latency accounting;
 * a **deadline-aware decision plane** with FIFO / RM / EDF /
-  EDF+slack-stealing policies, enforcing a $1.5$-second end-to-end
-  deadline and a hard $200$-ms abort deadline;
+  threat-priority / ROS2-like callback / EDF+slack-stealing policies,
+  evaluating a $1.5$-second operational end-to-end deadline contract
+  and a hard $200$-ms abort deadline;
 * a **runtime safety guard** that gates every launch on
   authorization, geofence, friendly-airspace, and classification
   confidence preconditions;
 * a **bounded fail-safe abort controller** with `return_safe`
   kinematics.
 
-All six experiments in the paper (field replay, end-to-end timing,
+All six experiments in the paper (field-calibrated replay, end-to-end timing,
 replay-based stress, multi-radar urban deployment, ablation, safety)
 are driven by the same runtime and aggregated by
 `scripts/plot_results.py` into `outputs/*.json` and `outputs/*.pdf`.
@@ -39,22 +40,23 @@ are driven by the same runtime and aggregated by
 
 | Contribution | Role | Measurable effect |
 |---|---|---|
-| **Three-plane architecture** | Explicit stage-budget table that composes $D_{e2e}=1500$ ms | End-to-end P99 **391 ms**; every stage P99 $\leq 2\times$ its P50 |
+| **Three-plane architecture** | Explicit stage-budget table that composes $D_{e2e}=1500$ ms | End-to-end P99 **391 ms**; stage tails remain within the composed timing envelope |
 | **EDF + slack stealing** | Threat-prioritised queue under HIL authorization delay | **−22 %** P99 latency vs. FIFO under concurrency 4 |
 | **Runtime safety guard** | Friendly-airspace / low-confidence / subthreshold checks before the launch gate | Correct response for five of six modeled scenarios over $6 \times 100$ binomial trials ($95 \%$ LCB $0.964$) |
-| **Bounded fail-safe abort** | Engagement-progress-aware recall, refuses return-safe when $R_3$ would miss | **100 %** abort-within-deadline across the field-anchored replay workload |
-| **Multi-radar urban deployment** | $300\,\text{km}^2$ district, $1$–$12$ radar sweep $\times$ $1$–$8$ target concurrency | Deadline miss $0.72 \to 0.00$ going $1 \to 6$ radars at concurrency $1$ |
+| **Bounded fail-safe abort** | Engagement-progress-aware recall, refuses return-safe when $R_3$ would miss | **100 %** abort-within-deadline across the field-calibrated replay workload |
+| **Multi-radar urban deployment** | $300\,\text{km}^2$ district, $1$–$12$ radar sweep $\times$ $1$–$8$ target concurrency | Mission-window miss **72.1 % → 0.0 %** going $1 \to 6$ radars at concurrency $1$ |
 
-End-to-end, on the $10$-field-sortie + $50$-augmented-sortie
+End-to-end, on the $10$ recorded-anchor + $50$ augmented-sortie
 workload at the default configuration:
 
 | Metric                                 | Value |
 |----------------------------------------|-------|
-| Mission success rate                   | **0.68** |
+| Mission success rate                   | **68.3 %** |
 | \etae P99 latency                      | **391 ms** (budget $1500$ ms) |
-| Deadline miss ratio                    | **3.3 %** |
-| Abort-within-deadline rate             | **1.00** |
-| Return-safe rate after abort           | **1.00** |
+| Latency violation rate                 | **0.0 %** |
+| Mission-window miss ratio              | **3.3 %** |
+| Abort-within-deadline rate             | **100 %** |
+| Return-safe rate after abort           | **100 %** |
 | False-launch suppression rate          | **5.0 %** |
 | Replay-stress worst-case P99 (auth-delay) | 588 ms (still under budget) |
 
@@ -167,7 +169,7 @@ and deterministic.
 | Tab. II – Field replay                    | `data/field_sorties.json` + `outputs/field_replay.json` |
 | Tab. III – E2 stage latencies             | `outputs/timing.json`                           |
 | Tab. IV – E3 stress regimes               | `outputs/replay_stress.json`                    |
-| Tab. V – E4 deadline-miss sweep           | `outputs/multi_radar.json`                      |
+| Tab. V – E4 mission-window miss sweep     | `outputs/multi_radar.json`                      |
 | Tab. VI – E5 ablation                     | `outputs/ablation.json`                         |
 | Tab. VII – E6 safety CIs                  | `outputs/safety.json`                           |
 | Compiled paper PDF                        | `pressRequire/SkyShield/SkyShield_RTSS2026/skyshield_rtss2026.pdf` |

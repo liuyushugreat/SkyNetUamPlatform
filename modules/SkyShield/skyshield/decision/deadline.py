@@ -7,7 +7,9 @@ authorize.  It supports three policies:
 * ``edf`` — Earliest Deadline First over the absolute end-to-end
   deadline of each job,
 * ``edf_slack`` — EDF with slack stealing, preempting low-priority
-  jobs when a higher-threat job approaches its deadline.
+  jobs when a higher-threat job approaches its deadline,
+* ``threat_priority`` — application baseline ordered by threat score,
+* ``ros2_callback`` — callback-order baseline ordered by stage then FIFO.
 
 Each job carries:
   * creation time (detection_time_ms),
@@ -56,7 +58,14 @@ class ScheduledJob:
 
 class DeadlineScheduler:
     def __init__(self, policy: str = "edf_slack"):
-        if policy not in {"edf_slack", "edf", "rm", "fifo"}:
+        if policy not in {
+            "edf_slack",
+            "edf",
+            "rm",
+            "fifo",
+            "threat_priority",
+            "ros2_callback",
+        }:
             raise ValueError(f"Unknown scheduler policy {policy!r}")
         self.policy = policy
         self._jobs: List[ScheduledJob] = []
@@ -93,6 +102,21 @@ class DeadlineScheduler:
             return candidates[0]
         if self.policy == "edf":
             candidates.sort(key=lambda j: j.deadline_ms)
+            return candidates[0]
+        if self.policy == "threat_priority":
+            candidates.sort(key=lambda j: (-j.threat_score, j.deadline_ms, j.created_ms))
+            return candidates[0]
+        if self.policy == "ros2_callback":
+            stage_order = {
+                JobStage.CONFIRM: 0,
+                JobStage.FUSION: 1,
+                JobStage.DECIDE: 2,
+                JobStage.AUTHORIZE: 3,
+                JobStage.LAUNCH: 4,
+            }
+            candidates.sort(
+                key=lambda j: (stage_order.get(j.stage, 99), j.created_ms)
+            )
             return candidates[0]
         # edf_slack: primary EDF, tie break by (slack ascending, priority desc)
         candidates.sort(

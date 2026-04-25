@@ -11,6 +11,14 @@ variants:
     description: "FIFO scheduling instead of EDF + slack stealing."
     override:
       decision.scheduler: "fifo"
+  - name: "threat_priority"
+    description: "Threat-priority scheduling without deadline semantics."
+    override:
+      decision.scheduler: "threat_priority"
+  - name: "ros2_callback"
+    description: "ROS2-like callback-order executor baseline."
+    override:
+      decision.scheduler: "ros2_callback"
   - name: "no_safety_guard"
     description: "Disable runtime safety guard (authorize all confirmed tracks)."
     override:
