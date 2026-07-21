@@ -155,11 +155,23 @@ def main(argv: list[str] | None = None) -> None:
         ]
         base_agg[m] = _collect_numeric(runs)
 
+    # Aggregate backbone comparison (per backbone), if present.
+    backbone_agg: dict[str, Any] = {}
+    if "backbones" in per_seed_baselines[0]:
+        backbone_names = [b["backbone"] for b in per_seed_baselines[0]["backbones"]]
+        for name in backbone_names:
+            runs = [
+                next(b for b in seed_run["backbones"] if b["backbone"] == name)
+                for seed_run in per_seed_baselines
+            ]
+            backbone_agg[name] = _collect_numeric(runs)
+
     payload = {
         "seeds": list(args.seeds),
         "main": main_agg,
         "ablation": abl_agg,
         "baselines": base_agg,
+        "backbones": backbone_agg,
     }
 
     out_path = out_dir / "multi_seed.json"

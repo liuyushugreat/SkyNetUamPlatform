@@ -45,10 +45,16 @@ assurance:
     escalate_on_martingale: true
 
 threats:
+  # Attack strengths are chosen to model a *stealthy* adversary:
+  #  - kg_corrupt 0.3: expected 1-2 of the 5 rule deltas flipped, the
+  #    smallest footprint that still biases the symbolic prior.
+  #  - input_manipulate 0.12: l_inf radius of 12% of the normalised
+  #    sensor range; below ~0.10 the perturbation no longer changes the
+  #    critical-miss rate materially (see attack-strength sweep).
   - {name: clean,            kind: none}
-  - {name: kg_corrupt,       kind: rule_flip,      strength: 0.5}
+  - {name: kg_corrupt,       kind: rule_flip,      strength: 0.3}
   - {name: rule_poison,      kind: rule_inject,    strength: 0.3}
-  - {name: input_manipulate, kind: feature_attack, strength: 0.15}
+  - {name: input_manipulate, kind: feature_attack, strength: 0.12}
   - {name: distribution_shift, kind: covariate_shift, strength: 0.8}
 
 output_dir: outputs

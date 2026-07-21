@@ -2,11 +2,14 @@
 
 We follow the test-martingale construction of Vovk, Nouretdinov and
 Gammerman (2003) for online exchangeability testing.  At each step we
-compute a conformal ``p``-value
+compute a smoothed conformal ``p``-value against the pooled history
+(calibration warm-start plus stream so far)
 
-    p_t = |{ i <= t : s_i >= s_t }| / t
+    p_t = ( |{ i : s_i > s_t }| + U_t * |{ i : s_i = s_t }| ) / n_t,
+    U_t ~ Uniform(0, 1),
 
-and update a betting martingale
+where the randomised tie-break keeps ``p_t`` exactly uniform under
+exchangeability, and update a betting martingale
 
     M_t = prod_{i=1..t} f(p_i),
 

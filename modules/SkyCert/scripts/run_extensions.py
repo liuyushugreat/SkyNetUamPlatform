@@ -268,7 +268,7 @@ def mlp_backbone(config: SkyCertConfig, data) -> list[dict[str, Any]]:
     results: list[dict[str, Any]] = []
     scenarios = [
         ("clean", "none", 0.0),
-        ("input_manipulate", "feature_attack", 0.15),
+        ("input_manipulate", "feature_attack", 0.12),
         ("distribution_shift", "covariate_shift", 0.8),
     ]
     for name, kind, strength in scenarios:

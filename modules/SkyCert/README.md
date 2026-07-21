@@ -36,16 +36,16 @@ Following the SkyNetUamPlatform contribution policy, **no paper PDF/TeX source, 
 
 ## Threat Model (short)
 
-SkyCert explicitly defends against four attacker/environment classes that frequently appear in UAM safety cases:
+SkyCert defends against four attacker/environment classes under a **gray-box** access model — none of the attackers can read the neural weights, the calibration set, or SkyCert's internal state:
 
-| ID | Threat | What happens | Where simulated |
-|----|--------|--------------|-----------------|
-| **T1** | Knowledge-Graph Corruption | Symbolic rule deltas are flipped between low- and high-risk classes | `data/threats.py::corrupt_rules` |
-| **T2** | Rule Poisoning | Adversarial rules injected into the rule base | `data/threats.py::inject_rule_noise` |
-| **T3** | Feature Manipulation | Bounded `ℓ∞` perturbation of operation features | `data/threats.py::perturb_features` |
-| **T4** | Covariate Shift | Fleet-wide degraded sensing + weather/traffic shift | `data/threats.py::shift_covariates` |
+| ID | Threat | Required access | What happens | Where simulated |
+|----|--------|-----------------|--------------|-----------------|
+| **T1** | Knowledge-Graph Corruption | KG pipeline (supply chain) | A fraction β1 = 0.3 of symbolic rule deltas is sign-flipped (1–2 of 5 rules in expectation — a stealthy footprint) | `data/threats.py::corrupt_rules` |
+| **T2** | Rule Poisoning | Rule repository (insider) | 30% spurious rules injected into the rule base | `data/threats.py::inject_rule_noise` |
+| **T3** | Feature Manipulation | Sensor feed (black-box) | Bounded `ℓ∞` perturbation of radius β3 = 0.12 on the normalized feature scale | `data/threats.py::perturb_features` |
+| **T4** | Covariate Shift | None | Fleet-wide degraded sensing + weather/traffic shift | `data/threats.py::shift_covariates` |
 
-The neural scorer and the rule engine are both treated as *untrusted* — SkyCert guarantees coverage **regardless** of how they were trained, and signals whenever the calibration assumption is violated.
+The neural scorer and the rule engine are both treated as *untrusted* — SkyCert guarantees coverage **regardless** of how they were trained, and signals whenever the calibration assumption is violated. Attack strengths sit at the stealthy end of the effective range (see the β3/β1 sweeps in `run_extensions.py`); stronger attacks are detected faster.
 
 ---
 
@@ -88,7 +88,8 @@ modules/SkyCert/
 ├── scripts/                  ← Experiment entry points (all CPU-only, ≈2 min total)
 │   ├── run_experiment.py     ←   Main: 5 threat scenarios → metrics.json + audit/
 │   ├── run_ablation.py       ←   Ablation: 4 variants under T4 → ablation.json
-│   ├── run_baselines.py      ←   Baseline comparison (MSP, entropy, conformal-only) → baselines.json
+│   ├── run_baselines.py      ←   Baselines (MSP, entropy, conformal-only) + backbone
+│   │                             comparison (hybrid / pure-neural / pure-symbolic) → baselines.json
 │   ├── run_extensions.py     ←   λ-sweep + β3/β4 sweeps + failure cases + MLP → extensions.json
 │   ├── run_multi_seed.py     ←   5-seed aggregation of (1)+(2)+(3) → multi_seed.json
 │   ├── print_summary.py      ←   Pretty-print multi-seed + extensions tables for reviewers
@@ -196,9 +197,10 @@ All stochastic components are seeded from `configs/default.yaml` (`seed: 2026041
 | §IV-D Decision Policy | `skycert/assurance/policy.py` | ACCEPT / ABSTAIN / ALERT / ESCALATE matrix |
 | §IV-E Audit Artifacts | `skycert/assurance/audit.py` | JSONL per-decision records (inputs, rule trace, set, martingale) |
 | §V Implementation | `pyproject.toml`, `requirements.txt` | Pinned deterministic environment |
-| §VII Main Experiment (Table I, Fig. 2–4) | `scripts/run_experiment.py` | 5 threat scenarios × full metric panel |
-| §VIII Ablation (Table II) | `scripts/run_ablation.py` | 4 variants: `no_conformal`, `no_martingale`, `no_abstention`, `full` |
-| §VIII-A Baselines (Table III) | `scripts/run_baselines.py` | MSP, entropy, conformal-only; abstention matched per seed |
+| §VII Main Experiment (Table II, Fig. 2–4) | `scripts/run_experiment.py` | 5 threat scenarios × full metric panel |
+| §VII-D Backbone comparison (Table III) | `scripts/run_baselines.py` (`backbones` key) | Hybrid vs. pure-neural vs. pure-symbolic under the same assurance layer |
+| §VIII Ablation (Table IV) | `scripts/run_ablation.py` | 4 variants: `no_conformal`, `no_martingale`, `no_abstention`, `full` |
+| §VIII-A Baselines (Table V) | `scripts/run_baselines.py` | MSP, entropy, conformal-only; abstention matched per seed |
 | §VII–§VIII Multi-seed aggregation (mean±std) | `scripts/run_multi_seed.py` | Reruns experiment/ablation/baselines across seeds `{20260417,1,2,3,4}` |
 | Appendix (Extended Results) | `scripts/run_extensions.py` | λ-sweep, β3/β4 attack-strength sweeps, 3 failure cases, MLP backbone |
 | Figures (incl. Pareto, λ-sweep, strength-sweep) | `scripts/plot_results.py` | Renders the six paper PDFs |
@@ -214,16 +216,16 @@ Target marginal coverage `1 − α = 0.90`; calibration is held fixed across thr
 | Scenario | Coverage | CRIT cov. | Set size | Crit. err. (base) | Crit. err. (after abstain) | Abstain |
 |---|---:|---:|---:|---:|---:|---:|
 | **T0 Clean**            | 0.905±0.009 | 0.935±0.040 | 2.09±0.06 | 0.319±0.034 | **0.279±0.035** | 0.279±0.046 |
-| **T1 KG corruption**    | 0.914±0.010 | 0.945±0.019 | 2.07±0.05 | 0.224±0.033 | **0.150±0.034** | 0.288±0.030 |
+| **T1 KG corruption**    | 0.910±0.013 | 0.924±0.033 | 2.08±0.05 | 0.302±0.077 | **0.247±0.096** | 0.281±0.042 |
 | **T2 Rule poisoning**   | 0.903±0.014 | 0.918±0.052 | 2.10±0.08 | 0.379±0.105 | **0.343±0.114** | 0.276±0.057 |
-| **T3 Feature attack**   | 0.883±0.008 | 0.931±0.030 | 2.07±0.06 | 0.324±0.023 | **0.275±0.035** | 0.567±0.049 |
+| **T3 Feature attack**   | 0.892±0.007 | 0.936±0.024 | 2.08±0.06 | 0.326±0.033 | **0.281±0.039** | 0.462±0.111 |
 | **T4 Covariate shift**  | 0.686±0.006 | 0.743±0.026 | 1.99±0.06 | 0.461±0.027 | **0.289±0.054** | 0.628±0.028 |
 
 Key takeaways reproduced in the paper:
 
 - Marginal coverage stays within one empirical s.e. of the 90% target on T0–T3; CRITICAL-class coverage meets or exceeds 0.90 on all four exchangeable scenarios.
 - Under T4 exchangeability is intentionally broken (marginal coverage drops to 0.686); the martingale detects the shift within 42±22 steps and the policy layer cuts the critical-class miss rate from 0.461 to **0.289**.
-- T3 (feature attack) is detected within 275±149 steps; peak martingale 7.0×10¹⁰ with zero empirical false alarms on T0–T2 (Ville bound 0.05).
+- The stealthy T3 attack (β3 = 0.12) is detected within 710±407 steps in all 5 seeds; peak martingale up to 2.2×10⁶ with zero empirical false alarms on T0–T2 (Ville bound 0.05). At β3 = 0.15 detection accelerates to ≈230 steps.
 
 ### Table 2 — Ablation under T4 covariate shift (5 seeds)
 
@@ -247,12 +249,22 @@ The full SkyCert configuration dominates every ablation variant on the safety-cr
 
 At matched abstention rates, entropy thresholding achieves a slightly lower mean miss rate, but provides no coverage guarantee, no sequential drift detection, and no audit trail — exactly the properties a regulator requires.
 
+### Table 4 — Backbone comparison under T4 (identical assurance layer, 5 seeds)
+
+| Backbone | Top-1 acc. | Coverage | Crit. err. (base) | Crit. err. (after abstain) | Abstain |
+|---|---:|---:|---:|---:|---:|
+| Neuro-symbolic (hybrid) | 0.449±0.011 | 0.686±0.006 | 0.461±0.027 | 0.289±0.054 | 0.628±0.028 |
+| Pure neural (λ = 0)     | 0.461±0.012 | 0.695±0.011 | 0.399±0.041 | 0.150±0.078 | 0.627±0.029 |
+| Pure symbolic (rules only) | 0.253±0.010 | 0.992±0.003 | 0.897±0.024 | 0.000±0.000 | 1.000±0.000 |
+
+The pure-symbolic backbone collapses (5 threshold rules cannot classify 4 risk classes; it abstains on essentially everything). The pure-neural backbone is somewhat more robust to this covariate shift than the hybrid — the paper reports this honestly: the case for the hybrid rests on auditability (per-rule firing traces), not adversarial robustness, and the assurance layer's guarantees hold for whichever backbone is used.
+
 ### Appendix: extension experiments (`outputs/extensions.json`)
 
 - **λ-sweep** (hybrid score weight): miss rate stable in `λ_drift ∈ [1.0, 2.0]` (0.279–0.279), within 1.1 pp of the minimum over `[0.3, 3.0]`.
 - **β4 sweep** (covariate shift): base miss rises from 0.344 (β4=0.2) to 0.552 (β4=1.0); post-abstention miss stays in [0.26, 0.30].
-- **β3 sweep** (feature attack): martingale fires at β3 ≥ 0.15, flattening the post-abstention miss curve.
-- **MLP backbone**: on `{clean, input_manip, dist_shift}` the MLP gives lower critical-miss rates (0.110/0.129/0.141) than the logistic scorer, confirming that SkyCert's guarantees are model-agnostic.
+- **β3 sweep** (feature attack): the martingale stays silent at β3 ≤ 0.10 (peak 14, below threshold 20) and fires from β3 = 0.12 upward — the basis for the "stealth band" argument in the threat model.
+- **MLP backbone**: on `{clean, input_manip, dist_shift}` the MLP gives lower critical-miss rates (0.110/0.104/0.141) than the logistic scorer, confirming that SkyCert's guarantees are model-agnostic.
 - **3 failure cases** extracted for the distribution_shift stream, illustrating ACCEPT (residual miss), ABSTAIN (absorbed miss), and ESCALATE (severe non-exchangeability).
 
 ---
@@ -355,7 +367,7 @@ All 9 tests run in <3 s on CPU.
 Real CAAC / FAA UAM operational data cannot currently be publicly redistributed. The synthetic generator in `skycert/data/synthetic.py` is fully documented (parameter distributions, rule structure, class prior) and seeded; the threat-injection module (`threats.py`) is also deterministic. All claims in the paper are recoverable from the seed-pinned configuration in `configs/default.yaml`.
 
 **Q. Are the coverage guarantees honest under threat?**
-Yes — the conformal guarantee holds whenever calibration and test data are exchangeable. Table 1 shows coverage staying within `±0.03` of `1 − α` on T0–T3 (exchangeability preserved). Under T4 exchangeability is *intentionally* broken; the guarantee necessarily degrades, and this is exactly what the martingale is designed to flag (which it does in 40 steps).
+Yes — the conformal guarantee holds whenever calibration and test data are exchangeable. Table 1 shows coverage staying within `±0.03` of `1 − α` on T0–T3 (exchangeability preserved). Under T4 exchangeability is *intentionally* broken; the guarantee necessarily degrades, and this is exactly what the martingale is designed to flag (which it does within 42±22 steps).
 
 **Q. What happens if I disable the martingale?**
 See the `no_martingale` row of the ablation. Coverage and set size are unchanged, but the post-abstention critical-class miss rate rises from **0.289±0.054** to **0.401±0.039** (5-seed mean±std), because the policy layer no longer receives the online distribution-shift signal.

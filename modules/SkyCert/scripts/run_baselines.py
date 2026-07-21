@@ -5,6 +5,13 @@ threshold and entropy threshold) and compares them against the full
 SkyCert pipeline under the distribution_shift scenario, using matched
 abstention rates for fair evaluation.
 
+Also compares three *backbones* under the same threat -- the full
+neuro-symbolic reasoner, a purely neural scorer (symbolic weight
+lambda = 0), and a purely symbolic rule engine (neural logits zeroed)
+-- each wrapped by the identical SkyCert assurance layer, so the
+contribution of the hybrid backbone can be separated from the
+contribution of the assurance layer.
+
 Also produces Pareto sweep data (abstain rate vs critical-miss rate) by
 varying each method's operating-point knob, used for Figure 5 in the
 paper.
@@ -57,6 +64,53 @@ def _build_stream(
 def _entropy(probs: np.ndarray) -> np.ndarray:
     p = np.clip(probs, 1e-12, 1.0)
     return -(p * np.log(p)).sum(axis=1)
+
+
+class _ZeroScorer:
+    """Stand-in neural scorer emitting all-zero logits.
+
+    Used to build a *purely symbolic* backbone: the reasoner's output then
+    reduces to softmax(lambda * symbolic_logits).
+    """
+
+    def __init__(self, num_classes: int) -> None:
+        self.num_classes = num_classes
+
+    def logits(self, X: np.ndarray) -> np.ndarray:
+        return np.zeros((X.shape[0], self.num_classes), dtype=np.float64)
+
+
+def _backbone_metrics(
+    name: str,
+    reasoner: NeuroSymbolicRiskReasoner,
+    config: SkyCertConfig,
+    data,
+    X_stream: np.ndarray,
+    y_test: np.ndarray,
+) -> dict[str, Any]:
+    """Wrap a backbone with the identical SkyCert layer and measure it."""
+    pipe = SkyCertPipeline(reasoner=reasoner, config=config, audit_path=None)
+    pipe.calibrate(data.X_calib, data.y_calib)
+    decisions = pipe.run_batch(X_stream)
+    pipe.close()
+    probs = pipe.predict_proba(X_stream)
+    preds = probs.argmax(axis=1)
+    set_mask = pipe.predict_sets(X_stream)
+    abstained = np.array(
+        [d.kind in {DecisionKind.ABSTAIN, DecisionKind.ALERT, DecisionKind.ESCALATE}
+         for d in decisions]
+    )
+    return {
+        "backbone": name,
+        "top1_accuracy": float((preds == y_test).mean()),
+        "coverage": empirical_coverage(set_mask, y_test),
+        "avg_set_size": average_set_size(set_mask),
+        "critical_error_rate_base": critical_error_rate(preds, y_test),
+        "critical_error_rate_after_abstain": abstain_error_rate(
+            preds, y_test, abstained
+        ),
+        "abstain_rate": float(abstained.mean()),
+    }
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -190,6 +244,21 @@ def main(argv: list[str] | None = None) -> None:
         },
     ]
 
+    # --- Backbone comparison: neuro-symbolic vs pure-neural vs pure-symbolic ---
+    # All three backbones are wrapped by the identical SkyCert layer so the
+    # comparison isolates the contribution of the hybrid architecture.
+    pure_neural = NeuroSymbolicRiskReasoner(
+        neural=neural, symbolic=symbolic, lambda_=0.0
+    )
+    pure_symbolic = NeuroSymbolicRiskReasoner(
+        neural=_ZeroScorer(data.num_classes), symbolic=symbolic, lambda_=1.0
+    )
+    backbones = [
+        _backbone_metrics("neuro-symbolic", reasoner, config, data, X_stream, y_test),
+        _backbone_metrics("pure neural", pure_neural, config, data, X_stream, y_test),
+        _backbone_metrics("pure symbolic", pure_symbolic, config, data, X_stream, y_test),
+    ]
+
     # --- Pareto sweep ---
     pareto: dict[str, list[dict[str, Any]]] = {"msp": [], "entropy": [], "skycert": []}
 
@@ -238,6 +307,7 @@ def main(argv: list[str] | None = None) -> None:
         "strength": 0.8,
         "target_abstain_rate": target_abstain,
         "baselines": baselines,
+        "backbones": backbones,
         "pareto": pareto,
     }
 
