@@ -1,5 +1,5 @@
 # SkyCert default experiment configuration.
-# Reproduces the main results reported in the ESORICS 2026 paper.
+# Reproduces the main results reported in the IEEE CSCloud 2026 paper.
 
 seed: 20260417
 

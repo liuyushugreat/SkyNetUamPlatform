@@ -1,4 +1,4 @@
-# SkyCert one-click reproduction for ESORICS 2026 reviewers (PowerShell).
+# SkyCert one-click reproduction for IEEE CSCloud 2026 reviewers (PowerShell).
 #
 # What it does (runs in order, ~30 seconds on a single CPU core):
 #   1. install dependencies,

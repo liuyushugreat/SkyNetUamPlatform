@@ -1,7 +1,7 @@
 """Reproduce the SkyCert main experiment.
 
 This script mirrors Section 6 ("Experimental Setup") and Section 7
-("Results and Analysis") of the ESORICS submission.
+("Results and Analysis") of the IEEE CSCloud 2026 submission.
 
 Steps:
 

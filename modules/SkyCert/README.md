@@ -1,12 +1,12 @@
-# SkyCert: Conformal and Martingale-Based Runtime Assurance for Neuro-Symbolic Risk Reasoning in Urban Air Mobility
+# SkyCert: Conformal and Martingale-Based Runtime Security Assurance for Neuro-Symbolic Risk Reasoning in Urban Air Mobility
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Conference: ESORICS 2026](https://img.shields.io/badge/Conference-ESORICS_2026-green.svg)](https://esorics2026.org/)
+[![Conference: IEEE CSCloud 2026](https://img.shields.io/badge/Conference-IEEE_CSCloud_2026-green.svg)](https://www.cloud-conf.net/cscloud/2026/cscloud/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Runtime: CPU-only](https://img.shields.io/badge/runtime-CPU--only-lightgrey.svg)]()
 [![Reproducible: seed 20260417](https://img.shields.io/badge/seed-20260417-informational)]()
 
-> **ESORICS 2026 Reviewers — one-click reproduction:**
+> **IEEE CSCloud 2026 Reviewers — one-click reproduction:**
 > ```bash
 > cd modules/SkyCert
 > bash run.sh          # Linux/macOS (≈2 min, CPU-only)
@@ -26,9 +26,9 @@
 
 Every decision is persisted as a **machine-readable audit artifact** (JSON Lines) containing the input operation ID, the symbolic rule trace, the conformal prediction set, the martingale trajectory, and the final policy verdict. These artifacts are designed to back an offline certification argument for UAM operational authorizations.
 
-This module is the companion artifact for the ESORICS 2026 submission:
+This module is the companion artifact for the IEEE CSCloud 2026 submission (track: *Security of Artificial Intelligence enabled computing*):
 
-> *SkyCert: Conformal and Martingale-Based Runtime Assurance for Neuro-Symbolic Risk Reasoning in Urban Air Mobility.*
+> *SkyCert: Conformal and Martingale-Based Runtime Security Assurance for Neuro-Symbolic Risk Reasoning in Urban Air Mobility.*
 
 Following the SkyNetUamPlatform contribution policy, **no paper PDF/TeX source, internal safety-case document, or proprietary KG slice is committed to this repository** — only the open-source module and the default reviewer configuration (`configs/default.yaml`).
 
@@ -188,18 +188,18 @@ All stochastic components are seeded from `configs/default.yaml` (`seed: 2026041
 
 | Paper section | Code / script | What it reproduces |
 |---------------|---------------|--------------------|
-| §3 Threat Model (T1–T4) | `skycert/data/threats.py` | Injection procedures for KG corruption, rule poisoning, feature attack, covariate shift |
-| §4.1 Neuro-Symbolic Base | `skycert/base/{neural,symbolic,neuro_symbolic}.py` | Class-balanced neural scorer + rule engine with audit trace |
-| §4.2 Conformal Risk Sets | `skycert/assurance/conformal.py` | APS & LAC nonconformity, split calibration, coverage guarantee |
-| §4.3 Martingale Monitor | `skycert/assurance/martingale.py` | Simple-jumper test-martingale with warm-start from calibration |
-| §4.4 Hybrid Nonconformity | `skycert/pipeline.py::_nonconformity` | `(1 − max_prob) + L2-drift` in standardized feature space |
-| §4.5 Decision Policy | `skycert/assurance/policy.py` | ACCEPT / ABSTAIN / ALERT / ESCALATE matrix |
-| §4.6 Audit Artifacts | `skycert/assurance/audit.py` | JSONL per-decision records (inputs, rule trace, set, martingale) |
-| §5 Implementation | `pyproject.toml`, `requirements.txt` | Pinned deterministic environment |
-| §7 Main Experiment (Table 1, Fig. 3–5) | `scripts/run_experiment.py` | 5 threat scenarios × full metric panel |
-| §8 Ablation (Table 2) | `scripts/run_ablation.py` | 4 variants: `no_conformal`, `no_martingale`, `no_abstention`, `full` |
-| §8.1 Baselines (Table 3) | `scripts/run_baselines.py` | MSP, entropy, conformal-only; abstention matched per seed |
-| §7–§8 Multi-seed aggregation (mean±std) | `scripts/run_multi_seed.py` | Reruns experiment/ablation/baselines across seeds `{20260417,1,2,3,4}` |
+| §II-C Threat Model (T1–T4) | `skycert/data/threats.py` | Injection procedures for KG corruption, rule poisoning, feature attack, covariate shift |
+| §II-A Neuro-Symbolic Base | `skycert/base/{neural,symbolic,neuro_symbolic}.py` | Class-balanced neural scorer + rule engine with audit trace |
+| §IV-B Conformal Risk Sets | `skycert/assurance/conformal.py` | APS & LAC nonconformity, split calibration, coverage guarantee |
+| §IV-C Martingale Monitor | `skycert/assurance/martingale.py` | Simple-jumper test-martingale with warm-start from calibration |
+| §IV-C Hybrid Nonconformity | `skycert/pipeline.py::_nonconformity` | `(1 − max_prob) + L2-drift` in standardized feature space |
+| §IV-D Decision Policy | `skycert/assurance/policy.py` | ACCEPT / ABSTAIN / ALERT / ESCALATE matrix |
+| §IV-E Audit Artifacts | `skycert/assurance/audit.py` | JSONL per-decision records (inputs, rule trace, set, martingale) |
+| §V Implementation | `pyproject.toml`, `requirements.txt` | Pinned deterministic environment |
+| §VII Main Experiment (Table I, Fig. 2–4) | `scripts/run_experiment.py` | 5 threat scenarios × full metric panel |
+| §VIII Ablation (Table II) | `scripts/run_ablation.py` | 4 variants: `no_conformal`, `no_martingale`, `no_abstention`, `full` |
+| §VIII-A Baselines (Table III) | `scripts/run_baselines.py` | MSP, entropy, conformal-only; abstention matched per seed |
+| §VII–§VIII Multi-seed aggregation (mean±std) | `scripts/run_multi_seed.py` | Reruns experiment/ablation/baselines across seeds `{20260417,1,2,3,4}` |
 | Appendix (Extended Results) | `scripts/run_extensions.py` | λ-sweep, β3/β4 attack-strength sweeps, 3 failure cases, MLP backbone |
 | Figures (incl. Pareto, λ-sweep, strength-sweep) | `scripts/plot_results.py` | Renders the six paper PDFs |
 
@@ -358,7 +358,7 @@ Real CAAC / FAA UAM operational data cannot currently be publicly redistributed.
 Yes — the conformal guarantee holds whenever calibration and test data are exchangeable. Table 1 shows coverage staying within `±0.03` of `1 − α` on T0–T3 (exchangeability preserved). Under T4 exchangeability is *intentionally* broken; the guarantee necessarily degrades, and this is exactly what the martingale is designed to flag (which it does in 40 steps).
 
 **Q. What happens if I disable the martingale?**
-See the `no_martingale` row of the ablation. Coverage and set size are unchanged, but the post-abstention critical-class miss rate rises from **0.279** to **0.392**, because the policy layer no longer receives the online distribution-shift signal.
+See the `no_martingale` row of the ablation. Coverage and set size are unchanged, but the post-abstention critical-class miss rate rises from **0.289±0.054** to **0.401±0.039** (5-seed mean±std), because the policy layer no longer receives the online distribution-shift signal.
 
 **Q. Is there a GPU / API dependency?**
 No. The base model is a NumPy multinomial logistic regression; the symbolic engine is a pure-Python rule evaluator; the assurance layer is algebraic. `run.sh` finishes in ~30 s on a single CPU core.
@@ -372,11 +372,12 @@ By platform policy, paper PDF and TeX sources are not committed to the public re
 
 ```bibtex
 @inproceedings{liu2026skycert,
-  title     = {SkyCert: Conformal and Martingale-Based Runtime Assurance
-               for Neuro-Symbolic Risk Reasoning in Urban Air Mobility},
+  title     = {SkyCert: Conformal and Martingale-Based Runtime Security
+               Assurance for Neuro-Symbolic Risk Reasoning in Urban Air
+               Mobility},
   author    = {Liu, Yushu and Wang, Longbiao and Du, Chenglin and Zhai, Haixiao},
-  booktitle = {Proceedings of the 31st European Symposium on Research in
-               Computer Security (ESORICS)},
+  booktitle = {Proceedings of the 2026 IEEE International Conference on
+               Cyber Security and Cloud Computing (CSCloud)},
   year      = {2026}
 }
 ```
