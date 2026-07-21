@@ -1,10 +1,10 @@
 # SkyGrid — Distributed Edge-Cloud Runtime for Neuro-Symbolic UAM Reasoning
 
 SkyGrid is the **parallel/distributed runtime** evaluated in the
-ICPP 2026 submission:
+IEEE HPCC 2026 submission:
 
-> *SkyGrid: Hardware-Aware Spatio-Temporal Partitioning and Placement
-> for Hybrid Neural-Symbolic Pipelines on Edge-Cloud Fabrics*
+> *SkyGrid: A Distributed Edge-Cloud Runtime for Hardware-Aware
+> Partitioning and Placement of Hybrid Neural-Symbolic Pipelines*
 
 The module answers a single question that the rest of the platform
 leaves open:
@@ -32,7 +32,7 @@ End-to-end, SkyGrid delivers:
   moves across the whole 60 s window.
 - Deterministic and CPU-only: one seed reproduces every number.
 
-Full details and the evaluation tables are in the ICPP 2026 paper at
+Full details and the evaluation tables are in the IEEE HPCC 2026 paper at
 [`pressRequire/SkyGrid_spark/skygrid_spark.tex`](../../../pressRequire/SkyGrid_spark/skygrid_spark.tex).
 
 ## Repository layout

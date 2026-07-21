@@ -1,4 +1,4 @@
-# SkyGrid default reviewer configuration (ICPP 2026).
+# SkyGrid default reviewer configuration (IEEE HPCC 2026).
 # Reproduces the main Table 2 / Fig. 3 / Fig. 4 results.
 # CPU-only, ~60 seconds end-to-end on a modern single core.
 

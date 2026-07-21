@@ -1,5 +1,5 @@
 """Render the two non-data illustrations (``fig_dag.pdf`` and
-``fig_arch.pdf``) referenced by the ICPP 2026 paper.
+``fig_arch.pdf``) referenced by the IEEE HPCC 2026 paper.
 """
 
 from __future__ import annotations
