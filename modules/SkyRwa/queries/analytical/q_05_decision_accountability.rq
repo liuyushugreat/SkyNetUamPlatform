@@ -1,0 +1,25 @@
+# ============================================================================
+# Q5: Decision accountability check (Definition 2, conditions (c)-(d))
+# ============================================================================
+# Verifies that every materialized GovernanceDecision is accountable:
+#   - carries at least one ruleId          (Def. 2 (d))
+#   - carries at least one explanation     (Def. 2 (d))
+#   - is attached to at least one asset    (Def. 2 (c), materialized side)
+#
+# Returns the offending decision nodes with a diagnostic flag per missing
+# property. An EMPTY result means the check PASSES.
+# ============================================================================
+
+PREFIX skyrwa: <urn:skyrwa:ontology#>
+
+SELECT ?decision ?missingRuleId ?missingExplanation ?missingAsset
+WHERE {
+    ?decision a skyrwa:GovernanceDecision .
+
+    BIND (NOT EXISTS { ?decision skyrwa:ruleId ?r }        AS ?missingRuleId)
+    BIND (NOT EXISTS { ?decision skyrwa:explanation ?e }   AS ?missingExplanation)
+    BIND (NOT EXISTS { ?decision skyrwa:appliedToAsset ?a } AS ?missingAsset)
+
+    FILTER (?missingRuleId || ?missingExplanation || ?missingAsset)
+}
+ORDER BY ?decision
