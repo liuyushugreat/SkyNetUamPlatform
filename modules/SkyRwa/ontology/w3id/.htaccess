@@ -13,8 +13,8 @@ RewriteEngine on
 # JSON-LD:  modules/SkyRwa/ontology/skyrwa.jsonld
 # HTML doc: modules/SkyRwa/docs/ontology/index.html
 
-# Version IRI (owl:versionIRI) — pinned snapshot of version 1.0.0
-RewriteRule ^1\.0\.0/?$ https://raw.githubusercontent.com/liuyushugreat/SkyNetUamPlatform/main/modules/SkyRwa/ontology/skyrwa.ttl [R=303,L]
+# Version IRI (owl:versionIRI) — pinned snapshot of version 1.0.0 (git tag skyrwa-v1.0.0)
+RewriteRule ^1\.0\.0/?$ https://raw.githubusercontent.com/liuyushugreat/SkyNetUamPlatform/skyrwa-v1.0.0/modules/SkyRwa/ontology/skyrwa.ttl [R=303,L]
 
 # ---------------------------------------------------------------------------
 # Content negotiation for the namespace IRI (and any fragment term)
