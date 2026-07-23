@@ -11,15 +11,18 @@
 # SkyRwa Flight-to-Asset Ontology
 # ============================================================================
 # Title:   SkyRwa — A Knowledge Graph Ontology for UAM Flight Data Assets
-# Version: 0.3.1
-# Date:    2026-04-17
+# Version: 1.0.0
+# Date:    2026-07-23
 # Purpose: Provides a formal vocabulary for the flight-to-asset pipeline
 #          in Urban Air Mobility systems.  Covers evidence, governance,
 #          productization, valuation, and settlement.
+# Persistent namespace (pending w3id registration, see w3id-submission.md):
+#   https://w3id.org/skyrwa#
 # ============================================================================
 
 skyrwa: a owl:Ontology ;
-    owl:versionInfo "0.3.1" ;
+    owl:versionIRI <https://w3id.org/skyrwa/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
     dcterms:title "SkyRwa Flight-to-Asset Ontology"@en ;
     dcterms:description """Domain ontology for transforming UAM flight records
 into governable, valuatable, and tradable data assets.  The ontology

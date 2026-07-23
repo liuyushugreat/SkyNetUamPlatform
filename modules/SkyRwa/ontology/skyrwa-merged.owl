@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:dcterms="http://purl.org/dc/terms/"
+  xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#hasDigest">
+    <rdfs:label xml:lang="en">has digest</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment xml:lang="en">SHA-256 content digest of the evidence package.</rdfs:comment>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#hasUsageEvent">
+    <rdfs:label xml:lang="en">has usage event</rdfs:label>
+    <rdfs:comment xml:lang="en">Links a governed product or revenue right to consumption events recorded against it.</rdfs:comment>
+    <rdfs:range rdf:resource="urn:skyrwa:ontology#UsageEvent"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#hasLineage">
+    <rdfs:label xml:lang="en">has lineage</rdfs:label>
+    <rdfs:comment xml:lang="en">Links a derived entity to its provenance chain; a specialization of prov:wasDerivedFrom.</rdfs:comment>
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#wasDerivedFrom"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#estimatedValue">
+    <rdfs:label xml:lang="en">estimated value</rdfs:label>
+    <rdfs:comment xml:lang="en">Illustrative monetary valuation of an asset or product; aligned with schema:price.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    <rdfs:subPropertyOf rdf:resource="http://schema.org/price"/>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#hasSettlementRule">
+    <rdfs:label xml:lang="en">has settlement rule</rdfs:label>
+    <rdfs:comment xml:lang="en">Links an asset to its revenue-split configuration.</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:Ontology rdf:about="urn:skyrwa:ontology#">
+    <owl:versionIRI rdf:resource="https://w3id.org/skyrwa/1.0.0"/>
+    <owl:versionInfo>1.0.0</owl:versionInfo>
+    <dcterms:title xml:lang="en">SkyRwa Flight-to-Asset Ontology</dcterms:title>
+    <dcterms:description xml:lang="en">Domain ontology for transforming UAM flight records&#13;
+into governable, valuatable, and tradable data assets.  The ontology&#13;
+distinguishes raw flight evidence from governed asset candidates,&#13;
+aggregated data products, and revenue-right objects.</dcterms:description>
+    <dcterms:creator>SkyNet UAM Platform</dcterms:creator>
+    <dcterms:license rdf:resource="https://creativecommons.org/licenses/by/4.0/"/>
+  </owl:Ontology>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#permittedUse">
+    <rdfs:label xml:lang="en">permitted use</rdfs:label>
+    <rdfs:comment xml:lang="en">A permitted action or use case attached to a rights profile (maps to odrl:permission).</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#derivedFromEvidence">
+    <rdfs:label xml:lang="en">derived from evidence</rdfs:label>
+    <rdfs:comment xml:lang="en">Links an asset candidate to the raw flight evidence it was derived from; specialization of prov:wasDerivedFrom.</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#AssetCandidate"/>
+    <rdfs:range rdf:resource="urn:skyrwa:ontology#FlightEvidence"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#wasDerivedFrom"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#flightId">
+    <rdfs:label xml:lang="en">flight ID</rdfs:label>
+    <rdfs:comment xml:lang="en">Unique identifier of a flight evidence record; aligned with dcterms:identifier.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:subPropertyOf rdf:resource="http://purl.org/dc/terms/identifier"/>
+  </owl:DatatypeProperty>
+  <owl:Class rdf:about="urn:skyrwa:ontology#RevenueRight">
+    <rdfs:label xml:lang="en">Revenue Right</rdfs:label>
+    <rdfs:comment xml:lang="en">A revenue entitlement mapped from a governed data product.&#13;
+May be registered on-chain as an RWA token.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Entity"/>
+  </owl:Class>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#partyId">
+    <rdfs:label xml:lang="en">party ID</rdfs:label>
+    <rdfs:comment xml:lang="en">Identifier of a revenue-participant party on a settlement record.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#ruleId">
+    <rdfs:label xml:lang="en">rule ID</rdfs:label>
+    <rdfs:comment xml:lang="en">Identifier of the governance rule that produced this decision.</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#GovernanceDecision"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#usageType">
+    <rdfs:label xml:lang="en">usage type</rdfs:label>
+    <rdfs:comment xml:lang="en">Categorical type of usage event (e.g., api_call, subscription, training, audit).</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#startTime">
+    <rdfs:label xml:lang="en">start time</rdfs:label>
+    <rdfs:comment xml:lang="en">ISO-8601 datetime when a flight, mission, or usage event started; aligned with schema:startTime.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+    <rdfs:subPropertyOf rdf:resource="http://schema.org/startTime"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#isTradable">
+    <rdfs:label xml:lang="en">is tradable</rdfs:label>
+    <rdfs:comment xml:lang="en">Boolean flag asserting whether an asset candidate has passed governance and may be distributed.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#factorScore">
+    <rdfs:label xml:lang="en">factor score</rdfs:label>
+    <rdfs:comment xml:lang="en">Normalized score in [0,1] contributed by a single valuation factor.</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#ValuationFactor"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#promotedToProduct">
+    <rdfs:label xml:lang="en">promoted to product</rdfs:label>
+    <rdfs:comment xml:lang="en">Links a promoted asset candidate to the governed data product it contributes to.</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#AssetCandidate"/>
+    <rdfs:range rdf:resource="urn:skyrwa:ontology#GovernedDataProduct"/>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#aggregatesCandidate">
+        <rdfs:label xml:lang="en">aggregates candidate</rdfs:label>
+        <rdfs:comment xml:lang="en">Links a governed data product to each asset candidate it aggregates.</rdfs:comment>
+        <rdfs:domain rdf:resource="urn:skyrwa:ontology#GovernedDataProduct"/>
+        <rdfs:range rdf:resource="urn:skyrwa:ontology#AssetCandidate"/>
+        <owl:inverseOf rdf:resource="urn:skyrwa:ontology#isAggregatedIn"/>
+      </owl:ObjectProperty>
+    </owl:inverseOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#hasMission">
+    <rdfs:label xml:lang="en">has mission</rdfs:label>
+    <rdfs:comment xml:lang="en">Links a flight evidence to the planned mission it executed.</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#FlightEvidence"/>
+    <rdfs:range rdf:resource="urn:skyrwa:ontology#FlightMission"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#ruleLabel">
+    <rdfs:label xml:lang="en">rule label</rdfs:label>
+    <rdfs:comment xml:lang="en">Human-readable short label of the governance rule that produced this decision.</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#GovernanceDecision"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#hasAssetClass">
+    <rdfs:label xml:lang="en">has asset class</rdfs:label>
+    <rdfs:comment xml:lang="en">String tag categorizing the asset candidate or product (e.g., route_optimization_sample); aligned with dcat:theme.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/dcat#theme"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#sharePct">
+    <rdfs:label xml:lang="en">share percentage</rdfs:label>
+    <rdfs:comment xml:lang="en">Percentage share (0--100) assigned to a single revenue participant.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#appliedToAsset">
+    <rdfs:label xml:lang="en">applied to asset</rdfs:label>
+    <rdfs:comment xml:lang="en">Links a GovernanceDecision to the asset it applies to.</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#GovernanceDecision"/>
+    <rdfs:range rdf:resource="urn:skyrwa:ontology#AssetCandidate"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#used"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#consumedBy">
+    <rdfs:label xml:lang="en">consumed by</rdfs:label>
+    <rdfs:comment xml:lang="en">Links a usage event to the data consumer that triggered it.</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#UsageEvent"/>
+    <rdfs:range rdf:resource="urn:skyrwa:ontology#DataConsumer"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#hasRightsProfile">
+    <rdfs:label xml:lang="en">has rights profile</rdfs:label>
+    <rdfs:comment xml:lang="en">Links an asset candidate to its governance-assigned rights (equivalent to attaching an odrl:Policy).</rdfs:comment>
+    <rdfs:comment xml:lang="en">Attaches the governance-assigned odrl:Policy to the asset.&#13;
+Each permitted_use maps to an odrl:Permission, each prohibited_use to an&#13;
+odrl:Prohibition; tradability corresponds to an odrl:Permission with&#13;
+odrl:action odrl:distribute, and desensitization to an odrl:Duty.</rdfs:comment>
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/odrl/2/hasPolicy"/>
+    <rdfs:range rdf:resource="urn:skyrwa:ontology#RightsProfile"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#hasStatus">
+    <rdfs:label xml:lang="en">has status</rdfs:label>
+    <rdfs:comment xml:lang="en">Lifecycle status of an asset or mission (e.g., pending, approved, blocked, completed).</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#complianceScore">
+    <rdfs:label xml:lang="en">compliance score</rdfs:label>
+    <rdfs:comment xml:lang="en">Normalized score in [0,1] summarizing regulatory-compliance posture of an asset candidate.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#hasSettlementRecord">
+    <rdfs:label xml:lang="en">has settlement record</rdfs:label>
+    <rdfs:comment xml:lang="en">Links a usage event or revenue right to the settlement record that closes it.</rdfs:comment>
+    <rdfs:range rdf:resource="urn:skyrwa:ontology#SettlementRecord"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#grossAmount">
+    <rdfs:label xml:lang="en">gross amount</rdfs:label>
+    <rdfs:comment xml:lang="en">Total revenue amount associated with a settlement record before per-party splits.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#hasSignature">
+    <rdfs:label xml:lang="en">has signature</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:comment xml:lang="en">Cryptographic signature over the evidence digest.</rdfs:comment>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#performedByUAV">
+    <rdfs:label xml:lang="en">performed by UAV</rdfs:label>
+    <rdfs:comment xml:lang="en">Links a flight evidence to the UAV that physically performed the flight.</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#FlightEvidence"/>
+    <rdfs:range rdf:resource="urn:skyrwa:ontology#UAV"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#consumer">
+    <rdfs:label xml:lang="en">consumer</rdfs:label>
+    <rdfs:comment xml:lang="en">Free-text or identifier of the entity that consumed the data in a usage event.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#prohibitedUse">
+    <rdfs:label xml:lang="en">prohibited use</rdfs:label>
+    <rdfs:comment xml:lang="en">A prohibited action or use case attached to a rights profile (maps to odrl:prohibition).</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#hasRevenueShare">
+    <rdfs:label xml:lang="en">has revenue share</rdfs:label>
+    <rdfs:comment xml:lang="en">Links a settlement record to an individual revenue-participant entry (party, role, amount, percentage).</rdfs:comment>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#dataQualityScore">
+    <rdfs:label xml:lang="en">data quality score</rdfs:label>
+    <rdfs:comment xml:lang="en">Normalized score in [0,1] capturing completeness, continuity, and sensor reliability of the underlying evidence.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#requiresDesensitization">
+    <rdfs:label xml:lang="en">requires desensitization</rdfs:label>
+    <rdfs:comment xml:lang="en">Boolean flag asserting that the asset must be desensitized (e.g., location masking) before distribution.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#operatedBy">
+    <rdfs:label xml:lang="en">operated by</rdfs:label>
+    <rdfs:comment xml:lang="en">Links a flight evidence to the operator responsible for the flight; specialization of prov:wasAttributedTo.</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#FlightEvidence"/>
+    <rdfs:range rdf:resource="urn:skyrwa:ontology#Operator"/>
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/ns/prov#wasAttributedTo"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#hasValuation">
+    <rdfs:label xml:lang="en">has valuation</rdfs:label>
+    <rdfs:comment xml:lang="en">Links an asset candidate or product to its structured valuation explanation.</rdfs:comment>
+    <rdfs:range rdf:resource="urn:skyrwa:ontology#ValuationExplanation"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#settledVia">
+    <rdfs:label xml:lang="en">settled via</rdfs:label>
+    <rdfs:comment xml:lang="en">Links a usage event to the settlement record that closes its revenue obligation.</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#UsageEvent"/>
+    <rdfs:range rdf:resource="urn:skyrwa:ontology#SettlementRecord"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#riskScore">
+    <rdfs:label xml:lang="en">risk score</rdfs:label>
+    <rdfs:comment xml:lang="en">Normalized score in [0,1] summarizing operational-risk exposure of an asset candidate (higher means riskier).</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#explanation">
+    <rdfs:label xml:lang="en">explanation</rdfs:label>
+    <rdfs:comment xml:lang="en">Human-readable explanation of the governance decision.</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#GovernanceDecision"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#governedBy">
+    <rdfs:label xml:lang="en">governed by</rdfs:label>
+    <rdfs:comment xml:lang="en">Links an asset candidate to the governance decision(s) that evaluated it.</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#AssetCandidate"/>
+    <rdfs:range rdf:resource="urn:skyrwa:ontology#GovernanceDecision"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#uavId">
+    <rdfs:label xml:lang="en">UAV ID</rdfs:label>
+    <rdfs:comment xml:lang="en">Identifier of the UAV that performed the flight.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#amount">
+    <rdfs:label xml:lang="en">amount</rdfs:label>
+    <rdfs:comment xml:lang="en">Monetary amount assigned to a revenue participant in a settlement record.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#role">
+    <rdfs:label xml:lang="en">role</rdfs:label>
+    <rdfs:comment xml:lang="en">Role of a revenue participant in a settlement record (e.g., operator, platform, processor).</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#factorName">
+    <rdfs:label xml:lang="en">factor name</rdfs:label>
+    <rdfs:comment xml:lang="en">Short name of a contributing valuation factor (e.g., completeness, scarcity).</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#ValuationFactor"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#hasValuationFactor">
+    <rdfs:label xml:lang="en">has valuation factor</rdfs:label>
+    <rdfs:comment xml:lang="en">Links a valuation explanation to one of its contributing scored factors.</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#ValuationExplanation"/>
+    <rdfs:range rdf:resource="urn:skyrwa:ontology#ValuationFactor"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:about="urn:skyrwa:ontology#endTime">
+    <rdfs:label xml:lang="en">end time</rdfs:label>
+    <rdfs:comment xml:lang="en">ISO-8601 datetime when a flight, mission, or usage event ended; aligned with schema:endTime.</rdfs:comment>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+    <rdfs:subPropertyOf rdf:resource="http://schema.org/endTime"/>
+  </owl:DatatypeProperty>
+  <owl:Class rdf:about="urn:skyrwa:ontology#SettlementRecord">
+    <rdfs:label xml:lang="en">Settlement Record</rdfs:label>
+    <rdfs:comment xml:lang="en">Finalized revenue-split record for one or more usage events.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Entity"/>
+  </owl:Class>
+  <owl:Class rdf:about="urn:skyrwa:ontology#UAV">
+    <rdfs:label xml:lang="en">UAV</rdfs:label>
+    <rdfs:comment xml:lang="en">An unmanned aerial vehicle participating in UAM flights.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Agent"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/sosa/Platform"/>
+  </owl:Class>
+  <owl:Class rdf:about="urn:skyrwa:ontology#GovernedDataProduct">
+    <rdfs:label xml:lang="en">Governed Data Product</rdfs:label>
+    <rdfs:comment xml:lang="en">An aggregated data product derived from one or more&#13;
+asset candidates, passing full governance checks.  May be priced,&#13;
+licensed, or settled.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/dcat#Dataset"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Entity"/>
+  </owl:Class>
+  <owl:Class rdf:about="urn:skyrwa:ontology#UsageEvent">
+    <rdfs:label xml:lang="en">Usage Event</rdfs:label>
+    <rdfs:comment xml:lang="en">An event where a data asset or product is consumed.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Activity"/>
+  </owl:Class>
+  <owl:Class rdf:about="urn:skyrwa:ontology#FlightMission">
+    <rdfs:label xml:lang="en">Flight Mission</rdfs:label>
+    <rdfs:comment xml:lang="en">A planned mission that one or more flights execute.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Activity"/>
+  </owl:Class>
+  <owl:Class rdf:about="urn:skyrwa:ontology#RightsProfile">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/odrl/2/Policy"/>
+    <rdfs:label xml:lang="en">rights profile</rdfs:label>
+    <rdfs:comment xml:lang="en">Governance-assigned usage-rights profile of an asset; formally an ODRL policy whose permitted_uses map to odrl:permission components and prohibited_uses to odrl:prohibition components.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="urn:skyrwa:ontology#GovernanceDecision">
+    <rdfs:label xml:lang="en">Governance Decision</rdfs:label>
+    <rdfs:comment xml:lang="en">An explicit decision on tradability, desensitization,&#13;
+permitted uses, etc. for a flight evidence or asset candidate.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Activity"/>
+  </owl:Class>
+  <owl:Class rdf:about="urn:skyrwa:ontology#DataConsumer">
+    <rdfs:label xml:lang="en">Data Consumer</rdfs:label>
+    <rdfs:comment xml:lang="en">An entity that consumes or subscribes to a data product.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Agent"/>
+  </owl:Class>
+  <owl:Class rdf:about="urn:skyrwa:ontology#Operator">
+    <rdfs:label xml:lang="en">Operator</rdfs:label>
+    <rdfs:comment xml:lang="en">The human or organizational entity operating a UAV.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Agent"/>
+  </owl:Class>
+  <owl:Class rdf:about="urn:skyrwa:ontology#AssetCandidate">
+    <rdfs:label xml:lang="en">Asset Candidate</rdfs:label>
+    <rdfs:comment xml:lang="en">A flight evidence package that has passed initial&#13;
+governance and received a valuation.  It is a candidate for further&#13;
+aggregation into a data product.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Entity"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:about="urn:skyrwa:ontology#isAggregatedIn">
+    <rdfs:label xml:lang="en">is aggregated in</rdfs:label>
+    <rdfs:comment xml:lang="en">Inverse of aggregatesCandidate: links an asset candidate to the governed data product that aggregates it.</rdfs:comment>
+    <rdfs:domain rdf:resource="urn:skyrwa:ontology#AssetCandidate"/>
+    <rdfs:range rdf:resource="urn:skyrwa:ontology#GovernedDataProduct"/>
+    <owl:inverseOf rdf:resource="urn:skyrwa:ontology#aggregatesCandidate"/>
+  </owl:ObjectProperty>
+  <owl:Class rdf:about="urn:skyrwa:ontology#ValuationExplanation">
+    <rdfs:label xml:lang="en">Valuation Explanation</rdfs:label>
+    <rdfs:comment xml:lang="en">Structured rationale for a valuation score, including&#13;
+which factors contributed positively or negatively.</rdfs:comment>
+  </owl:Class>
+  <owl:Class rdf:about="urn:skyrwa:ontology#FlightEvidence">
+    <rdfs:label xml:lang="en">Flight Evidence</rdfs:label>
+    <rdfs:comment xml:lang="en">Raw, unprocessed attestation of a single UAM flight.&#13;
+Contains telemetry summaries, environment context, mission results,&#13;
+and cryptographic digests.  NOT directly tradable.</rdfs:comment>
+    <rdfs:comment xml:lang="en">A signed, digest-carrying attestation over a bundle of sensor observations (cf. sosa:ObservationCollection); governance applies to the attestation, not to individual observations.</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/prov#Entity"/>
+    <rdfs:seeAlso rdf:resource="http://www.w3.org/ns/sosa/ObservationCollection"/>
+  </owl:Class>
+  <owl:Class rdf:about="urn:skyrwa:ontology#ValuationFactor">
+    <rdfs:label xml:lang="en">Valuation Factor</rdfs:label>
+    <rdfs:comment xml:lang="en">A single scored dimension contributing to overall valuation.</rdfs:comment>
+  </owl:Class>
+</rdf:RDF>

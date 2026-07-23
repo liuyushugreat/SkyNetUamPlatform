@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oops:OOPSResponse xmlns:oops="http://www.oeg-upm.net/oops">
+<oops:Pitfall>
+<oops:Code>P08</oops:Code><oops:Name>Missing annotations</oops:Name>
+<oops:Description>This pitfall consists in creating an ontology element and failing to provide human readable annotations attached to it. Consequently, ontology elements lack annotation properties that label them (e.g. rdfs:label, lemon:LexicalEntry, skos:prefLabel or skos:altLabel) or that define them (e.g. rdfs:comment or dc:description). This pitfall is related to the guidelines provided in [5].	</oops:Description>
+<oops:Importance>Minor</oops:Importance>
+<oops:NumberAffectedElements>6</oops:NumberAffectedElements>
+<oops:Affects>
+<oops:AffectedElement>http://www.w3.org/ns/dcat#Dataset</oops:AffectedElement>
+<oops:AffectedElement>http://www.w3.org/ns/prov#Agent</oops:AffectedElement>
+<oops:AffectedElement>http://www.w3.org/ns/odrl/2/Policy</oops:AffectedElement>
+<oops:AffectedElement>http://www.w3.org/ns/sosa/Platform</oops:AffectedElement>
+<oops:AffectedElement>http://www.w3.org/ns/prov#Entity</oops:AffectedElement>
+<oops:AffectedElement>http://www.w3.org/ns/prov#Activity</oops:AffectedElement>
+</oops:Affects>
+</oops:Pitfall>
+<oops:Pitfall>
+<oops:Code>P10</oops:Code><oops:Name>Missing disjointness</oops:Name>
+<oops:Description>The ontology lacks disjoint axioms between classes or between properties that should be defined as disjoint. This pitfall is related with the guidelines provided in [6], [2] and [7].	</oops:Description>
+<oops:Importance>Important</oops:Importance>
+</oops:Pitfall>
+<oops:NumberAffectedElements>1</oops:NumberAffectedElements>
+<oops:Pitfall>
+<oops:Code>P11</oops:Code><oops:Name>Missing domain or range in properties</oops:Name>
+<oops:Description>Object and/or datatype properties without domain or range (or none of them) are included in the ontology. 	</oops:Description>
+<oops:Importance>Important</oops:Importance>
+<oops:NumberAffectedElements>30</oops:NumberAffectedElements>
+<oops:Affects>
+<oops:AffectedElement>urn:skyrwa:ontology#hasSettlementRule</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasRightsProfile</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasUsageEvent</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasLineage</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasValuation</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasSettlementRecord</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasRevenueShare</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#isTradable</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#grossAmount</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#dataQualityScore</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#permittedUse</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#riskScore</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#prohibitedUse</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#startTime</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#partyId</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasStatus</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#consumer</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#amount</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#endTime</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#complianceScore</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#requiresDesensitization</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#uavId</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#usageType</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasDigest</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasAssetClass</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#sharePct</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#role</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#estimatedValue</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#flightId</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasSignature</oops:AffectedElement>
+</oops:Affects>
+</oops:Pitfall>
+<oops:Pitfall>
+<oops:Code>P13</oops:Code><oops:Name>Inverse relationships not explicitly declared</oops:Name>
+<oops:Description>This pitfall appears when any relationship (except for those that are defined as symmetric properties using owl:SymmetricProperty) does not have an inverse relationship (owl:inverseOf) defined within the ontology.	</oops:Description>
+<oops:Importance>Minor</oops:Importance>
+<oops:NumberAffectedElements>16</oops:NumberAffectedElements>
+<oops:Affects>
+<oops:MightBeInverse>
+<oops:AffectedElement>urn:skyrwa:ontology#appliedToAsset</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#governedBy</oops:AffectedElement>
+</oops:MightBeInverse>
+<oops:NoInverseSuggestion>
+<oops:AffectedElement>urn:skyrwa:ontology#operatedBy</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasRevenueShare</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasSettlementRecord</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasValuation</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#consumedBy</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#derivedFromEvidence</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasValuationFactor</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasLineage</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasUsageEvent</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasRightsProfile</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#settledVia</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#performedByUAV</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasSettlementRule</oops:AffectedElement>
+<oops:AffectedElement>urn:skyrwa:ontology#hasMission</oops:AffectedElement>
+</oops:NoInverseSuggestion>
+</oops:Affects>
+</oops:Pitfall>
+<oops:Pitfall>
+<oops:Code>P34</oops:Code><oops:Name>Untyped class</oops:Name>
+<oops:Description>An ontology element is used as a class without having been explicitly declared as such using the primitives owl:Class or rdfs:Class. This pitfall is related with the common problems listed in [8].	</oops:Description>
+<oops:Importance>Important</oops:Importance>
+<oops:NumberAffectedElements>6</oops:NumberAffectedElements>
+<oops:Affects>
+<oops:AffectedElement>http://www.w3.org/ns/prov#Entity</oops:AffectedElement>
+<oops:AffectedElement>http://www.w3.org/ns/prov#Activity</oops:AffectedElement>
+<oops:AffectedElement>http://www.w3.org/ns/odrl/2/Policy</oops:AffectedElement>
+<oops:AffectedElement>http://www.w3.org/ns/prov#Agent</oops:AffectedElement>
+<oops:AffectedElement>http://www.w3.org/ns/sosa/Platform</oops:AffectedElement>
+<oops:AffectedElement>http://www.w3.org/ns/dcat#Dataset</oops:AffectedElement>
+</oops:Affects>
+</oops:Pitfall>
+<oops:Pitfall>
+<oops:Code>P35</oops:Code><oops:Name>Untyped property</oops:Name>
+<oops:Description>An ontology element is used as a property without having been explicitly declared as such using the primitives rdf:Property, owl:ObjectProperty or owl:DatatypeProperty. This pitfall is related with the common problems listed in [8].	</oops:Description>
+<oops:Importance>Important</oops:Importance>
+<oops:NumberAffectedElements>9</oops:NumberAffectedElements>
+<oops:Affects>
+<oops:AffectedElement>http://www.w3.org/ns/prov#wasDerivedFrom</oops:AffectedElement>
+<oops:AffectedElement>http://purl.org/dc/terms/identifier</oops:AffectedElement>
+<oops:AffectedElement>http://www.w3.org/ns/prov#wasAttributedTo</oops:AffectedElement>
+<oops:AffectedElement>http://schema.org/startTime</oops:AffectedElement>
+<oops:AffectedElement>http://www.w3.org/ns/prov#used</oops:AffectedElement>
+<oops:AffectedElement>http://www.w3.org/ns/odrl/2/hasPolicy</oops:AffectedElement>
+<oops:AffectedElement>http://schema.org/endTime</oops:AffectedElement>
+<oops:AffectedElement>http://www.w3.org/ns/dcat#theme</oops:AffectedElement>
+<oops:AffectedElement>http://schema.org/price</oops:AffectedElement>
+</oops:Affects>
+</oops:Pitfall>
+</oops:OOPSResponse>
