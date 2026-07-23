@@ -6,6 +6,7 @@
 @prefix prov:    <http://www.w3.org/ns/prov#> .
 @prefix dcat:    <http://www.w3.org/ns/dcat#> .
 @prefix odrl:    <http://www.w3.org/ns/odrl/2/> .
+@prefix sosa:    <http://www.w3.org/ns/sosa/> .
 @prefix schema:  <http://schema.org/> .
 
 # ============================================================================
@@ -15,6 +16,7 @@
 #   - PROV-O    (W3C Provenance Ontology)
 #   - DCAT      (Data Catalog Vocabulary)
 #   - ODRL 2.2  (Open Digital Rights Language)
+#   - SSN/SOSA  (Sensor, Observation, Sample, and Actuator ontology)
 #   - Schema.org / Dublin Core Terms
 # ============================================================================
 
@@ -58,7 +60,7 @@ skyrwa:hasAssetClass rdfs:subPropertyOf dcat:theme .
 # skyrwa:startTime ~ dcat:startDate ; skyrwa:endTime ~ dcat:endDate .
 
 # ────────────────────────────────────────────────────────────────────────────
-# ODRL Alignments — usage policies and rights
+# ODRL Alignments — usage policies and rights (formal axioms)
 # ────────────────────────────────────────────────────────────────────────────
 
 # RightsProfile maps to an ODRL Policy:
@@ -67,9 +69,30 @@ skyrwa:hasAssetClass rdfs:subPropertyOf dcat:theme .
 #   - tradable         -> odrl:permission with odrl:action = odrl:distribute
 #   - desensitization  -> odrl:duty (obligation before use)
 
-skyrwa:hasRightsProfile rdfs:comment """Semantically equivalent to attaching
-an odrl:Policy to the asset. Each permitted_use maps to an
-odrl:Permission, each prohibited_use to an odrl:Prohibition."""@en .
+skyrwa:RightsProfile a owl:Class ;
+    rdfs:subClassOf odrl:Policy ;
+    rdfs:label "rights profile"@en ;
+    rdfs:comment "Governance-assigned usage-rights profile of an asset; formally an ODRL policy whose permitted_uses map to odrl:permission components and prohibited_uses to odrl:prohibition components."@en .
+
+skyrwa:hasRightsProfile rdfs:subPropertyOf odrl:hasPolicy ;
+    rdfs:range skyrwa:RightsProfile ;
+    rdfs:comment """Attaches the governance-assigned odrl:Policy to the asset.
+Each permitted_use maps to an odrl:Permission, each prohibited_use to an
+odrl:Prohibition; tradability corresponds to an odrl:Permission with
+odrl:action odrl:distribute, and desensitization to an odrl:Duty."""@en .
+
+# ────────────────────────────────────────────────────────────────────────────
+# SSN/SOSA Alignments — sensor context of flight evidence
+# ────────────────────────────────────────────────────────────────────────────
+
+# A UAV hosts the sensors that produce the telemetry a FlightEvidence attests.
+skyrwa:UAV rdfs:subClassOf sosa:Platform .
+
+# The telemetry bundle attested by a FlightEvidence corresponds to a
+# sosa:ObservationCollection; SkyRwa does not re-model individual
+# observations, it governs signed attestations over observation bundles.
+skyrwa:FlightEvidence rdfs:seeAlso sosa:ObservationCollection ;
+    rdfs:comment "A signed, digest-carrying attestation over a bundle of sensor observations (cf. sosa:ObservationCollection); governance applies to the attestation, not to individual observations."@en .
 
 # ────────────────────────────────────────────────────────────────────────────
 # Schema.org / Dublin Core Alignments — basic metadata

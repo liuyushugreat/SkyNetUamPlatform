@@ -17,7 +17,7 @@
 - **Tier 3: Governed Data Product** — Aggregated from multiple candidates. Catalogued and licensable.
 - **Tier 4: Revenue Right** — Downstream entitlement for revenue distribution.
 
-The system is grounded in a **domain ontology (13 classes, 26 properties)** aligned with PROV-O, DCAT, ODRL 2.2, and Schema.org, validated through **5 SHACL shapes + SHACL-SPARQL constraints**, and queryable via **SPARQL** (6 competency + 4 analytical queries).
+The system is grounded in a **domain ontology (14 classes, 26 properties)** formally aligned with PROV-O, DCAT, ODRL 2.2, SSN/SOSA, and Schema.org, validated through **5 SHACL shapes + SHACL-SPARQL constraints**, and queryable via **SPARQL** (6 competency + 4 analytical queries).
 
 > **Synthetic Benchmark Note:** Due to current Chinese civil aviation regulations (CAAC), real operational UAM flight data cannot be publicly shared. The benchmark is synthesized based on publicly available regulatory frameworks and operational parameters from published UAM trials. The **[`benchmark_generator/`](./benchmark_generator)** module provides the complete generator with fixed random seed (42), documented parameter distributions, scenario specifications, and a coverage matrix classifying violations as injected vs. emergent.
 
@@ -46,8 +46,8 @@ modules/SkyRwa/
 │   └── outputs/                        #   Experiment result JSONs
 │
 ├── ontology/                           # Domain ontology (Turtle)
-│   ├── skyrwa.ttl                      #   13 classes, 26 properties
-│   ├── alignments.ttl                  #   PROV-O / DCAT / ODRL / Schema.org
+│   ├── skyrwa.ttl                      #   13 core classes, 26 properties
+│   ├── alignments.ttl                  #   Formal PROV-O / DCAT / ODRL / SOSA axioms (+ RightsProfile)
 │   └── prefixes.ttl                    #   Shared namespace prefixes
 ├── shapes/                             # 5 SHACL constraint shapes
 ├── queries/                            # 10 SPARQL queries (6 CQ + 4 analytical)
@@ -180,14 +180,16 @@ FlightEvidence  ─── governance ──→  AssetCandidate  ─── aggreg
 
 ### Ontology
 
-13 OWL classes and 26 properties aligned with four W3C vocabularies:
+14 OWL classes and 26 properties formally aligned (asserted `rdfs:subClassOf` / `rdfs:subPropertyOf` axioms in `ontology/alignments.ttl`) with five external vocabularies:
 
 | SkyRwa Concept | Standard | Aligned Term |
 |----------------|----------|-------------|
 | FlightEvidence | PROV-O | prov:Entity |
 | GovernanceDecision | PROV-O | prov:Activity |
 | GovernedDataProduct | DCAT | dcat:Dataset |
-| RightsProfile | ODRL 2.2 | odrl:Policy |
+| RightsProfile | ODRL 2.2 | odrl:Policy (subclass axiom) |
+| hasRightsProfile | ODRL 2.2 | odrl:hasPolicy (subproperty axiom) |
+| UAV | SSN/SOSA | sosa:Platform |
 
 ### SHACL Validation
 

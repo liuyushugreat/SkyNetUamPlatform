@@ -65,7 +65,7 @@
     }
   ],
   "consistency": {
-    "total_classes": 13,
+    "total_classes": 14,
     "unsatisfiable": [],
     "disjoint_violations": 0,
     "consistent": true

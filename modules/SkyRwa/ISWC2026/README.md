@@ -34,7 +34,7 @@ This is the **self-contained reproduction artifact** for the ISWC 2026 paper. It
 
 The experiment scripts import from these sibling directories in `modules/SkyRwa/`:
 
-- **`ontology/`** — Domain ontology (13 classes, 26 properties), PROV-O/DCAT/ODRL alignments
+- **`ontology/`** — Domain ontology (14 classes, 26 properties), formal PROV-O/DCAT/ODRL/SOSA alignment axioms
 - **`rdf/`** — RDF mapper, serializer, graph store, SPARQL execution
 - **`shapes/`** — 5 SHACL constraint shapes
 - **`queries/`** — 6 competency + 4 analytical SPARQL queries
@@ -218,8 +218,8 @@ modules/SkyRwa/
 │   └── outputs/               # Experiment result JSONs
 │
 ├── ontology/                  # Domain ontology (Turtle)
-│   ├── skyrwa.ttl             # 13 classes, 26 properties
-│   ├── alignments.ttl         # PROV-O / DCAT / ODRL / Schema.org
+│   ├── skyrwa.ttl             # 13 core classes, 26 properties
+│   ├── alignments.ttl         # Formal PROV-O / DCAT / ODRL / SOSA axioms (+ RightsProfile)
 │   └── prefixes.ttl           # Shared namespace prefixes
 ├── shapes/                    # 5 SHACL constraint shapes
 ├── queries/                   # 10 SPARQL queries (6 CQ + 4 analytical)
