@@ -253,7 +253,8 @@ def _build_record(s: dict, base_time: datetime) -> FlightIngestRecord:
     )
 
 
-def generate(output_dir: Path | None = None) -> dict:
+def generate(output_dir: Path | None = None, *,
+             materialize_scoring_context: bool = False) -> dict:
     """Generate benchmark data and return summary statistics."""
     if output_dir is None:
         output_dir = Path(__file__).resolve().parent / "sample_data"
@@ -270,7 +271,9 @@ def generate(output_dir: Path | None = None) -> dict:
 
     g = Graph()
     bind_namespaces(g)
-    mapper = SkyRwaMapper(g)
+    mapper = SkyRwaMapper(
+        g, materialize_scoring_context=materialize_scoring_context
+    )
 
     units: List[FlightAssetUnit] = []
     labels: List[dict] = []
@@ -344,8 +347,17 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Generate SkyRwa benchmark data")
     parser.add_argument("--output-dir", type=Path, default=None)
+    parser.add_argument(
+        "--materialize-scoring-context", action="store_true",
+        help="materialize scoring inputs (mission status, violation/anomaly/"
+             "NFZ/risk-event counts) as skyrwa:ScoringContext triples so the "
+             "extended SHACL contract (shapes/extended/) can check V3/V4/V6",
+    )
     args = parser.parse_args()
-    result = generate(args.output_dir)
+    result = generate(
+        args.output_dir,
+        materialize_scoring_context=args.materialize_scoring_context,
+    )
     print(f"Generated benchmark: {result['total_flights']} flights, "
           f"{result['graph_triples']} triples")
     for k, v in result.items():

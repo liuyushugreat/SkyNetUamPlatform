@@ -1,0 +1,103 @@
+@prefix skyrwa:  <https://w3id.org/skyrwa#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# ============================================================================
+# SkyRwa Scoring-Context Extension (optional module)
+# ============================================================================
+# This module defines the vocabulary for OPTIONAL materialization of the
+# scoring inputs (mission status, violation/anomaly counts, NFZ incursions,
+# risk events) that the procedural governance layer reads when computing
+# compliance and risk scores.
+#
+# It is NOT part of the core ontology (skyrwa.ttl, version 1.0.0): graphs
+# only contain these terms when the pipeline is run with the
+# --materialize-scoring-context flag (SkyRwaMapper(materialize_scoring_
+# context=True)).  Materializing the context lets threshold and
+# mission-state checks (violation classes V3, V4, V6 in the accompanying
+# paper) move from the procedural layer into the declarative SHACL contract
+# (shapes/extended/), at the cost of additional triples per flight.
+# ============================================================================
+
+<https://w3id.org/skyrwa/scoring-context> a owl:Ontology ;
+    owl:versionInfo "1.0.0" ;
+    dcterms:title "SkyRwa Scoring-Context Extension"@en ;
+    dcterms:description """Optional extension module materializing the
+scoring inputs (mission status, violation and anomaly counts, no-fly-zone
+incursions, risk events) behind the compliance and risk scores, so that
+threshold and mission-state governance checks can be expressed as
+SHACL-SPARQL constraints in a third-party-verifiable validation
+contract."""@en ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    owl:imports <https://w3id.org/skyrwa> .
+
+# ────────────────────────────────────────────────────────────────────────────
+# Class
+# ────────────────────────────────────────────────────────────────────────────
+
+skyrwa:ScoringContext a owl:Class ;
+    rdfs:label "Scoring Context"@en ;
+    rdfs:comment """The materialized inputs from which an asset candidate's
+compliance and risk scores were computed: mission completion status and
+percentage, counts of violations, anomalies, no-fly-zone incursions, and
+risk events.  Present only when the pipeline materializes scoring
+context."""@en .
+
+# ────────────────────────────────────────────────────────────────────────────
+# Object property
+# ────────────────────────────────────────────────────────────────────────────
+
+skyrwa:hasScoringContext a owl:ObjectProperty ;
+    rdfs:label "has scoring context"@en ;
+    rdfs:comment "Links an asset candidate to the materialized inputs of its compliance and risk scores."@en ;
+    rdfs:domain skyrwa:AssetCandidate ;
+    rdfs:range skyrwa:ScoringContext .
+
+# ────────────────────────────────────────────────────────────────────────────
+# Datatype properties
+# ────────────────────────────────────────────────────────────────────────────
+
+skyrwa:missionCompleted a owl:DatatypeProperty ;
+    rdfs:label "mission completed"@en ;
+    rdfs:comment "Whether the flight mission completed successfully."@en ;
+    rdfs:domain skyrwa:ScoringContext ;
+    rdfs:range xsd:boolean .
+
+skyrwa:completionPct a owl:DatatypeProperty ;
+    rdfs:label "completion percentage"@en ;
+    rdfs:comment "Mission completion percentage (0-100)."@en ;
+    rdfs:domain skyrwa:ScoringContext ;
+    rdfs:range xsd:float .
+
+skyrwa:violationCount a owl:DatatypeProperty ;
+    rdfs:label "violation count"@en ;
+    rdfs:comment "Number of regulatory violations recorded for the flight."@en ;
+    rdfs:domain skyrwa:ScoringContext ;
+    rdfs:range xsd:integer .
+
+skyrwa:violationLabel a owl:DatatypeProperty ;
+    rdfs:label "violation label"@en ;
+    rdfs:comment "Identifier of one recorded regulatory violation (e.g. nfz_proximity_warning)."@en ;
+    rdfs:domain skyrwa:ScoringContext ;
+    rdfs:range xsd:string .
+
+skyrwa:anomalyCount a owl:DatatypeProperty ;
+    rdfs:label "anomaly count"@en ;
+    rdfs:comment "Number of operational anomalies recorded for the flight."@en ;
+    rdfs:domain skyrwa:ScoringContext ;
+    rdfs:range xsd:integer .
+
+skyrwa:nfzIncursionCount a owl:DatatypeProperty ;
+    rdfs:label "no-fly-zone incursion count"@en ;
+    rdfs:comment "Number of no-fly-zone incursions recorded for the flight."@en ;
+    rdfs:domain skyrwa:ScoringContext ;
+    rdfs:range xsd:integer .
+
+skyrwa:riskEventCount a owl:DatatypeProperty ;
+    rdfs:label "risk event count"@en ;
+    rdfs:comment "Number of environmental or operational risk events recorded for the flight."@en ;
+    rdfs:domain skyrwa:ScoringContext ;
+    rdfs:range xsd:integer .

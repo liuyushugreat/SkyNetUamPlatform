@@ -32,10 +32,21 @@ def _iri(prefix: str, local: str) -> URIRef:
 
 
 class SkyRwaMapper:
-    """Stateless mapper: domain objects → RDF triples."""
+    """Stateless mapper: domain objects → RDF triples.
 
-    def __init__(self, graph: Optional[Graph] = None):
+    When ``materialize_scoring_context`` is True, each asset candidate
+    additionally gets a ``skyrwa:ScoringContext`` node carrying the inputs
+    of its compliance/risk scores (mission status, violation/anomaly/NFZ/
+    risk-event counts; see ontology/scoring-context-extension.ttl).  This
+    lets the threshold and mission-state checks V3/V4/V6 be evaluated by
+    the extended SHACL contract (shapes/extended/) instead of only by the
+    procedural rule layer, at the cost of extra triples per flight.
+    """
+
+    def __init__(self, graph: Optional[Graph] = None, *,
+                 materialize_scoring_context: bool = False):
         self.graph = graph if graph is not None else Graph()
+        self.materialize_scoring_context = materialize_scoring_context
         bind_namespaces(self.graph)
 
     # ── FlightEvidencePackage ───────────────────────────────────────────
@@ -85,6 +96,8 @@ class SkyRwaMapper:
         if unit.evidence:
             ev_iri = self.map_evidence(unit.evidence)
             g.add((subj, SKYRWA.derivedFromEvidence, ev_iri))
+            if self.materialize_scoring_context:
+                self._map_scoring_context(subj, unit)
         if unit.rights_profile:
             self._map_rights(subj, unit.rights_profile)
         if unit.valuation_result:
@@ -94,6 +107,32 @@ class SkyRwaMapper:
         for rev in unit.revenue_log:
             self.map_revenue_log(rev)
         return subj
+
+    # ── ScoringContext (optional extension) ─────────────────────────────
+
+    def _map_scoring_context(self, asset_iri: URIRef,
+                             unit: FlightAssetUnit) -> URIRef:
+        g = self.graph
+        mr = unit.evidence.mission_result
+        env = unit.evidence.environment
+        ctx = _iri("scoring", unit.asset_unit_id)
+        g.add((asset_iri, SKYRWA.hasScoringContext, ctx))
+        g.add((ctx, RDF.type, SKYRWA.ScoringContext))
+        g.add((ctx, SKYRWA.missionCompleted,
+               Literal(mr.completed, datatype=XSD.boolean)))
+        g.add((ctx, SKYRWA.completionPct,
+               Literal(mr.completion_pct, datatype=XSD.float)))
+        g.add((ctx, SKYRWA.violationCount,
+               Literal(len(mr.violations), datatype=XSD.integer)))
+        g.add((ctx, SKYRWA.anomalyCount,
+               Literal(len(mr.anomalies), datatype=XSD.integer)))
+        g.add((ctx, SKYRWA.nfzIncursionCount,
+               Literal(env.no_fly_zone_incursions, datatype=XSD.integer)))
+        g.add((ctx, SKYRWA.riskEventCount,
+               Literal(len(env.risk_events), datatype=XSD.integer)))
+        for v in mr.violations:
+            g.add((ctx, SKYRWA.violationLabel, Literal(v)))
+        return ctx
 
     # ── RightsProfile ───────────────────────────────────────────────────
 

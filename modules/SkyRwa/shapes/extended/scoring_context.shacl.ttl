@@ -1,0 +1,67 @@
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix skyrwa:  <https://w3id.org/skyrwa#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================================
+# Extended SHACL contract: threshold and mission-state checks (V3, V4, V6)
+# ============================================================================
+# These SHACL-SPARQL constraints move the checks of the procedural
+# governance layer into the declarative, third-party-verifiable contract.
+# V3/V4 read the compliance/risk scores already materialized on the asset
+# candidate; V6 reads the skyrwa:ScoringContext node that is present only
+# when the pipeline runs with --materialize-scoring-context (see
+# ontology/scoring-context-extension.ttl).
+#
+# The 0.5 / 0.8 thresholds mirror rule GOV-001 of the procedural layer;
+# as shape parameters they are data, not code, and remain configurable.
+#
+# NOTE: sh:sparql requires a SHACL-SPARQL engine (pySHACL advanced=True);
+# SHACL-Core-only engines such as rudof skip these constraints.
+# ============================================================================
+
+skyrwa:ScoringThresholdShape a sh:NodeShape ;
+    sh:targetClass skyrwa:AssetCandidate ;
+    sh:name "Scoring Threshold Shape (extended contract)" ;
+    sh:description "Threshold and mission-state constraints over materialized scoring context." ;
+
+    sh:sparql [
+        sh:message "Tradable AssetCandidate has compliance score below 0.5 (SHACL-SPARQL: V3)." ;
+        sh:select """
+            PREFIX skyrwa: <https://w3id.org/skyrwa#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            SELECT $this
+            WHERE {
+                $this (skyrwa:hasRightsProfile/skyrwa:isTradable)|skyrwa:isTradable "true"^^xsd:boolean .
+                $this skyrwa:complianceScore ?c .
+                FILTER (?c < 0.5)
+            }
+        """ ;
+    ] ;
+
+    sh:sparql [
+        sh:message "Tradable AssetCandidate has risk score above 0.8 (SHACL-SPARQL: V4)." ;
+        sh:select """
+            PREFIX skyrwa: <https://w3id.org/skyrwa#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            SELECT $this
+            WHERE {
+                $this (skyrwa:hasRightsProfile/skyrwa:isTradable)|skyrwa:isTradable "true"^^xsd:boolean .
+                $this skyrwa:riskScore ?r .
+                FILTER (?r > 0.8)
+            }
+        """ ;
+    ] ;
+
+    sh:sparql [
+        sh:message "Tradable AssetCandidate stems from an incomplete mission (SHACL-SPARQL: V6, requires materialized scoring context)." ;
+        sh:select """
+            PREFIX skyrwa: <https://w3id.org/skyrwa#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            SELECT $this
+            WHERE {
+                $this (skyrwa:hasRightsProfile/skyrwa:isTradable)|skyrwa:isTradable "true"^^xsd:boolean .
+                $this skyrwa:hasScoringContext ?ctx .
+                ?ctx skyrwa:missionCompleted "false"^^xsd:boolean .
+            }
+        """ ;
+    ] .

@@ -1,0 +1,73 @@
+{
+  "sizes": [
+    5,
+    20,
+    100,
+    500,
+    1000
+  ],
+  "repeats": 3,
+  "note": "baseline = shapes/ on plain graph; extended = shapes/ + shapes/extended/ on graph with materialized skyrwa:ScoringContext. pySHACL advanced=True; shape loading excluded; median of REPEATS runs.",
+  "runs": {
+    "n5": {
+      "triples_plain": 336,
+      "triples_ctx": 376,
+      "triples_added": 40,
+      "triples_added_per_flight": 8.0,
+      "graph_growth_pct": 11.9,
+      "baseline_validation_ms": 17.41,
+      "extended_validation_ms": 77.1,
+      "validation_delta_pct": 342.8,
+      "baseline_conforms": true,
+      "extended_conforms": true
+    },
+    "n20": {
+      "triples_plain": 1326,
+      "triples_ctx": 1486,
+      "triples_added": 160,
+      "triples_added_per_flight": 8.0,
+      "graph_growth_pct": 12.1,
+      "baseline_validation_ms": 63.84,
+      "extended_validation_ms": 305.56,
+      "validation_delta_pct": 378.6,
+      "baseline_conforms": true,
+      "extended_conforms": true
+    },
+    "n100": {
+      "triples_plain": 6606,
+      "triples_ctx": 7406,
+      "triples_added": 800,
+      "triples_added_per_flight": 8.0,
+      "graph_growth_pct": 12.1,
+      "baseline_validation_ms": 377.69,
+      "extended_validation_ms": 1517.98,
+      "validation_delta_pct": 301.9,
+      "baseline_conforms": true,
+      "extended_conforms": true
+    },
+    "n500": {
+      "triples_plain": 33006,
+      "triples_ctx": 37006,
+      "triples_added": 4000,
+      "triples_added_per_flight": 8.0,
+      "graph_growth_pct": 12.1,
+      "baseline_validation_ms": 1888.5,
+      "extended_validation_ms": 8166.39,
+      "validation_delta_pct": 332.4,
+      "baseline_conforms": true,
+      "extended_conforms": true
+    },
+    "n1000": {
+      "triples_plain": 66006,
+      "triples_ctx": 74006,
+      "triples_added": 8000,
+      "triples_added_per_flight": 8.0,
+      "graph_growth_pct": 12.1,
+      "baseline_validation_ms": 4114.63,
+      "extended_validation_ms": 17189.92,
+      "validation_delta_pct": 317.8,
+      "baseline_conforms": true,
+      "extended_conforms": true
+    }
+  }
+}

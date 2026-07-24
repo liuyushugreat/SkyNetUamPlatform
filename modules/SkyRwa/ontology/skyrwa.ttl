@@ -16,7 +16,7 @@
 # Purpose: Provides a formal vocabulary for the flight-to-asset pipeline
 #          in Urban Air Mobility systems.  Covers evidence, governance,
 #          productization, valuation, and settlement.
-# Persistent namespace (pending w3id registration, see w3id-submission.md):
+# Persistent namespace (registered at w3id.org, see w3id-submission.md):
 #   https://w3id.org/skyrwa#
 # ============================================================================
 

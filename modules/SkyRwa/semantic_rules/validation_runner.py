@@ -38,14 +38,23 @@ class ValidationReport:
 
 
 class ShaclValidator:
-    """Validate an RDF graph against SkyRwa SHACL shapes."""
+    """Validate an RDF graph against SkyRwa SHACL shapes.
 
-    def __init__(self, shapes_dir: Optional[Union[str, Path]] = None):
+    ``include_extended=True`` additionally loads the extended contract
+    under ``shapes/extended/`` (threshold and mission-state SHACL-SPARQL
+    constraints V3/V4/V6 over materialized scoring context).
+    """
+
+    def __init__(self, shapes_dir: Optional[Union[str, Path]] = None, *,
+                 include_extended: bool = False):
         self.shapes_graph = Graph()
         shapes_dir = Path(shapes_dir) if shapes_dir else (
             Path(__file__).resolve().parent.parent / "shapes"
         )
-        for ttl in sorted(shapes_dir.glob("*.ttl")):
+        shape_files = sorted(shapes_dir.glob("*.ttl"))
+        if include_extended:
+            shape_files += sorted((shapes_dir / "extended").glob("*.ttl"))
+        for ttl in shape_files:
             self.shapes_graph.parse(str(ttl), format="turtle")
 
     def validate(self, data_graph: Graph) -> ValidationReport:
