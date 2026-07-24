@@ -1,0 +1,17 @@
+# CQ10 (temporal): Which asset candidates stem from flights that started
+# inside a given incident-investigation window? (Regulator scenario: an
+# airspace incident is reported for 17-18 Jan 2026; all flights operating
+# in that window must be identified.)
+
+PREFIX skyrwa: <https://w3id.org/skyrwa#>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?asset ?flightId ?start
+WHERE {
+    ?asset a skyrwa:AssetCandidate ;
+           skyrwa:flightId ?flightId ;
+           skyrwa:startTime ?start .
+    FILTER (?start >= "2026-01-17T00:00:00+00:00"^^xsd:dateTime &&
+            ?start <  "2026-01-19T00:00:00+00:00"^^xsd:dateTime)
+}
+ORDER BY ?start

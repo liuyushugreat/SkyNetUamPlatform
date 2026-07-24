@@ -1,0 +1,13 @@
+# CQ8 (negative): Which asset candidates were never aggregated into any
+# governed data product? These represent attested value that has not yet
+# been productized (or was withheld by governance).
+
+PREFIX skyrwa: <https://w3id.org/skyrwa#>
+
+SELECT ?asset ?flightId
+WHERE {
+    ?asset a skyrwa:AssetCandidate ;
+           skyrwa:flightId ?flightId .
+    FILTER NOT EXISTS { ?product skyrwa:aggregatesCandidate ?asset }
+}
+ORDER BY ?flightId

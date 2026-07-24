@@ -1,0 +1,13 @@
+# CQ7 (negative): Which flight evidence never entered any asset candidate?
+# Completeness audit: an empty result certifies that every attested flight
+# is accounted for in the asset tier.
+
+PREFIX skyrwa: <https://w3id.org/skyrwa#>
+
+SELECT ?evidence ?flightId
+WHERE {
+    ?evidence a skyrwa:FlightEvidence ;
+              skyrwa:flightId ?flightId .
+    FILTER NOT EXISTS { ?candidate skyrwa:derivedFromEvidence ?evidence }
+}
+ORDER BY ?flightId

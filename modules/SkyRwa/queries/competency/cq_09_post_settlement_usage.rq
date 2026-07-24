@@ -1,0 +1,17 @@
+# CQ9 (temporal): Which usage events occurred AFTER the asset's settlement
+# was recorded? Post-settlement usage indicates potential license drift:
+# consumption that no settled revenue split covers.
+
+PREFIX skyrwa: <https://w3id.org/skyrwa#>
+PREFIX prov:   <http://www.w3.org/ns/prov#>
+
+SELECT ?asset ?usage ?usedAt ?settledAt
+WHERE {
+    ?asset a skyrwa:AssetCandidate ;
+           skyrwa:hasUsageEvent ?usage ;
+           skyrwa:hasSettlementRecord ?settlement .
+    ?usage prov:startedAtTime ?usedAt .
+    ?settlement prov:generatedAtTime ?settledAt .
+    FILTER (?usedAt > ?settledAt)
+}
+ORDER BY ?asset ?usedAt

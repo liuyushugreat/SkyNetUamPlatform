@@ -212,6 +212,47 @@ CQ_MAPPING = [
         "core_classes": ["GovernedDataProduct", "AssetCandidate"],
         "key_properties": ["aggregatesCandidate", "hasAssetClass"],
     },
+    {
+        "cq": "CQ7",
+        "question": "Evidence never entering any candidate?",
+        "core_classes": ["FlightEvidence", "AssetCandidate"],
+        "key_properties": ["derivedFromEvidence", "flightId"],
+    },
+    {
+        "cq": "CQ8",
+        "question": "Candidates never productized?",
+        "core_classes": ["AssetCandidate", "GovernedDataProduct"],
+        "key_properties": ["aggregatesCandidate", "flightId"],
+    },
+    {
+        "cq": "CQ9",
+        "question": "Usage after settlement (license drift)?",
+        "core_classes": ["AssetCandidate", "UsageEvent", "SettlementRecord"],
+        "key_properties": ["hasUsageEvent", "hasSettlementRecord",
+                           "prov:startedAtTime", "prov:generatedAtTime"],
+    },
+    {
+        "cq": "CQ10",
+        "question": "Flights inside incident window?",
+        "core_classes": ["AssetCandidate"],
+        "key_properties": ["startTime", "flightId"],
+    },
+    {
+        "cq": "CQ11",
+        "question": "Flights + settled revenue per product?",
+        "core_classes": ["GovernedDataProduct", "AssetCandidate",
+                         "FlightEvidence", "SettlementRecord"],
+        "key_properties": ["aggregatesCandidate", "derivedFromEvidence",
+                           "hasSettlementRecord", "amount"],
+    },
+    {
+        "cq": "CQ12",
+        "question": "Products spanning >3 UAVs?",
+        "core_classes": ["GovernedDataProduct", "AssetCandidate",
+                         "FlightEvidence", "UAV"],
+        "key_properties": ["aggregatesCandidate", "derivedFromEvidence",
+                           "performedByUAV"],
+    },
 ]
 
 

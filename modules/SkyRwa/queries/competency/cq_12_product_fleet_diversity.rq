@@ -1,0 +1,17 @@
+# CQ12 (cross-tier aggregation): Which governed data products aggregate
+# flights from more than three distinct UAVs? Fleet diversity matters for
+# training-data products: a product sourced from a single airframe risks
+# sensor-specific bias.
+
+PREFIX skyrwa: <https://w3id.org/skyrwa#>
+
+SELECT ?product (COUNT(DISTINCT ?uav) AS ?uavCount)
+WHERE {
+    ?product a skyrwa:GovernedDataProduct ;
+             skyrwa:aggregatesCandidate ?candidate .
+    ?candidate skyrwa:derivedFromEvidence ?evidence .
+    ?evidence skyrwa:performedByUAV ?uav .
+}
+GROUP BY ?product
+HAVING (COUNT(DISTINCT ?uav) > 3)
+ORDER BY DESC(?uavCount)

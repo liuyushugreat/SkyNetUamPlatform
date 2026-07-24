@@ -1,0 +1,112 @@
+{
+  "stats": {
+    "flights": 105,
+    "tradable": 45,
+    "products": 2,
+    "promoted_candidates": 45,
+    "settled_assets": 30,
+    "settled_total": 1500.0,
+    "usage_events": 65,
+    "post_settlement_usage": 5,
+    "decisions": 53,
+    "triples": 9035
+  },
+  "cqs": [
+    {
+      "cq": "cq_01",
+      "file": "cq_01_tradable_assets.rq",
+      "patterns": 5,
+      "rows": 45,
+      "expected": 45,
+      "correct": true
+    },
+    {
+      "cq": "cq_02",
+      "file": "cq_02_assets_requiring_desensitization.rq",
+      "patterns": 4,
+      "rows": 71,
+      "expected": 71,
+      "correct": true
+    },
+    {
+      "cq": "cq_03",
+      "file": "cq_03_assets_by_scenario.rq",
+      "patterns": 4,
+      "rows": 30,
+      "expected": 30,
+      "correct": true
+    },
+    {
+      "cq": "cq_04",
+      "file": "cq_04_revenue_by_participant.rq",
+      "patterns": 5,
+      "rows": 3,
+      "expected": 3,
+      "correct": true
+    },
+    {
+      "cq": "cq_05",
+      "file": "cq_05_invalid_assets.rq",
+      "patterns": 4,
+      "rows": 0,
+      "expected": 0,
+      "correct": true
+    },
+    {
+      "cq": "cq_06",
+      "file": "cq_06_product_lineage.rq",
+      "patterns": 4,
+      "rows": 2,
+      "expected": 2,
+      "correct": true
+    },
+    {
+      "cq": "cq_07",
+      "file": "cq_07_orphan_evidence.rq",
+      "patterns": 3,
+      "rows": 0,
+      "expected": 0,
+      "correct": true
+    },
+    {
+      "cq": "cq_08",
+      "file": "cq_08_unpromoted_candidates.rq",
+      "patterns": 3,
+      "rows": 60,
+      "expected": 60,
+      "correct": true
+    },
+    {
+      "cq": "cq_09",
+      "file": "cq_09_post_settlement_usage.rq",
+      "patterns": 5,
+      "rows": 5,
+      "expected": 5,
+      "correct": true
+    },
+    {
+      "cq": "cq_10",
+      "file": "cq_10_incident_window.rq",
+      "patterns": 3,
+      "rows": 15,
+      "expected": 15,
+      "correct": true
+    },
+    {
+      "cq": "cq_11",
+      "file": "cq_11_product_revenue_rollup.rq",
+      "patterns": 6,
+      "rows": 2,
+      "expected": 2,
+      "correct": true
+    },
+    {
+      "cq": "cq_12",
+      "file": "cq_12_product_fleet_diversity.rq",
+      "patterns": 4,
+      "rows": 2,
+      "expected": 2,
+      "correct": true
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+# CQ11 (cross-tier aggregation): For each governed data product, how many
+# distinct source flights does it aggregate and how much settled revenue
+# have its constituent candidates generated? Traverses three tiers
+# (product -> candidate -> evidence) and folds in the settlement records.
+
+PREFIX skyrwa: <https://w3id.org/skyrwa#>
+
+SELECT ?product (COUNT(DISTINCT ?evidence) AS ?flightCount)
+       (SUM(?amount) AS ?settledRevenue)
+WHERE {
+    ?product a skyrwa:GovernedDataProduct ;
+             skyrwa:aggregatesCandidate ?candidate .
+    ?candidate skyrwa:derivedFromEvidence ?evidence .
+    OPTIONAL {
+        ?candidate skyrwa:hasSettlementRecord ?settlement .
+        ?settlement skyrwa:hasRevenueShare ?share .
+        ?share skyrwa:amount ?amount .
+    }
+}
+GROUP BY ?product
+ORDER BY DESC(?settledRevenue)

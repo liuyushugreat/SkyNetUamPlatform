@@ -108,6 +108,28 @@ class SkyRwaMapper:
             self.map_revenue_log(rev)
         return subj
 
+    # ── GovernedProduct ──────────────────────────────────────────────────
+
+    def map_product(self, product) -> URIRef:
+        """Map a :class:`GovernedProduct` to a ``skyrwa:GovernedDataProduct``
+        node with ``aggregatesCandidate`` links to its source candidates."""
+        g = self.graph
+        subj = _iri("product", product.product_id)
+        g.add((subj, RDF.type, SKYRWA.GovernedDataProduct))
+        g.add((subj, SKYRWA.hasAssetClass,
+               Literal(product.product_category.value)))
+        g.add((subj, SKYRWA.hasStatus, Literal(product.status)))
+        g.add((subj, SKYRWA.estimatedValue,
+               Literal(product.suggested_value, datatype=XSD.float)))
+        g.add((subj, PROV.generatedAtTime, _dt(product.created_at)))
+        for asset_id in product.source_asset_ids:
+            asset_iri = _iri("asset", asset_id)
+            g.add((subj, SKYRWA.aggregatesCandidate, asset_iri))
+            g.add((asset_iri, SKYRWA.promotedToProduct, subj))
+        if product.rights_summary:
+            self._map_rights(subj, product.rights_summary)
+        return subj
+
     # ── ScoringContext (optional extension) ─────────────────────────────
 
     def _map_scoring_context(self, asset_iri: URIRef,
