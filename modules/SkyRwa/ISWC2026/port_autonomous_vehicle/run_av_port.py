@@ -107,7 +107,7 @@ def main() -> int:
                                     "hasMission->hasTrip"],
             "inherited_unchanged": ["AssetCandidate", "GovernanceDecision",
                                      "GovernedDataProduct", "RevenueRight",
-                                     "SettlementRecord", "GOV-001..GOV-004"],
+                                     "SettlementRecord", "GOV-001..GOV-003"],
         },
     }
     out_path = HERE / "av_port_result.json"
