@@ -13,7 +13,7 @@ from typing import List
 from rdflib import Graph, Literal, URIRef, BNode
 from rdflib.namespace import RDF, XSD
 
-from ..rdf.namespaces import SKYRWA, SKYRWA_INST
+from ..rdf.namespaces import SKYRWA, SKYRWA_INST, PROV
 
 
 @dataclass
@@ -102,7 +102,12 @@ class GovernanceRuleEngine:
         """Materialize governance decisions as triples in the graph.
 
         Each affected asset gets its own GovernanceDecision node linked via
-        ``skyrwa:appliedToAsset``, enabling per-asset SPARQL audit queries.
+        ``skyrwa:appliedToAsset`` (a subproperty of ``prov:used``), enabling
+        per-asset SPARQL audit queries.  When the target is an AssetCandidate,
+        the decision additionally carries a ``prov:generated`` edge to it,
+        realizing the activity-centric PROV pattern of the formal model
+        (a GovernanceDecision used the evidence and generated the governed
+        candidate state).
         """
         for r in results:
             if not r.affected_assets:
@@ -123,8 +128,15 @@ class GovernanceRuleEngine:
                     SKYRWA["flightId"], Literal(flight_id)
                 ))
                 for asset_uri in asset_candidates:
-                    if (asset_uri, RDF.type, SKYRWA.AssetCandidate) in graph \
-                            or (asset_uri, RDF.type, SKYRWA.FlightEvidence) in graph:
+                    if (asset_uri, RDF.type, SKYRWA.AssetCandidate) in graph:
                         graph.add(
                             (decision, SKYRWA["appliedToAsset"], asset_uri)
                         )
+                        graph.add((decision, PROV.generated, asset_uri))
+                    elif (asset_uri, RDF.type, SKYRWA.FlightEvidence) in graph:
+                        graph.add(
+                            (decision, SKYRWA["appliedToAsset"], asset_uri)
+                        )
+                        # Formal model (Def. 1): the decision activity
+                        # used the evidence input entity.
+                        graph.add((decision, PROV.used, asset_uri))

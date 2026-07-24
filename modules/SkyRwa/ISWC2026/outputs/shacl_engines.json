@@ -1,0 +1,138 @@
+{
+  "sizes": [
+    5,
+    20,
+    100,
+    500,
+    1000
+  ],
+  "repeats": 3,
+  "note": "pySHACL runs SHACL Core + the sh:sparql constraint (advanced=True); rudof evaluates SHACL Core only and skips sh:sparql. Shape loading excluded from timings for both.",
+  "runs": {
+    "n5": {
+      "pipeline_ms": 0.68,
+      "rdf_map_ms": 2.32,
+      "turtle_ms": 5.72,
+      "pyshacl_ms": 17.06,
+      "pyshacl_ms_all": [
+        77.39,
+        17.02,
+        17.06
+      ],
+      "pyshacl_conforms": true,
+      "pyshacl_violations": 0,
+      "rudof_total_ms": 25.81,
+      "rudof_read_ms": 25.5,
+      "rudof_validate_ms": 0.31,
+      "rudof_total_ms_all": [
+        29.48,
+        25.81,
+        25.41
+      ],
+      "rudof_conforms": true,
+      "rudof_violations": 0,
+      "triples": 336,
+      "triples_per_flight": 67.2
+    },
+    "n20": {
+      "pipeline_ms": 1.59,
+      "rdf_map_ms": 8.55,
+      "turtle_ms": 18.38,
+      "pyshacl_ms": 76.37,
+      "pyshacl_ms_all": [
+        80.86,
+        65.25,
+        76.37
+      ],
+      "pyshacl_conforms": true,
+      "pyshacl_violations": 0,
+      "rudof_total_ms": 29.09,
+      "rudof_read_ms": 28.21,
+      "rudof_validate_ms": 0.88,
+      "rudof_total_ms_all": [
+        29.73,
+        29.04,
+        29.09
+      ],
+      "rudof_conforms": true,
+      "rudof_violations": 0,
+      "triples": 1326,
+      "triples_per_flight": 66.3
+    },
+    "n100": {
+      "pipeline_ms": 5.78,
+      "rdf_map_ms": 59.87,
+      "turtle_ms": 93.15,
+      "pyshacl_ms": 352.75,
+      "pyshacl_ms_all": [
+        349.47,
+        352.75,
+        373.84
+      ],
+      "pyshacl_conforms": true,
+      "pyshacl_violations": 0,
+      "rudof_total_ms": 41.59,
+      "rudof_read_ms": 37.56,
+      "rudof_validate_ms": 4.02,
+      "rudof_total_ms_all": [
+        42.34,
+        41.59,
+        41.07
+      ],
+      "rudof_conforms": true,
+      "rudof_violations": 0,
+      "triples": 6606,
+      "triples_per_flight": 66.1
+    },
+    "n500": {
+      "pipeline_ms": 33.92,
+      "rdf_map_ms": 233.99,
+      "turtle_ms": 468.89,
+      "pyshacl_ms": 1882.79,
+      "pyshacl_ms_all": [
+        1816.7,
+        1973.13,
+        1882.79
+      ],
+      "pyshacl_conforms": true,
+      "pyshacl_violations": 0,
+      "rudof_total_ms": 124.15,
+      "rudof_read_ms": 103.41,
+      "rudof_validate_ms": 20.74,
+      "rudof_total_ms_all": [
+        125.41,
+        122.31,
+        124.15
+      ],
+      "rudof_conforms": true,
+      "rudof_violations": 0,
+      "triples": 33006,
+      "triples_per_flight": 66.0
+    },
+    "n1000": {
+      "pipeline_ms": 99.71,
+      "rdf_map_ms": 534.58,
+      "turtle_ms": 954.71,
+      "pyshacl_ms": 3930.14,
+      "pyshacl_ms_all": [
+        3930.14,
+        3784.11,
+        3939.43
+      ],
+      "pyshacl_conforms": true,
+      "pyshacl_violations": 0,
+      "rudof_total_ms": 239.57,
+      "rudof_read_ms": 196.27,
+      "rudof_validate_ms": 43.29,
+      "rudof_total_ms_all": [
+        239.57,
+        240.43,
+        238.09
+      ],
+      "rudof_conforms": true,
+      "rudof_violations": 0,
+      "triples": 66006,
+      "triples_per_flight": 66.0
+    }
+  }
+}
