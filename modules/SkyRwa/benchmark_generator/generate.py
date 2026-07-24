@@ -1,4 +1,4 @@
-"""Reproducible benchmark generator for SkyRwa ISWC 2026 evaluation.
+"""Reproducible benchmark generator for the SkyRwa paper evaluation.
 
 Generates 105 flights across 10 scenario categories, runs each through the
 full SkyRwa pipeline (ingest → evidence → governance → valuation → RDF), and
@@ -378,7 +378,7 @@ def generate(output_dir: Path | None = None) -> dict:
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Generate SkyRwa ISWC 2026 benchmark data")
+    parser = argparse.ArgumentParser(description="Generate SkyRwa benchmark data")
     parser.add_argument("--output-dir", type=Path, default=None,
                         help="Directory for JSON and graph outputs")
     args = parser.parse_args()

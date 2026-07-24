@@ -1,6 +1,6 @@
 # SkyRwa Benchmark Generator
 
-Reproducible synthetic benchmark for the ISWC 2026 paper:
+Reproducible synthetic benchmark for the paper:
 **"SkyRwa: A Knowledge-Graph-Driven Flight-to-Asset Pipeline for Urban Air Mobility"**
 
 ---

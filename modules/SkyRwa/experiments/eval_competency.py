@@ -51,7 +51,7 @@ from SkyRwa.settlement import Ledger
 from SkyRwa.valuation import RuleBasedValuationEngine
 
 QUERIES_DIR = Path(__file__).resolve().parent.parent / "queries" / "competency"
-OUTPUT = (Path(__file__).resolve().parent.parent / "ISWC2026" / "outputs"
+OUTPUT = (Path(__file__).resolve().parent.parent / "reproduction" / "outputs"
           / "competency.json")
 
 SEED = 42

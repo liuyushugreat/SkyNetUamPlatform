@@ -1,4 +1,4 @@
-"""ISWC-level pipeline smoke test.
+"""Artifact-level pipeline smoke test.
 
 Exercises the full pipeline including semantic layers:
 ingest → evidence → sign → governance → valuation → explanation →
@@ -28,10 +28,10 @@ from SkyRwa.models.enums import AssetClass
 
 def _make_record(i):
     return FlightIngestRecord(
-        flight_id=f"FLT-ISWC-{i:03d}",
+        flight_id=f"FLT-SMOKE-{i:03d}",
         uav_id=f"UAV-I{i%3+1}",
-        mission_id=f"MSN-ISWC-{i}",
-        operator_id="OP-ISWC",
+        mission_id=f"MSN-SMOKE-{i}",
+        operator_id="OP-SMOKE",
         start_time=datetime(2026, 4, 1, 8 + i, tzinfo=UTC),
         end_time=datetime(2026, 4, 1, 8 + i, 25, tzinfo=UTC),
         mission_type="route_survey",
@@ -45,12 +45,12 @@ def _make_record(i):
     )
 
 
-class TestISWCPipelineSmoke:
+class TestArtifactPipelineSmoke:
     def test_full_semantic_pipeline(self):
         """End-to-end: 5 flights → evidence → RDF → SHACL → product."""
         ingestor = FlightIngestor()
         eb = EvidenceBuilder()
-        signer = Ed25519Signer.generate_keypair("iswc-test")
+        signer = Ed25519Signer.generate_keypair("smoke-test")
         gov = GovernanceEngine()
         val = RuleBasedValuationEngine()
 
@@ -117,7 +117,7 @@ class TestISWCPipelineSmoke:
     def test_governance_failure_not_promotable(self):
         """Flights with violations should not be promotable."""
         rec = FlightIngestRecord(
-            flight_id="FLT-ISWC-FAIL",
+            flight_id="FLT-SMOKE-FAIL",
             uav_id="UAV-FAIL",
             operator_id="OP-FAIL",
             start_time=datetime(2026, 4, 1, 8, tzinfo=UTC),

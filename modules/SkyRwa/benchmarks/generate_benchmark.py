@@ -1,4 +1,4 @@
-"""Generate benchmark data for ISWC evaluation.
+"""Generate benchmark data for the paper's evaluation.
 
 Produces 100+ flights across 10 scenario categories, runs them through
 the full pipeline, exports JSON inputs, RDF graphs, and expected labels.

@@ -6,7 +6,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.2+](https://img.shields.io/badge/pytorch-2.2+-ee4c2c.svg)](https://pytorch.org/)
 
-> **ISWC 2026 Reviewers:** The SkyRwa KG-driven flight-to-asset pipeline code and reproduction artifact are at **[`modules/SkyRwa/ISWC2026/`](./modules/SkyRwa/ISWC2026)**. Run `cd modules/SkyRwa/ISWC2026 && bash run.sh` (or `.\run.ps1` on Windows) to reproduce all paper results.
+> **SkyRwa Paper Reviewers:** The SkyRwa KG-driven flight-to-asset pipeline code and reproduction artifact are at **[`modules/SkyRwa/reproduction/`](./modules/SkyRwa/reproduction)**. Run `cd modules/SkyRwa/reproduction && bash run.sh` (or `.\run.ps1` on Windows) to reproduce all paper results.
 
 > **MobiHoc 2026 Reviewers:** The TR-GAT conflict detection code, `run.sh` one-click reproduction script, and all experiment artifacts are located at **[`modules/SkyFlow/`](./modules/SkyFlow)**. Run `cd modules/SkyFlow && bash run.sh` to reproduce all paper results.
 
@@ -228,7 +228,7 @@ FlightEvidence ── governance ──► AssetCandidate ── aggregation ─
 ### 1-Click Reproducibility
 
 ```bash
-cd modules/SkyRwa/ISWC2026
+cd modules/SkyRwa/reproduction
 
 pip install -r requirements.txt
 
@@ -514,7 +514,7 @@ SkyNetUamPlatform/
 │   │   ├── SkyNet_Knowledge_Engine/  # Ontology + neuro-symbolic reasoning
 │   │   ├── voxel_airspace_core/ # 3D spatial indexing & A* pathfinding
 │   │   └── artifact_ksem2026/   # Paper reproduction: run.sh, data, scripts
-│   ├── SkyRwa/              # KG-driven flight-to-asset pipeline (ISWC 2026)
+│   ├── SkyRwa/              # KG-driven flight-to-asset pipeline (journal artifact)
 │   │   ├── ontology/            # Domain ontology (13 classes, PROV-O/DCAT/ODRL)
 │   │   ├── shapes/              # 5 SHACL constraint shapes
 │   │   ├── queries/             # 10 SPARQL queries (6 CQ + 4 analytical)
@@ -525,7 +525,7 @@ SkyNetUamPlatform/
 │   │   ├── experiments/         # Evaluation scripts (incl. robustness)
 │   │   ├── benchmark_generator/ # Reproducible generator (seed, distributions, coverage)
 │   │   ├── benchmarks/          # Legacy benchmark generator
-│   │   └── ISWC2026/            # Paper reproduction: run.sh, 8 scripts, case studies
+│   │   └── reproduction/        # Paper reproduction: run.sh, 13-step pipeline
 │   ├── SkyGov/              # Multi-agent compliance governance with auditable LLM reasoning
 │   │   ├── skygov/          #   agents, orchestrator, RAG pipeline, governance utilities
 │   │   ├── scripts/         #   governance demo, benchmark, ablation, full evaluation

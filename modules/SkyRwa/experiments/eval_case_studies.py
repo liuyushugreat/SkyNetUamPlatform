@@ -1,4 +1,4 @@
-"""Experiment: Case studies for the ISWC paper.
+"""Experiment: Case studies for the paper.
 
 Produces 3 detailed cases that can be directly included in the paper's
 evaluation section:
@@ -69,7 +69,7 @@ def _make_records(prefix: str, n: int, **overrides) -> list:
 
 
 def run() -> dict:
-    print("=== Case Studies for ISWC Paper ===\n")
+    print("=== Case Studies ===\n")
     results = {}
 
     ingestor = FlightIngestor()

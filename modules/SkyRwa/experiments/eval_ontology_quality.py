@@ -2,7 +2,7 @@
 consistency check, and competency question → ontology construct mapping.
 
 Produces results for Table 4 (OOPS! pitfalls) and Table 5 (CQ mapping)
-in the ISWC 2026 paper.
+in the paper.
 """
 
 from __future__ import annotations

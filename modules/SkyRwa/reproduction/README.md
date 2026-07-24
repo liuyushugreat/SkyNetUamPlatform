@@ -2,7 +2,7 @@
 
 **Paper:** *Modeling Governable Flight-to-Asset Lifecycles with Knowledge Graphs, SHACL, and Provenance* (submitted to the **Journal of Web Semantics**)
 
-This directory is the **self-contained reproduction pipeline** for the paper. It lives inside the larger [SkyNetUamPlatform](https://github.com/liuyushugreat/SkyNetUamPlatform) repository but runs independently. The directory name (`ISWC2026/`) is historical and kept for link stability.
+This directory is the **self-contained reproduction pipeline** for the paper. It lives inside the larger [SkyNetUamPlatform](https://github.com/liuyushugreat/SkyNetUamPlatform) repository but runs independently.
 
 ---
 
@@ -10,7 +10,7 @@ This directory is the **self-contained reproduction pipeline** for the paper. It
 
 ```bash
 git clone https://github.com/liuyushugreat/SkyNetUamPlatform.git
-cd SkyNetUamPlatform/modules/SkyRwa/ISWC2026
+cd SkyNetUamPlatform/modules/SkyRwa/reproduction
 
 pip install -r requirements.txt
 

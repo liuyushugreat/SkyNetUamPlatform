@@ -1,6 +1,6 @@
 """Plot the SHACL engine comparison (pySHACL vs rudof) as a log-log figure.
 
-Reads ISWC2026/outputs/shacl_engines.json (produced by
+Reads reproduction/outputs/shacl_engines.json (produced by
 eval_shacl_engines.py) and writes shacl_engines.pdf next to it.
 
 Fonts are embedded as TrueType (pdf.fonttype=42) to avoid Type 3 fonts,
@@ -21,7 +21,7 @@ matplotlib.rcParams["font.family"] = "DejaVu Sans"
 
 import matplotlib.pyplot as plt
 
-OUTPUTS = Path(__file__).resolve().parent.parent / "ISWC2026" / "outputs"
+OUTPUTS = Path(__file__).resolve().parent.parent / "reproduction" / "outputs"
 DATA = OUTPUTS / "shacl_engines.json"
 FIG = OUTPUTS / "shacl_engines.pdf"
 

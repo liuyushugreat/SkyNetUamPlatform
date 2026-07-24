@@ -21,5 +21,5 @@ RUN pip install --no-cache-dir -r /app/modules/SkyRwa/requirements.txt
 # Sanity check: test suite must pass in the clean room.
 RUN python -m pytest SkyRwa/tests -q
 
-WORKDIR /app/modules/SkyRwa/ISWC2026
+WORKDIR /app/modules/SkyRwa/reproduction
 CMD ["bash", "run.sh"]

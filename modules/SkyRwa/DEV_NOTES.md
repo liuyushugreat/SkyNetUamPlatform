@@ -1,4 +1,4 @@
-# ISWC 2026 Development Notes
+# SkyRwa Development Notes
 
 ## Paper Title
 

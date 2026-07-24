@@ -17,7 +17,7 @@ Usage::
 
     python -m SkyRwa.experiments.eval_shacl_engines
 
-Output: ISWC2026/outputs/shacl_engines.json
+Output: reproduction/outputs/shacl_engines.json
 """
 
 from __future__ import annotations
@@ -48,7 +48,7 @@ from SkyRwa.semantic_rules.validation_runner import (
 
 SIZES = [5, 20, 100, 500, 1000]
 REPEATS = 3
-OUTPUT = Path(__file__).resolve().parent.parent / "ISWC2026" / "outputs" / "shacl_engines.json"
+OUTPUT = Path(__file__).resolve().parent.parent / "reproduction" / "outputs" / "shacl_engines.json"
 
 
 def _make_record(i: int) -> FlightIngestRecord:

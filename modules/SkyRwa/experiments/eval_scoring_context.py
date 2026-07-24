@@ -16,7 +16,7 @@ Usage::
 
     python -m SkyRwa.experiments.eval_scoring_context
 
-Output: ISWC2026/outputs/scoring_context.json
+Output: reproduction/outputs/scoring_context.json
 """
 
 from __future__ import annotations
@@ -44,7 +44,7 @@ from SkyRwa.experiments.eval_shacl_engines import _make_record
 
 SIZES = [5, 20, 100, 500, 1000]
 REPEATS = 3
-OUTPUT = Path(__file__).resolve().parent.parent / "ISWC2026" / "outputs" / "scoring_context.json"
+OUTPUT = Path(__file__).resolve().parent.parent / "reproduction" / "outputs" / "scoring_context.json"
 
 
 def _timed_validation(validator: ShaclValidator, g: Graph) -> tuple[float, bool]:

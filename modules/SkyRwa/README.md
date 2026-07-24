@@ -11,7 +11,7 @@
 
 ```bash
 git clone https://github.com/liuyushugreat/SkyNetUamPlatform.git
-cd SkyNetUamPlatform/modules/SkyRwa/ISWC2026
+cd SkyNetUamPlatform/modules/SkyRwa/reproduction
 
 pip install -r requirements.txt
 
@@ -19,7 +19,7 @@ bash run.sh          # Linux/macOS
 # .\run.ps1          # Windows PowerShell
 ```
 
-**Expected total runtime: ~10 minutes** on a laptop-class CPU (13 steps; step 5, the scoring-context cost study, accounts for ~6 minutes). All results are written to `ISWC2026/outputs/` (JSON + the generated walkthrough LaTeX) and `ISWC2026/data/` (benchmark data).
+**Expected total runtime: ~10 minutes** on a laptop-class CPU (13 steps; step 5, the scoring-context cost study, accounts for ~6 minutes). All results are written to `reproduction/outputs/` (JSON + the generated walkthrough LaTeX) and `reproduction/data/` (benchmark data).
 
 ### Clean-room run (Docker)
 
@@ -41,7 +41,7 @@ docker run --rm skyrwa-artifact        # runs tests + full pipeline
 | cryptography | >= 41.0 | 46.0.5 |
 | matplotlib (Fig. 2 only) | >= 3.8 | 3.10.8 |
 
-Exact pins live in [`requirements.txt`](./requirements.txt) (used by the Dockerfile); reviewer-friendly minimums in [`ISWC2026/requirements.txt`](./ISWC2026/requirements.txt). No GPU, no API keys. `pyrudof` is only needed for the dual-engine comparison (step 7); every other step runs without it.
+Exact pins live in [`requirements.txt`](./requirements.txt) (used by the Dockerfile); reviewer-friendly minimums in [`reproduction/requirements.txt`](./reproduction/requirements.txt). No GPU, no API keys. `pyrudof` is only needed for the dual-engine comparison (step 7); every other step runs without it.
 
 ---
 
@@ -56,19 +56,19 @@ Every experimental table and figure in the paper maps to one script; conceptual 
 | Table 2 (CQ design requirements) | `queries/competency/cq_01..cq_12.rq` | 12 query files |
 | Table 3 (ontology classes) | `ontology/skyrwa.ttl` + `alignments.ttl` | 14 classes, 47 properties |
 | Table 4 (technology families) | authored (design rationale) | — |
-| Table 5 (benchmark) | `ISWC2026/reproduce_table5.py` | 105 flights, 10 scenarios, 7 007 triples, 45 tradable |
-| Table 6 (JSON vs SPARQL) | `ISWC2026/reproduce_table6.py` | 4 audit-task latencies |
-| Table 7 (lifecycle vs flat KG) | `ISWC2026/reproduce_semantic_baseline.py` | A1–A4 result quality |
-| Table 8 (governance ablation) | `ISWC2026/reproduce_table7.py` | Python 50% / SHACL 50% / Combined 100% |
-| Table 8 "SHACL+ctx" column + Table 9 | `ISWC2026/reproduce_scoring_context.py` | `outputs/scoring_context.json`; +8 triples/flight, ~4.2× validation cost |
-| Table 10 (overhead 5–1000 flights) | `ISWC2026/reproduce_table8.py` | ~66 triples/flight |
-| Table 10 rudof columns + Fig. 2 | `ISWC2026/reproduce_shacl_engines.py` | `outputs/shacl_engines.json` + `outputs/shacl_engines.pdf` |
-| Sect. 7.6 (robustness) | `ISWC2026/reproduce_robustness.py` | identical results across 5 seeds |
-| Table 11 (CQ verification) | `ISWC2026/reproduce_competency.py` | `outputs/competency.json`; 12/12 correct on 9 035-triple audit graph |
-| Sect. 7.8 (walkthrough) | `ISWC2026/reproduce_walkthrough.py` | `outputs/walkthrough_generated.tex` (the paper `\input`s this file) |
+| Table 5 (benchmark) | `reproduction/reproduce_table5.py` | 105 flights, 10 scenarios, 7 007 triples, 45 tradable |
+| Table 6 (JSON vs SPARQL) | `reproduction/reproduce_table6.py` | 4 audit-task latencies |
+| Table 7 (lifecycle vs flat KG) | `reproduction/reproduce_semantic_baseline.py` | A1–A4 result quality |
+| Table 8 (governance ablation) | `reproduction/reproduce_table7.py` | Python 50% / SHACL 50% / Combined 100% |
+| Table 8 "SHACL+ctx" column + Table 9 | `reproduction/reproduce_scoring_context.py` | `outputs/scoring_context.json`; +8 triples/flight, ~4.2× validation cost |
+| Table 10 (overhead 5–1000 flights) | `reproduction/reproduce_table8.py` | ~66 triples/flight |
+| Table 10 rudof columns + Fig. 2 | `reproduction/reproduce_shacl_engines.py` | `outputs/shacl_engines.json` + `outputs/shacl_engines.pdf` |
+| Sect. 7.6 (robustness) | `reproduction/reproduce_robustness.py` | identical results across 5 seeds |
+| Table 11 (CQ verification) | `reproduction/reproduce_competency.py` | `outputs/competency.json`; 12/12 correct on 9 035-triple audit graph |
+| Sect. 7.8 (walkthrough) | `reproduction/reproduce_walkthrough.py` | `outputs/walkthrough_generated.tex` (the paper `\input`s this file) |
 | Sect. 4.5 (OOPS!/FOOPS!) | `evaluation/run_oops_evaluation.py`, `evaluation/run_foops_evaluation.py` | `evaluation/oops_report.xml`, `evaluation/foops_report.json` (network access required) |
-| Sect. 4.5 + Appendix A (CQ→construct mapping, Table 12) | `ISWC2026/reproduce_ontology_quality.py` | pitfall scan, consistency, 12-CQ mapping |
-| Sect. 8.1 (AV port) | `ISWC2026/port_autonomous_vehicle/run_av_port.py` | `av_port_result.json`; SHACL conforms on 20-session toy graph |
+| Sect. 4.5 + Appendix A (CQ→construct mapping, Table 12) | `reproduction/reproduce_ontology_quality.py` | pitfall scan, consistency, 12-CQ mapping |
+| Sect. 8.1 (AV port) | `reproduction/port_autonomous_vehicle/run_av_port.py` | `av_port_result.json`; SHACL conforms on 20-session toy graph |
 
 Continuous integration runs the fast subset (tests + benchmark + validation + ablation + CQ verification + walkthrough + AV port, ≤ 105 flights) on every push: [`.github/workflows/skyrwa-ci.yml`](../../.github/workflows/skyrwa-ci.yml).
 
@@ -102,7 +102,7 @@ modules/SkyRwa/
 ├── requirements.txt             # pinned dependencies (clean room)
 ├── Dockerfile                   # clean-room reproduction image
 ├── ZENODO.md                    # how to archive the release tag on Zenodo
-├── ISWC2026/                    # ★ paper reproduction pipeline
+├── reproduction/                    # ★ paper reproduction pipeline
 │   ├── run.sh / run.ps1         #   one-command reproduction (13 steps, ~10 min)
 │   ├── requirements.txt         #   reviewer-facing minimums
 │   ├── reproduce_*.py           #   one wrapper per paper table/figure (see mapping above)

@@ -1,4 +1,4 @@
-"""Coverage matrix for the SkyRwa ISWC 2026 benchmark.
+"""Coverage matrix for the SkyRwa benchmark.
 
 Prints a human-readable table that maps each scenario to the violation
 types it exercises, the governance paths it covers, and the lifecycle

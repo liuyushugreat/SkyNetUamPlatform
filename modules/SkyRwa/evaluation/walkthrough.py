@@ -15,8 +15,8 @@ Usage::
     python -m SkyRwa.evaluation.walkthrough
 
 Outputs:
-    ISWC2026/outputs/walkthrough.json           raw stage data
-    ISWC2026/outputs/walkthrough_generated.tex  paper subsection body
+    reproduction/outputs/walkthrough.json           raw stage data
+    reproduction/outputs/walkthrough_generated.tex  paper subsection body
 """
 
 from __future__ import annotations
@@ -42,7 +42,7 @@ from SkyRwa.rdf.namespaces import SKYRWA, bind_namespaces
 from SkyRwa.semantic_rules.governance_rules import GovernanceRuleEngine
 from SkyRwa.semantic_rules.validation_runner import ShaclValidator
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "ISWC2026" / "outputs"
+OUT_DIR = Path(__file__).resolve().parent.parent / "reproduction" / "outputs"
 
 AUDIT_QUERY = """PREFIX skyrwa: <https://w3id.org/skyrwa#>
 PREFIX prov:   <http://www.w3.org/ns/prov#>

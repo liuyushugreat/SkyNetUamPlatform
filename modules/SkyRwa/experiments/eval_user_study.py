@@ -23,7 +23,7 @@ _pkg_root = Path(__file__).resolve().parent.parent.parent
 if str(_pkg_root) not in sys.path:
     sys.path.insert(0, str(_pkg_root))
 
-OUTPUT_DIR = Path(__file__).resolve().parent.parent / "ISWC2026" / "outputs"
+OUTPUT_DIR = Path(__file__).resolve().parent.parent / "reproduction" / "outputs"
 
 
 # ── Study Protocol ───────────────────────────────────────────────────────

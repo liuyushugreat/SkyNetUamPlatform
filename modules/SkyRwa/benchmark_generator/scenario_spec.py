@@ -1,4 +1,4 @@
-"""Declarative scenario specifications for the SkyRwa ISWC 2026 benchmark.
+"""Declarative scenario specifications for the SkyRwa benchmark.
 
 All parameter distributions, violation injection rules, and governance
 expectations are defined here as plain data so that they can be audited,
