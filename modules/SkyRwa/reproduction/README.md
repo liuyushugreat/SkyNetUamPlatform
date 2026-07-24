@@ -31,7 +31,7 @@ bash run.sh          # Linux/macOS
 |--:|--------|------------|-----------------|
 | 1 | `reproduce_table5.py` | Table 5 (§7.1) | 105 flights, 10 scenarios, 7 007 triples, 45 tradable |
 | 2 | `reproduce_table6.py` | Table 6 (§7.2) | JSON-scan vs SPARQL on 4 audit tasks |
-| 3 | `reproduce_semantic_baseline.py` | Table 7 (§7.3) | lifecycle KG complete on A1–A4; flat KG partial/inexpressible |
+| 3 | `reproduce_semantic_baseline.py` | Table 7 (§7.3) | lifecycle KG complete on A1–A4; flat KG partial or unanswerable |
 | 4 | `reproduce_table7.py` | Table 8 (§7.4) | Python 50%, SHACL 50%, Combined 100% |
 | 5 | `reproduce_scoring_context.py` | Tables 8 (+ctx column) & 9 (§7.4) | +8 triples/flight, ~4.2× pySHACL cost; extended contract alone reaches 100% |
 | 6 | `reproduce_table8.py` | Table 10 (§7.5) | ~66 triples/flight; pySHACL dominates at 1 000 flights |

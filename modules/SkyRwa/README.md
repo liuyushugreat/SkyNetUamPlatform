@@ -92,9 +92,9 @@ FlightEvidence ── governance ──► AssetCandidate ── aggregation ─
 - **Tier 3: Governed Data Product** — aggregated from multiple candidates; catalogued and licensable.
 - **Tier 4: Revenue Right** — usage events, settlement records, and revenue splits.
 
-Transitions are not function calls but **typed entities** (`skyrwa:GovernanceDecision`, a `prov:Activity` with rule ID, explanation, timestamp, and `prov:used`/`prov:generated` edges), so the *why* behind every promotion or blocking is queryable.
+Rule-firing governance outcomes are not function calls but **typed entities** (`skyrwa:GovernanceDecision`, a `prov:Activity` with rule ID, explanation, timestamp, and `prov:used`/`prov:generated` edges), so the *why* behind every blocking or flagging decision is queryable; positive promotions are recorded structurally through typed lineage edges (`aggregatesCandidate`, `derivedFromEvidence`).
 
-> **Synthetic benchmark note:** current civil-aviation regulations (CAAC) prohibit releasing operational UAM data. The benchmark is synthesized from published regulatory envelopes; the generator (fixed seed 42), parameter distributions, and a violation coverage matrix ship in `benchmarks/` and `benchmark_generator/`.
+> **Synthetic benchmark note:** publicly available operational UAM datasets with governance, telemetry, and compliance records remain difficult to obtain because of safety, privacy, commercial, and regulatory constraints. The benchmark is synthesized from published regulatory envelopes; the generator (fixed seed 42), parameter distributions, and a violation coverage matrix ship in `benchmarks/` and `benchmark_generator/`.
 
 ---
 
