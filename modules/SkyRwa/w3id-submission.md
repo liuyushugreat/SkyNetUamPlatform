@@ -1,5 +1,12 @@
 # Registering `https://w3id.org/skyrwa#` — step-by-step
 
+> **Status: COMPLETED.** The registration PR
+> ([perma-id/w3id.org#6412](https://github.com/perma-id/w3id.org/pull/6412))
+> was merged in July 2026; `https://w3id.org/skyrwa` now resolves with
+> content negotiation, and `migrate_namespace.py --apply` has been executed
+> (37 files, 12,582 occurrences migrated). The steps below are kept for
+> reference.
+
 w3id.org permanent identifiers are managed through pull requests against the
 public repository [`perma-id/w3id.org`](https://github.com/perma-id/w3id.org).
 Follow these steps once, then run `migrate_namespace.py` (see step 8).

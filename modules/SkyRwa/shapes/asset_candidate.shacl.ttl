@@ -1,5 +1,5 @@
 @prefix sh:      <http://www.w3.org/ns/shacl#> .
-@prefix skyrwa:  <urn:skyrwa:ontology#> .
+@prefix skyrwa:  <https://w3id.org/skyrwa#> .
 @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
 # ============================================================================
@@ -44,7 +44,7 @@ skyrwa:AssetCandidateShape a sh:NodeShape ;
     sh:sparql [
         sh:message "Tradable AssetCandidate must have a hasRightsProfile link (SHACL-SPARQL: V5)." ;
         sh:select """
-            PREFIX skyrwa: <urn:skyrwa:ontology#>
+            PREFIX skyrwa: <https://w3id.org/skyrwa#>
             PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
             SELECT $this
             WHERE {

@@ -33,7 +33,7 @@ class PromotionRuleEngine:
     MIN_COMPLIANCE = 0.7
 
     QUERY_PROMOTABLE_BY_CLASS = """
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
 
     SELECT ?assetClass (COUNT(?asset) AS ?cnt)
@@ -53,7 +53,7 @@ class PromotionRuleEngine:
     """
 
     QUERY_CANDIDATES_FOR_CLASS = """
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
 
     SELECT ?asset ?flightId

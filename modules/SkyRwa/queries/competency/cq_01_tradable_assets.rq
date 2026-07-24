@@ -2,7 +2,7 @@
 # A flight evidence is promotable if it has a digest, a non-empty flightId,
 # and an associated asset candidate whose rights profile marks it tradable.
 
-PREFIX skyrwa: <urn:skyrwa:ontology#>
+PREFIX skyrwa: <https://w3id.org/skyrwa#>
 PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
 
 SELECT ?asset ?flightId ?assetClass

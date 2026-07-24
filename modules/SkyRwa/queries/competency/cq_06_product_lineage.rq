@@ -1,7 +1,7 @@
 # CQ6: Which data products are aggregated from multiple flight candidates
 # with complete lineage?
 
-PREFIX skyrwa: <urn:skyrwa:ontology#>
+PREFIX skyrwa: <https://w3id.org/skyrwa#>
 
 SELECT ?product ?assetClass (COUNT(?candidate) AS ?sourceCount)
 WHERE {

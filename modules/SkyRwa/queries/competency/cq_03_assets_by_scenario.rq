@@ -1,6 +1,6 @@
 # CQ3: Which route-optimization data products derive from which flight evidence?
 
-PREFIX skyrwa: <urn:skyrwa:ontology#>
+PREFIX skyrwa: <https://w3id.org/skyrwa#>
 
 SELECT ?product ?candidate ?evidence
 WHERE {

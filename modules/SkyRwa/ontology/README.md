@@ -1,5 +1,7 @@
 # SkyRwa Ontology
 
+Namespace: `https://w3id.org/skyrwa#` (permanent identifier, registered at [w3id.org](https://w3id.org/skyrwa); resolves with content negotiation to Turtle, RDF/XML, JSON-LD, or HTML documentation).
+
 ## Design Principles
 
 1. **Minimal but complete** — every class and property needed to drive the KG and SPARQL queries is defined; nothing redundant is added.
@@ -36,7 +38,7 @@ Datatype properties: `flightId`, `uavId`, `startTime`, `endTime`, `hasDigest`, `
 ## Example Triples
 
 ```turtle
-@prefix skyrwa: <urn:skyrwa:ontology#> .
+@prefix skyrwa: <https://w3id.org/skyrwa#> .
 @prefix inst:   <urn:skyrwa:> .
 
 inst:evidence:EV001 a skyrwa:FlightEvidence ;

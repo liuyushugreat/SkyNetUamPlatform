@@ -1,6 +1,6 @@
 # CQ4: How much settled revenue has each operator earned across all assets?
 
-PREFIX skyrwa: <urn:skyrwa:ontology#>
+PREFIX skyrwa: <https://w3id.org/skyrwa#>
 
 SELECT ?partyId ?role (SUM(?amount) AS ?totalRevenue)
 WHERE {

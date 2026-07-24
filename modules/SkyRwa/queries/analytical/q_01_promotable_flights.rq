@@ -1,6 +1,6 @@
 # Q1: Flights that have evidence with digest and high compliance, suitable for promotion
 
-PREFIX skyrwa: <urn:skyrwa:ontology#>
+PREFIX skyrwa: <https://w3id.org/skyrwa#>
 PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
 
 SELECT ?asset ?flightId ?compliance ?quality

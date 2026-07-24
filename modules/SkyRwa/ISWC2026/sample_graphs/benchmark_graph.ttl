@@ -1,5 +1,5 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix skyrwa: <urn:skyrwa:ontology#> .
+@prefix skyrwa: <https://w3id.org/skyrwa#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <urn:skyrwa:asset:001b5a9455a74e19ae645b8883b15fc1> a skyrwa:AssetCandidate ;

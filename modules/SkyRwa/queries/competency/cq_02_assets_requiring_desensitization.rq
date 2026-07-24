@@ -1,6 +1,6 @@
 # CQ2: Which asset candidates must be desensitized before external licensing?
 
-PREFIX skyrwa: <urn:skyrwa:ontology#>
+PREFIX skyrwa: <https://w3id.org/skyrwa#>
 PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
 
 SELECT ?asset ?flightId

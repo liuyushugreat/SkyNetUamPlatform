@@ -1,7 +1,7 @@
 # Q2: Asset candidates that fail governance checks
 # (low compliance or high risk)
 
-PREFIX skyrwa: <urn:skyrwa:ontology#>
+PREFIX skyrwa: <https://w3id.org/skyrwa#>
 PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
 
 SELECT ?asset ?flightId ?compliance ?risk ?status

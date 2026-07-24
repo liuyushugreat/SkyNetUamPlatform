@@ -1,6 +1,6 @@
 # Q3: Assets with estimated value above a threshold
 
-PREFIX skyrwa: <urn:skyrwa:ontology#>
+PREFIX skyrwa: <https://w3id.org/skyrwa#>
 PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
 
 SELECT ?asset ?flightId ?value

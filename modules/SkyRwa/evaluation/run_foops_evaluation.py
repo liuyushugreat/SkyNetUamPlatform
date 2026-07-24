@@ -23,8 +23,7 @@ ONTOLOGY_TTL = MODULE_ROOT / "ontology" / "skyrwa-merged.ttl"
 REPORT_PATH = Path(__file__).resolve().parent / "foops_report.json"
 
 FOOPS_BASE = "https://foops.linkeddata.es"
-FALLBACK_URI = ("https://raw.githubusercontent.com/liuyushugreat/"
-                "SkyNetUamPlatform/main/modules/SkyRwa/ontology/skyrwa.ttl")
+FALLBACK_URI = "https://w3id.org/skyrwa"
 
 
 def assess_file() -> requests.Response:

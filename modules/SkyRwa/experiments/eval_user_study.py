@@ -75,7 +75,7 @@ LATIN_SQUARE = [
 # ── SPARQL queries for each task ─────────────────────────────────────────
 
 SPARQL_QUERIES = {
-    "T1": """PREFIX skyrwa: <urn:skyrwa:ontology#>
+    "T1": """PREFIX skyrwa: <https://w3id.org/skyrwa#>
 SELECT ?rule ?explanation ?compliance WHERE {
     ?a a skyrwa:AssetCandidate ;
        skyrwa:flightId "FLT-NFZ-003" ;
@@ -85,7 +85,7 @@ SELECT ?rule ?explanation ?compliance WHERE {
        skyrwa:ruleId ?rule ;
        skyrwa:explanation ?explanation .
 }""",
-    "T2": """PREFIX skyrwa: <urn:skyrwa:ontology#>
+    "T2": """PREFIX skyrwa: <https://w3id.org/skyrwa#>
 SELECT ?product ?candidate ?evidence ?fid WHERE {
     ?product a skyrwa:GovernedDataProduct ;
              skyrwa:hasAssetClass "route_optimization_sample" ;
@@ -93,7 +93,7 @@ SELECT ?product ?candidate ?evidence ?fid WHERE {
     ?candidate skyrwa:derivedFromEvidence ?evidence .
     ?evidence skyrwa:flightId ?fid .
 }""",
-    "T3": """PREFIX skyrwa: <urn:skyrwa:ontology#>
+    "T3": """PREFIX skyrwa: <https://w3id.org/skyrwa#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 SELECT ?product ?candidate ?fid WHERE {
     ?product a skyrwa:GovernedDataProduct ;
@@ -103,7 +103,7 @@ SELECT ?product ?candidate ?fid WHERE {
     ?rp skyrwa:requiresDesensitization "true"^^xsd:boolean .
     ?ev skyrwa:flightId ?fid .
 }""",
-    "T4": """PREFIX skyrwa: <urn:skyrwa:ontology#>
+    "T4": """PREFIX skyrwa: <https://w3id.org/skyrwa#>
 SELECT ?product ?assetClass (COUNT(?candidate) AS ?srcCount) WHERE {
     ?product a skyrwa:GovernedDataProduct ;
              skyrwa:hasAssetClass ?assetClass ;

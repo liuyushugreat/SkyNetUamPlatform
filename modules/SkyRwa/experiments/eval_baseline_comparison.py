@@ -53,7 +53,7 @@ def json_tradable(assets: list[dict]) -> list[str]:
 def sparql_tradable(g: Graph) -> list[str]:
     """SPARQL: find tradable assets."""
     q = """
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT ?fid WHERE {
         ?a a skyrwa:AssetCandidate ;
@@ -81,7 +81,7 @@ def json_revenue_by_participant(assets: list[dict]) -> dict[str, float]:
 def sparql_revenue_by_participant(g: Graph) -> dict[str, float]:
     """SPARQL: aggregate revenue by participant."""
     q = """
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     SELECT ?pid (SUM(?amt) AS ?total) WHERE {
         ?s a skyrwa:SettlementRecord ;
            skyrwa:hasRevenueShare ?share .
@@ -114,7 +114,7 @@ def json_product_lineage(assets: list[dict]) -> list[dict]:
 def sparql_product_lineage(g: Graph) -> list[dict]:
     """SPARQL: product → candidate → evidence lineage in one query."""
     q = """
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     SELECT ?product ?candidate ?evidence ?digest WHERE {
         ?product a skyrwa:GovernedDataProduct ;
                  skyrwa:aggregatesCandidate ?candidate .
@@ -143,7 +143,7 @@ def json_governance_violations(assets: list[dict]) -> list[str]:
 def sparql_governance_violations(g: Graph) -> list[str]:
     """SPARQL: tradable assets violating governance thresholds."""
     q = """
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT ?fid WHERE {
         ?a a skyrwa:AssetCandidate ;

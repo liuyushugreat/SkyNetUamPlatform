@@ -2,7 +2,7 @@
 
 from rdflib import Namespace, Graph
 
-SKYRWA = Namespace("urn:skyrwa:ontology#")
+SKYRWA = Namespace("https://w3id.org/skyrwa#")
 SKYRWA_INST = Namespace("urn:skyrwa:")
 
 PROV = Namespace("http://www.w3.org/ns/prov#")

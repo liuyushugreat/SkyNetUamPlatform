@@ -10,7 +10,7 @@
 # property. An EMPTY result means the check PASSES.
 # ============================================================================
 
-PREFIX skyrwa: <urn:skyrwa:ontology#>
+PREFIX skyrwa: <https://w3id.org/skyrwa#>
 
 SELECT ?decision ?missingRuleId ?missingExplanation ?missingAsset
 WHERE {

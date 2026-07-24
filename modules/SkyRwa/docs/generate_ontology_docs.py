@@ -10,7 +10,7 @@ Outputs (all relative to modules/SkyRwa/):
 The HTML documentation is rendered against the persistent w3id namespace
 (https://w3id.org/skyrwa#), because docs/ontology/index.html is the redirect
 target of https://w3id.org/skyrwa for HTML requests. Until migrate_namespace.py
-has been applied, the source files still use urn:skyrwa:ontology#, so this
+has been applied, the source files still use https://w3id.org/skyrwa#, so this
 script rewrites the namespace in memory before rendering (pyLODE also cannot
 build fragment IDs for URN-scheme IRIs). After the migration this rewrite is a
 no-op.
@@ -29,7 +29,7 @@ MODULE_ROOT = Path(__file__).resolve().parents[1]
 ONTOLOGY_DIR = MODULE_ROOT / "ontology"
 DOCS_DIR = MODULE_ROOT / "docs" / "ontology"
 
-URN_NS = "urn:skyrwa:ontology#"
+URN_NS = "https://w3id.org/skyrwa#"
 W3ID_NS = "https://w3id.org/skyrwa#"
 
 

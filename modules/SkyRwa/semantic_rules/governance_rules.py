@@ -28,7 +28,7 @@ class GovernanceRuleEngine:
     """Execute governance rules as SPARQL queries on the KG."""
 
     RULE_NON_TRANSFERABLE = """
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
 
     SELECT ?asset ?flightId ?compliance ?risk
@@ -42,7 +42,7 @@ class GovernanceRuleEngine:
     """
 
     RULE_DESENSITIZATION_REQUIRED = """
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
 
     SELECT ?asset ?flightId
@@ -56,7 +56,7 @@ class GovernanceRuleEngine:
     """
 
     RULE_MISSING_DIGEST = """
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
 
     SELECT ?evidence ?flightId
     WHERE {

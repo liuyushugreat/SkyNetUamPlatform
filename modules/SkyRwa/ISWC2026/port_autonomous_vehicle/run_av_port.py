@@ -21,7 +21,7 @@ PKG_ROOT = HERE.parent.parent  # modules/SkyRwa
 ONT_DIR = PKG_ROOT / "ontology"
 SHAPES_DIR = PKG_ROOT / "shapes"
 
-SKYRWA = Namespace("urn:skyrwa:ontology#")
+SKYRWA = Namespace("https://w3id.org/skyrwa#")
 AVPORT = Namespace("urn:skyrwa:port:av#")
 
 

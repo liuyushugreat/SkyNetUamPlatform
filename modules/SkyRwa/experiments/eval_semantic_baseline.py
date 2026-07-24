@@ -89,7 +89,7 @@ def _build_flat_graph(assets: list[dict]) -> Graph:
 def flat_governance_trail(g: Graph) -> list[dict]:
     """Flat KG: attempt to find governance decisions -- no GovernanceDecision type."""
     q = """
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     PREFIX prov: <http://www.w3.org/ns/prov#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT ?fid ?status WHERE {
@@ -105,7 +105,7 @@ def flat_governance_trail(g: Graph) -> list[dict]:
 def lifecycle_governance_trail(g: Graph) -> list[dict]:
     """Lifecycle KG: governance decisions are first-class typed entities."""
     q = """
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     SELECT ?fid ?rule ?explanation WHERE {
         ?a a skyrwa:AssetCandidate ;
            skyrwa:flightId ?fid .
@@ -126,7 +126,7 @@ def flat_tier_promotion(g: Graph) -> list[dict]:
     """Flat KG: cannot express tier promotion (no tier types)."""
     q = """
     PREFIX prov: <http://www.w3.org/ns/prov#>
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     SELECT ?fid WHERE {
         ?a a prov:Entity ;
            skyrwa:flightId ?fid .
@@ -138,7 +138,7 @@ def flat_tier_promotion(g: Graph) -> list[dict]:
 def lifecycle_tier_promotion(g: Graph) -> list[dict]:
     """Lifecycle KG: trace product → candidate → evidence."""
     q = """
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     SELECT ?product ?candidate ?evidence WHERE {
         ?product a skyrwa:GovernedDataProduct ;
                  skyrwa:aggregatesCandidate ?candidate .
@@ -158,7 +158,7 @@ def flat_violation_attribution(g: Graph) -> list[dict]:
     """Flat KG: can find low-compliance but not the governance decision."""
     q = """
     PREFIX prov: <http://www.w3.org/ns/prov#>
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT ?fid ?cs WHERE {
         ?a a prov:Entity ;
@@ -175,7 +175,7 @@ def flat_violation_attribution(g: Graph) -> list[dict]:
 def lifecycle_violation_attribution(g: Graph) -> list[dict]:
     """Lifecycle KG: violations with full decision provenance."""
     q = """
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT ?fid ?rule ?explanation WHERE {
         ?a a skyrwa:AssetCandidate ;
@@ -201,7 +201,7 @@ def flat_cross_product_provenance(g: Graph) -> list[dict]:
     """Flat KG: no product type, cannot do cross-product queries."""
     q = """
     PREFIX prov: <http://www.w3.org/ns/prov#>
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     SELECT ?fid ?ac WHERE {
         ?a a prov:Entity ;
            skyrwa:flightId ?fid ;
@@ -215,7 +215,7 @@ def flat_cross_product_provenance(g: Graph) -> list[dict]:
 def lifecycle_cross_product_provenance(g: Graph) -> list[dict]:
     """Lifecycle KG: full product→candidate→evidence→operator chain."""
     q = """
-    PREFIX skyrwa: <urn:skyrwa:ontology#>
+    PREFIX skyrwa: <https://w3id.org/skyrwa#>
     SELECT ?product ?assetClass (COUNT(?candidate) AS ?srcCount) WHERE {
         ?product a skyrwa:GovernedDataProduct ;
                  skyrwa:hasAssetClass ?assetClass ;
