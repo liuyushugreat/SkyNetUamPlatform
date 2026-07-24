@@ -8,6 +8,7 @@ into the knowledge graph.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 from typing import List
 
 from rdflib import Graph, Literal, URIRef, BNode
@@ -109,6 +110,9 @@ class GovernanceRuleEngine:
         (a GovernanceDecision used the evidence and generated the governed
         candidate state).
         """
+        decided_at = Literal(
+            datetime.now(UTC).isoformat(), datatype=XSD.dateTime
+        )
         for r in results:
             if not r.affected_assets:
                 continue
@@ -117,6 +121,7 @@ class GovernanceRuleEngine:
                     f"governance_decision:{r.rule_id}:{flight_id}"
                 ]
                 graph.add((decision, RDF.type, SKYRWA.GovernanceDecision))
+                graph.add((decision, PROV.endedAtTime, decided_at))
                 graph.add((decision, SKYRWA["ruleId"], Literal(r.rule_id)))
                 graph.add(
                     (decision, SKYRWA["ruleLabel"], Literal(r.rule_label))

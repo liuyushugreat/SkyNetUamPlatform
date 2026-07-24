@@ -1,0 +1,28 @@
+{
+  "flight_id": "FLT-NFZ-DEMO",
+  "risk_score": 0.85,
+  "compliance_score": 0.75,
+  "tradable": false,
+  "desensitization_required": true,
+  "rules_fired": [
+    "GOV-001"
+  ],
+  "triples": 77,
+  "shacl_conforms": true,
+  "audit_rows": [
+    {
+      "ruleId": "GOV-001",
+      "decision": "urn:skyrwa:governance_decision:GOV-001:FLT-NFZ-DEMO",
+      "explanation": "1 asset(s) fail compliance/risk threshold",
+      "risk": "0.85",
+      "decidedAt": "2026-07-24T13:01:24.449672+00:00"
+    }
+  ],
+  "listings": {
+    "evidence": "<urn:skyrwa:evidence:3fe73209ca2e4c3db431cfbcb5a8ad58> skyrwa:flightId \"FLT-NFZ-DEMO\" ;\n    skyrwa:hasDigest \"b0aa969ff73f8398ee75cd146624a91bdb8c487fcf66dac2b28b8ec119759a87\" ;\n    skyrwa:hasSignature \"bRD8XJl9LLqXpOn1l/46czEZRj6Y/QT+MZ8MPX/SzTA6R+gFycllRWrDG8HzyWI4BGvg8V6SGbbkhcHq3gUcBg==\" ;\n    skyrwa:operatedBy <urn:skyrwa:operator:OP-CITYPATROL> ;\n    skyrwa:performedByUAV <urn:skyrwa:uav:UAV-D1> ;\n    # ... 6 further triples elided (timestamps, mission link) ...\n",
+    "asset": "<urn:skyrwa:asset:373347586388470a949919c8fe3af7ae> skyrwa:complianceScore \"0.75\"^^xsd:float ;\n    skyrwa:derivedFromEvidence <urn:skyrwa:evidence:3fe73209ca2e4c3db431cfbcb5a8ad58> ;\n    skyrwa:flightId \"FLT-NFZ-DEMO\" ;\n    skyrwa:hasRightsProfile _:rights ;\n    skyrwa:hasStatus \"valuated\" ;\n    skyrwa:riskScore \"0.85\"^^xsd:float ;\n    # ... 7 further triples elided (asset class, quality score, times, valuation) ...\n",
+    "rights": "_:rights skyrwa:isTradable false ;\n    skyrwa:permittedUse \"non_transferable\" ;\n    skyrwa:requiresDesensitization true ;\n    # ... 3 further triples elided (revenue shares) ...\n",
+    "decision": "<urn:skyrwa:governance_decision:GOV-001:FLT-NFZ-DEMO> a skyrwa:GovernanceDecision ;\n    prov:endedAtTime \"2026-07-24T13:01:24.449672+00:00\"^^xsd:dateTime ;\n    prov:generated <urn:skyrwa:asset:373347586388470a949919c8fe3af7ae> ;\n    prov:used <urn:skyrwa:evidence:3fe73209ca2e4c3db431cfbcb5a8ad58> ;\n    skyrwa:appliedToAsset <urn:skyrwa:asset:373347586388470a949919c8fe3af7ae>,\n        <urn:skyrwa:evidence:3fe73209ca2e4c3db431cfbcb5a8ad58> ;\n    skyrwa:explanation \"1 asset(s) fail compliance/risk threshold\" ;\n    skyrwa:ruleId \"GOV-001\" ;\n    skyrwa:ruleLabel \"Non-transferable due to low compliance or high risk\" ."
+  },
+  "audit_query": "PREFIX skyrwa: <https://w3id.org/skyrwa#>\nPREFIX prov:   <http://www.w3.org/ns/prov#>\n\nSELECT ?ruleId ?decision ?explanation ?risk ?decidedAt\nWHERE {\n    ?asset a skyrwa:AssetCandidate ;\n           skyrwa:flightId \"FLT-NFZ-DEMO\" ;\n           skyrwa:riskScore ?risk .\n    ?decision a skyrwa:GovernanceDecision ;\n              skyrwa:appliedToAsset ?asset ;\n              skyrwa:ruleId ?ruleId ;\n              skyrwa:explanation ?explanation ;\n              prov:endedAtTime ?decidedAt .\n}"
+}
