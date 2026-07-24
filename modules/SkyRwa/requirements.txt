@@ -1,0 +1,14 @@
+# SkyRwa artifact -- pinned dependencies (clean-room reproduction).
+# Tested with Python 3.10-3.14 on Windows and Linux.
+# Minimum requirements stated in the paper: Python 3.10+, rdflib>=7.0,
+# pyshacl>=0.25, pyrudof>=0.3.
+
+pydantic==2.12.5        # data models
+rdflib==7.6.0           # RDF graph, SPARQL
+pyshacl==0.31.0         # SHACL validation (reference engine)
+pyrudof==0.3.6          # rudof SHACL engine (dual-engine comparison, Table 10 / Fig. 2)
+cryptography==46.0.5    # Ed25519 evidence signing
+matplotlib==3.10.8      # Fig. 2 rendering
+numpy==2.4.2
+requests==2.33.1        # OOPS!/FOOPS! web-service evaluation scripts
+pytest==9.0.2           # test suite

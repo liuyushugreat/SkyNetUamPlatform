@@ -27,11 +27,24 @@ backward compatibility.
 """
 
 # ── Legacy re-exports (Phase-1 compat) ─────────────────────────────────────
+# Optional: some legacy modules need heavy dependencies (torch, giotto-tda)
+# that the paper artifact deliberately does not require.  Their symbols are
+# re-exported when available and set to ``None`` otherwise.
 from .valuation_legacy import AbstractValuationEngine, DataPacket, ValuationResult
 from .pricing_engine import PricingEngine
 from .economics.pricing import CongestionPricingModel, VoxelParams
-from .neural_pricing import PizzaPricingModel, TorusPricingModel, CyclicEmbedding
-from .adversarial import ArbitrageInjector
+
+try:
+    from .neural_pricing import PizzaPricingModel, TorusPricingModel, CyclicEmbedding
+except ImportError:  # pragma: no cover - torch not installed
+    PizzaPricingModel = None  # type: ignore[assignment]
+    TorusPricingModel = None  # type: ignore[assignment]
+    CyclicEmbedding = None  # type: ignore[assignment]
+
+try:
+    from .adversarial import ArbitrageInjector
+except ImportError:  # pragma: no cover - torch not installed
+    ArbitrageInjector = None  # type: ignore[assignment]
 
 try:
     from .topology_metrics import calculate_integrity_score, get_betti_numbers

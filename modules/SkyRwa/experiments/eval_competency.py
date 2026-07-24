@@ -259,4 +259,5 @@ def run() -> dict:
 
 
 if __name__ == "__main__":
-    run()
+    # Non-zero exit on any CQ mismatch so CI fails loudly.
+    sys.exit(0 if all(c["correct"] for c in run()["cqs"]) else 1)

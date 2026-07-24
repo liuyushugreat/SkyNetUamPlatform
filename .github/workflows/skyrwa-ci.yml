@@ -1,0 +1,56 @@
+name: SkyRwa artifact CI
+
+# Fast subset of the paper's reproduction pipeline (<= 105 flights),
+# so the artifact does not silently rot. The full pipeline is
+# modules/SkyRwa/ISWC2026/run.sh (~10 min).
+
+on:
+  push:
+    paths:
+      - "modules/SkyRwa/**"
+      - ".github/workflows/skyrwa-ci.yml"
+  pull_request:
+    paths:
+      - "modules/SkyRwa/**"
+
+jobs:
+  fast-subset:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pinned dependencies
+        run: pip install -r modules/SkyRwa/requirements.txt
+
+      - name: Test suite (101 tests)
+        working-directory: modules
+        run: python -m pytest SkyRwa/tests -q
+
+      - name: Benchmark generation (Table 5, 105 flights)
+        working-directory: modules
+        run: python -m SkyRwa.benchmarks.generate_benchmark
+
+      - name: SHACL + governance validation (Sect. 5)
+        working-directory: modules
+        run: python -m SkyRwa.experiments.eval_validation
+
+      - name: Governance ablation (Table 8)
+        working-directory: modules
+        run: python -m SkyRwa.experiments.eval_ablation
+
+      - name: Competency questions CQ1-CQ12 (Table 11)
+        working-directory: modules
+        run: python -m SkyRwa.experiments.eval_competency
+
+      - name: Walkthrough generation (Sect. 7.8)
+        working-directory: modules
+        run: python SkyRwa/evaluation/walkthrough.py
+
+      - name: AV-port generalizability check (Sect. 8.1)
+        working-directory: modules
+        run: python SkyRwa/ISWC2026/port_autonomous_vehicle/run_av_port.py
