@@ -6,7 +6,7 @@
 > **Paper:** *Modeling Governable Flight-to-Asset Lifecycles with Knowledge Graphs, SHACL, and Provenance*  
 > **Target journal:** *Journal of Web Semantics*  
 > **Artifact entry point:** [`reproduction/`](./reproduction/)  
-> **JWS manuscript release:** [`v1.1-jws-submission`](https://github.com/liuyushugreat/SkyNetUamPlatform/tree/v1.1-jws-submission) — the archived tag, not `main`, is the version behind the reported results. Zenodo: [10.5281/zenodo.21535725](https://doi.org/10.5281/zenodo.21535725)
+> **JWS manuscript release:** [`v1.1-jws-submission`](https://github.com/liuyushugreat/SkyNetUamPlatform/tree/v1.1-jws-submission) — the archived tag, not `main`, is the version behind the reported results. Zenodo: [10.5281/zenodo.21542801](https://doi.org/10.5281/zenodo.21542801)
 
 This module is the complete software artifact for the paper. It contains the ontology, SHACL shapes, SPARQL queries, benchmark generator, evaluation scripts, and one-command reproduction pipeline that underpin the reported results.
 
