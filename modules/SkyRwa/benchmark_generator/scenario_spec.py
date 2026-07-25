@@ -57,11 +57,11 @@ SCENARIO_SPECS: list[dict] = [
         "mission_type": "inspection",
         "asset_class": "MAINTENANCE_SAMPLE",
         "description": (
-            "Night-time inspection flights. Low-visibility warnings are structural "
-            "anomalies but do not cross violation thresholds, so all flights remain "
-            "tradable via the standard governance path."
+            "Night-time inspection flights. Low-visibility warnings are recorded "
+            "as anomalies, so the governance engine assigns internal-only use: "
+            "all flights are non-tradable despite full mission completion."
         ),
-        "expected_tradable": True,
+        "expected_tradable": False,
         "governance_path": "standard_governance",
         "injected_violations": [],
         "emergent_violations": [],
@@ -90,10 +90,12 @@ SCENARIO_SPECS: list[dict] = [
         "asset_class": "WEATHER_OPERATION_SAMPLE",
         "description": (
             "Delivery flights under progressively degrading weather. Completion "
-            "percentage drops with index. Tradability gated by desensitization step."
+            "percentage drops with index. Turbulence/gust anomalies cause the "
+            "governance engine to assign internal-only use: all flights are "
+            "non-tradable."
         ),
-        "expected_tradable": True,
-        "governance_path": "desensitization_gate",
+        "expected_tradable": False,
+        "governance_path": "standard_governance",
         "injected_violations": [],
         "emergent_violations": [],
         "parameter_distributions": {
@@ -120,8 +122,9 @@ SCENARIO_SPECS: list[dict] = [
         "mission_type": "patrol",
         "asset_class": "COMPLIANCE_RECORD",
         "description": (
-            "Patrol flights near no-fly zone boundaries. Flights 0-2 are clean; "
-            "from i=3 onwards, nfz_proximity_warning is injected and incursion "
+            "Patrol flights near no-fly zone boundaries. Flights 0-1 are clean; "
+            "nfz_proximity anomalies start at i=2 (internal-only), and from i=3 "
+            "onwards nfz_proximity_warning violations are injected and incursion "
             "count increases, blocking asset transfer."
         ),
         "expected_tradable": False,
@@ -146,8 +149,9 @@ SCENARIO_SPECS: list[dict] = [
             "risk_events": {"dist": "constant", "value": ["nfz_buffer_entry"]},
             "no_fly_zone_incursions": {"dist": "threshold_ramp", "threshold": 3},
         },
-        "_notes": "First 3 flights (i<3) are tradable; remainder are not.",
-        "tradable_count": 3,
+        "_notes": "First 2 flights (i<2) are tradable; anomalies from i=2 and "
+                  "injected violations from i=3 make the remainder non-tradable.",
+        "tradable_count": 2,
     },
 
     # ── 5. Anomaly-rich maintenance ─────────────────────────────────────────
@@ -202,12 +206,15 @@ SCENARIO_SPECS: list[dict] = [
         "mission_type": "emergency_delivery",
         "asset_class": "RISK_DATASET",
         "description": (
-            "Emergency delivery flights. Flights 0-4 complete nominally; from i=5 "
-            "altitude_exceedance is injected and completion drops below threshold, "
-            "triggering mission failure in governance."
+            "Emergency delivery flights. Flights 0-4 complete nominally and remain "
+            "tradable; from i=5 altitude_exceedance is injected and completion "
+            "drops below threshold, blocking the remaining three flights."
         ),
         "expected_tradable": False,
         "governance_path": "mission_failure",
+        "_notes": "Flights i<5 are tradable (5 total); i>=5 carry an injected "
+                  "violation and are non-tradable (3 total).",
+        "tradable_count": 5,
         "injected_violations": [
             {
                 "violation": "altitude_exceedance",
@@ -289,19 +296,22 @@ SCENARIO_SPECS: list[dict] = [
         "mission_type": "commercial_survey",
         "asset_class": "AUDIT_READY_PACKAGE",
         "description": (
-            "High-quality commercial survey flights that individually pass all "
-            "checks. Non-tradability arises from rights-conflict detection during "
-            "aggregation-level governance—an edge case exercising the KG reasoning path."
+            "High-quality commercial survey flights that pass all checks and "
+            "remain tradable. Each flight's rights profile requires "
+            "desensitization before transfer, so the GOV-002 rights rule flags "
+            "every asset with a non-blocking desensitization obligation, "
+            "materialized as a GovernanceDecision."
         ),
-        "expected_tradable": False,
-        "governance_path": "aggregation_edge_case",
+        "expected_tradable": True,
+        "governance_path": "rights_obligation",
         "injected_violations": [],
         "emergent_violations": [
             {
-                "mechanism": "rights_conflict_at_aggregation",
+                "mechanism": "gov002_desensitization_obligation",
                 "rationale": (
-                    "Pipeline detects overlapping usage rights when this flight's "
-                    "data region intersects a prior operator's licensed survey area."
+                    "GOV-002 fires on every tradable asset whose rights profile "
+                    "requires desensitization, flagging a pre-transfer obligation "
+                    "without blocking promotion."
                 ),
             }
         ],
@@ -329,9 +339,10 @@ SCENARIO_SPECS: list[dict] = [
         "mission_type": "long_range_survey",
         "asset_class": "ROUTE_OPTIMIZATION_SAMPLE",
         "description": (
-            "Long-range BVLOS survey flights. Flights 0-11 complete with relay "
-            "hand-offs; from i=12, range_exceedance is injected and completion "
-            "drops, blocking promotion. Link degradation emerges from i=10."
+            "Long-range BVLOS survey flights. Flights 0-9 complete with relay "
+            "hand-offs and remain tradable; link_degradation anomalies from i=10 "
+            "demote flights 10-11 to internal-only; from i=12, range_exceedance "
+            "is injected and completion drops, blocking promotion."
         ),
         "expected_tradable": True,
         "governance_path": "range_link_edge_case",
@@ -358,8 +369,9 @@ SCENARIO_SPECS: list[dict] = [
             "risk_events": {"dist": "constant", "value": ["beyond_vlos", "relay_handoff"]},
             "no_fly_zone_incursions": {"dist": "constant", "value": 0},
         },
-        "_notes": "Flights i<12 are tradable (12 total); i>=12 are not (3 total).",
-        "tradable_count": 12,
+        "_notes": "Flights i<10 are tradable (10 total); i=10,11 are demoted by "
+                  "link_degradation anomalies; i>=12 carry an injected violation.",
+        "tradable_count": 10,
     },
 
     # ── 10. Urban corridor multi-stop ────────────────────────────────────────
@@ -374,12 +386,16 @@ SCENARIO_SPECS: list[dict] = [
             "ROUTE_OPTIMIZATION_SAMPLE if i < 10 else RISK_DATASET"
         ),
         "description": (
-            "Urban multi-stop delivery flights in a dense corridor. Obstacle "
-            "proximity emerges from i=8; altitude_exceedance is injected from i=11; "
-            "NFZ incursions start at i=12."
+            "Urban multi-stop delivery flights in a dense corridor. Flights 0-7 "
+            "remain tradable; obstacle_proximity anomalies from i=8 demote "
+            "flights to internal-only; altitude_exceedance is injected from "
+            "i=11; NFZ incursions start at i=12."
         ),
         "expected_tradable": False,
         "governance_path": "urban_density_nfz",
+        "_notes": "Flights i<8 are tradable (8 total); i=8..10 are demoted by "
+                  "anomalies; i>=11 carry an injected violation.",
+        "tradable_count": 8,
         "injected_violations": [
             {
                 "violation": "altitude_exceedance",

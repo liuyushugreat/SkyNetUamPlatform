@@ -40,7 +40,7 @@ bash run.sh          # Linux/macOS
 | 9 | `reproduce_competency.py` | Table 12 (§7.7) | **12/12 CQs correct** on the enriched 9 035-triple audit graph |
 | 10 | `reproduce_walkthrough.py` | §7.8 | regenerates `outputs/walkthrough_generated.tex` (the paper `\input`s it) |
 | 11 | `reproduce_validation.py` | §5 | SHACL + governance rule coverage |
-| 12 | `reproduce_ontology_quality.py` | §4.5 + Appendix A (Table 13) | pitfall scan, OWL DL consistency, 12-CQ construct mapping |
+| 12 | `reproduce_ontology_quality.py` | §4.5 + Appendix A (Table A.1) | pitfall scan, OWL DL consistency, 12-CQ construct mapping |
 | 13 | `port_autonomous_vehicle/run_av_port.py` | §8.1 | AV port validates conforming; `av_port_result.json` |
 
 Not in the pipeline (need network access): `../evaluation/run_oops_evaluation.py` and `../evaluation/run_foops_evaluation.py` regenerate the OOPS!/FOOPS! reports quoted in §4.5. Supplementary (not cited by the paper): `reproduce_case_studies.py`, `reproduce_user_study.py`, `reproduce_table9.py` (superseded by `reproduce_competency.py`).

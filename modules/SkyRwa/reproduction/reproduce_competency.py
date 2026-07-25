@@ -1,4 +1,4 @@
-"""Reproduce Table 12 (and the appendix mapping, Table 13): verification of
+"""Reproduce Table 12 (and the appendix mapping, Table A.1): verification of
 all twelve competency questions against the enriched 105-flight audit graph.
 
 Paper Section 7.7.  Builds the enriched graph (products, usage events,

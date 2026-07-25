@@ -1,7 +1,7 @@
 # SkyRwa Benchmark Generator
 
 Reproducible synthetic benchmark for the paper:
-**"SkyRwa: A Knowledge-Graph-Driven Flight-to-Asset Pipeline for Urban Air Mobility"**
+**"Modeling Governable Flight-to-Asset Lifecycles with Knowledge Graphs, SHACL, and Provenance"**
 
 ---
 
@@ -123,33 +123,46 @@ The full matrix is also exported to `coverage_matrix.json` during generation.
 | Scenario | Struct. | Threshold | Conditional | Emergent | Desensit. | Promotion | Std Gov | Rights | Mission fail | Quality fail | Promotion LC | Settlement | Rejection | Partial |
 |---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | clean_route_survey    | - | - | - | - | - | Y | - | - | - | - | Y | Y | - | - |
-| night_flight          | Y | - | - | - | - | - | Y | - | - | - | Y | Y | - | - |
-| weather_disturbance   | Y | - | - | - | Y | - | - | - | - | - | Y | Y | - | - |
+| night_flight          | Y | - | - | - | - | - | Y | - | - | - | - | - | Y | - |
+| weather_disturbance   | Y | - | - | - | - | - | Y | - | - | - | - | - | Y | - |
 | near_nfz              | - | Y | Y | - | - | - | Y | - | - | - | Y | - | Y | Y |
 | anomaly_maintenance   | - | - | - | Y | - | - | Y | - | - | - | - | - | Y | - |
-| emergency_logistics   | - | Y | Y | - | - | - | - | - | Y | - | - | - | Y | - |
+| emergency_logistics   | - | Y | Y | - | - | - | - | - | Y | - | Y | - | Y | Y |
 | low_quality           | Y | - | Y | - | - | - | - | - | - | Y | - | - | Y | - |
-| rights_conflict       | - | - | - | Y | - | - | - | Y | - | - | - | - | Y | - |
+| rights_conflict       | - | - | - | - | Y | - | - | Y | - | - | Y | Y | - | - |
 | beyond_vlos           | - | Y | Y | - | - | - | Y | - | - | - | Y | - | Y | Y |
-| urban_corridor        | - | Y | - | Y | - | - | Y | - | Y | - | - | - | Y | - |
+| urban_corridor        | - | Y | - | Y | - | - | Y | - | Y | - | Y | - | Y | Y |
 
 ---
 
 ## Scenario Summaries
 
-| # | Tag | Flights | Tradable | Governance path | Violation source |
+Tradable counts below are the pipeline ground truth recorded in
+`benchmark_labels.json` (`expected_tradable`), i.e. the actual output of the
+`GovernanceEngine` policy (violations → non-transferable; anomalies or
+incomplete missions → internal-only; clean + complete → tradable after
+desensitization).
+
+| # | Tag | Flights | Tradable | Governance path | Blocking source |
 |---|-----|--------:|---------:|-----------------|-----------------|
 | 1 | `clean_route_survey`  | 12 | 12 | direct\_promotion       | none |
-| 2 | `night_flight`        |  8 |  8 | standard\_governance    | none (structural anomaly) |
-| 3 | `weather_disturbance` | 10 | 10 | desensitization\_gate   | none (structural anomaly) |
-| 4 | `near_nfz`            |  8 |  3 | mixed pass/non-transfer | injected: `nfz_proximity_warning` (i≥3) |
-| 5 | `anomaly_maintenance` | 10 |  0 | standard\_governance    | emergent: anomaly accumulation |
-| 6 | `emergency_logistics` |  8 |  0 | mission\_failure        | injected: `altitude_exceedance` (i≥5) |
+| 2 | `night_flight`        |  8 |  0 | standard\_governance    | anomalies: `low_visibility_warning` → internal-only |
+| 3 | `weather_disturbance` | 10 |  0 | standard\_governance    | anomalies: `turbulence`, `gust_warning` → internal-only |
+| 4 | `near_nfz`            |  8 |  2 | mixed pass/non-transfer | anomalies (i≥2); injected: `nfz_proximity_warning` (i≥3) |
+| 5 | `anomaly_maintenance` | 10 |  0 | standard\_governance    | emergent: anomaly accumulation → internal-only |
+| 6 | `emergency_logistics` |  8 |  5 | mission\_failure        | injected: `altitude_exceedance` (i≥5) |
 | 7 | `low_quality`         | 12 |  0 | quality\_failure        | injected: `data_gap` (all), `sensor_failure` (odd i) |
-| 8 | `rights_conflict`     |  8 |  0 | aggregation edge case   | emergent: rights conflict at aggregation |
-| 9 | `beyond_vlos`         | 15 | 12 | range/link edge case    | injected: `range_exceedance` (i≥12) |
-|10 | `urban_corridor`      | 14 |  0 | urban\_density/NFZ      | injected: `altitude_exceedance` (i≥11); emergent: obstacle proximity (i≥8) |
+| 8 | `rights_conflict`     |  8 |  8 | rights\_obligation      | none blocked; GOV-002 flags a desensitization obligation on every asset |
+| 9 | `beyond_vlos`         | 15 | 10 | range/link edge case    | anomalies: `link_degradation` (i≥10); injected: `range_exceedance` (i≥12) |
+|10 | `urban_corridor`      | 14 |  8 | urban\_density/NFZ      | anomalies: `obstacle_proximity` (i≥8); injected: `altitude_exceedance` (i≥11) |
 | | **Total** | **105** | **45** | | |
+
+Of the 60 non-tradable flights, 26 carry injected violations
+(non-transferable) and 34 are demoted emergently by the mission-state rule
+(anomaly flags or incomplete missions). GOV-002 fires on all 45 tradable
+assets as a non-blocking desensitization obligation; together with 8 GOV-001
+firings this yields the 53 materialized governance decisions reported in the
+paper.
 
 ---
 

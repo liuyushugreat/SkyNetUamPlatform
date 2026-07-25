@@ -72,7 +72,7 @@ Every experimental table and figure in the paper maps to one script; conceptual 
 | Table 12 (CQ verification) | `reproduction/reproduce_competency.py` | `outputs/competency.json`; 12/12 correct on 9 035-triple audit graph |
 | Sect. 7.8 (walkthrough) | `reproduction/reproduce_walkthrough.py` | `outputs/walkthrough_generated.tex` (the paper `\input`s this file) |
 | Sect. 4.5 (OOPS!/FOOPS!) | `evaluation/run_oops_evaluation.py`, `evaluation/run_foops_evaluation.py` | `evaluation/oops_report.xml`, `evaluation/foops_report.json` (network access required) |
-| Sect. 4.5 + Appendix A (CQ→construct mapping, Table 13) | `reproduction/reproduce_ontology_quality.py` | pitfall scan, consistency, 12-CQ mapping |
+| Sect. 4.5 + Appendix A (CQ→construct mapping, Table A.1) | `reproduction/reproduce_ontology_quality.py` | pitfall scan, consistency, 12-CQ mapping |
 | Sect. 8.1 (AV port) | `reproduction/port_autonomous_vehicle/run_av_port.py` | `av_port_result.json`; SHACL conforms on 20-session toy graph |
 
 Continuous integration runs the fast subset (tests + benchmark + validation + ablation + CQ verification + walkthrough + AV port, ≤ 105 flights) on every push: [`.github/workflows/skyrwa-ci.yml`](../../.github/workflows/skyrwa-ci.yml).

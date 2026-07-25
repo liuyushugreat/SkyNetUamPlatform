@@ -55,12 +55,12 @@ _COVERAGE: dict[str, dict[str, set[str]]] = {
     "night_flight": {
         "violations":  {"struct_violation"},
         "governance":  {"standard_gov"},
-        "lifecycle":   {"promotion", "settlement"},
+        "lifecycle":   {"rejection"},
     },
     "weather_disturbance": {
         "violations":  {"struct_violation"},
-        "governance":  {"desensitization"},
-        "lifecycle":   {"promotion", "settlement"},
+        "governance":  {"standard_gov"},
+        "lifecycle":   {"rejection"},
     },
     "near_nfz": {
         "violations":  {"threshold_violation", "conditional_violation"},
@@ -75,7 +75,7 @@ _COVERAGE: dict[str, dict[str, set[str]]] = {
     "emergency_logistics": {
         "violations":  {"threshold_violation", "conditional_violation"},
         "governance":  {"mission_failure"},
-        "lifecycle":   {"rejection"},
+        "lifecycle":   {"promotion", "rejection", "partial"},
     },
     "low_quality": {
         "violations":  {"struct_violation", "conditional_violation"},
@@ -83,9 +83,9 @@ _COVERAGE: dict[str, dict[str, set[str]]] = {
         "lifecycle":   {"rejection"},
     },
     "rights_conflict": {
-        "violations":  {"emergent_violation"},
-        "governance":  {"rights_conflict"},
-        "lifecycle":   {"rejection"},
+        "violations":  set(),
+        "governance":  {"rights_conflict", "desensitization"},
+        "lifecycle":   {"promotion", "settlement"},
     },
     "beyond_vlos": {
         "violations":  {"threshold_violation", "conditional_violation"},
@@ -95,7 +95,7 @@ _COVERAGE: dict[str, dict[str, set[str]]] = {
     "urban_corridor": {
         "violations":  {"threshold_violation", "emergent_violation"},
         "governance":  {"standard_gov", "mission_failure"},
-        "lifecycle":   {"rejection"},
+        "lifecycle":   {"promotion", "rejection", "partial"},
     },
 }
 
