@@ -18,6 +18,7 @@ from rdflib import Graph, Literal, URIRef, RDF
 from rdflib.namespace import XSD
 from SkyRwa.rdf.namespaces import SKYRWA, bind_namespaces
 from SkyRwa.semantic_rules.validation_runner import ShaclValidator
+from SkyRwa.semantic_rules.governance_rules import GovernanceRuleEngine
 from SkyRwa.models.enums import AssetClass, AssetStatus, DataCategory, UsageLevel
 from SkyRwa.models.rights import RightsProfile, RetentionPolicy, RevenueParticipant
 from SkyRwa.models.asset_unit import FlightAssetUnit
@@ -107,7 +108,9 @@ VIOLATIONS = [
         "id": "V1", "name": "Missing digest",
         "description": "FlightEvidence lacks hasDigest",
         "graph_kwargs": {"include_digest": False},
-        "python_detectable": False,
+        # Detected procedurally by rule GOV-003 (SPARQL-hosted digest check),
+        # deliberately redundant with FlightEvidenceShape.
+        "python_detectable": True,
         "shacl_detectable": True,
         "combined_detectable": True,
     },
@@ -185,15 +188,27 @@ def run_ablation() -> list[dict]:
         unit_kw = v.get("unit_kwargs", {})
         unit = _make_base_unit(f"FLT-ABL-{v['id']}", **unit_kw)
 
-        # Python-only detection
-        python_detected = False
-        if unit_kw.get("compliance", 1.0) < 0.5 or unit_kw.get("risk", 0) > 0.8:
-            python_detected = True
+        g = _map_unit_to_graph(unit, **v["graph_kwargs"])
+
+        # Procedural-layer detection: run the actual SPARQL-hosted rule
+        # engine (GOV-001 thresholds, GOV-002 desensitization, GOV-003
+        # missing digest) on the graph, plus the in-process
+        # GovernanceEngine mission-state check, which reads pipeline
+        # state (mission completion) that the default graph does not
+        # materialize.
+        rule_results = GovernanceRuleEngine.run_all(g)
+        python_detected = any(r.affected_assets for r in rule_results)
         if unit_kw.get("completed") is False:
             python_detected = True
 
+        if python_detected != v["python_detectable"]:
+            raise AssertionError(
+                f"{v['id']}: procedural detection ({python_detected}) does "
+                f"not match the documented expectation "
+                f"({v['python_detectable']}); update VIOLATIONS or the rules."
+            )
+
         # SHACL detection, baseline contract
-        g = _map_unit_to_graph(unit, **v["graph_kwargs"])
         report = validator.validate(g)
         shacl_detected = not report.conforms
 

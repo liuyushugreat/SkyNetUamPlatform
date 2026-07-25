@@ -11,7 +11,7 @@ rdflib>=7.0.0
 # SHACL validation
 pyshacl>=0.25.0
 
-# rudof SHACL engine (dual-engine comparison, Table 10 / Fig. 2)
+# rudof SHACL engine (dual-engine comparison, Table 11 / Fig. 2)
 pyrudof>=0.3.0
 
 # Cryptographic provenance (Ed25519 signing)

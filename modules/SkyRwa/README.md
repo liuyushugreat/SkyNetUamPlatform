@@ -5,7 +5,8 @@
 
 > **Paper:** *Modeling Governable Flight-to-Asset Lifecycles with Knowledge Graphs, SHACL, and Provenance*  
 > **Target journal:** *Journal of Web Semantics*  
-> **Artifact entry point:** [`reproduction/`](./reproduction/)
+> **Artifact entry point:** [`reproduction/`](./reproduction/)  
+> **JWS manuscript release:** [`v1.1-jws-submission`](https://github.com/liuyushugreat/SkyNetUamPlatform/tree/v1.1-jws-submission) — the archived tag, not `main`, is the version behind the reported results. Zenodo: [10.5281/zenodo.21535725](https://doi.org/10.5281/zenodo.21535725)
 
 This module is the complete software artifact for the paper. It contains the ontology, SHACL shapes, SPARQL queries, benchmark generator, evaluation scripts, and one-command reproduction pipeline that underpin the reported results.
 
@@ -63,15 +64,15 @@ Every experimental table and figure in the paper maps to one script; conceptual 
 | Table 5 (benchmark) | `reproduction/reproduce_table5.py` | 105 flights, 10 scenarios, 7 007 triples, 45 tradable |
 | Table 6 (JSON vs SPARQL) | `reproduction/reproduce_table6.py` | 4 audit-task latencies |
 | Table 7 (lifecycle vs flat KG) | `reproduction/reproduce_semantic_baseline.py` | A1–A4 result quality |
-| Table 8 (governance ablation) | `reproduction/reproduce_table7.py` | Python 50% / SHACL 50% / Combined 100% |
-| Table 8 "SHACL+ctx" column + Table 9 | `reproduction/reproduce_scoring_context.py` | `outputs/scoring_context.json`; +8 triples/flight, ~4.2× validation cost |
-| Table 10 (overhead 5–1000 flights) | `reproduction/reproduce_table8.py` | ~66 triples/flight |
-| Table 10 rudof columns + Fig. 2 | `reproduction/reproduce_shacl_engines.py` | `outputs/shacl_engines.json` + `outputs/shacl_engines.pdf` |
+| Table 8 (coverage analysis) + Table 9 (violation-to-validator mapping) | `reproduction/reproduce_table7.py` | Python 67% / SHACL 50% / Combined 100% |
+| Table 8 "SHACL+ctx" column + Table 10 | `reproduction/reproduce_scoring_context.py` | `outputs/scoring_context.json`; +8 triples/flight, ~4.2× validation cost |
+| Table 11 (overhead 5–1000 flights) | `reproduction/reproduce_table8.py` | ~66 triples/flight |
+| Table 11 rudof columns + Fig. 2 | `reproduction/reproduce_shacl_engines.py` | `outputs/shacl_engines.json` + `outputs/shacl_engines.pdf` |
 | Sect. 7.6 (robustness) | `reproduction/reproduce_robustness.py` | identical results across 5 seeds |
-| Table 11 (CQ verification) | `reproduction/reproduce_competency.py` | `outputs/competency.json`; 12/12 correct on 9 035-triple audit graph |
+| Table 12 (CQ verification) | `reproduction/reproduce_competency.py` | `outputs/competency.json`; 12/12 correct on 9 035-triple audit graph |
 | Sect. 7.8 (walkthrough) | `reproduction/reproduce_walkthrough.py` | `outputs/walkthrough_generated.tex` (the paper `\input`s this file) |
 | Sect. 4.5 (OOPS!/FOOPS!) | `evaluation/run_oops_evaluation.py`, `evaluation/run_foops_evaluation.py` | `evaluation/oops_report.xml`, `evaluation/foops_report.json` (network access required) |
-| Sect. 4.5 + Appendix A (CQ→construct mapping, Table 12) | `reproduction/reproduce_ontology_quality.py` | pitfall scan, consistency, 12-CQ mapping |
+| Sect. 4.5 + Appendix A (CQ→construct mapping, Table 13) | `reproduction/reproduce_ontology_quality.py` | pitfall scan, consistency, 12-CQ mapping |
 | Sect. 8.1 (AV port) | `reproduction/port_autonomous_vehicle/run_av_port.py` | `av_port_result.json`; SHACL conforms on 20-session toy graph |
 
 Continuous integration runs the fast subset (tests + benchmark + validation + ablation + CQ verification + walkthrough + AV port, ≤ 105 flights) on every push: [`.github/workflows/skyrwa-ci.yml`](../../.github/workflows/skyrwa-ci.yml).
@@ -80,7 +81,7 @@ Continuous integration runs the fast subset (tests + benchmark + validation + ab
 
 ## Overview
 
-**SkyRwa** formalizes the governance transitions that turn raw UAM flight data into tradable data assets as first-class semantic objects in a knowledge graph. The core model is a **four-tier governance lifecycle**:
+**SkyRwa** represents the lifecycle that turns raw UAM flight data into tradable data assets through typed entities and lineage relations in a knowledge graph, and reifies every rule-firing governance outcome as a first-class, queryable decision entity. The core model is a **four-tier governance lifecycle**:
 
 ```
 FlightEvidence ── governance ──► AssetCandidate ── aggregation ──► GovernedDataProduct ── settlement ──► RevenueRight

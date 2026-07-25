@@ -1,4 +1,4 @@
-"""Reproduce the rudof columns of Table 10 and Figure 2: dual-engine SHACL
+"""Reproduce the rudof columns of Table 11 and Figure 2: dual-engine SHACL
 comparison (pySHACL vs rudof) at 5-1000 flights.
 
 Paper Section 7.5.  Requires ``pip install pyrudof``.

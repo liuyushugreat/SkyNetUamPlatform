@@ -1,4 +1,4 @@
-"""Reproduce Table 9 (and the SHACL+ctx column of Table 8): measured cost
+"""Reproduce Table 10 (and the SHACL+ctx column of Table 8): measured cost
 of scoring-context materialization.
 
 Paper Section 7.4: extended declarative contract (V3/V4/V6 as

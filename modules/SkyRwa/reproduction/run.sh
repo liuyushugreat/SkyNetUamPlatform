@@ -48,19 +48,19 @@ echo "[Step  3/13] Lifecycle KG vs flat KG (Table 7)..."
 $PYTHON reproduce_semantic_baseline.py
 echo ""
 
-echo "[Step  4/13] Governance ablation: Python vs SHACL vs Combined (Table 8)..."
+echo "[Step  4/13] Validation-layer coverage: Python vs SHACL vs Combined (Tables 8-9)..."
 $PYTHON reproduce_table7.py
 echo ""
 
-echo "[Step  5/13] Scoring-context materialization cost (Table 9, ~6 min)..."
+echo "[Step  5/13] Scoring-context materialization cost (Table 10, ~6 min)..."
 $PYTHON reproduce_scoring_context.py
 echo ""
 
-echo "[Step  6/13] Runtime overhead 5-1000 flights (Table 10)..."
+echo "[Step  6/13] Runtime overhead 5-1000 flights (Table 11)..."
 $PYTHON reproduce_table8.py
 echo ""
 
-echo "[Step  7/13] Dual-engine SHACL comparison, pySHACL vs rudof (Table 10 + Fig. 2)..."
+echo "[Step  7/13] Dual-engine SHACL comparison, pySHACL vs rudof (Table 11 + Fig. 2)..."
 $PYTHON reproduce_shacl_engines.py
 echo ""
 
@@ -68,7 +68,7 @@ echo "[Step  8/13] Robustness: seeds, scale, threshold sweep (Sect. 7.6)..."
 $PYTHON reproduce_robustness.py
 echo ""
 
-echo "[Step  9/13] Competency-question verification, CQ1-CQ12 (Table 11)..."
+echo "[Step  9/13] Competency-question verification, CQ1-CQ12 (Table 12)..."
 $PYTHON reproduce_competency.py
 echo ""
 

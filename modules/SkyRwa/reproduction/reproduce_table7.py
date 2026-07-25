@@ -1,4 +1,4 @@
-"""Reproduce Table 7: Governance ablation — Python vs SHACL vs Combined.
+"""Reproduce paper Tables 8-9: validation-layer coverage — Python vs SHACL vs Combined.
 
 Paper Section 7.3: Governance Ablation Study
 Tests 6 violation types under three configurations:
