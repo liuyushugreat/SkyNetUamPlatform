@@ -36,7 +36,7 @@ bash run.sh          # Linux/macOS
 | 5 | `reproduce_scoring_context.py` | Tables 8 (+ctx column) & 10 (§7.4) | +8 triples/flight, ~4.2× pySHACL cost; extended contract alone reaches 100% |
 | 6 | `reproduce_table8.py` | Table 11 (§7.5) | ~66 triples/flight; pySHACL dominates at 1 000 flights |
 | 7 | `reproduce_shacl_engines.py` | Table 11 rudof columns + Fig. 2 (§7.5) | rudof ~16× faster end-to-end at 1 000 flights (SHACL Core subset only); both engines conform |
-| 8 | `reproduce_robustness.py` | §7.6 | identical counts across 5 seeds; threshold sweep 7.6–22.9% |
+| 8 | `reproduce_robustness.py` | §7.6 | identical counts across 5 seeds; threshold sweep 0–22.9% flagged (default 7.6%) |
 | 9 | `reproduce_competency.py` | Table 12 (§7.7) | **12/12 CQs correct** on the enriched 9 035-triple audit graph |
 | 10 | `reproduce_walkthrough.py` | §7.8 | regenerates `outputs/walkthrough_generated.tex` (the paper `\input`s it) |
 | 11 | `reproduce_validation.py` | §5 | SHACL + governance rule coverage |
