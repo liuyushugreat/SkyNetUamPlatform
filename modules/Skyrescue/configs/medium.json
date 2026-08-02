@@ -1,0 +1,10 @@
+{
+  "tier": "medium",
+  "duration_seconds": 7200,
+  "task_count": 500,
+  "uav_count": 50,
+  "peak_concurrency": 50,
+  "telemetry_hz": 1,
+  "fault_rate": 0.10,
+  "random_seed": 20260802
+}

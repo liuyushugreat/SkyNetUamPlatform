@@ -1,0 +1,10 @@
+{
+  "tier": "small",
+  "duration_seconds": 3600,
+  "task_count": 100,
+  "uav_count": 20,
+  "peak_concurrency": 20,
+  "telemetry_hz": 1,
+  "fault_rate": 0.08,
+  "random_seed": 20260801
+}

@@ -1,0 +1,10 @@
+{
+  "tier": "stress",
+  "duration_seconds": 28800,
+  "task_count": 2000,
+  "uav_count": 200,
+  "peak_concurrency": 200,
+  "telemetry_hz": 1,
+  "fault_rate": 0.15,
+  "random_seed": 20260804
+}
