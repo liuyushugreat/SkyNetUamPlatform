@@ -33,6 +33,7 @@ Symbolically grounded emergency traffic command and SkyRescue-Bench reproduction
 - `skyrescue/fault_detection.py`: weak-signal online fault detector without label access
 - `skyrescue/security.py`: deterministic authorization boundary for security challenge scoring
 - `scripts/`: dataset generators, validators, benchmark runners, security scorer, single-seed fault scorer, and multi-seed statistical evaluator
+- `scripts/generate_cross_generator_challenge.py` and `scripts/run_cross_generator_challenge.py`: distribution-shift robustness benchmark with frozen detector thresholds
 - `configs/`: synthetic benchmark scale configurations
 
 ### `SkyGov/`
