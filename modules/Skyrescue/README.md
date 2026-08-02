@@ -1,10 +1,15 @@
 # SkyRescue
 
-SkyRescue is the paper module for large-scale low-altitude emergency traffic command.  It contains the deterministic scheduler, symbolic grounding and audit ablations, weak-signal fault challenge scorer, security challenge scorer, and scripts for generating the synthetic SkyRescue-Bench datasets.
+SkyRescue is the paper module for intent-driven multi-agent workflow compilation,
+runtime repair, and trusted execution in emergency low-altitude command. It
+contains a typed workflow compiler, workflow-runtime baselines, a deterministic
+domain resource binder, weak-signal fault challenges, and authorization-policy
+tests.
 
 ## What is included
 
 - `skyrescue/benchmark.py`: SkyRescue runtime and baselines (`greedy`, `cp_sat`, `no_symbol_grounding`, `no_audit`, `full_replan`, `skyrescue`).
+- `skyrescue/workflow.py`: typed intent compiler, structured failures, workflow contracts, runtime baselines, and local-repair metrics.
 - `skyrescue/fault_detection.py`: online weak-signal detectors and comparison baselines that do not read fault labels during inference.
 - `skyrescue/security.py`: deterministic authorization boundary for security challenge evaluation.
 - `scripts/generate_dataset.py`: synthetic emergency-traffic benchmark generator.
@@ -16,6 +21,9 @@ SkyRescue is the paper module for large-scale low-altitude emergency traffic com
 - `scripts/run_fault_challenge.py`: fault challenge scorer.
 - `scripts/run_fault_challenge_multiseed.py`: multi-seed generator, scorer, confidence-interval summarizer, and paired significance tester.
 - `scripts/run_cross_generator_challenge.py`: frozen-detector cross-generator evaluator with per-seed outputs, confidence intervals, and paired significance tests.
+- `scripts/generate_intent_benchmark.py`: frozen 300-case Chinese synthetic-intent generator.
+- `scripts/run_workflow_benchmark.py`: compiler and event-driven workflow-runtime evaluator.
+- `scripts/run_workflow_scale.py`: 100/500/1,000/2,000 workflow, five-seed state-transition and evidence-hashing scale runner.
 
 Large generated datasets are intentionally excluded from this Git module. Keep them in the paper workspace or publish them separately through an archival dataset host.
 
@@ -43,6 +51,18 @@ python scripts/run_skyrescue_benchmark.py \
   --output-dir /tmp/skyrescue-results/small_run
 ```
 
+Generate and evaluate the workflow benchmark:
+
+```bash
+python scripts/generate_intent_benchmark.py \
+  --output /tmp/skyrescue-intent-synth
+python scripts/run_workflow_benchmark.py \
+  --dataset /tmp/skyrescue-intent-synth \
+  --output-dir /tmp/skyrescue-results/workflow
+python scripts/run_workflow_scale.py \
+  --output-dir /tmp/skyrescue-results/workflow-scale
+```
+
 Run the two challenge scorers:
 
 ```bash
@@ -61,7 +81,7 @@ python scripts/run_cross_generator_challenge.py \
   --output-dir /tmp/skyrescue-results/cross_generator_v1_10seed
 ```
 
-The fault scorer runs four detectors by default:
+The fault scorer runs five detectors by default:
 
 | Detector | Purpose |
 | --- | --- |
@@ -69,10 +89,29 @@ The fault scorer runs four detectors by default:
 | `structural_only` | baseline using replay, audit gap, actuator, and reservation signals |
 | `persistent_fusion` | conservative temporal baseline requiring sustained weak evidence |
 | `skyrescue_fusion` | SkyRescue runtime detector using typed evidence fusion and debounce gating |
+| `skyrescue_causal` | post-hoc variant that requires reservation evidence in at least 5 of the latest 7 telemetry samples |
+
+The benchmark evaluator also reports repair P50/P95/P99, scheduler wall time,
+peak resident memory, timeout rate, invariant violations, duplicate external
+calls, residual reservations, and structured failure reasons. During repair it
+explicitly releases the superseded route reservation before committing a
+replacement.
 
 ## Current paper-scale results
 
 The paper workspace currently contains a 10-seed synthetic evaluation under `SkyRescue-Bench/results/skyrescue_experiments_10seed`.  Summary values should be reported as synthetic benchmark evidence, not real flight evidence.
+
+The frozen `SkyRescue-IntentSynth` v1.0.0 set contains 300 template-generated
+Chinese instructions. On that controlled set, the full compiler obtains 1.0000
+slot F1, 1.0000 executable-workflow rate on valid cases, and 1.0000 structured-
+failure accuracy. In the associated 172-workflow event simulation, SkyRescue
+repairs all triggered cases while changing 0.2683 of workflow nodes and
+preserving all committed nodes. Full replanning also repairs all cases but
+changes 1.0000 of nodes and preserves 0.0000 of commitments.
+
+These are mechanism-conformance results over generator labels. The benchmark
+does not contain a real LLM baseline, instructions collected from emergency
+commanders, double-blind human annotation, or inter-annotator agreement.
 
 Key values from the current 10-seed run:
 
@@ -110,7 +149,12 @@ SkyRescue fusion remains significantly above all three baselines (`Holm p = 0.00
 ## Reproducibility notes
 
 - All benchmark data are synthetic and generated from fixed seeds.
+- `direct_text` is a model-free non-workflow control, not a Direct-LLM result.
+- IntentSynth labels come from the generator and are not a human gold set.
 - Fault labels are withheld from online scheduling and detection, then opened only for offline scoring.
 - Cross-generator evaluation freezes all detector thresholds learned from the original challenge and changes the generator family rather than only the random seed.
 - The CP-SAT baseline is a centralized resource-assignment baseline followed by the shared reservation scheduler; it is not a proof of global optimality for the full traffic-control problem.
 - The security challenge evaluates deterministic policy coverage rather than operational flight safety.
+- `skyrescue_causal` was added after inspecting the v1.0.0 reservation-conflict
+  failure mode. It must be reported as a post-hoc error-driven improvement, not
+  as part of the original frozen-detector comparison.

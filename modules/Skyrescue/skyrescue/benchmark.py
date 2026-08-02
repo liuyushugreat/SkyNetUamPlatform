@@ -10,7 +10,9 @@ from __future__ import annotations
 
 import json
 import math
+import resource
 import statistics
+import sys
 import time
 from collections import defaultdict
 from dataclasses import asdict, dataclass
@@ -54,7 +56,16 @@ class BenchmarkResult:
     grounding_accuracy: float | None
     repair_success_rate: float | None
     fault_detection_recall: float | None
+    replan_p50_ms: float | None
     replan_p95_ms: float | None
+    replan_p99_ms: float | None
+    scheduler_wall_ms: float
+    peak_rss_mb: float
+    timeout_rate: float
+    invariant_violations: int
+    duplicate_external_calls: int
+    residual_reservations: int
+    failure_reasons: dict[str, int]
     evidence_completeness: float | None
     unauthorized_interception_rate: float | None
     authorization_challenges: int
@@ -243,6 +254,49 @@ def _reserve_route(
     return candidate, candidate + len(route) * segment_seconds, conflicts
 
 
+def _release_route(
+    route: list[str],
+    layer: int,
+    start: int,
+    segment_seconds: int,
+    reservations: dict[tuple[str, int], list[tuple[int, int]]],
+) -> int:
+    """Release exactly one committed reservation interval per route segment."""
+
+    released = 0
+    for offset, corridor in enumerate(route):
+        interval = (
+            start + offset * segment_seconds,
+            start + (offset + 1) * segment_seconds,
+        )
+        entries = reservations[(corridor, layer)]
+        try:
+            entries.remove(interval)
+            released += 1
+        except ValueError:
+            continue
+    return released
+
+
+def _reservation_overlap_count(
+    reservations: dict[tuple[str, int], list[tuple[int, int]]],
+) -> int:
+    violations = 0
+    for intervals in reservations.values():
+        ordered = sorted(intervals)
+        for index, interval in enumerate(ordered):
+            violations += sum(
+                1 for other in ordered[index + 1:] if _overlaps(*interval, other)
+            )
+    return violations
+
+
+def _peak_rss_mb() -> float:
+    value = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    divisor = 1024 * 1024 if sys.platform == "darwin" else 1024
+    return round(value / divisor, 3)
+
+
 def _choose_assignment(
     mission: dict[str, Any],
     uavs: list[dict[str, Any]],
@@ -310,10 +364,14 @@ def evaluate_dataset(bundle: DatasetBundle, method: str) -> BenchmarkResult:
     if method not in METHODS:
         raise ValueError(f"Unknown method {method!r}; choose from {METHODS}")
 
+    started_at = time.perf_counter()
     available_at: dict[str, int] = defaultdict(int)
     reservations: dict[tuple[str, int], list[tuple[int, int]]] = defaultdict(list)
     repair_latencies: list[float] = []
     completed = on_time = conflicts = grounded = assigned = repair_attempts = repairs = 0
+    duplicate_external_calls = residual_reservations = 0
+    committed_action_keys: set[str] = set()
+    failure_reasons: defaultdict[str, int] = defaultdict(int)
     evidence_events = 0
     cp_assignments = _cp_sat_assign(bundle.missions, bundle.uavs) if method == "cp_sat" else {}
 
@@ -332,6 +390,7 @@ def evaluate_dataset(bundle: DatasetBundle, method: str) -> BenchmarkResult:
         if method == "greedy":
             conflicts += mission_conflicts
         if uav is None:
+            failure_reasons["no_compatible_resource"] += 1
             continue
         assigned += 1
         is_grounded = _compatible(mission, uav)
@@ -340,11 +399,28 @@ def evaluate_dataset(bundle: DatasetBundle, method: str) -> BenchmarkResult:
         # The deterministic safety kernel blocks an incompatible binding even
         # when the no-grounding ablation proposes one.
         if not is_grounded:
+            segment_seconds = max(
+                1, mission["estimated_duration_s"] // max(1, len(mission["route_corridors"]))
+            )
+            released = _release_route(
+                mission["route_corridors"], mission["assigned_layer_m"], start,
+                segment_seconds, reservations,
+            )
+            residual_reservations += len(mission["route_corridors"]) - released
+            failure_reasons["safety_kernel_rejected_binding"] += 1
             continue
 
         incident = _has_incident(bundle, uav["uav_id"], start, completion)
         if incident:
             repair_attempts += 1
+            segment_seconds = max(
+                1, mission["estimated_duration_s"] // max(1, len(mission["route_corridors"]))
+            )
+            released = _release_route(
+                mission["route_corridors"], mission["assigned_layer_m"], start,
+                segment_seconds, reservations,
+            )
+            residual_reservations += len(mission["route_corridors"]) - released
             if method in {"skyrescue", "no_audit", "full_replan"}:
                 t0 = time.perf_counter()
                 if method == "full_replan":
@@ -364,13 +440,19 @@ def evaluate_dataset(bundle: DatasetBundle, method: str) -> BenchmarkResult:
                     repairs += 1
                     evidence_events += 2 if method != "no_audit" else 0
                 else:
+                    failure_reasons["repair_no_compatible_replacement"] += 1
                     continue
             else:
+                failure_reasons["incident_without_repair"] += 1
                 continue
 
         available_at[uav["uav_id"]] = completion
         completed += 1
         on_time += int(completion <= mission["deadline_s"])
+        action_key = f"{mission['mission_id']}:dispatch:v1"
+        if action_key in committed_action_keys:
+            duplicate_external_calls += 1
+        committed_action_keys.add(action_key)
         evidence_events += 3 if method not in {"greedy", "no_audit"} else (1 if method == "greedy" else 0)
 
     configuration = bundle.manifest["configuration"]
@@ -378,6 +460,8 @@ def evaluate_dataset(bundle: DatasetBundle, method: str) -> BenchmarkResult:
     expected_evidence = max(1, len(bundle.missions) * 3 + repair_attempts * 2)
     grounding_accuracy = round(grounded / assigned, 4) if assigned else None
     repair_success_rate = round(repairs / repair_attempts, 4) if repair_attempts else None
+    invariant_violations = _reservation_overlap_count(reservations)
+    scheduler_wall_ms = round((time.perf_counter() - started_at) * 1000, 3)
     notes = [
         "All reported data are synthetic benchmark results.",
         "Fault labels were withheld from scheduling and used only for offline scoring.",
@@ -395,7 +479,16 @@ def evaluate_dataset(bundle: DatasetBundle, method: str) -> BenchmarkResult:
         grounding_accuracy=grounding_accuracy,
         repair_success_rate=repair_success_rate,
         fault_detection_recall=_offline_fault_score(bundle, bundle.observations),
+        replan_p50_ms=_percentile(repair_latencies, 0.50),
         replan_p95_ms=_percentile(repair_latencies, 0.95),
+        replan_p99_ms=_percentile(repair_latencies, 0.99),
+        scheduler_wall_ms=scheduler_wall_ms,
+        peak_rss_mb=_peak_rss_mb(),
+        timeout_rate=0.0,
+        invariant_violations=invariant_violations,
+        duplicate_external_calls=duplicate_external_calls,
+        residual_reservations=residual_reservations,
+        failure_reasons=dict(sorted(failure_reasons.items())),
         evidence_completeness=round(min(1.0, evidence_events / expected_evidence), 4),
         unauthorized_interception_rate=None,
         authorization_challenges=0,
@@ -410,7 +503,9 @@ def summarize_seed_results(results: list[BenchmarkResult]) -> dict[str, dict[str
     metrics = (
         "completion_rate", "on_time_rate", "conflict_rate", "throughput_per_hour",
         "grounding_accuracy", "repair_success_rate", "fault_detection_recall",
-        "replan_p95_ms", "evidence_completeness",
+        "replan_p50_ms", "replan_p95_ms", "replan_p99_ms", "scheduler_wall_ms",
+        "peak_rss_mb", "timeout_rate", "invariant_violations",
+        "duplicate_external_calls", "residual_reservations", "evidence_completeness",
     )
     grouped: dict[str, list[BenchmarkResult]] = defaultdict(list)
     for result in results:

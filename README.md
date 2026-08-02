@@ -12,7 +12,7 @@
 
 > **KSEM 2026 Reviewers:** The SkyKG neuro-symbolic knowledge graph code and reproduction artifact are at **[`modules/SkyKg/artifact_ksem2026/`](./modules/SkyKg/artifact_ksem2026)**. Run `cd modules/SkyKg/artifact_ksem2026 && bash run.sh` to reproduce all paper results.
 
-> **SkyRescue Reviewers / Readers:** The reproducible SkyRescue runtime, SkyRescue-Bench generators, weak-signal fault challenge, and security challenge scorers are at **[`modules/Skyrescue/`](./modules/Skyrescue)**. Run `cd modules/Skyrescue && python -m venv .venv-skyrescue && source .venv-skyrescue/bin/activate && pip install -r requirements.txt` before running the reproduction scripts.
+> **SkyRescue Reviewers / Readers:** The reproducible intent-to-workflow compiler, dynamic repair runtime, SkyRescue-Bench generators, fault challenge, and security scorer are at **[`modules/Skyrescue/`](./modules/Skyrescue)**. Run `cd modules/Skyrescue && python -m venv .venv-skyrescue && source .venv-skyrescue/bin/activate && pip install -r requirements.txt` before running the reproduction scripts.
 
 > **SkyGov Reviewers / Readers:** The evidence-driven multi-agent governance module for UAM compliance is located at **[`modules/SkyGov/`](./modules/SkyGov)**. For a quick demo run `cd modules/SkyGov && python scripts/run_governance.py`; for the latest evaluation pipeline run `python scripts/run_full_eval.py --scenarios 1000`.
 
@@ -37,7 +37,7 @@
 *   **Operational State Service (backend)**: NestJS service that ingests mission events and maintains consistent lifecycle state.
 *   **Optional persistence adapter**: can be enabled as an asynchronous extension for auditability/settlement-style workflows (kept out of the critical operational path).
 *   **SkyFlow conflict detection** *(NEW)*: Temporal Relational Graph Attention Network (TR-GAT) for real-time multi-UAV conflict detection in dense low-altitude airspace — see [modules/SkyFlow](./modules/SkyFlow).
-*   **SkyRescue emergency command benchmark** *(NEW)*: symbolic grounding, audit-aware runtime repair, centralized CP-SAT resource-assignment baseline, weak-signal fault detection challenge, and deterministic authorization challenge for large-scale low-altitude emergency traffic command — see [modules/Skyrescue](./modules/Skyrescue).
+*   **SkyRescue dynamic workflow benchmark** *(NEW)*: typed intent compilation, skill and resource binding, audit-aware local repair, centralized CP-SAT resource-assignment baseline, weak-signal event detection, and deterministic runtime gating for emergency low-altitude command — see [modules/Skyrescue](./modules/Skyrescue).
 *   **SkyGov compliance governance** *(NEW)*: evidence-driven four-agent LLM governance pipeline for low-altitude regulatory compliance with hard-rule veto, explanation auditing, trust negotiation, and decision traceability — see [modules/SkyGov](./modules/SkyGov).
 *   **SkyRwa semantic lifecycle modeling** *(NEW)*: four-tier governance lifecycle (Evidence → Candidate → Product → Revenue Right) where governance transitions are first-class KG entities, validated by SHACL + SHACL-SPARQL constraints, with 100% violation-type coverage — see [modules/SkyRwa](./modules/SkyRwa).
 *   **SkyCert conformal assurance layer** *(NEW)*: uncertainty-calibrated neuro-symbolic risk reasoning for UAM — split-conformal prediction with finite-sample coverage, hybrid-nonconformity test-martingales for online shift detection, and an abstention/alert/escalation policy that emits machine-readable audit artifacts — see [modules/SkyCert](./modules/SkyCert).
@@ -165,7 +165,7 @@ bash scripts/reproduce_table7.sh      # Table 7
 ### SkyRescue Highlights
 
 *   **Synthetic benchmark generation**: small, medium, large, stress, and seeded replicate configurations for emergency missions, UAV fleets, corridor constraints, telemetry, and withheld labels.
-*   **Runtime baselines**: greedy dispatch, CP-SAT resource assignment plus reservation scheduling, no-symbol-grounding, no-audit, full-replan, and full SkyRescue variants.
+*   **Runtime baselines**: greedy dispatch, CP-SAT resource assignment plus reservation scheduling, no-symbol-grounding, no-audit, full-replan, and full SkyRescue variants, with repair P50/P95/P99 and invariant checks.
 *   **Weak-signal challenge**: partial-observability GPS drift, link degradation, tool failure, reservation conflict, replay, and audit-gap faults with background noise.
 *   **Security challenge**: deterministic authorization checks for permission mismatch, missing approval, replay, schema violation, and prompt-injection-like operator text.
 

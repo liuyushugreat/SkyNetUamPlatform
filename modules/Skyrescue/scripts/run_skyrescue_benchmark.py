@@ -42,11 +42,14 @@ def main() -> None:
         json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8"
     )
     with (args.output_dir / "all_results.csv").open("w", newline="", encoding="utf-8") as handle:
-        fields = [key for key, value in payload[0].items() if key != "notes"]
+        fields = [
+            key for key, value in payload[0].items()
+            if key not in {"notes", "failure_reasons"}
+        ]
         writer = csv.DictWriter(handle, fieldnames=fields)
         writer.writeheader()
         for row in payload:
-            writer.writerow({key: value for key, value in row.items() if key != "notes"})
+            writer.writerow({key: value for key, value in row.items() if key in fields})
 
     seed_results = [result for result in results if result.dataset.startswith("large_seed_")]
     summary = summarize_seed_results(seed_results)

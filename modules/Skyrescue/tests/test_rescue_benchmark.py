@@ -53,3 +53,8 @@ def test_skyrescue_beats_no_audit_on_evidence(tmp_path: Path) -> None:
     no_audit = evaluate_dataset(bundle, "no_audit")
     assert full.evidence_completeness > no_audit.evidence_completeness
     assert full.fault_detection_recall is not None
+    assert full.invariant_violations == 0
+    assert full.duplicate_external_calls == 0
+    assert full.residual_reservations == 0
+    assert full.replan_p50_ms is not None
+    assert full.replan_p99_ms is not None

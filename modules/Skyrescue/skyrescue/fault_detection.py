@@ -6,7 +6,7 @@ remain unavailable until the scorer opens ``faults.jsonl`` after inference.
 
 from __future__ import annotations
 
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, deque
 from typing import Iterable
 
 
@@ -15,6 +15,7 @@ DETECTORS = (
     "structural_only",
     "persistent_fusion",
     "skyrescue_fusion",
+    "skyrescue_causal",
 )
 
 
@@ -34,7 +35,10 @@ def _signals(record: dict) -> dict[str, bool]:
         "link_delay": record.get("command_latency_ms", 0) > 300
         or record.get("link_quality", 1.0) < 0.65,
         "tool_failure": record.get("actuator_health") == "degraded",
-        "reservation_conflict": record.get("reservation_conflict_score", 0) > 0.5,
+        "reservation_conflict": record.get(
+            "reservation_conflict_causal",
+            record.get("reservation_conflict_score", 0) > 0.5,
+        ),
         "mission_replay": record.get("duplicate_intent_count", 0) > 1,
         "log_tampering": bool(record.get("audit_sequence_gap", False)),
     }
@@ -46,7 +50,10 @@ def _strong_signals(record: dict) -> dict[str, bool]:
         "link_delay": record.get("command_latency_ms", 0) > 380
         and record.get("link_quality", 1.0) < 0.56,
         "tool_failure": record.get("actuator_health") == "degraded",
-        "reservation_conflict": record.get("reservation_conflict_score", 0) > 0.55,
+        "reservation_conflict": record.get(
+            "reservation_conflict_causal",
+            record.get("reservation_conflict_score", 0) > 0.55,
+        ),
         "mission_replay": record.get("duplicate_intent_count", 0) > 1,
         "log_tampering": bool(record.get("audit_sequence_gap", False)),
     }
@@ -88,7 +95,7 @@ def _decision(record: dict, method: str, streak: int) -> tuple[bool, dict[str, b
         anomalous = structural or signal_count >= 2 or next_streak >= 5
         return anomalous, signals, next_streak
 
-    if method == "skyrescue_fusion":
+    if method in {"skyrescue_fusion", "skyrescue_causal"}:
         strong_count = sum(strong.values())
         next_streak = streak + 1 if signal_count >= 1 else 0
         decisive_non_link = any(
@@ -111,10 +118,25 @@ def detect(records: Iterable[dict], method: str = "skyrescue_fusion"):
 
     active: dict[str, dict] = {}
     streaks: defaultdict[str, int] = defaultdict(int)
+    reservation_windows: defaultdict[str, deque[bool]] = defaultdict(
+        lambda: deque(maxlen=7)
+    )
     for record in records:
         uav_id = record["uav_id"]
         timestamp = int(record["timestamp_s"])
-        anomalous, signals, streaks[uav_id] = _decision(record, method, streaks[uav_id])
+        decision_record = record
+        if method == "skyrescue_causal":
+            reservation_windows[uav_id].append(
+                record.get("reservation_conflict_score", 0) > 0.5
+            )
+            decision_record = dict(record)
+            decision_record["reservation_conflict_causal"] = (
+                len(reservation_windows[uav_id]) == reservation_windows[uav_id].maxlen
+                and sum(reservation_windows[uav_id]) >= 5
+            )
+        anomalous, signals, streaks[uav_id] = _decision(
+            decision_record, method, streaks[uav_id]
+        )
 
         if anomalous and uav_id not in active:
             active[uav_id] = {
@@ -128,7 +150,7 @@ def detect(records: Iterable[dict], method: str = "skyrescue_fusion"):
         elif uav_id in active:
             state = active.pop(uav_id)
             duration = timestamp - state["start_time_s"]
-            if method == "skyrescue_fusion" and duration < 2 and len(state["signals"]) < 2:
+            if method in {"skyrescue_fusion", "skyrescue_causal"} and duration < 2 and len(state["signals"]) < 2:
                 continue
             yield {
                 "uav_id": uav_id,
@@ -140,7 +162,7 @@ def detect(records: Iterable[dict], method: str = "skyrescue_fusion"):
             }
 
     for uav_id, state in active.items():
-        if method == "skyrescue_fusion" and len(state["signals"]) < 2:
+        if method in {"skyrescue_fusion", "skyrescue_causal"} and len(state["signals"]) < 2:
             continue
         yield {
             "uav_id": uav_id,

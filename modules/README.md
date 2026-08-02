@@ -27,13 +27,15 @@ belongs to a different paper track and is intentionally not grouped under `SkyKg
 
 ### `Skyrescue/`
 
-Symbolically grounded emergency traffic command and SkyRescue-Bench reproduction module:
+Intent-driven multi-agent workflow compilation, runtime repair, trusted execution, and SkyRescue-Bench reproduction module:
 
-- `skyrescue/benchmark.py`: deterministic scheduler, repair runtime, and baselines
-- `skyrescue/fault_detection.py`: weak-signal online fault detector without label access
+- `skyrescue/benchmark.py`: deterministic scheduler, repair runtime, baselines, explicit reservation release, and runtime/invariant metrics
+- `skyrescue/workflow.py`: typed intent compiler, structured failures, workflow contracts, and local-repair metrics
+- `skyrescue/fault_detection.py`: weak-signal online fault detectors, including a post-hoc temporal-causal reservation detector, without label access
 - `skyrescue/security.py`: deterministic authorization boundary for security challenge scoring
 - `scripts/`: dataset generators, validators, benchmark runners, security scorer, single-seed fault scorer, and multi-seed statistical evaluator
 - `scripts/generate_cross_generator_challenge.py` and `scripts/run_cross_generator_challenge.py`: distribution-shift robustness benchmark with frozen detector thresholds
+- `scripts/generate_intent_benchmark.py`, `scripts/run_workflow_benchmark.py`, and `scripts/run_workflow_scale.py`: synthetic intent, workflow-runtime, and five-seed scale evaluations
 - `configs/`: synthetic benchmark scale configurations
 
 ### `SkyGov/`
