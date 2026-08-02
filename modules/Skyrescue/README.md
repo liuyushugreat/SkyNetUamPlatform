@@ -13,6 +13,7 @@ SkyRescue is the paper module for large-scale low-altitude emergency traffic com
 - `scripts/run_skyrescue_benchmark.py`: multi-dataset evaluator and 10-seed summary writer.
 - `scripts/run_security_challenges.py`: security challenge scorer.
 - `scripts/run_fault_challenge.py`: fault challenge scorer.
+- `scripts/run_fault_challenge_multiseed.py`: multi-seed generator, scorer, confidence-interval summarizer, and paired significance tester.
 
 Large generated datasets are intentionally excluded from this Git module. Keep them in the paper workspace or publish them separately through an archival dataset host.
 
@@ -48,6 +49,10 @@ python scripts/run_security_challenges.py --dataset /tmp/skyrescue-security-chal
 
 python scripts/generate_fault_challenge.py --output /tmp/skyrescue-fault-challenge
 python scripts/run_fault_challenge.py --dataset /tmp/skyrescue-fault-challenge --output /tmp/skyrescue-results/fault_challenge_v1.json
+
+python scripts/run_fault_challenge_multiseed.py \
+  --data-dir /tmp/skyrescue-fault-challenge-10seed \
+  --output-dir /tmp/skyrescue-results/fault_challenge_v1_10seed
 ```
 
 The fault scorer runs four detectors by default:
@@ -74,16 +79,16 @@ Key values from the current 10-seed run:
 | Full replan | 1.0000 ± 0.0000 | 0.9090 ± 0.0192 | 0.0000 ± 0.0000 | 1.0000 ± 0.0000 |
 | SkyRescue | 1.0000 ± 0.0000 | 0.9340 ± 0.0155 | 0.0000 ± 0.0000 | 1.0000 ± 0.0000 |
 
-Current weak-signal fault challenge (`SkyRescue-FaultChallenge` v1.1.0, 120 synthetic faults, typed event-level overlap):
+Current weak-signal fault challenge (`SkyRescue-FaultChallenge` v1.1.0, 10 seeds, 1,200 synthetic faults, typed event-level overlap; values are mean ± sample standard deviation):
 
 | Detector | Precision | Recall | F1 |
 | --- | ---: | ---: | ---: |
-| Single signal | 0.1542 | 1.0000 | 0.2671 |
-| Structural only | 0.2814 | 0.7000 | 0.4014 |
-| Persistent fusion | 0.6346 | 0.8167 | 0.7142 |
-| SkyRescue fusion | 0.9843 | 1.0000 | 0.9921 |
+| Single signal | 0.1584 ± 0.0068 | 0.9975 ± 0.0040 | 0.2734 ± 0.0100 |
+| Structural only | 0.2954 ± 0.0222 | 0.7017 ± 0.0170 | 0.4154 ± 0.0235 |
+| Persistent fusion | 0.6640 ± 0.0254 | 0.8325 ± 0.0224 | 0.7386 ± 0.0216 |
+| SkyRescue fusion | 0.9863 ± 0.0069 | 0.9858 ± 0.0088 | 0.9861 ± 0.0063 |
 
-SkyRescue reaches full recall on this fixed challenge while retaining a small number of false positives, mainly in GPS drift and tool-failure-like decoys. Per-fault-type metrics are written by `scripts/run_fault_challenge.py` under `by_fault_type`.
+The 95% confidence interval for SkyRescue F1 is [0.9815, 0.9906]. Its F1 advantage over each baseline is significant under a two-sided exact paired sign-flip test with Holm correction (`p = 0.005859`). The single-signal detector has slightly higher recall but very low precision, exposing the expected alarm-volume tradeoff. Per-seed JSON, per-fault-type CSV, and significance tables are written by `scripts/run_fault_challenge_multiseed.py`.
 
 ## Reproducibility notes
 

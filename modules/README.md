@@ -32,7 +32,7 @@ Symbolically grounded emergency traffic command and SkyRescue-Bench reproduction
 - `skyrescue/benchmark.py`: deterministic scheduler, repair runtime, and baselines
 - `skyrescue/fault_detection.py`: weak-signal online fault detector without label access
 - `skyrescue/security.py`: deterministic authorization boundary for security challenge scoring
-- `scripts/`: dataset generators, validators, benchmark runner, security scorer, and fault scorer
+- `scripts/`: dataset generators, validators, benchmark runners, security scorer, single-seed fault scorer, and multi-seed statistical evaluator
 - `configs/`: synthetic benchmark scale configurations
 
 ### `SkyGov/`
@@ -52,4 +52,3 @@ LLM-driven multi-agent governance system for UAM regulatory compliance (WISA 202
 - `Skyrescue/` is the paper-focused module for SkyRescue and should hold the reproducible code for the emergency-command paper. Large generated datasets are excluded from Git and should be released through a dataset archive.
 - `SkyGov/` extends SkyKG from a single RAG pipeline to a multi-agent LLM governance system.
 - `SkyRwa/` remains at the top level because it supports economics and pricing rather than the SkyKG workflow.
-
