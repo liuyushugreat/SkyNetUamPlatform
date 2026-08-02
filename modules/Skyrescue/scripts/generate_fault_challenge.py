@@ -37,8 +37,18 @@ def main():
                 if not active and rng.random() < .007:
                     record["command_latency_ms"] = rng.randrange(310, 430)
                     record["link_quality"] = round(rng.uniform(.52, .64), 2)
+                if not active and rng.random() < .002:
+                    record["position_residual_m"] = round(rng.uniform(21, 31), 1)
+                if not active and rng.random() < .0015:
+                    record["actuator_health"] = "degraded"
+                if not active and rng.random() < .0015:
+                    record["reservation_conflict_score"] = round(rng.uniform(.52, .76), 2)
+                if not active and rng.random() < .0006:
+                    record["duplicate_intent_count"] = 2
+                if not active and rng.random() < .0006:
+                    record["audit_sequence_gap"] = True
                 out.write(json.dumps(record, sort_keys=True) + "\n")
     (args.output / "faults.jsonl").write_text("".join(json.dumps(f, sort_keys=True) + "\n" for f in intervals), encoding="utf-8")
-    (args.output / "manifest.json").write_text(json.dumps({"name":"SkyRescue-FaultChallenge","version":"1.0.0","synthetic_data":True,"seed":args.seed,"truth_separation":"faults.jsonl is offline scoring only"}, indent=2) + "\n", encoding="utf-8")
+    (args.output / "manifest.json").write_text(json.dumps({"name":"SkyRescue-FaultChallenge","version":"1.1.0","synthetic_data":True,"seed":args.seed,"background_decoys":["gps_residual","link_burst","actuator_degraded","reservation_score","duplicate_intent","audit_gap"],"truth_separation":"faults.jsonl is offline scoring only"}, indent=2) + "\n", encoding="utf-8")
     print(args.output)
 if __name__ == "__main__": main()
