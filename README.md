@@ -37,7 +37,7 @@
 *   **Operational State Service (backend)**: NestJS service that ingests mission events and maintains consistent lifecycle state.
 *   **Optional persistence adapter**: can be enabled as an asynchronous extension for auditability/settlement-style workflows (kept out of the critical operational path).
 *   **SkyFlow conflict detection** *(NEW)*: Temporal Relational Graph Attention Network (TR-GAT) for real-time multi-UAV conflict detection in dense low-altitude airspace — see [modules/SkyFlow](./modules/SkyFlow).
-*   **SkyRescue dynamic workflow benchmark** *(NEW)*: typed intent compilation, skill and resource binding, audit-aware local repair, centralized CP-SAT resource-assignment baseline, weak-signal event detection, and deterministic runtime gating for emergency low-altitude command — see [modules/Skyrescue](./modules/Skyrescue).
+*   **SkyRescue dynamic workflow benchmark** *(NEW)*: typed intent compilation, skill and resource binding, audit-aware local repair, explicit recoverable/unrecoverable event boundaries, centralized CP-SAT resource-assignment baseline, weak-signal event detection, and deterministic runtime assurance for emergency low-altitude command — see [modules/Skyrescue](./modules/Skyrescue).
 *   **SkyGov compliance governance** *(NEW)*: evidence-driven four-agent LLM governance pipeline for low-altitude regulatory compliance with hard-rule veto, explanation auditing, trust negotiation, and decision traceability — see [modules/SkyGov](./modules/SkyGov).
 *   **SkyRwa semantic lifecycle modeling** *(NEW)*: four-tier governance lifecycle (Evidence → Candidate → Product → Revenue Right) where governance transitions are first-class KG entities, validated by SHACL + SHACL-SPARQL constraints, with 100% violation-type coverage — see [modules/SkyRwa](./modules/SkyRwa).
 *   **SkyCert conformal assurance layer** *(NEW)*: uncertainty-calibrated neuro-symbolic risk reasoning for UAM — split-conformal prediction with finite-sample coverage, hybrid-nonconformity test-martingales for online shift detection, and an abstention/alert/escalation policy that emits machine-readable audit artifacts — see [modules/SkyCert](./modules/SkyCert).
@@ -166,6 +166,7 @@ bash scripts/reproduce_table7.sh      # Table 7
 
 *   **Synthetic benchmark generation**: small, medium, large, stress, and seeded replicate configurations for emergency missions, UAV fleets, corridor constraints, telemetry, and withheld labels.
 *   **Runtime baselines**: greedy dispatch, CP-SAT resource assignment plus reservation scheduling, no-symbol-grounding, no-audit, full-replan, and full SkyRescue variants, with repair P50/P95/P99 and invariant checks.
+*   **Workflow failure boundary**: the frozen 172-workflow sequence contains 164 recoverable events and eight cases whose correct outcome is structured rejection or human escalation; SkyRescue handles both groups completely in the deterministic mechanism-conformance evaluator while changing 26.78% of nodes in successful repairs.
 *   **Weak-signal challenge**: partial-observability GPS drift, link degradation, tool failure, reservation conflict, replay, and audit-gap faults with background noise.
 *   **Security challenge**: deterministic authorization checks for permission mismatch, missing approval, replay, schema violation, and prompt-injection-like operator text.
 

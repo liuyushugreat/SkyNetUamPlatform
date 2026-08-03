@@ -11,7 +11,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from skyrescue.workflow import evaluate_compilers, evaluate_runtime
+from skyrescue.workflow import (
+    build_runtime_event_profiles,
+    evaluate_compilers,
+    evaluate_runtime,
+    summarize_runtime_event_profiles,
+)
 
 
 def load_cases(path: Path) -> list[dict]:
@@ -37,13 +42,17 @@ def main():
     cases = load_cases(args.dataset / "intent_cases.jsonl")
     compiler = evaluate_compilers(cases)
     runtime = evaluate_runtime(cases)
+    valid_count = sum(case.get("expected_failure") is None for case in cases)
+    event_composition = summarize_runtime_event_profiles(build_runtime_event_profiles(valid_count))
     payload = {
         "dataset": json.loads((args.dataset / "manifest.json").read_text(encoding="utf-8")),
         "compiler_results": compiler,
         "runtime_results": runtime,
+        "runtime_event_composition": event_composition,
         "evidence_boundary": (
             "Model-free synthetic benchmark; direct_text is not a Direct-LLM baseline, "
-            "and generator labels are not a human gold set."
+            "generator labels are not a human gold set, and unrecoverable runtime "
+            "profiles are deterministic mechanism-conformance cases."
         ),
     }
     (args.output_dir / "workflow_benchmark.json").write_text(

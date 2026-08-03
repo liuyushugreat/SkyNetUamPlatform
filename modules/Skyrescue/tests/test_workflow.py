@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
-from skyrescue.workflow import compile_case, evaluate_runtime
+from skyrescue.workflow import (
+    build_runtime_event_profiles,
+    compile_case,
+    evaluate_runtime,
+    summarize_runtime_event_profiles,
+)
 
 
 def case(**overrides):
@@ -50,3 +55,21 @@ def test_local_repair_changes_less_than_full_replan():
     assert results["skyrescue"]["repair_success_rate"] == 1.0
     assert results["skyrescue"]["workflow_change_ratio"] < results["full_replan"]["workflow_change_ratio"]
     assert results["skyrescue"]["commitment_preservation_rate"] > results["full_replan"]["commitment_preservation_rate"]
+
+
+def test_paper_scale_runtime_has_explicit_unrecoverable_boundary():
+    profiles = build_runtime_event_profiles(172)
+    summary = summarize_runtime_event_profiles(profiles)
+    assert summary["recoverable"] == 164
+    assert summary["unrecoverable"] == 8
+    assert len(summary["unrecoverable_profiles"]) == 8
+
+
+def test_unrecoverable_cases_are_escalated_not_counted_as_repairs():
+    cases = [case(case_id=f"I{index:04d}") for index in range(1, 173)]
+    results = evaluate_runtime(cases)
+    assert results["skyrescue"]["repair_success_rate"] == 1.0
+    assert results["skyrescue"]["unrecoverable_handling_accuracy"] == 1.0
+    assert results["skyrescue"]["human_escalation_rate"] == 0.0465
+    assert results["direct_action"]["workflow_change_ratio"] is None
+    assert results["static_dag"]["commitment_preservation_rate"] is None

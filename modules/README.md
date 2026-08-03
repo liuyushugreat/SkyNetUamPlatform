@@ -27,10 +27,10 @@ belongs to a different paper track and is intentionally not grouped under `SkyKg
 
 ### `Skyrescue/`
 
-Intent-driven multi-agent workflow compilation, runtime repair, trusted execution, and SkyRescue-Bench reproduction module:
+Intent-driven multi-agent workflow compilation, runtime repair, runtime-assured execution, and SkyRescue-Bench reproduction module:
 
 - `skyrescue/benchmark.py`: deterministic scheduler, repair runtime, baselines, explicit reservation release, and runtime/invariant metrics
-- `skyrescue/workflow.py`: typed intent compiler, structured failures, workflow contracts, and local-repair metrics
+- `skyrescue/workflow.py`: typed intent compiler, structured failures, recoverable/unrecoverable event profiles, workflow contracts, and local-repair metrics
 - `skyrescue/fault_detection.py`: weak-signal online fault detectors, including a post-hoc temporal-causal reservation detector, without label access
 - `skyrescue/security.py`: deterministic authorization boundary for security challenge scoring
 - `scripts/`: dataset generators, validators, benchmark runners, security scorer, single-seed fault scorer, and multi-seed statistical evaluator

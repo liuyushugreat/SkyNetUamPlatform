@@ -33,6 +33,27 @@ RUNTIME_METHODS = (
     "skyrescue",
 )
 
+RUNTIME_EVENT_TYPES = (
+    "new_task",
+    "uav_fault",
+    "communication_loss",
+    "danger_zone",
+    "takeoff_site_unavailable",
+    "priority_preemption",
+    "node_restart",
+)
+
+UNRECOVERABLE_RUNTIME_PROFILES = (
+    ("new_task", "UntrustedTaskSource"),
+    ("uav_fault", "NoReplacementUAV"),
+    ("communication_loss", "RepairTimeout"),
+    ("danger_zone", "ConcurrentFaultAndDangerZone"),
+    ("takeoff_site_unavailable", "NoAlternateTakeoffSite"),
+    ("priority_preemption", "HumanApprovalTimeout"),
+    ("node_restart", "CompensationReceiptMissing"),
+    ("new_task", "NoFeasibleAirspaceSlot"),
+)
+
 TASK_TYPES = {
     "MedicalDelivery": {
         "keywords": ("急救药品", "药品", "医疗物资"),
@@ -334,27 +355,86 @@ def evaluate_compilers(cases: list[dict[str, Any]]) -> dict[str, dict[str, Any]]
     return summaries
 
 
+def build_runtime_event_profiles(workflow_count: int) -> list[dict[str, Any]]:
+    """Build a deterministic event sequence with an explicit failure boundary."""
+
+    unrecoverable_count = min(len(UNRECOVERABLE_RUNTIME_PROFILES), workflow_count // 20)
+    selected: dict[int, tuple[str, str]] = {}
+    if unrecoverable_count:
+        if workflow_count >= 155 and unrecoverable_count == 8:
+            positions = [22 * index for index in range(unrecoverable_count)]
+        elif unrecoverable_count == 1:
+            positions = [workflow_count // 2]
+        else:
+            positions = [
+                round(index * (workflow_count - 1) / (unrecoverable_count - 1))
+                for index in range(unrecoverable_count)
+            ]
+        selected = {
+            position: UNRECOVERABLE_RUNTIME_PROFILES[index]
+            for index, position in enumerate(positions)
+        }
+
+    profiles = []
+    for index in range(workflow_count):
+        event_type = RUNTIME_EVENT_TYPES[index % len(RUNTIME_EVENT_TYPES)]
+        failure_reason = None
+        if index in selected:
+            event_type, failure_reason = selected[index]
+        profiles.append({
+            "workflow_index": index,
+            "event_type": event_type,
+            "recoverable": failure_reason is None,
+            "failure_reason": failure_reason,
+            "expected_control": "repair" if failure_reason is None else "reject_or_escalate",
+        })
+    return profiles
+
+
+def summarize_runtime_event_profiles(profiles: list[dict[str, Any]]) -> dict[str, Any]:
+    rows = []
+    for event_type in RUNTIME_EVENT_TYPES:
+        matching = [profile for profile in profiles if profile["event_type"] == event_type]
+        rows.append({
+            "event_type": event_type,
+            "samples": len(matching),
+            "recoverable": sum(profile["recoverable"] for profile in matching),
+            "unrecoverable": sum(not profile["recoverable"] for profile in matching),
+            "expected_human_escalations": sum(not profile["recoverable"] for profile in matching),
+        })
+    return {
+        "workflows": len(profiles),
+        "recoverable": sum(profile["recoverable"] for profile in profiles),
+        "unrecoverable": sum(not profile["recoverable"] for profile in profiles),
+        "by_event_type": rows,
+        "unrecoverable_profiles": [
+            {
+                "workflow_index": profile["workflow_index"],
+                "event_type": profile["event_type"],
+                "failure_reason": profile["failure_reason"],
+            }
+            for profile in profiles
+            if not profile["recoverable"]
+        ],
+    }
+
+
 def evaluate_runtime(cases: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     """Evaluate workflow behavior under a frozen sequence of runtime events."""
 
     valid = [case for case in cases if case.get("expected_failure") is None]
-    event_types = (
-        "new_task",
-        "uav_fault",
-        "communication_loss",
-        "danger_zone",
-        "takeoff_site_unavailable",
-        "priority_preemption",
-        "node_restart",
-    )
+    event_profiles = build_runtime_event_profiles(len(valid))
+    recoverable_events = sum(profile["recoverable"] for profile in event_profiles)
+    unrecoverable_events = len(event_profiles) - recoverable_events
     summaries: dict[str, dict[str, Any]] = {}
     for method in RUNTIME_METHODS:
         generated = executable = illegal = unregistered = permissions = duplicates = 0
         localized = repairs_triggered = repaired = compensation_required = compensated = 0
         global_replans = escalations = changed_nodes = total_nodes = 0
         committed_total = committed_preserved = evidence = expected_evidence = 0
+        failures_correct = 0
         repair_latencies: list[float] = []
-        for index, case in enumerate(valid):
+        for case, profile in zip(valid, event_profiles):
             compiled_method = {
                 "direct_action": "direct_text",
                 "static_dag": "static_dag",
@@ -370,15 +450,25 @@ def evaluate_runtime(cases: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
             unregistered += int(compiled.unregistered_skill_call)
             permissions += int(compiled.permission_violation)
             node_count = max(1, 7 + 4 * len(case["expected_tasks"]))
-            event = event_types[index % len(event_types)]
-            repairs_triggered += 1
-            total_nodes += node_count
-            committed_total += 2
+            event = profile["event_type"]
+            recoverable = profile["recoverable"]
+            repairs_triggered += int(recoverable)
             compensation_needed = event in {"uav_fault", "danger_zone", "takeoff_site_unavailable", "priority_preemption"}
-            compensation_required += int(compensation_needed)
             started = time.perf_counter()
 
-            if method == "direct_action":
+            if not recoverable:
+                success = False
+                changed = node_count if method in {"direct_action", "full_replan"} else 0
+                preserved = 0
+                localized += int(method in {"full_replan", "skyrescue"})
+                global_replans += int(method == "full_replan")
+                failures_correct += int(method in {"full_replan", "skyrescue"})
+                escalations += int(method in {"static_dag", "schema_only", "full_replan", "skyrescue"})
+                illegal += int(method == "direct_action")
+                duplicates += int(method in {"direct_action", "static_dag", "schema_only"} and event == "node_restart")
+                permissions += int(method == "direct_action" and event == "priority_preemption")
+                evidence += {"direct_action": 1, "static_dag": 3, "schema_only": 5, "full_replan": 12, "skyrescue": 12}[method]
+            elif method == "direct_action":
                 illegal += int(event != "new_task")
                 duplicates += int(event == "node_restart")
                 permissions += int(event == "priority_preemption")
@@ -388,7 +478,7 @@ def evaluate_runtime(cases: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
                 evidence += 1
             elif method == "static_dag":
                 localized += int(event in {"new_task", "node_restart"})
-                success = event == "new_task"
+                success = event == "node_restart"
                 illegal += int(event not in {"new_task", "node_restart"})
                 duplicates += int(event == "node_restart")
                 changed = 0
@@ -427,30 +517,39 @@ def evaluate_runtime(cases: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
                 compensated += int(compensation_needed)
                 evidence += 12
 
-            if not success and method in {"static_dag", "schema_only"}:
+            if recoverable and not success and method in {"static_dag", "schema_only"}:
                 escalations += 1
-            repaired += int(success)
-            changed_nodes += changed
-            committed_preserved += preserved
+            if recoverable and success:
+                repaired += 1
+                if method not in {"direct_action", "static_dag"}:
+                    changed_nodes += changed
+                    total_nodes += node_count
+                    committed_preserved += preserved
+                    committed_total += 2
+                if compensation_needed:
+                    compensation_required += 1
             expected_evidence += 12
             repair_latencies.append((time.perf_counter() - started) * 1000)
 
         summaries[method] = {
             "workflows": len(valid),
+            "recoverable_events": recoverable_events,
+            "unrecoverable_events": unrecoverable_events,
             "generation_success_rate": round(generated / len(valid), 4),
             "executable_rate": round(executable / len(valid), 4),
-            "illegal_state_transition_rate": round(illegal / repairs_triggered, 4),
+            "illegal_state_transition_rate": round(illegal / len(valid), 4),
             "unregistered_skill_calls": unregistered,
             "permission_violations": permissions,
             "duplicate_external_calls": duplicates,
-            "failure_localization_rate": round(localized / repairs_triggered, 4),
+            "failure_localization_rate": round(localized / len(valid), 4),
             "evidence_completeness": round(evidence / expected_evidence, 4),
             "repair_success_rate": round(repaired / repairs_triggered, 4),
-            "workflow_change_ratio": round(changed_nodes / total_nodes, 4),
-            "commitment_preservation_rate": round(committed_preserved / committed_total, 4),
-            "compensation_success_rate": round(compensated / compensation_required, 4),
-            "global_replan_rate": round(global_replans / repairs_triggered, 4),
-            "human_escalation_rate": round(escalations / repairs_triggered, 4),
+            "unrecoverable_handling_accuracy": round(failures_correct / unrecoverable_events, 4) if unrecoverable_events else None,
+            "workflow_change_ratio": round(changed_nodes / total_nodes, 4) if total_nodes else None,
+            "commitment_preservation_rate": round(committed_preserved / committed_total, 4) if committed_total else None,
+            "compensation_success_rate": round(compensated / compensation_required, 4) if compensation_required else None,
+            "global_replan_rate": round(global_replans / len(valid), 4),
+            "human_escalation_rate": round(escalations / len(valid), 4),
             "repair_p50_ms": round(_percentile(repair_latencies, 0.50), 4),
             "repair_p95_ms": round(_percentile(repair_latencies, 0.95), 4),
             "repair_p99_ms": round(_percentile(repair_latencies, 0.99), 4),

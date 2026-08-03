@@ -1,7 +1,7 @@
 # SkyRescue
 
 SkyRescue is the paper module for intent-driven multi-agent workflow compilation,
-runtime repair, and trusted execution in emergency low-altitude command. It
+runtime repair, and runtime-assured execution in emergency low-altitude command. It
 contains a typed workflow compiler, workflow-runtime baselines, a deterministic
 domain resource binder, weak-signal fault challenges, and authorization-policy
 tests.
@@ -104,10 +104,20 @@ The paper workspace currently contains a 10-seed synthetic evaluation under `Sky
 The frozen `SkyRescue-IntentSynth` v1.0.0 set contains 300 template-generated
 Chinese instructions. On that controlled set, the full compiler obtains 1.0000
 slot F1, 1.0000 executable-workflow rate on valid cases, and 1.0000 structured-
-failure accuracy. In the associated 172-workflow event simulation, SkyRescue
-repairs all triggered cases while changing 0.2683 of workflow nodes and
-preserving all committed nodes. Full replanning also repairs all cases but
-changes 1.0000 of nodes and preserves 0.0000 of commitments.
+failure accuracy. The associated 172-workflow event simulation contains 164
+recoverable events and eight deterministic unrecoverable boundary cases. The
+benchmark reports repair success only over recoverable events and separately
+scores whether unrecoverable cases are rejected or escalated with the correct
+structured reason. Change ratio and commitment preservation are computed only
+over successfully recovered workflows; methods without a typed repair workflow
+report these fields as not applicable.
+
+On the frozen 172-workflow sequence, SkyRescue repairs all 164 recoverable
+events, correctly rejects or escalates all eight unrecoverable cases, changes
+0.2678 of nodes in successfully recovered workflows, preserves all committed
+nodes, and emits no duplicate external call. Full replanning reaches the same
+recovery and failure-handling rates but changes every node and preserves no
+commitment. These are deterministic state-machine conformance results.
 
 These are mechanism-conformance results over generator labels. The benchmark
 does not contain a real LLM baseline, instructions collected from emergency
