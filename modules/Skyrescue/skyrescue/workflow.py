@@ -101,6 +101,45 @@ FAILURES = {
     "NoFeasiblePlan",
 }
 
+HUMAN_INTENT_TASK_TYPES = {
+    "MedicalDelivery",
+    "SearchAndRescue",
+    "FireRecon",
+    "CommunicationRelay",
+    "HazmatMonitoring",
+    "SupplyDelivery",
+    "InfrastructureInspection",
+    "EvacuationSupport",
+    "TrafficMonitoring",
+    "RouteReplan",
+    "PriorityPreemption",
+    "Other",
+}
+
+HUMAN_INTENT_SKILLS = {
+    "medical_payload",
+    "thermal_recon",
+    "mapping",
+    "communication_relay",
+    "hazmat_monitoring",
+    "supply_payload",
+    "infrastructure_photo",
+    "loudspeaker_guidance",
+    "traffic_monitoring",
+    "route_replan",
+    "unknown_or_other",
+}
+
+HUMAN_INTENT_FAILURES = {
+    "None",
+    "AmbiguousIntent",
+    "HumanApprovalRequired",
+    "ResourceUnavailable",
+    "IncompleteConstraint",
+    "UnknownSkill",
+    "PolicyOrAirspaceConflict",
+}
+
 
 @dataclass
 class CompilationResult:
@@ -283,6 +322,76 @@ def compile_case(case: dict[str, Any], method: str) -> CompilationResult:
         unregistered_skill_call=unregistered,
         permission_violation=permission_violation,
         latency_ms=latency,
+    )
+
+
+def compile_generated_candidate(candidate: dict[str, Any]) -> CompilationResult:
+    """Compile a schema-validated LLM candidate into a typed workflow.
+
+    The candidate's ``expected_failure`` is treated as a preflight diagnostic,
+    not as permission to execute. Human approval remains a deterministic gate.
+    This adapter intentionally performs no language parsing and therefore lets
+    experiments reuse exactly the same model response for direct-JSON, schema,
+    and full-compiler conditions.
+    """
+
+    started = time.perf_counter()
+    required = {
+        "task_type",
+        "target_zone",
+        "priority",
+        "deadline_s_or_text",
+        "required_skill",
+        "needs_human_approval",
+        "expected_failure",
+    }
+    schema_valid = set(candidate) == required
+    schema_valid = schema_valid and all(isinstance(candidate[key], str) for key in required)
+    schema_valid = schema_valid and candidate.get("task_type") in HUMAN_INTENT_TASK_TYPES
+    schema_valid = schema_valid and candidate.get("priority") in {"Critical", "High", "Normal"}
+    schema_valid = schema_valid and candidate.get("deadline_s_or_text") in {
+        "urgent_unspecified",
+        "unspecified",
+    }
+    schema_valid = schema_valid and candidate.get("required_skill") in HUMAN_INTENT_SKILLS
+    schema_valid = schema_valid and candidate.get("needs_human_approval") in {"Yes", "No"}
+    schema_valid = schema_valid and candidate.get("expected_failure") in HUMAN_INTENT_FAILURES
+    schema_valid = schema_valid and bool(candidate.get("target_zone", "").strip())
+
+    failure: str | None = None
+    executable = False
+    tasks: list[dict[str, Any]] = []
+    if not schema_valid:
+        failure = "InvalidType"
+    else:
+        task = {
+            "task_type": candidate["task_type"],
+            "target_zone": candidate["target_zone"].strip(),
+            "priority": candidate["priority"],
+            "deadline_s_or_text": candidate["deadline_s_or_text"],
+            "skill": candidate["required_skill"],
+        }
+        declared_failure = candidate["expected_failure"]
+        if declared_failure != "None":
+            failure = declared_failure
+        elif candidate["needs_human_approval"] == "Yes":
+            failure = "HumanApprovalRequired"
+        else:
+            tasks = [task]
+            executable = True
+
+    nodes = _workflow_nodes(tasks, dynamic=True) if executable else []
+    return CompilationResult(
+        method="skyrescue_llm_candidate",
+        tasks=tasks,
+        workflow_nodes=nodes,
+        schema_valid=schema_valid,
+        executable=executable,
+        failure=failure,
+        hallucinated_entity=False,
+        unregistered_skill_call=False,
+        permission_violation=False,
+        latency_ms=(time.perf_counter() - started) * 1000,
     )
 
 

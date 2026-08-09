@@ -24,6 +24,7 @@ tests.
 - `scripts/generate_intent_benchmark.py`: frozen 300-case Chinese synthetic-intent generator.
 - `scripts/run_workflow_benchmark.py`: compiler and event-driven workflow-runtime evaluator.
 - `scripts/run_workflow_scale.py`: 100/500/1,000/2,000 workflow, five-seed state-transition and evidence-hashing scale runner.
+- `scripts/run_human_intent_llm_benchmark.py`: frozen DeepSeek/Qwen evaluation on the independently annotated human-instruction gold set.
 
 Large generated datasets are intentionally excluded from this Git module. Keep them in the paper workspace or publish them separately through an archival dataset host.
 
@@ -62,6 +63,24 @@ python scripts/run_workflow_benchmark.py \
 python scripts/run_workflow_scale.py \
   --output-dir /tmp/skyrescue-results/workflow-scale
 ```
+
+Run the real-LLM human-instruction benchmark with credentials stored outside
+the repository. The runner never copies API keys into its outputs and resumes
+from per-model JSONL checkpoints:
+
+```bash
+python scripts/run_human_intent_llm_benchmark.py \
+  --input /path/to/SkyRescue_HumanInstructions_100_GoldStandard_v1.0.0.jsonl \
+  --key-file /path/to/key.md \
+  --output-dir /tmp/skyrescue-results/human-intent-llm
+```
+
+The experiment freezes one prompt, `temperature=0`, `top_p=1`, and one response
+per instruction. DeepSeek thinking mode is explicitly disabled so both APIs
+obey the same deterministic decoding settings. It requests `deepseek-v4-flash` and
+`qwen3-30b-a3b-instruct-2507`. Direct JSON parsing, schema validation, and the
+full typed SkyRescue compiler reuse the same raw model response, preventing
+sampling differences from confounding the three-stage comparison.
 
 Run the two challenge scorers:
 

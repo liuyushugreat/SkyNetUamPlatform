@@ -36,6 +36,7 @@ Intent-driven multi-agent workflow compilation, runtime repair, runtime-assured 
 - `scripts/`: dataset generators, validators, benchmark runners, security scorer, single-seed fault scorer, and multi-seed statistical evaluator
 - `scripts/generate_cross_generator_challenge.py` and `scripts/run_cross_generator_challenge.py`: distribution-shift robustness benchmark with frozen detector thresholds
 - `scripts/generate_intent_benchmark.py`, `scripts/run_workflow_benchmark.py`, and `scripts/run_workflow_scale.py`: synthetic intent, workflow-runtime, and five-seed scale evaluations
+- `scripts/run_human_intent_llm_benchmark.py`: fixed-prompt DeepSeek/Qwen evaluation on the 100-case human-authored, independently annotated intent gold set; reuses each response for direct JSON, schema, and full-compiler comparisons
 - `configs/`: synthetic benchmark scale configurations
 
 ### `SkyGov/`
