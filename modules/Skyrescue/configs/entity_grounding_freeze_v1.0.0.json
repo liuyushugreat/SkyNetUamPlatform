@@ -1,0 +1,37 @@
+{
+  "artifact": "SkyRescue-EntityGrounding-Freeze-v1.0.0",
+  "frozen_utc": "2026-08-09T00:00:00+08:00",
+  "frozen_git_commit": "e1800d286782bf787547c30745a1f4c2c9f9c25f",
+  "status": "frozen_before_confirmatory_collection",
+  "artifacts": [
+    {
+      "path": "skyrescue/entity_grounding.py",
+      "sha256": "92d3c22068ac6f521387e9ebe1bfccda0c71ea9e5f471ec9f2997e96a891e3c8"
+    },
+    {
+      "path": "scripts/evaluate_entity_grounding.py",
+      "sha256": "6a3f68def04765248829872b92d05cfdfd1f58def795cfe5278ecdbc8098f00e"
+    }
+  ],
+  "frozen_rules": {
+    "entity_class_count": 29,
+    "qualifier_class_count": 9,
+    "context_similarity_minimum": 0.45,
+    "ambiguity_margin_minimum": 0.04,
+    "generic_multi_entity_policy": "abstain",
+    "unresolved_execution_policy": "UngroundedEntity"
+  },
+  "development_evidence": {
+    "gold_dataset_sha256": "5512eea9229dda8a4ac84dcb83084d11ff7ec5f2f34555a9ca560f1657806cbc",
+    "deepseek_responses_sha256": "b75a8ce7aba6fa92b63fd95a5d3231dd9e09a2e898da9cd1a350a040751d3003",
+    "qwen_responses_sha256": "18d858d6be29e4ab7e1fd8d966ba3cbc1ce6ff3af5571a1fd184632f5c787479"
+  },
+  "confirmatory_protocol": {
+    "held_out_cases": 100,
+    "new_human_instructions_required": true,
+    "ontology_updates_before_scoring": false,
+    "threshold_updates_before_scoring": false,
+    "model_prompt_and_decoding_frozen": true,
+    "gold_labels_hidden_until_all_model_responses_are_saved": true
+  }
+}

@@ -27,6 +27,8 @@ tests.
 - `scripts/run_workflow_scale.py`: 100/500/1,000/2,000 workflow, five-seed state-transition and evidence-hashing scale runner.
 - `scripts/run_human_intent_llm_benchmark.py`: frozen DeepSeek/Qwen evaluation on the independently annotated human-instruction gold set.
 - `scripts/evaluate_entity_grounding.py`: offline four-stage re-evaluation of saved LLM responses; gold targets are opened only after independent grounding.
+- `configs/entity_grounding_freeze_v1.0.0.json`: immutable hashes, thresholds, and protocol boundary for the held-out confirmatory evaluation.
+- `scripts/verify_entity_grounding_freeze.py`: verifies frozen source hashes before any held-out response is scored.
 
 Large generated datasets are intentionally excluded from this Git module. Keep them in the paper workspace or publish them separately through an archival dataset host.
 
@@ -98,6 +100,13 @@ The grounder accepts only the scenario card, instruction text, and predicted
 target. It cannot accept a gold target. The offline evaluator grounds the gold
 target separately and compares frozen ontology IDs. An executable candidate
 whose place cannot be uniquely grounded is rejected with `UngroundedEntity`.
+
+Before collecting or scoring confirmatory cases, verify that the frozen
+grounder and evaluator have not changed:
+
+```bash
+python scripts/verify_entity_grounding_freeze.py
+```
 
 Run the two challenge scorers:
 

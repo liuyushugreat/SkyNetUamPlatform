@@ -39,6 +39,7 @@ Intent-driven multi-agent workflow compilation, runtime repair, runtime-assured 
 - `scripts/generate_intent_benchmark.py`, `scripts/run_workflow_benchmark.py`, and `scripts/run_workflow_scale.py`: synthetic intent, workflow-runtime, and five-seed scale evaluations
 - `scripts/run_human_intent_llm_benchmark.py`: fixed-prompt DeepSeek/Qwen evaluation on the 100-case human-authored, independently annotated intent gold set; reuses each response for direct JSON, schema, and full-compiler comparisons
 - `scripts/evaluate_entity_grounding.py`: re-evaluates saved model responses with independent target grounding and no new API calls or gold-label access during online inference
+- `configs/entity_grounding_freeze_v1.0.0.json` and `scripts/verify_entity_grounding_freeze.py`: lock and verify the ontology, thresholds, and evaluator before held-out confirmatory collection
 - `configs/`: synthetic benchmark scale configurations
 
 ### `SkyGov/`
