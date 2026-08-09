@@ -10,6 +10,7 @@ tests.
 
 - `skyrescue/benchmark.py`: SkyRescue runtime and baselines (`greedy`, `cp_sat`, `no_symbol_grounding`, `no_audit`, `full_replan`, `skyrescue`).
 - `skyrescue/workflow.py`: typed intent compiler, structured failures, workflow contracts, runtime baselines, and local-repair metrics.
+- `skyrescue/entity_grounding.py`: label-isolated contextual place grounding with a frozen emergency-domain ontology and execution gate for unresolved entities.
 - `skyrescue/fault_detection.py`: online weak-signal detectors and comparison baselines that do not read fault labels during inference.
 - `skyrescue/security.py`: deterministic authorization boundary for security challenge evaluation.
 - `scripts/generate_dataset.py`: synthetic emergency-traffic benchmark generator.
@@ -25,6 +26,7 @@ tests.
 - `scripts/run_workflow_benchmark.py`: compiler and event-driven workflow-runtime evaluator.
 - `scripts/run_workflow_scale.py`: 100/500/1,000/2,000 workflow, five-seed state-transition and evidence-hashing scale runner.
 - `scripts/run_human_intent_llm_benchmark.py`: frozen DeepSeek/Qwen evaluation on the independently annotated human-instruction gold set.
+- `scripts/evaluate_entity_grounding.py`: offline four-stage re-evaluation of saved LLM responses; gold targets are opened only after independent grounding.
 
 Large generated datasets are intentionally excluded from this Git module. Keep them in the paper workspace or publish them separately through an archival dataset host.
 
@@ -81,6 +83,21 @@ obey the same deterministic decoding settings. It requests `deepseek-v4-flash` a
 `qwen3-30b-a3b-instruct-2507`. Direct JSON parsing, schema validation, and the
 full typed SkyRescue compiler reuse the same raw model response, preventing
 sampling differences from confounding the three-stage comparison.
+
+Re-evaluate saved responses with the label-isolated entity grounder without
+making another API request:
+
+```bash
+PYTHONPATH=. python scripts/evaluate_entity_grounding.py \
+  --input /path/to/SkyRescue_HumanInstructions_100_GoldStandard_v1.0.0.jsonl \
+  --response-dir /path/to/saved-human-intent-llm-responses \
+  --output-dir /tmp/skyrescue-results/entity-grounding
+```
+
+The grounder accepts only the scenario card, instruction text, and predicted
+target. It cannot accept a gold target. The offline evaluator grounds the gold
+target separately and compares frozen ontology IDs. An executable candidate
+whose place cannot be uniquely grounded is rejected with `UngroundedEntity`.
 
 Run the two challenge scorers:
 
@@ -187,3 +204,12 @@ SkyRescue fusion remains significantly above all three baselines (`Holm p = 0.00
 - `skyrescue_causal` was added after inspecting the v1.0.0 reservation-conflict
   failure mode. It must be reported as a post-hoc error-driven improvement, not
   as part of the original frozen-detector comparison.
+- The first frozen place ontology resolves 41 of 100 gold targets. On the saved
+  100-response runs, anchor accuracy is 0.52 for DeepSeek and 0.45 for Qwen,
+  compared with strict normalized-text accuracy of 0.20 and 0.18. This is a
+  conservative reproducible baseline: unresolved targets are blocked, and the
+  ontology coverage gap must be reported rather than treated as model error.
+- Because this ontology was implemented after prior inspection of benchmark
+  errors, the 200-response re-evaluation is post-hoc development evidence. A
+  confirmatory paper claim requires freezing the ontology and thresholds before
+  evaluation on an unseen human-instruction set.

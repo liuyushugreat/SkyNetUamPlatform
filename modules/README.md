@@ -31,12 +31,14 @@ Intent-driven multi-agent workflow compilation, runtime repair, runtime-assured 
 
 - `skyrescue/benchmark.py`: deterministic scheduler, repair runtime, baselines, explicit reservation release, and runtime/invariant metrics
 - `skyrescue/workflow.py`: typed intent compiler, structured failures, recoverable/unrecoverable event profiles, workflow contracts, and local-repair metrics
+- `skyrescue/entity_grounding.py`: frozen-ontology, label-isolated place grounding and unresolved-entity execution gate
 - `skyrescue/fault_detection.py`: weak-signal online fault detectors, including a post-hoc temporal-causal reservation detector, without label access
 - `skyrescue/security.py`: deterministic authorization boundary for security challenge scoring
 - `scripts/`: dataset generators, validators, benchmark runners, security scorer, single-seed fault scorer, and multi-seed statistical evaluator
 - `scripts/generate_cross_generator_challenge.py` and `scripts/run_cross_generator_challenge.py`: distribution-shift robustness benchmark with frozen detector thresholds
 - `scripts/generate_intent_benchmark.py`, `scripts/run_workflow_benchmark.py`, and `scripts/run_workflow_scale.py`: synthetic intent, workflow-runtime, and five-seed scale evaluations
 - `scripts/run_human_intent_llm_benchmark.py`: fixed-prompt DeepSeek/Qwen evaluation on the 100-case human-authored, independently annotated intent gold set; reuses each response for direct JSON, schema, and full-compiler comparisons
+- `scripts/evaluate_entity_grounding.py`: re-evaluates saved model responses with independent target grounding and no new API calls or gold-label access during online inference
 - `configs/`: synthetic benchmark scale configurations
 
 ### `SkyGov/`
