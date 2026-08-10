@@ -27,6 +27,7 @@ tests.
 - `scripts/run_workflow_scale.py`: 100/500/1,000/2,000 workflow, five-seed state-transition and evidence-hashing scale runner.
 - `scripts/run_human_intent_llm_benchmark.py`: frozen DeepSeek/Qwen evaluation on the independently annotated human-instruction gold set.
 - `scripts/run_heldout_llm_blind.py`: instruction-only, label-free DeepSeek/Qwen capture runner for the frozen 100-case confirmatory set; rejects inputs containing scenario cards or labels and saves resumable raw-response checkpoints.
+- `scripts/score_heldout_llm_blind.py`: post-adjudication scorer for saved held-out responses; validates the blind boundary, reports seven-field accuracy, paired significance, compiler outcomes, and frozen entity-gate diagnostics without making another API request.
 - `scripts/evaluate_entity_grounding.py`: offline four-stage re-evaluation of saved LLM responses; gold targets are opened only after independent grounding.
 - `configs/entity_grounding_freeze_v1.0.0.json`: immutable hashes, thresholds, and protocol boundary for the held-out confirmatory evaluation.
 - `scripts/verify_entity_grounding_freeze.py`: verifies frozen source hashes before any held-out response is scored.
@@ -103,6 +104,20 @@ This runner freezes an instruction-only prompt, `temperature=0`, `top_p=1`,
 JSON, schema, typed-compiler, and frozen entity-grounding-gate outcomes without
 reading or scoring any gold label. Final accuracy metrics are computed only
 after independent A/B annotation and third-expert adjudication.
+
+After adjudication, score the saved responses without calling either model again:
+
+```bash
+PYTHONPATH=. python scripts/score_heldout_llm_blind.py \
+  --gold /path/to/SkyRescue_EntityGrounding_HeldOut100_GoldStandard_v1.0.0.jsonl \
+  --response-dir /tmp/skyrescue-results/heldout100-blind \
+  --output-dir /tmp/skyrescue-results/heldout100-confirmatory
+```
+
+The scorer refuses response files that contain scenario-card or gold-label
+inputs. It preserves the pre-adjudication raw-response hashes and distinguishes
+strict target extraction, entity-gate acceptance/blocking, and exact compiler
+outcome accuracy.
 
 Re-evaluate saved responses with the label-isolated entity grounder without
 making another API request:
