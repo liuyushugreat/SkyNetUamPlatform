@@ -26,6 +26,7 @@ tests.
 - `scripts/run_workflow_benchmark.py`: compiler and event-driven workflow-runtime evaluator.
 - `scripts/run_workflow_scale.py`: 100/500/1,000/2,000 workflow, five-seed state-transition and evidence-hashing scale runner.
 - `scripts/run_human_intent_llm_benchmark.py`: frozen DeepSeek/Qwen evaluation on the independently annotated human-instruction gold set.
+- `scripts/run_heldout_llm_blind.py`: instruction-only, label-free DeepSeek/Qwen capture runner for the frozen 100-case confirmatory set; rejects inputs containing scenario cards or labels and saves resumable raw-response checkpoints.
 - `scripts/evaluate_entity_grounding.py`: offline four-stage re-evaluation of saved LLM responses; gold targets are opened only after independent grounding.
 - `configs/entity_grounding_freeze_v1.0.0.json`: immutable hashes, thresholds, and protocol boundary for the held-out confirmatory evaluation.
 - `scripts/verify_entity_grounding_freeze.py`: verifies frozen source hashes before any held-out response is scored.
@@ -85,6 +86,23 @@ obey the same deterministic decoding settings. It requests `deepseek-v4-flash` a
 `qwen3-30b-a3b-instruct-2507`. Direct JSON parsing, schema validation, and the
 full typed SkyRescue compiler reuse the same raw model response, preventing
 sampling differences from confounding the three-stage comparison.
+
+Capture the held-out confirmatory responses before opening A/B annotations or
+adjudicated labels. The blind input must contain exactly `instruction_id` and
+`instruction_text`; scenario cards and gold fields are rejected:
+
+```bash
+PYTHONPATH=. python scripts/run_heldout_llm_blind.py \
+  --input /path/to/SkyRescue_EntityGrounding_HeldOut100_BlindInput_v1.0.0.jsonl \
+  --key-file /path/to/key.md \
+  --output-dir /tmp/skyrescue-results/heldout100-blind
+```
+
+This runner freezes an instruction-only prompt, `temperature=0`, `top_p=1`,
+`max_tokens=512`, and one response per model and case. It records the direct
+JSON, schema, typed-compiler, and frozen entity-grounding-gate outcomes without
+reading or scoring any gold label. Final accuracy metrics are computed only
+after independent A/B annotation and third-expert adjudication.
 
 Re-evaluate saved responses with the label-isolated entity grounder without
 making another API request:
