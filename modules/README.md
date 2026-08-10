@@ -37,6 +37,8 @@ Intent-driven multi-agent workflow compilation, runtime repair, runtime-assured 
 - `scripts/`: dataset generators, validators, benchmark runners, security scorer, single-seed fault scorer, and multi-seed statistical evaluator
 - `scripts/generate_cross_generator_challenge.py` and `scripts/run_cross_generator_challenge.py`: distribution-shift robustness benchmark with frozen detector thresholds
 - `scripts/generate_intent_benchmark.py`, `scripts/run_workflow_benchmark.py`, and `scripts/run_workflow_scale.py`: synthetic intent, workflow-runtime, and five-seed scale evaluations
+- `skyrescue/langgraph_baseline.py` and `scripts/run_langgraph_baseline.py`: same-input LangGraph StateGraph baseline with SQLite checkpoints; causal closure, commitment preservation, receipts, and idempotency remain explicit application semantics
+- `skyrescue/durable_runtime.py` and `scripts/run_crash_recovery_experiment.py`: single-host SQLite crash-recovery prototype that reconciles a simulated idempotent receiver after a real child-process termination near commit
 - `scripts/run_human_intent_llm_benchmark.py`: fixed-prompt DeepSeek/Qwen evaluation on the 100-case human-authored, independently annotated intent gold set; reuses each response for direct JSON, schema, and full-compiler comparisons
 - `scripts/run_heldout_llm_blind.py`: label-free instruction-only capture for the frozen 100-case confirmatory set, with resumable raw responses and explicit scenario-card/gold-label exclusion
 - `scripts/score_heldout_llm_blind.py`: post-adjudication scoring of frozen responses with seven-field accuracy, paired significance, compiler outcomes, and entity-gate diagnostics; performs no new API calls

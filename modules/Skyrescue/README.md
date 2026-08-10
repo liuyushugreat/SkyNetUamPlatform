@@ -13,6 +13,8 @@ tests.
 - `skyrescue/entity_grounding.py`: label-isolated contextual place grounding with a frozen emergency-domain ontology and execution gate for unresolved entities.
 - `skyrescue/fault_detection.py`: online weak-signal detectors and comparison baselines that do not read fault labels during inference.
 - `skyrescue/security.py`: deterministic authorization boundary for security challenge evaluation.
+- `skyrescue/langgraph_baseline.py`: fair LangGraph StateGraph baseline with SQLite checkpoints; impact closure and commitment semantics remain explicit application logic.
+- `skyrescue/durable_runtime.py`: SQLite prototype for receipt reconciliation after a real process termination near a simulated external effect.
 - `scripts/generate_dataset.py`: synthetic emergency-traffic benchmark generator.
 - `scripts/generate_security_challenges.py`: authorization challenge generator.
 - `scripts/generate_fault_challenge.py`: weak-signal partial-observability fault challenge generator.
@@ -68,6 +70,26 @@ python scripts/run_workflow_benchmark.py \
   --output-dir /tmp/skyrescue-results/workflow
 python scripts/run_workflow_scale.py \
   --output-dir /tmp/skyrescue-results/workflow-scale
+```
+
+Run the LangGraph runtime baseline. It shares the typed compiler and frozen
+event suite with SkyRescue, and reports the application logic needed to retain
+commitment-preserving repair semantics:
+
+```bash
+PYTHONPATH=. python scripts/run_langgraph_baseline.py \
+  --dataset /tmp/skyrescue-intent-synth \
+  --output-dir /tmp/skyrescue-results/langgraph-workflow
+```
+
+Run 30 real child-process terminations against the SQLite crash-recovery
+prototype. The external receiver is simulated and idempotent, so this is not a
+claim about real UAV deployment or distributed fault tolerance:
+
+```bash
+PYTHONPATH=. python scripts/run_crash_recovery_experiment.py \
+  --trials 30 \
+  --output-dir /tmp/skyrescue-results/crash-recovery
 ```
 
 Run the real-LLM human-instruction benchmark with credentials stored outside
