@@ -6,6 +6,10 @@ contains a typed workflow compiler, workflow-runtime baselines, a deterministic
 domain resource binder, weak-signal fault challenges, and authorization-policy
 tests.
 
+## Paper source and reproduction
+
+The implementation corresponding to the current SkyRescue paper is maintained in this directory and is publicly available at [`modules/Skyrescue`](https://github.com/liuyushugreat/SkyNetUamPlatform/tree/main/modules/Skyrescue). The manuscript describes this code as a single-host research prototype: the LangGraph comparison uses explicit application-level commitment semantics, and the SQLite experiment uses a simulated idempotent receiver. Neither claim implies a deployed UAV control system or real-flight validation.
+
 ## What is included
 
 - `skyrescue/benchmark.py`: SkyRescue runtime and baselines (`greedy`, `cp_sat`, `no_symbol_grounding`, `no_audit`, `full_replan`, `skyrescue`).

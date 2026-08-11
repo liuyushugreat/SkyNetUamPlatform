@@ -12,7 +12,7 @@
 
 > **KSEM 2026 Reviewers:** The SkyKG neuro-symbolic knowledge graph code and reproduction artifact are at **[`modules/SkyKg/artifact_ksem2026/`](./modules/SkyKg/artifact_ksem2026)**. Run `cd modules/SkyKg/artifact_ksem2026 && bash run.sh` to reproduce all paper results.
 
-> **SkyRescue Reviewers / Readers:** The reproducible intent-to-workflow compiler, dynamic repair runtime, SkyRescue-Bench generators, fault challenge, and security scorer are at **[`modules/Skyrescue/`](./modules/Skyrescue)**. Run `cd modules/Skyrescue && python -m venv .venv-skyrescue && source .venv-skyrescue/bin/activate && pip install -r requirements.txt` before running the reproduction scripts.
+> **SkyRescue Reviewers / Readers:** The reproducible implementation for the SkyRescue manuscript is at **[`modules/Skyrescue/`](./modules/Skyrescue)**: typed intent-to-workflow compilation, Proposal–Adjudication–Commit semantics, commitment-preserving local repair, the same-input LangGraph baseline, and SQLite crash-recovery prototype. Run `cd modules/Skyrescue && python -m venv .venv-skyrescue && source .venv-skyrescue/bin/activate && pip install -r requirements.txt` before running the reproduction scripts. The prototype does not claim deployed UAV control or real-flight validation.
 
 > **SkyGov Reviewers / Readers:** The evidence-driven multi-agent governance module for UAM compliance is located at **[`modules/SkyGov/`](./modules/SkyGov)**. For a quick demo run `cd modules/SkyGov && python scripts/run_governance.py`; for the latest evaluation pipeline run `python scripts/run_full_eval.py --scenarios 1000`.
 

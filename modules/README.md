@@ -46,6 +46,8 @@ Intent-driven multi-agent workflow compilation, runtime repair, runtime-assured 
 - `configs/entity_grounding_freeze_v1.0.0.json` and `scripts/verify_entity_grounding_freeze.py`: lock and verify the ontology, thresholds, and evaluator before held-out confirmatory collection
 - `configs/`: synthetic benchmark scale configurations
 
+Paper source and reproduction guide: [`modules/Skyrescue`](https://github.com/liuyushugreat/SkyNetUamPlatform/tree/main/modules/Skyrescue). It corresponds to the SkyRescue manuscript’s typed compilation, external-effect commit, and commitment-preserving local-repair experiments.
+
 ### `SkyGov/`
 
 LLM-driven multi-agent governance system for UAM regulatory compliance (WISA 2026 / 计算机研究与发展):
