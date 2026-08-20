@@ -260,10 +260,25 @@ Frozen-threshold cross-generator challenge (`SkyRescue-CrossGenerator` v1.0.0, 1
 
 SkyRescue fusion remains significantly above all three baselines (`Holm p = 0.005859` for F1), but its F1 drops by 0.1534 from the internal challenge. Reservation-conflict F1 is 0.4065 ± 0.0298, identifying sensitivity to persistent benign reservation-score regimes. This negative transfer result is reported without retuning the detector.
 
+## Baseline naming (paper ↔ code)
+
+The paper (V5) uses one fixed name per baseline. The mapping to code identifiers is:
+
+| Paper name | Code identifier | Experiment family | Meaning |
+| --- | --- | --- | --- |
+| Direct-Text | `direct_text` | compile | model-free text control that emits no typed IR (not a Direct-LLM result) |
+| Schema-Only | `schema_only` | compile / runtime | schema validation only, no grounding or safety precheck |
+| Schema+Grounding | `schema_grounding` | compile | schema validation plus entity grounding, no full safety precheck |
+| Static-DAG | `static_dag` | compile / runtime | static DAG without structural repair |
+| Direct-Action | `direct_action` | runtime | direct action execution without a typed workflow |
+| Full-Replan | `full_replan` | runtime | full replanning after each event, no commitment preservation |
+| LangGraph-Workflow | `langgraph_baseline` | runtime | same-input LangGraph StateGraph implementation |
+| SkyRescue | `skyrescue` | compile / runtime | full method |
+
 ## Reproducibility notes
 
 - All benchmark data are synthetic and generated from fixed seeds.
-- `direct_text` is a model-free non-workflow control, not a Direct-LLM result.
+- Baseline names in the paper map to code identifiers as listed in the table above; `direct_text` (Direct-Text) is a model-free non-workflow control, not a Direct-LLM result.
 - IntentSynth labels come from the generator and are not a human gold set.
 - Fault labels are withheld from online scheduling and detection, then opened only for offline scoring.
 - Cross-generator evaluation freezes all detector thresholds learned from the original challenge and changes the generator family rather than only the random seed.
