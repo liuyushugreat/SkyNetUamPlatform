@@ -31,6 +31,7 @@ Intent-driven multi-agent workflow compilation, runtime repair, runtime-assured 
 
 - `skyrescue/benchmark.py`: deterministic scheduler, repair runtime, baselines, explicit reservation release, and runtime/invariant metrics
 - `skyrescue/workflow.py`: typed intent compiler, structured failures, recoverable/unrecoverable event profiles, workflow contracts, and local-repair metrics
+- `skyrescue/runtime_latency.py` and `scripts/run_runtime_latency_benchmark.py`: V6 Table 8 process-local latency protocol over the frozen 300 compilation cases, 600 adjudication requests, and 164 recoverable events, including Full-Replan and LangGraph-Workflow
 - `skyrescue/entity_grounding.py`: frozen-ontology, label-isolated place grounding and unresolved-entity execution gate
 - `skyrescue/fault_detection.py`: weak-signal online fault detectors, including a post-hoc temporal-causal reservation detector, without label access
 - `skyrescue/security.py`: deterministic authorization boundary for security challenge scoring

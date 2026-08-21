@@ -14,6 +14,7 @@ The implementation corresponding to the current SkyRescue paper is maintained in
 
 - `skyrescue/benchmark.py`: SkyRescue runtime and baselines (`greedy`, `cp_sat`, `no_symbol_grounding`, `no_audit`, `full_replan`, `skyrescue`).
 - `skyrescue/workflow.py`: typed intent compiler, structured failures, workflow contracts, runtime baselines, and local-repair metrics.
+- `skyrescue/runtime_latency.py`: clean-state process-local paths for typed compilation, commitment-preserving repair, and full replanning.
 - `skyrescue/entity_grounding.py`: label-isolated contextual place grounding with a frozen emergency-domain ontology and execution gate for unresolved entities.
 - `skyrescue/fault_detection.py`: online weak-signal detectors and comparison baselines that do not read fault labels during inference.
 - `skyrescue/security.py`: deterministic authorization boundary for security challenge evaluation.
@@ -30,6 +31,7 @@ The implementation corresponding to the current SkyRescue paper is maintained in
 - `scripts/run_cross_generator_challenge.py`: frozen-detector cross-generator evaluator with per-seed outputs, confidence intervals, and paired significance tests.
 - `scripts/generate_intent_benchmark.py`: frozen 300-case Chinese synthetic-intent generator.
 - `scripts/run_workflow_benchmark.py`: compiler and event-driven workflow-runtime evaluator.
+- `scripts/run_runtime_latency_benchmark.py`: Table 8 latency runner over the frozen 300/600/164 cases with warm-up rounds, raw observations, and P50/P95 summaries.
 - `scripts/run_workflow_scale.py`: 100/500/1,000/2,000 workflow, five-seed state-transition and evidence-hashing scale runner.
 - `scripts/run_human_intent_llm_benchmark.py`: frozen DeepSeek/Qwen evaluation on the independently annotated human-instruction gold set.
 - `scripts/run_heldout_llm_blind.py`: instruction-only, label-free DeepSeek/Qwen capture runner for the frozen 100-case confirmatory set; rejects inputs containing scenario cards or labels and saves resumable raw-response checkpoints.
@@ -85,6 +87,37 @@ PYTHONPATH=. python scripts/run_langgraph_baseline.py \
   --dataset /tmp/skyrescue-intent-synth \
   --output-dir /tmp/skyrescue-results/langgraph-workflow
 ```
+
+Measure the process-local mechanisms reported in Table 8. Candidate generation,
+cloud LLM time, network transfer, and real flight-control execution are outside
+the timed regions. Each measured mechanism receives a freshly rebuilt initial
+state, after five warm-up rounds, and runs ten measured repeats:
+
+```bash
+PYTHONPATH=. python scripts/run_runtime_latency_benchmark.py \
+  --intent-dataset /path/to/SkyRescue-Bench/data/intent_synth_v1 \
+  --security-dataset /path/to/SkyRescue-Bench/data/security_challenge_v1 \
+  --output-dir /path/to/paper-workspace \
+  --warmup-rounds 5 \
+  --repeats 10
+```
+
+The paper-machine run (Apple M3, Python 3.13.2) produced the following
+process-local results in milliseconds; the sample column counts unique frozen
+cases, while the CSV summary also records all repeated observations:
+
+| Mechanism | Samples | P50 (ms) | P95 (ms) |
+| --- | ---: | ---: | ---: |
+| Typed intent compilation | 300 | 0.001209 | 0.001833 |
+| Proposal-Adjudication-Commit | 600 | 0.000458 | 0.000875 |
+| SkyRescue local repair | 164 | 0.050209 | 0.058416 |
+| Full-Replan | 164 | 0.011042 | 0.013375 |
+| LangGraph-Workflow | 164 | 0.773000 | 1.204000 |
+
+These values characterize the controlled single-process prototype only. In
+particular, the simpler Full-Replan path is faster than SkyRescue local repair
+in this microbenchmark because it does not perform closure-external commitment
+checks; the experiment does not claim that SkyRescue minimizes latency.
 
 Run 30 real child-process terminations against the SQLite crash-recovery
 prototype. The external receiver is simulated and idempotent, so this is not a
@@ -262,7 +295,7 @@ SkyRescue fusion remains significantly above all three baselines (`Holm p = 0.00
 
 ## Baseline naming (paper ↔ code)
 
-The paper (V5) uses one fixed name per baseline. The mapping to code identifiers is:
+The paper (V6) uses one fixed name per baseline. The mapping to code identifiers is:
 
 | Paper name | Code identifier | Experiment family | Meaning |
 | --- | --- | --- | --- |
@@ -282,7 +315,7 @@ The paper (V5) uses one fixed name per baseline. The mapping to code identifiers
 - IntentSynth labels come from the generator and are not a human gold set.
 - Fault labels are withheld from online scheduling and detection, then opened only for offline scoring.
 - Cross-generator evaluation freezes all detector thresholds learned from the original challenge and changes the generator family rather than only the random seed.
-- The CP-SAT baseline is a centralized resource-assignment baseline followed by the shared reservation scheduler; it is not a proof of global optimality for the full traffic-control problem.
+- The repository retains a CP-SAT option for the older domain-resource benchmark, but V6 does not use it as a formal paper baseline or make a CP-SAT performance claim.
 - The security challenge evaluates deterministic policy coverage rather than operational flight safety.
 - `skyrescue_causal` was added after inspecting the v1.0.0 reservation-conflict
   failure mode. It must be reported as a post-hoc error-driven improvement, not
