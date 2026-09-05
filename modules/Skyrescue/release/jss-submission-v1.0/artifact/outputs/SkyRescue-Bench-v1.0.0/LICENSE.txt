@@ -1,0 +1,1 @@
+SkyRescue-Bench data are released under Creative Commons Attribution 4.0 International (CC BY 4.0). See https://creativecommons.org/licenses/by/4.0/ for the license text. The accompanying software repository has its own license.

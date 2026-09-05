@@ -1,0 +1,15 @@
+﻿provider,field,accuracy,macro_f1
+deepseek,task_type,0.8,0.737
+deepseek,target_zone,0.16,
+deepseek,priority,0.52,0.5253
+deepseek,deadline_s_or_text,0.8,0.7086
+deepseek,required_skill,0.77,0.6838
+deepseek,needs_human_approval,0.79,0.7607
+deepseek,expected_failure,0.77,0.5547
+qwen,task_type,0.76,0.6828
+qwen,target_zone,0.13,
+qwen,priority,0.58,0.5557
+qwen,deadline_s_or_text,0.6,0.5404
+qwen,required_skill,0.73,0.6467
+qwen,needs_human_approval,0.73,0.7088
+qwen,expected_failure,0.82,0.6802

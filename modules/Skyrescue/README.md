@@ -1,25 +1,35 @@
 # SkyRescue
 
-SkyRescue is the paper module for intent-driven multi-agent workflow compilation,
-runtime repair, and runtime-assured execution in emergency low-altitude command. It
-contains a typed workflow compiler, workflow-runtime baselines, a deterministic
-domain resource binder, weak-signal fault challenges, and authorization-policy
-tests.
+SkyRescue is the paper module for typed admission of untrusted workflow candidates,
+crash-consistent commitment of external effects, and commitment-preserving runtime
+repair. The UAV emergency-command and DevOps incident-response adapters exercise a
+shared runtime contract; both are controlled research workloads rather than claims
+of operational deployment.
 
 ## Paper source and reproduction
 
-The implementation corresponding to the current SkyRescue paper is maintained in this directory and is publicly available at [`modules/Skyrescue`](https://github.com/liuyushugreat/SkyNetUamPlatform/tree/main/modules/Skyrescue). The manuscript describes this code as a single-host research prototype: the LangGraph comparison uses explicit application-level commitment semantics, and the SQLite experiment uses a simulated idempotent receiver. Neither claim implies a deployed UAV control system or real-flight validation.
+The implementation corresponding to the JSS manuscript is maintained in this
+directory. The immutable submission snapshot is
+[`jss-submission-v1.0`](https://github.com/liuyushugreat/SkyNetUamPlatform/tree/jss-submission-v1.0/modules/Skyrescue).
+The manuscript describes a single-host prototype. The LangGraph embedding wraps
+the exact shared application repair and idempotent-receiver contract. The SQLite
+crash experiment uses a simulated, queryable, key-deduplicating receiver. Its
+per-workflow operation key is HMAC-derived; its receipt authenticates that key,
+issue version, causal parent, and outcome, while its row records the workflow.
+Neither result implies a deployed UAV control system, distributed exactly-once
+delivery, or real-flight validation.
 
 ## What is included
 
 - `skyrescue/benchmark.py`: SkyRescue runtime and baselines (`greedy`, `cp_sat`, `no_symbol_grounding`, `no_audit`, `full_replan`, `skyrescue`).
 - `skyrescue/workflow.py`: typed intent compiler, structured failures, workflow contracts, runtime baselines, and local-repair metrics.
-- `skyrescue/runtime_latency.py`: clean-state process-local paths for typed compilation, commitment-preserving repair, and full replanning.
 - `skyrescue/entity_grounding.py`: label-isolated contextual place grounding with a frozen emergency-domain ontology and execution gate for unresolved entities.
 - `skyrescue/fault_detection.py`: online weak-signal detectors and comparison baselines that do not read fault labels during inference.
 - `skyrescue/security.py`: deterministic authorization boundary for security challenge evaluation.
-- `skyrescue/langgraph_baseline.py`: fair LangGraph StateGraph baseline with SQLite checkpoints; impact closure and commitment semantics remain explicit application logic.
-- `skyrescue/durable_runtime.py`: SQLite prototype for receipt reconciliation after a real process termination near a simulated external effect.
+- `skyrescue/langgraph_baseline.py`: LangGraph StateGraph/SQLite framework embedding around the exact shared repair and receiver path; impact closure, commitment, and receipt semantics remain explicit application logic.
+- `skyrescue/durable_runtime.py`: SQLite prototype with explicit `Executing` and `EffectUnknown` states, three-valued receiver reconciliation, separate invocation/effect/receipt counters, and HMAC-bound receiver receipts.
+- `skyrescue/runtime_latency.py`: matched Native/LangGraph local-repair paths with persistence off/on and identical checkpoint boundaries.
+- `skyrescue/core_contract.py`, `skyrescue/devops_adapter.py`, and `skyrescue/uav_contract_adapter.py`: shared runtime contract and two replaceable, template-workload domain adapters.
 - `scripts/generate_dataset.py`: synthetic emergency-traffic benchmark generator.
 - `scripts/generate_security_challenges.py`: authorization challenge generator.
 - `scripts/generate_fault_challenge.py`: weak-signal partial-observability fault challenge generator.
@@ -31,16 +41,21 @@ The implementation corresponding to the current SkyRescue paper is maintained in
 - `scripts/run_cross_generator_challenge.py`: frozen-detector cross-generator evaluator with per-seed outputs, confidence intervals, and paired significance tests.
 - `scripts/generate_intent_benchmark.py`: frozen 300-case Chinese synthetic-intent generator.
 - `scripts/run_workflow_benchmark.py`: compiler and event-driven workflow-runtime evaluator.
-- `scripts/run_runtime_latency_benchmark.py`: Table 8 latency runner over the frozen 300/600/164 cases with warm-up rounds, raw observations, and P50/P95 summaries.
-- `scripts/run_workflow_scale.py`: 100/500/1,000/2,000 workflow, five-seed state-transition and evidence-hashing scale runner.
-- `scripts/run_human_intent_llm_benchmark.py`: frozen DeepSeek/Qwen evaluation on the independently annotated human-instruction gold set.
+- `scripts/run_workflow_scale.py`: fresh-process scale runner for one connected typed workflow graph containing 100, 250, 500, 1,000, 2,000, or 5,000 tasks; each size uses five seeds, five warm-up passes, and 30 measured passes.
+- `scripts/run_runtime_latency_benchmark.py`: five-warm-up/30-repeat configured-stack latency protocol reporting P50/P95/P99/mean/sample-SD.
+- `scripts/run_devops_portability.py`: executes synthetic UAV and DevOps workloads through the same `RuntimeContract` implementation and records code-identity evidence.
+- `scripts/reproduce_jss_submission.py`: one-command offline reproduction and SHA-256 output manifest.
+- `scripts/run_human_intent_llm_benchmark.py`: frozen DeepSeek/Qwen evaluation on the human-instruction gold set; annotation was independent between raters, while authoring/annotation independence was partial.
 - `scripts/run_heldout_llm_blind.py`: instruction-only, label-free DeepSeek/Qwen capture runner for the frozen 100-case confirmatory set; rejects inputs containing scenario cards or labels and saves resumable raw-response checkpoints.
-- `scripts/score_heldout_llm_blind.py`: post-adjudication scorer for saved held-out responses; validates the blind boundary, reports seven-field accuracy, paired significance, compiler outcomes, and frozen entity-gate diagnostics without making another API request.
+- `scripts/score_heldout_llm_blind.py`: post-adjudication scorer for saved held-out responses; validates the blind boundary, reports seven-field accuracy, 10,000-sample bootstrap intervals, frozen risk/coverage metrics, paired significance, and compiler outcomes without making another API request.
+- `scripts/plot_risk_coverage.py`: renders the frozen-accept-only risk--coverage sensitivity plot; it never promotes a rejected HeldOut100 case.
 - `scripts/evaluate_entity_grounding.py`: offline four-stage re-evaluation of saved LLM responses; gold targets are opened only after independent grounding.
 - `configs/entity_grounding_freeze_v1.0.0.json`: immutable hashes, thresholds, and protocol boundary for the held-out confirmatory evaluation.
 - `scripts/verify_entity_grounding_freeze.py`: verifies frozen source hashes before any held-out response is scored.
 
-Large generated datasets are intentionally excluded from this Git module. Keep them in the paper workspace or publish them separately through an archival dataset host.
+Large telemetry datasets remain outside this Git module. The compact, de-identified
+inputs and stored responses required for the JSS paper are included under
+`release/jss-submission-v1.0/` with SHA-256 verification.
 
 ## Quick start
 
@@ -48,8 +63,22 @@ Large generated datasets are intentionally excluded from this Git module. Keep t
 cd modules/Skyrescue
 python -m venv .venv-skyrescue
 source .venv-skyrescue/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-lock.txt
 ```
+
+Reproduce the complete offline JSS revision evidence from the bundled frozen
+artifact (an external root with the same layout can still be supplied):
+
+```bash
+PYTHONPATH=. python scripts/reproduce_jss_submission.py \
+  --output-dir /tmp/skyrescue-jss-submission-v1.0
+```
+
+The command verifies the frozen grounder, runs the full test suite, re-scores
+the stored HeldOut100 responses offline, executes 90 real process crashes, runs the matched
+2x2 persistence experiment, the true single-task-graph scale experiment, and the
+two-domain contract check, then writes `reproduction_manifest.json` with
+commands, versions, seeds, output hashes, and `network_calls: 0`.
 
 Generate a small synthetic benchmark:
 
@@ -75,12 +104,23 @@ python scripts/run_workflow_benchmark.py \
   --dataset /tmp/skyrescue-intent-synth \
   --output-dir /tmp/skyrescue-results/workflow
 python scripts/run_workflow_scale.py \
+  --intent-dataset /tmp/skyrescue-intent-synth \
   --output-dir /tmp/skyrescue-results/workflow-scale
 ```
 
-Run the LangGraph runtime baseline. It shares the typed compiler and frozen
-event suite with SkyRescue, and reports the application logic needed to retain
-commitment-preserving repair semantics:
+For the scale command, `--size N` means exactly `N` typed tasks in one
+connected workflow graph. Candidate generation is outside compile timing.
+Compilation validates the tasks and builds the dependency DAG plus planned
+bindings/reservations, but creates neither `Committed` state nor execution
+receipts. The already-executed runtime fixture and its synthetic pre-event
+receipts are constructed after compilation and outside event timing. This is a
+single-process synthetic mechanism test, not a concurrency or distributed-
+throughput benchmark.
+
+Run the LangGraph framework embedding. Its StateGraph, retry, and optional
+SQLite checkpointing wrap the exact shared SkyRescue repair and idempotent-
+receiver contract. The deterministic event oracle remains evaluator-only and is
+used after execution to score conformance; it is not a runtime input:
 
 ```bash
 PYTHONPATH=. python scripts/run_langgraph_baseline.py \
@@ -88,40 +128,12 @@ PYTHONPATH=. python scripts/run_langgraph_baseline.py \
   --output-dir /tmp/skyrescue-results/langgraph-workflow
 ```
 
-Measure the process-local mechanisms reported in Table 8. Candidate generation,
-cloud LLM time, network transfer, and real flight-control execution are outside
-the timed regions. Each measured mechanism receives a freshly rebuilt initial
-state, after five warm-up rounds, and runs ten measured repeats:
-
-```bash
-PYTHONPATH=. python scripts/run_runtime_latency_benchmark.py \
-  --intent-dataset /path/to/SkyRescue-Bench/data/intent_synth_v1 \
-  --security-dataset /path/to/SkyRescue-Bench/data/security_challenge_v1 \
-  --output-dir /path/to/paper-workspace \
-  --warmup-rounds 5 \
-  --repeats 10
-```
-
-The paper-machine run (Apple M3, Python 3.13.2) produced the following
-process-local results in milliseconds; the sample column counts unique frozen
-cases, while the CSV summary also records all repeated observations:
-
-| Mechanism | Samples | P50 (ms) | P95 (ms) |
-| --- | ---: | ---: | ---: |
-| Typed intent compilation | 300 | 0.001209 | 0.001833 |
-| Proposal-Adjudication-Commit | 600 | 0.000458 | 0.000875 |
-| SkyRescue local repair | 164 | 0.050209 | 0.058416 |
-| Full-Replan | 164 | 0.011042 | 0.013375 |
-| LangGraph-Workflow | 164 | 0.773000 | 1.204000 |
-
-These values characterize the controlled single-process prototype only. In
-particular, the simpler Full-Replan path is faster than SkyRescue local repair
-in this microbenchmark because it does not perform closure-external commitment
-checks; the experiment does not claim that SkyRescue minimizes latency.
-
-Run 30 real child-process terminations against the SQLite crash-recovery
-prototype. The external receiver is simulated and idempotent, so this is not a
-claim about real UAV deployment or distributed fault tolerance:
+Run 30 real child-process terminations in each of the three non-atomic commit
+windows (90 terminations total) against the SQLite crash-recovery prototype.
+The receiver is simulated and key-deduplicating. The operation key is HMAC-
+derived per workflow, and the receipt authenticates that key, issue version,
+causal parent, and outcome; the receiver row also records the workflow. This is
+not a claim about real UAV deployment or distributed fault tolerance:
 
 ```bash
 PYTHONPATH=. python scripts/run_crash_recovery_experiment.py \
@@ -229,8 +241,8 @@ The fault scorer runs five detectors by default:
 | `skyrescue_causal` | post-hoc variant that requires reservation evidence in at least 5 of the latest 7 telemetry samples |
 
 The benchmark evaluator also reports repair P50/P95/P99, scheduler wall time,
-peak resident memory, timeout rate, invariant violations, duplicate external
-calls, residual reservations, and structured failure reasons. During repair it
+peak resident memory, timeout rate, invariant violations, replayed invocations,
+residual reservations, and structured failure reasons. During repair it
 explicitly releases the superseded route reservation before committing a
 replacement.
 
@@ -247,14 +259,17 @@ benchmark reports repair success only over recoverable events and separately
 scores whether unrecoverable cases are rejected or escalated with the correct
 structured reason. Change ratio and commitment preservation are computed only
 over successfully recovered workflows; methods without a typed repair workflow
-report these fields as not applicable.
+report these fields as not applicable. Expected outcomes and failure reasons
+are retained in a separate evaluator-only oracle and are never passed to the
+runtime implementation.
 
 On the frozen 172-workflow sequence, SkyRescue repairs all 164 recoverable
-events, correctly rejects or escalates all eight unrecoverable cases, changes
-0.2678 of nodes in successfully recovered workflows, preserves all committed
-nodes, and emits no duplicate external call. Full replanning reaches the same
-recovery and failure-handling rates but changes every node and preserves no
-commitment. These are deterministic state-machine conformance results.
+events, correctly rejects or escalates all eight boundary cases, preserves all
+closure-external commitments, and records no replayed invocation. The final
+node-change ratio is regenerated from observed before/after graph state by the
+submission pipeline. Full replanning reaches the same recovery and failure-
+handling rates but changes every node and preserves no commitment. These are
+deterministic state-machine conformance results.
 
 These are mechanism-conformance results over generator labels. The benchmark
 does not contain a real LLM baseline, instructions collected from emergency
@@ -293,29 +308,14 @@ Frozen-threshold cross-generator challenge (`SkyRescue-CrossGenerator` v1.0.0, 1
 
 SkyRescue fusion remains significantly above all three baselines (`Holm p = 0.005859` for F1), but its F1 drops by 0.1534 from the internal challenge. Reservation-conflict F1 is 0.4065 ± 0.0298, identifying sensitivity to persistent benign reservation-score regimes. This negative transfer result is reported without retuning the detector.
 
-## Baseline naming (paper ↔ code)
-
-The paper (V6) uses one fixed name per baseline. The mapping to code identifiers is:
-
-| Paper name | Code identifier | Experiment family | Meaning |
-| --- | --- | --- | --- |
-| Direct-Text | `direct_text` | compile | model-free text control that emits no typed IR (not a Direct-LLM result) |
-| Schema-Only | `schema_only` | compile / runtime | schema validation only, no grounding or safety precheck |
-| Schema+Grounding | `schema_grounding` | compile | schema validation plus entity grounding, no full safety precheck |
-| Static-DAG | `static_dag` | compile / runtime | static DAG without structural repair |
-| Direct-Action | `direct_action` | runtime | direct action execution without a typed workflow |
-| Full-Replan | `full_replan` | runtime | full replanning after each event, no commitment preservation |
-| LangGraph-Workflow | `langgraph_baseline` | runtime | same-input LangGraph StateGraph implementation |
-| SkyRescue | `skyrescue` | compile / runtime | full method |
-
 ## Reproducibility notes
 
 - All benchmark data are synthetic and generated from fixed seeds.
-- Baseline names in the paper map to code identifiers as listed in the table above; `direct_text` (Direct-Text) is a model-free non-workflow control, not a Direct-LLM result.
+- `direct_text` is a model-free non-workflow control, not a Direct-LLM result.
 - IntentSynth labels come from the generator and are not a human gold set.
 - Fault labels are withheld from online scheduling and detection, then opened only for offline scoring.
 - Cross-generator evaluation freezes all detector thresholds learned from the original challenge and changes the generator family rather than only the random seed.
-- The repository retains a CP-SAT option for the older domain-resource benchmark, but V6 does not use it as a formal paper baseline or make a CP-SAT performance claim.
+- The CP-SAT baseline is a centralized resource-assignment baseline followed by the shared reservation scheduler; it is not a proof of global optimality for the full traffic-control problem.
 - The security challenge evaluates deterministic policy coverage rather than operational flight safety.
 - `skyrescue_causal` was added after inspecting the v1.0.0 reservation-conflict
   failure mode. It must be reported as a post-hoc error-driven improvement, not

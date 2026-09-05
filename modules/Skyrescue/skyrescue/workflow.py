@@ -12,7 +12,6 @@ import math
 import re
 import statistics
 import time
-from collections import Counter
 from dataclasses import dataclass
 from typing import Any
 
@@ -43,16 +42,56 @@ RUNTIME_EVENT_TYPES = (
     "node_restart",
 )
 
+# Each boundary case is encoded by an observable event-field override.  The
+# expected decision is kept separately in the benchmark oracle; it is never
+# passed into the runtime implementation.
 UNRECOVERABLE_RUNTIME_PROFILES = (
-    ("new_task", "UntrustedTaskSource"),
-    ("uav_fault", "NoReplacementUAV"),
-    ("communication_loss", "RepairTimeout"),
-    ("danger_zone", "ConcurrentFaultAndDangerZone"),
-    ("takeoff_site_unavailable", "NoAlternateTakeoffSite"),
-    ("priority_preemption", "HumanApprovalTimeout"),
-    ("node_restart", "CompensationReceiptMissing"),
-    ("new_task", "NoFeasibleAirspaceSlot"),
+    ("new_task", {"source_trusted": False}, "UntrustedTaskSource"),
+    ("uav_fault", {"replacement_available": False}, "NoReplacementUAV"),
+    ("communication_loss", {"repair_budget_ms": 0}, "RepairTimeout"),
+    (
+        "danger_zone",
+        {"concurrent_fault": True, "hazard_active": True},
+        "ConcurrentFaultAndDangerZone",
+    ),
+    (
+        "takeoff_site_unavailable",
+        {"alternate_takeoff_site_available": False},
+        "NoAlternateTakeoffSite",
+    ),
+    ("priority_preemption", {"approval_status": "timed_out"}, "HumanApprovalTimeout"),
+    ("node_restart", {"compensation_receipt_present": False}, "CompensationReceiptMissing"),
+    ("new_task", {"feasible_airspace_slot_available": False}, "NoFeasibleAirspaceSlot"),
 )
+
+RUNTIME_EVENT_FIELDS = {
+    "workflow_index",
+    "event_type",
+    "directly_affected_nodes",
+    "source_trusted",
+    "replacement_available",
+    "repair_budget_ms",
+    "concurrent_fault",
+    "hazard_active",
+    "alternate_takeoff_site_available",
+    "approval_status",
+    "compensation_receipt_present",
+    "feasible_airspace_slot_available",
+}
+
+# These anchors describe observable locations in the compiled workflow. Every
+# executable SkyRescue workflow has at least one task, so all defaults exist in
+# every valid runtime graph. They select where an event enters the graph; they
+# do not determine closure size, which is computed by graph traversal.
+DEFAULT_DIRECTLY_AFFECTED_NODES = {
+    "new_task": ("DiscoverSkills",),
+    "uav_fault": ("MatchResource:1",),
+    "communication_loss": ("MonitorExecution",),
+    "danger_zone": ("SafetyPrecheck:1",),
+    "takeoff_site_unavailable": ("ReserveAirspace:1",),
+    "priority_preemption": ("MatchResource:1",),
+    "node_restart": ("Compensate",),
+}
 
 TASK_TYPES = {
     "MedicalDelivery": {
@@ -464,11 +503,123 @@ def evaluate_compilers(cases: list[dict[str, Any]]) -> dict[str, dict[str, Any]]
     return summaries
 
 
+def build_runtime_event(
+    workflow_index: int,
+    event_type: str,
+    **overrides: Any,
+) -> dict[str, Any]:
+    """Build one observable runtime event without benchmark-label fields."""
+
+    if workflow_index < 0:
+        raise ValueError("workflow_index must be non-negative")
+    if event_type not in RUNTIME_EVENT_TYPES:
+        raise ValueError(f"Unknown event type: {event_type}")
+    unknown = set(overrides) - (RUNTIME_EVENT_FIELDS - {"workflow_index", "event_type"})
+    if unknown:
+        raise ValueError(f"Unknown runtime-event fields: {sorted(unknown)}")
+    event: dict[str, Any] = {
+        "workflow_index": workflow_index,
+        "event_type": event_type,
+        "directly_affected_nodes": list(DEFAULT_DIRECTLY_AFFECTED_NODES[event_type]),
+        "source_trusted": True,
+        "replacement_available": True,
+        "repair_budget_ms": 5_000,
+        "concurrent_fault": False,
+        "hazard_active": event_type == "danger_zone",
+        "alternate_takeoff_site_available": True,
+        "approval_status": "approved" if event_type == "priority_preemption" else "not_required",
+        "compensation_receipt_present": True,
+        "feasible_airspace_slot_available": True,
+    }
+    event.update(overrides)
+    return event
+
+
+def adjudicate_runtime_event(event: dict[str, Any]) -> dict[str, Any]:
+    """Infer repair or escalation solely from observable event fields.
+
+    This deterministic rule set is a runtime safety gate, not a learned
+    classifier.  Its output can later be compared with an independently stored
+    benchmark oracle, but no oracle field is accepted here.
+    """
+
+    missing = RUNTIME_EVENT_FIELDS - set(event)
+    extra = set(event) - RUNTIME_EVENT_FIELDS
+    if missing or extra:
+        return {
+            "kind": "StructuredFailure",
+            "control": "human_escalation",
+            "reason": "InvalidRuntimeEvent",
+        }
+    event_type = event["event_type"]
+    boolean_fields = RUNTIME_EVENT_FIELDS - {
+        "workflow_index",
+        "event_type",
+        "directly_affected_nodes",
+        "repair_budget_ms",
+        "approval_status",
+    }
+    directly_affected = event.get("directly_affected_nodes")
+    invalid_types = (
+        event_type not in RUNTIME_EVENT_TYPES
+        or type(event["workflow_index"]) is not int
+        or event["workflow_index"] < 0
+        or any(type(event[field]) is not bool for field in boolean_fields)
+        or isinstance(event["repair_budget_ms"], bool)
+        or not isinstance(event["repair_budget_ms"], (int, float))
+        or event["repair_budget_ms"] < 0
+        or event["approval_status"] not in {"not_required", "approved", "timed_out"}
+        or not isinstance(directly_affected, list)
+        or not directly_affected
+        or any(not isinstance(node, str) or not node for node in directly_affected)
+        or len(set(directly_affected)) != len(directly_affected)
+    )
+    if invalid_types:
+        return {
+            "kind": "StructuredFailure",
+            "control": "human_escalation",
+            "reason": "InvalidRuntimeEvent",
+        }
+
+    reason: str | None = None
+    if event_type == "new_task" and event["source_trusted"] is not True:
+        reason = "UntrustedTaskSource"
+    elif event_type == "uav_fault" and event["replacement_available"] is not True:
+        reason = "NoReplacementUAV"
+    elif event_type == "communication_loss" and event["repair_budget_ms"] == 0:
+        reason = "RepairTimeout"
+    elif (
+        event_type == "danger_zone"
+        and event["concurrent_fault"] is True
+        and event["hazard_active"] is True
+    ):
+        reason = "ConcurrentFaultAndDangerZone"
+    elif (
+        event_type == "takeoff_site_unavailable"
+        and event["alternate_takeoff_site_available"] is not True
+    ):
+        reason = "NoAlternateTakeoffSite"
+    elif event_type == "priority_preemption" and event["approval_status"] == "timed_out":
+        reason = "HumanApprovalTimeout"
+    elif event_type == "node_restart" and event["compensation_receipt_present"] is not True:
+        reason = "CompensationReceiptMissing"
+    elif event_type == "new_task" and event["feasible_airspace_slot_available"] is not True:
+        reason = "NoFeasibleAirspaceSlot"
+
+    if reason is not None:
+        return {
+            "kind": "StructuredFailure",
+            "control": "human_escalation",
+            "reason": reason,
+        }
+    return {"kind": "RepairAuthorization", "control": "repair", "reason": None}
+
+
 def build_runtime_event_profiles(workflow_count: int) -> list[dict[str, Any]]:
-    """Build a deterministic event sequence with an explicit failure boundary."""
+    """Build events and a separately held deterministic benchmark oracle."""
 
     unrecoverable_count = min(len(UNRECOVERABLE_RUNTIME_PROFILES), workflow_count // 20)
-    selected: dict[int, tuple[str, str]] = {}
+    selected: dict[int, tuple[str, dict[str, Any], str]] = {}
     if unrecoverable_count:
         if workflow_count >= 155 and unrecoverable_count == 8:
             positions = [22 * index for index in range(unrecoverable_count)]
@@ -487,15 +638,18 @@ def build_runtime_event_profiles(workflow_count: int) -> list[dict[str, Any]]:
     profiles = []
     for index in range(workflow_count):
         event_type = RUNTIME_EVENT_TYPES[index % len(RUNTIME_EVENT_TYPES)]
-        failure_reason = None
+        overrides: dict[str, Any] = {}
+        failure_reason: str | None = None
         if index in selected:
-            event_type, failure_reason = selected[index]
+            event_type, overrides, failure_reason = selected[index]
         profiles.append({
-            "workflow_index": index,
-            "event_type": event_type,
-            "recoverable": failure_reason is None,
-            "failure_reason": failure_reason,
-            "expected_control": "repair" if failure_reason is None else "reject_or_escalate",
+            "event": build_runtime_event(index, event_type, **overrides),
+            "oracle": {
+                "expected_outcome": (
+                    "repair" if failure_reason is None else "human_escalation"
+                ),
+                "expected_reason": failure_reason,
+            },
         })
     return profiles
 
@@ -503,27 +657,52 @@ def build_runtime_event_profiles(workflow_count: int) -> list[dict[str, Any]]:
 def summarize_runtime_event_profiles(profiles: list[dict[str, Any]]) -> dict[str, Any]:
     rows = []
     for event_type in RUNTIME_EVENT_TYPES:
-        matching = [profile for profile in profiles if profile["event_type"] == event_type]
+        matching = [
+            profile for profile in profiles if profile["event"]["event_type"] == event_type
+        ]
         rows.append({
             "event_type": event_type,
             "samples": len(matching),
-            "recoverable": sum(profile["recoverable"] for profile in matching),
-            "unrecoverable": sum(not profile["recoverable"] for profile in matching),
-            "expected_human_escalations": sum(not profile["recoverable"] for profile in matching),
+            "recoverable": sum(
+                profile["oracle"]["expected_outcome"] == "repair" for profile in matching
+            ),
+            "unrecoverable": sum(
+                profile["oracle"]["expected_outcome"] == "human_escalation"
+                for profile in matching
+            ),
+            "expected_human_escalations": sum(
+                profile["oracle"]["expected_outcome"] == "human_escalation"
+                for profile in matching
+            ),
         })
     return {
         "workflows": len(profiles),
-        "recoverable": sum(profile["recoverable"] for profile in profiles),
-        "unrecoverable": sum(not profile["recoverable"] for profile in profiles),
+        "recoverable": sum(
+            profile["oracle"]["expected_outcome"] == "repair" for profile in profiles
+        ),
+        "unrecoverable": sum(
+            profile["oracle"]["expected_outcome"] == "human_escalation"
+            for profile in profiles
+        ),
         "by_event_type": rows,
         "unrecoverable_profiles": [
             {
-                "workflow_index": profile["workflow_index"],
-                "event_type": profile["event_type"],
-                "failure_reason": profile["failure_reason"],
+                "workflow_index": profile["event"]["workflow_index"],
+                "event_type": profile["event"]["event_type"],
+                "observable_trigger": {
+                    key: value
+                    for key, value in profile["event"].items()
+                    if key not in {"workflow_index", "event_type"}
+                    and value
+                    != build_runtime_event(
+                        profile["event"]["workflow_index"],
+                        profile["event"]["event_type"],
+                    )[key]
+                },
+                "failure_reason": profile["oracle"]["expected_reason"],
             }
             for profile in profiles
-            if not profile["recoverable"]
+            if profile["oracle"]["expected_outcome"] == "human_escalation"
         ],
     }
 
@@ -531,9 +710,23 @@ def summarize_runtime_event_profiles(profiles: list[dict[str, Any]]) -> dict[str
 def evaluate_runtime(cases: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     """Evaluate workflow behavior under a frozen sequence of runtime events."""
 
+    # Imported lazily because ``runtime_latency`` reuses the compiler helpers
+    # defined in this module.  At evaluation time the workflow module is fully
+    # initialized, so both benchmarks execute the same repair implementation
+    # without an import-time cycle.
+    from .runtime_latency import (
+        build_initial_state,
+        compare_repair_states,
+        full_replan,
+        local_repair,
+    )
+
     valid = [case for case in cases if case.get("expected_failure") is None]
     event_profiles = build_runtime_event_profiles(len(valid))
-    recoverable_events = sum(profile["recoverable"] for profile in event_profiles)
+    recoverable_events = sum(
+        profile["oracle"]["expected_outcome"] == "repair"
+        for profile in event_profiles
+    )
     unrecoverable_events = len(event_profiles) - recoverable_events
     summaries: dict[str, dict[str, Any]] = {}
     for method in RUNTIME_METHODS:
@@ -541,8 +734,9 @@ def evaluate_runtime(cases: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
         localized = repairs_triggered = repaired = compensation_required = compensated = 0
         global_replans = escalations = changed_nodes = total_nodes = 0
         committed_total = committed_preserved = evidence = expected_evidence = 0
-        failures_correct = 0
+        failures_correct = boundary_decisions_correct = 0
         repair_latencies: list[float] = []
+        impact_closure_sizes: list[int] = []
         for case, profile in zip(valid, event_profiles):
             compiled_method = {
                 "direct_action": "direct_text",
@@ -558,83 +752,136 @@ def evaluate_runtime(cases: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
             executable += int(compiled.executable)
             unregistered += int(compiled.unregistered_skill_call)
             permissions += int(compiled.permission_violation)
-            node_count = max(1, 7 + 4 * len(case["expected_tasks"]))
-            event = profile["event_type"]
-            recoverable = profile["recoverable"]
-            repairs_triggered += int(recoverable)
-            compensation_needed = event in {"uav_fault", "danger_zone", "takeoff_site_unavailable", "priority_preemption"}
+            event = profile["event"]
+            oracle = profile["oracle"]
+            decision = adjudicate_runtime_event(event)
+            expected_recoverable = oracle["expected_outcome"] == "repair"
+            repairs_triggered += int(expected_recoverable)
+            event_type = event["event_type"]
+            compensation_needed = event_type in {
+                "uav_fault",
+                "danger_zone",
+                "takeoff_site_unavailable",
+                "priority_preemption",
+            }
             started = time.perf_counter()
+            measured: dict[str, int | float] | None = None
+            after: dict[str, Any] | None = None
 
-            if not recoverable:
+            # The implementations receive only the observable event.  The
+            # oracle above remains evaluator-side and is used only to score the
+            # independently produced control decision.
+            if method == "full_replan":
+                after = full_replan(case, event)
+            elif method == "skyrescue":
+                after = local_repair(case, event)
+
+            if decision["control"] == "human_escalation":
                 success = False
-                changed = node_count if method in {"direct_action", "full_replan"} else 0
-                preserved = 0
                 localized += int(method in {"full_replan", "skyrescue"})
                 global_replans += int(method == "full_replan")
-                failures_correct += int(method in {"full_replan", "skyrescue"})
                 escalations += int(method in {"static_dag", "schema_only", "full_replan", "skyrescue"})
                 illegal += int(method == "direct_action")
-                duplicates += int(method in {"direct_action", "static_dag", "schema_only"} and event == "node_restart")
-                permissions += int(method == "direct_action" and event == "priority_preemption")
+                duplicates += int(
+                    method in {"direct_action", "static_dag", "schema_only"}
+                    and event_type == "node_restart"
+                )
+                permissions += int(
+                    method == "direct_action" and event_type == "priority_preemption"
+                )
                 evidence += {"direct_action": 1, "static_dag": 3, "schema_only": 5, "full_replan": 12, "skyrescue": 12}[method]
             elif method == "direct_action":
-                illegal += int(event != "new_task")
-                duplicates += int(event == "node_restart")
-                permissions += int(event == "priority_preemption")
-                changed = node_count
-                preserved = 0
+                illegal += int(event_type != "new_task")
+                duplicates += int(event_type == "node_restart")
+                permissions += int(event_type == "priority_preemption")
                 success = False
                 evidence += 1
             elif method == "static_dag":
-                localized += int(event in {"new_task", "node_restart"})
-                success = event == "node_restart"
-                illegal += int(event not in {"new_task", "node_restart"})
-                duplicates += int(event == "node_restart")
-                changed = 0
-                preserved = 2
+                localized += int(event_type in {"new_task", "node_restart"})
+                success = event_type == "node_restart"
+                illegal += int(event_type not in {"new_task", "node_restart"})
+                duplicates += int(event_type == "node_restart")
                 evidence += 3
             elif method == "schema_only":
-                localized += int(event in {"uav_fault", "communication_loss", "node_restart"})
-                success = event in {"new_task", "uav_fault", "communication_loss"}
-                permissions += int(event == "priority_preemption")
-                duplicates += int(event == "node_restart")
-                changed = 4 if success else 0
-                preserved = 1 if success else 2
-                compensated += int(compensation_needed and event == "uav_fault")
+                localized += int(
+                    event_type in {"uav_fault", "communication_loss", "node_restart"}
+                )
+                success = event_type in {"new_task", "uav_fault", "communication_loss"}
+                permissions += int(event_type == "priority_preemption")
+                duplicates += int(event_type == "node_restart")
+                compensated += int(compensation_needed and event_type == "uav_fault")
                 evidence += 5
             elif method == "full_replan":
+                if after is None:
+                    raise AssertionError("full-replan execution did not return state")
                 localized += 1
-                success = True
+                before = build_initial_state(case)
+                measured = compare_repair_states(
+                    before,
+                    after,
+                    after["event_impact_closure"],
+                )
+                success = after.get("status") == "Recovered"
                 global_replans += 1
-                changed = node_count
-                preserved = 0
-                compensated += int(compensation_needed)
+                compensated += int(compensation_needed and "release_all" in after["evidence"])
                 evidence += 12
             else:
+                if after is None:
+                    raise AssertionError("local-repair execution did not return state")
                 localized += 1
-                success = True
-                changed = {
-                    "new_task": 4,
-                    "uav_fault": 4,
-                    "communication_loss": 3,
-                    "danger_zone": 4,
-                    "takeoff_site_unavailable": 4,
-                    "priority_preemption": 4,
-                    "node_restart": 2,
-                }[event]
-                preserved = 2
-                compensated += int(compensation_needed)
+                before = build_initial_state(case)
+                measured = compare_repair_states(
+                    before,
+                    after,
+                    after["impact_closure"],
+                )
+                success = after.get("status") == "Recovered"
+                compensated += int(
+                    compensation_needed and "compensation_release" in after["evidence"]
+                )
                 evidence += 12
 
-            if recoverable and not success and method in {"static_dag", "schema_only"}:
+            observed_control = decision["control"]
+            observed_reason = decision["reason"]
+            if after is not None:
+                if after.get("status") == "Recovered":
+                    observed_control = "repair"
+                    observed_reason = None
+                elif after.get("status") == "HumanEscalated":
+                    observed_control = "human_escalation"
+                    observed_reason = after.get("structured_failure", {}).get("reason")
+                else:
+                    observed_control = "runtime_error"
+                    observed_reason = None
+            observed_result_matches_oracle = (
+                observed_control == oracle["expected_outcome"]
+                and observed_reason == oracle["expected_reason"]
+            )
+            boundary_decisions_correct += int(
+                method in {"full_replan", "skyrescue"}
+                and observed_result_matches_oracle
+            )
+            if not expected_recoverable:
+                failures_correct += int(
+                    method in {"full_replan", "skyrescue"}
+                    and observed_result_matches_oracle
+                )
+
+            if expected_recoverable and not success and method in {"static_dag", "schema_only"}:
                 escalations += 1
-            if recoverable and success:
+            if expected_recoverable and success:
                 repaired += 1
-                if method not in {"direct_action", "static_dag"}:
-                    changed_nodes += changed
-                    total_nodes += node_count
-                    committed_preserved += preserved
-                    committed_total += 2
+                if measured is not None:
+                    changed_nodes += int(measured["changed_nodes"])
+                    total_nodes += int(measured["total_nodes"])
+                    committed_preserved += int(measured["preserved_commitments"])
+                    committed_total += int(measured["protected_commitments"])
+                    event_closure = (
+                        after["event_impact_closure"]
+                        if method == "full_replan"
+                        else after["impact_closure"]
+                    )
+                    impact_closure_sizes.append(len(event_closure))
                 if compensation_needed:
                     compensation_required += 1
             expected_evidence += 12
@@ -654,8 +901,25 @@ def evaluate_runtime(cases: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
             "evidence_completeness": round(evidence / expected_evidence, 4),
             "repair_success_rate": round(repaired / repairs_triggered, 4),
             "unrecoverable_handling_accuracy": round(failures_correct / unrecoverable_events, 4) if unrecoverable_events else None,
+            "boundary_handling_accuracy": (
+                round(boundary_decisions_correct / len(valid), 4)
+                if method in {"full_replan", "skyrescue"}
+                else None
+            ),
             "workflow_change_ratio": round(changed_nodes / total_nodes, 4) if total_nodes else None,
             "commitment_preservation_rate": round(committed_preserved / committed_total, 4) if committed_total else None,
+            "impact_closure_mean_nodes": (
+                round(statistics.mean(impact_closure_sizes), 4)
+                if impact_closure_sizes
+                else None
+            ),
+            "impact_closure_p95_nodes": (
+                _percentile([float(value) for value in impact_closure_sizes], 0.95)
+                if impact_closure_sizes
+                else None
+            ),
+            "impact_closure_min_nodes": min(impact_closure_sizes) if impact_closure_sizes else None,
+            "impact_closure_max_nodes": max(impact_closure_sizes) if impact_closure_sizes else None,
             "compensation_success_rate": round(compensated / compensation_required, 4) if compensation_required else None,
             "global_replan_rate": round(global_replans / len(valid), 4),
             "human_escalation_rate": round(escalations / len(valid), 4),

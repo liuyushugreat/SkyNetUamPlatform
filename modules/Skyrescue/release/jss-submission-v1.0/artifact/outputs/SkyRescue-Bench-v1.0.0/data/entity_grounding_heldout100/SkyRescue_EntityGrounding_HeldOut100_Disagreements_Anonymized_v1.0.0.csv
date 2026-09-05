@@ -1,0 +1,19 @@
+disagreement_id,instruction_id,instruction_text,field,annotator_a,annotator_b,confidence_a,confidence_b,note_a,note_b
+D-001,HLD-001,派一架去东门上空悬停，锁定那两位行动不便的居民位置，给转移队实时指路；巷子里线多，保持高度别下去。,task_type,EvacuationSupport,SearchAndRescue,High,High,,
+D-002,HLD-002,地下车库进不去人，先派机在入口上空盯着水位和人群，五分钟报一次；配电间断电了，别指望里面有照明。,task_type,Other,TrafficMonitoring,Medium,Medium,水位与人群同步监测，归 Other。,水位和人群均属现场态势监测。
+D-003,HLD-056,俩阀室之间那段管线，机子低速沿线飞，红外常规各来一遍；瞅见地皮发黄或有喷溅痕迹的点，立马标坐标报我。,task_type,InfrastructureInspection,HazmatMonitoring,High,Medium,,异常痕迹用于排查管线泄漏。
+D-004,HLD-064,南门封了就从上头看：热成像机绕厂房一圈，屋顶、窗口的温度分布拍全喽，火点在哪个跨间得给我说出个数儿来。,task_type,HazmatMonitoring,FireRecon,High,Medium,,以定位厂房内火点为主要目的。
+D-005,HLD-066,监控让蒸汽糊住了，机子换个角度从上风向进，把罐顶安全阀那块儿拍清楚；离罐远着点儿，快进快出别磨蹭。,task_type,HazmatMonitoring,InfrastructureInspection,High,Medium,,主要动作是从上风向拍清安全阀。
+D-006,HLD-072,车翻林坡里了，机子从弯道上方切进去，把车身姿态和人员活动拍清楚；坡陡树密，高度自己拿捏，画面直给救援队长。,task_type,TrafficMonitoring,SearchAndRescue,Medium,Medium,主要回传事故车姿态和人员活动。,人员活动确认比交通态势更关键。
+D-007,HLD-073,起火那车正上空让开，机子在侧风向把火势和过火范围拍了；再瞅一眼东桥头堵到哪儿了，交警等着分流数据呢。,task_type,FireRecon,TrafficMonitoring,Medium,Medium,以起火车辆火势侦察为主，拥堵监测为辅。,最终用于交警分流，火势影像为现场态势一部分。
+D-008,HLD-073,起火那车正上空让开，机子在侧风向把火势和过火范围拍了；再瞅一眼东桥头堵到哪儿了，交警等着分流数据呢。,target_zone,起火那车,东桥头,Medium,Medium,以起火车辆火势侦察为主，拥堵监测为辅。,最终用于交警分流，火势影像为现场态势一部分。
+D-009,HLD-002,地下车库进不去人，先派机在入口上空盯着水位和人群，五分钟报一次；配电间断电了，别指望里面有照明。,required_skill,unknown_or_other,traffic_monitoring,Medium,Medium,水位与人群同步监测，归 Other。,水位和人群均属现场态势监测。
+D-010,HLD-012,鹰嘴岭东侧山沟，以手机最后信号点为圆心先扫半径一公里，带喊话器边飞边喊，天黑前必须过完第一遍。,required_skill,loudspeaker_guidance,unknown_or_other,High,Medium,,搜寻为主，喊话器只是辅助载荷。
+D-011,HLD-013,南坡那三户，云低就贴着安全高度下限飞，挨家看屋顶和院子有没有人活动，拍清楚就回，别在山谷里恋战。,required_skill,infrastructure_photo,unknown_or_other,Medium,Medium,未指明专用搜索载荷，按影像巡查。,指令未点明专用搜索载荷。
+D-012,HLD-025,东侧隔离带，派机沿线飞一遍，断口和树冠搭桥的点全标出来；烟柱下压能见度差，拉开高度用热成像补。,required_skill,thermal_recon,mapping,High,Medium,,主要识别隔离带断口和连通点。
+D-013,HLD-060,报警点那片坡，机子上去可劲儿拍，绿植厚就换热成像加变焦；有滑塌迹象立刻报，铁路那边等着定限速呢。,required_skill,infrastructure_photo,thermal_recon,High,Medium,,茂密植被下识别滑塌迹象，热成像更关键。
+D-014,HLD-067,沿着近岸把水色异常那片儿飞个来回，分界线在哪儿标清楚，不同高度多拍几张；样本点坐标整理好给环保那边。,required_skill,hazmat_monitoring,mapping,High,Medium,,重点是圈定异常水色边界并布设样本点。
+D-015,HLD-072,车翻林坡里了，机子从弯道上方切进去，把车身姿态和人员活动拍清楚；坡陡树密，高度自己拿捏，画面直给救援队长。,required_skill,traffic_monitoring,infrastructure_photo,Medium,Medium,主要回传事故车姿态和人员活动。,人员活动确认比交通态势更关键。
+D-016,HLD-073,起火那车正上空让开，机子在侧风向把火势和过火范围拍了；再瞅一眼东桥头堵到哪儿了，交警等着分流数据呢。,required_skill,mapping,traffic_monitoring,Medium,Medium,以起火车辆火势侦察为主，拥堵监测为辅。,最终用于交警分流，火势影像为现场态势一部分。
+D-017,HLD-091,俩机要在峡谷里撞时隙，那不成！延误那架在谷口外盘旋候着，先让准点的过；时隙我这边重新排，排完再放。,expected_failure,HumanApprovalRequired,PolicyOrAirspaceConflict,High,High,重排已预约时隙，需人工确认后放行。,两机预约时隙已发生冲突。
+D-018,HLD-094,原起降点泡汤了，机子先把俩候选空地各瞅一遍，平整度、净空给句痛快话；哪个成用哪个，确认完任务接着走。,expected_failure,HumanApprovalRequired,IncompleteConstraint,High,Medium,候选起降点须确认后启用。,两个候选点均未完成安全确认。

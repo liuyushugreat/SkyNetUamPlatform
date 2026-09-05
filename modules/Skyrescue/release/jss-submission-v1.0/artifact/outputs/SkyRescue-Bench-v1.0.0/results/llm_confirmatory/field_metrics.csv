@@ -1,0 +1,15 @@
+﻿provider,field,matches,cases,accuracy,macro_f1
+deepseek,task_type,71,100,0.71,0.575642
+deepseek,target_zone,52,100,0.52,
+deepseek,priority,50,100,0.5,0.458363
+deepseek,deadline_s_or_text,57,100,0.57,0.569957
+deepseek,required_skill,67,100,0.67,0.596914
+deepseek,needs_human_approval,91,100,0.91,0.738296
+deepseek,expected_failure,93,100,0.93,0.194764
+qwen,task_type,75,100,0.75,0.600795
+qwen,target_zone,54,100,0.54,
+qwen,priority,41,100,0.41,0.372797
+qwen,deadline_s_or_text,63,100,0.63,0.629963
+qwen,required_skill,61,100,0.61,0.554408
+qwen,needs_human_approval,85,100,0.85,0.63154
+qwen,expected_failure,93,100,0.93,0.293684

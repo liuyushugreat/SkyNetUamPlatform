@@ -1,0 +1,1 @@
+SkyRescue-Bench: Datasets and reproducibility artifacts for the SkyRescue safety-critical agent workflow runtime. Version v1.0.0. Zenodo DOI: to be assigned at publication.

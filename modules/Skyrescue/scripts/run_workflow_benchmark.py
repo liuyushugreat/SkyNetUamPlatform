@@ -51,8 +51,9 @@ def main():
         "runtime_event_composition": event_composition,
         "evidence_boundary": (
             "Model-free synthetic benchmark; direct_text is not a Direct-LLM baseline, "
-            "generator labels are not a human gold set, and unrecoverable runtime "
-            "profiles are deterministic mechanism-conformance cases."
+            "generator labels are not a human gold set, and runtime boundary labels are "
+            "evaluator-only mechanism-conformance oracles. Implementations receive only "
+            "the corresponding observable event fields."
         ),
     }
     (args.output_dir / "workflow_benchmark.json").write_text(

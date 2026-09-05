@@ -1,0 +1,3 @@
+﻿provider,requested_model,cases,api_success_rate,direct_json_parse_rate,schema_pass_rate,all_fields_exact_rate,slot_micro_accuracy,field_macro_accuracy,compiler_outcome_accuracy,executable_workflow_rate_on_gold_valid,structured_failure_accuracy,latency_mean_ms,latency_p95_ms
+deepseek,deepseek-v4-flash,100,1.0,1.0,0.94,0.02,0.6586,0.6586,0.64,0.6885,0.5641,1372.403,1576.967
+qwen,qwen3-30b-a3b-instruct-2507,100,1.0,1.0,1.0,0.0,0.6214,0.6214,0.76,0.7705,0.7436,930.505,1100.225

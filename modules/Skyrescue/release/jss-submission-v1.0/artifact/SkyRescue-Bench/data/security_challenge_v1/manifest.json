@@ -1,0 +1,9 @@
+{
+  "name": "SkyRescue-SecurityChallenge",
+  "version": "1.0.0",
+  "synthetic_data": true,
+  "seed": 20261001,
+  "count": 600,
+  "sha256_requests": "d79bf59816e5fbf04c03a3cdf6b3fc733fb0fa2154cd4a98defef468fd2ae084",
+  "truth_separation": "labels.jsonl is offline scoring only"
+}

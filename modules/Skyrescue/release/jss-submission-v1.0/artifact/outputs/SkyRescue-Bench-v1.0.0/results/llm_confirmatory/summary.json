@@ -1,0 +1,174 @@
+{
+  "models": [
+    {
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "cases": 100,
+      "api_success_rate": 1.0,
+      "direct_json_parse_rate": 1.0,
+      "schema_pass_rate": 1.0,
+      "slot_micro_accuracy": 0.687143,
+      "all_fields_exact_rate": 0.09,
+      "direct_compile_outcome_accuracy": 0.88,
+      "grounded_safe_decision_accuracy": 0.27,
+      "grounded_exact_outcome_accuracy": 0.2,
+      "target_zone_strict_accuracy": 0.52,
+      "grounding_acceptance_rate": 0.23,
+      "correct_target_acceptance_rate": 0.211538,
+      "incorrect_target_block_rate": 0.75,
+      "accepted_target_precision": 0.478261,
+      "incorrect_target_false_accept_rate": 0.25,
+      "correct_accept": 11,
+      "correct_reject": 41,
+      "incorrect_accept": 12,
+      "incorrect_reject": 36,
+      "latency_mean_ms": 1407.706,
+      "latency_p95_ms": 1680.563
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3-30b-a3b-instruct-2507",
+      "cases": 100,
+      "api_success_rate": 1.0,
+      "direct_json_parse_rate": 1.0,
+      "schema_pass_rate": 0.99,
+      "slot_micro_accuracy": 0.674286,
+      "all_fields_exact_rate": 0.08,
+      "direct_compile_outcome_accuracy": 0.83,
+      "grounded_safe_decision_accuracy": 0.23,
+      "grounded_exact_outcome_accuracy": 0.17,
+      "target_zone_strict_accuracy": 0.54,
+      "grounding_acceptance_rate": 0.22,
+      "correct_target_acceptance_rate": 0.259259,
+      "incorrect_target_block_rate": 0.826087,
+      "accepted_target_precision": 0.636364,
+      "incorrect_target_false_accept_rate": 0.173913,
+      "correct_accept": 14,
+      "correct_reject": 40,
+      "incorrect_accept": 8,
+      "incorrect_reject": 38,
+      "latency_mean_ms": 2463.651,
+      "latency_p95_ms": 3939.734
+    }
+  ],
+  "field_metrics": [
+    {
+      "provider": "deepseek",
+      "field": "task_type",
+      "matches": 71,
+      "cases": 100,
+      "accuracy": 0.71,
+      "macro_f1": 0.575642
+    },
+    {
+      "provider": "deepseek",
+      "field": "target_zone",
+      "matches": 52,
+      "cases": 100,
+      "accuracy": 0.52,
+      "macro_f1": null
+    },
+    {
+      "provider": "deepseek",
+      "field": "priority",
+      "matches": 50,
+      "cases": 100,
+      "accuracy": 0.5,
+      "macro_f1": 0.458363
+    },
+    {
+      "provider": "deepseek",
+      "field": "deadline_s_or_text",
+      "matches": 57,
+      "cases": 100,
+      "accuracy": 0.57,
+      "macro_f1": 0.569957
+    },
+    {
+      "provider": "deepseek",
+      "field": "required_skill",
+      "matches": 67,
+      "cases": 100,
+      "accuracy": 0.67,
+      "macro_f1": 0.596914
+    },
+    {
+      "provider": "deepseek",
+      "field": "needs_human_approval",
+      "matches": 91,
+      "cases": 100,
+      "accuracy": 0.91,
+      "macro_f1": 0.738296
+    },
+    {
+      "provider": "deepseek",
+      "field": "expected_failure",
+      "matches": 93,
+      "cases": 100,
+      "accuracy": 0.93,
+      "macro_f1": 0.194764
+    },
+    {
+      "provider": "qwen",
+      "field": "task_type",
+      "matches": 75,
+      "cases": 100,
+      "accuracy": 0.75,
+      "macro_f1": 0.600795
+    },
+    {
+      "provider": "qwen",
+      "field": "target_zone",
+      "matches": 54,
+      "cases": 100,
+      "accuracy": 0.54,
+      "macro_f1": null
+    },
+    {
+      "provider": "qwen",
+      "field": "priority",
+      "matches": 41,
+      "cases": 100,
+      "accuracy": 0.41,
+      "macro_f1": 0.372797
+    },
+    {
+      "provider": "qwen",
+      "field": "deadline_s_or_text",
+      "matches": 63,
+      "cases": 100,
+      "accuracy": 0.63,
+      "macro_f1": 0.629963
+    },
+    {
+      "provider": "qwen",
+      "field": "required_skill",
+      "matches": 61,
+      "cases": 100,
+      "accuracy": 0.61,
+      "macro_f1": 0.554408
+    },
+    {
+      "provider": "qwen",
+      "field": "needs_human_approval",
+      "matches": 85,
+      "cases": 100,
+      "accuracy": 0.85,
+      "macro_f1": 0.63154
+    },
+    {
+      "provider": "qwen",
+      "field": "expected_failure",
+      "matches": 93,
+      "cases": 100,
+      "accuracy": 0.93,
+      "macro_f1": 0.293684
+    }
+  ],
+  "paired_comparison": {
+    "deepseek_wins": 33,
+    "qwen_wins": 29,
+    "ties": 38,
+    "sign_test_p": 0.70353667
+  }
+}

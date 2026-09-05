@@ -1,0 +1,12 @@
+{
+  "dataset": "SkyRescue-IntentSynth",
+  "version": "1.0.0",
+  "seed": 20260802,
+  "cases": 300,
+  "provenance": "Frozen template-generated Chinese instructions with generator labels.",
+  "limitations": [
+    "Not collected from emergency commanders.",
+    "Not independently annotated by two humans.",
+    "Cannot estimate Cohen's kappa or open-domain LLM language ability."
+  ]
+}

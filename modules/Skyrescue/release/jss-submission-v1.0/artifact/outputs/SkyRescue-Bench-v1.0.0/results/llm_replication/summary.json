@@ -1,0 +1,122 @@
+{
+  "models": [
+    {
+      "provider": "deepseek",
+      "requested_model": "deepseek-v4-flash",
+      "cases": 100,
+      "api_success_rate": 1.0,
+      "direct_json_parse_rate": 1.0,
+      "schema_pass_rate": 0.94,
+      "all_fields_exact_rate": 0.02,
+      "slot_micro_accuracy": 0.6586,
+      "field_macro_accuracy": 0.6586,
+      "compiler_outcome_accuracy": 0.64,
+      "executable_workflow_rate_on_gold_valid": 0.6885,
+      "structured_failure_accuracy": 0.5641,
+      "latency_mean_ms": 1372.403,
+      "latency_p95_ms": 1576.967
+    },
+    {
+      "provider": "qwen",
+      "requested_model": "qwen3-30b-a3b-instruct-2507",
+      "cases": 100,
+      "api_success_rate": 1.0,
+      "direct_json_parse_rate": 1.0,
+      "schema_pass_rate": 1.0,
+      "all_fields_exact_rate": 0.0,
+      "slot_micro_accuracy": 0.6214,
+      "field_macro_accuracy": 0.6214,
+      "compiler_outcome_accuracy": 0.76,
+      "executable_workflow_rate_on_gold_valid": 0.7705,
+      "structured_failure_accuracy": 0.7436,
+      "latency_mean_ms": 930.505,
+      "latency_p95_ms": 1100.225
+    }
+  ],
+  "field_metrics": [
+    {
+      "provider": "deepseek",
+      "field": "task_type",
+      "accuracy": 0.8,
+      "macro_f1": 0.737
+    },
+    {
+      "provider": "deepseek",
+      "field": "target_zone",
+      "accuracy": 0.16,
+      "macro_f1": null
+    },
+    {
+      "provider": "deepseek",
+      "field": "priority",
+      "accuracy": 0.52,
+      "macro_f1": 0.5253
+    },
+    {
+      "provider": "deepseek",
+      "field": "deadline_s_or_text",
+      "accuracy": 0.8,
+      "macro_f1": 0.7086
+    },
+    {
+      "provider": "deepseek",
+      "field": "required_skill",
+      "accuracy": 0.77,
+      "macro_f1": 0.6838
+    },
+    {
+      "provider": "deepseek",
+      "field": "needs_human_approval",
+      "accuracy": 0.79,
+      "macro_f1": 0.7607
+    },
+    {
+      "provider": "deepseek",
+      "field": "expected_failure",
+      "accuracy": 0.77,
+      "macro_f1": 0.5547
+    },
+    {
+      "provider": "qwen",
+      "field": "task_type",
+      "accuracy": 0.76,
+      "macro_f1": 0.6828
+    },
+    {
+      "provider": "qwen",
+      "field": "target_zone",
+      "accuracy": 0.13,
+      "macro_f1": null
+    },
+    {
+      "provider": "qwen",
+      "field": "priority",
+      "accuracy": 0.58,
+      "macro_f1": 0.5557
+    },
+    {
+      "provider": "qwen",
+      "field": "deadline_s_or_text",
+      "accuracy": 0.6,
+      "macro_f1": 0.5404
+    },
+    {
+      "provider": "qwen",
+      "field": "required_skill",
+      "accuracy": 0.73,
+      "macro_f1": 0.6467
+    },
+    {
+      "provider": "qwen",
+      "field": "needs_human_approval",
+      "accuracy": 0.73,
+      "macro_f1": 0.7088
+    },
+    {
+      "provider": "qwen",
+      "field": "expected_failure",
+      "accuracy": 0.82,
+      "macro_f1": 0.6802
+    }
+  ]
+}

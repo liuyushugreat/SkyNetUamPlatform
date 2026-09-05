@@ -1,0 +1,19 @@
+{
+  "dataset_version": "SkyRescue-Bench-v1.0.0",
+  "confirmatory_heldout100": {
+    "deepseek": "d79e2424c268f1a07a8a135224c8acb0a80ba34c0c2a296e8aa31a6fec2be143",
+    "qwen": "5e6a6912f37c0f225a0653a023175dc4f625037069b0c7bbeed8bf897880c21f"
+  },
+  "human_intent_replication": {
+    "input_sha256": "5512eea9229dda8a4ac84dcb83084d11ff7ec5f2f34555a9ca560f1657806cbc",
+    "prompt_sha256": "ac1b3479ec4f7ff23324638c3905266686e6a89cfdb2dec38ab569d706a64a32"
+  },
+  "fixed_parameters": {
+    "temperature": 0,
+    "top_p": 1,
+    "max_tokens": 512,
+    "runs_per_case": 1,
+    "deepseek_thinking": "disabled"
+  },
+  "note": "These hashes identify saved model responses or experiment inputs; API keys are not persisted."
+}

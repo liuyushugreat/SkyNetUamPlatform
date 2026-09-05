@@ -12,7 +12,7 @@
 
 > **KSEM 2026 Reviewers:** The SkyKG neuro-symbolic knowledge graph code and reproduction artifact are at **[`modules/SkyKg/artifact_ksem2026/`](./modules/SkyKg/artifact_ksem2026)**. Run `cd modules/SkyKg/artifact_ksem2026 && bash run.sh` to reproduce all paper results.
 
-> **SkyRescue Reviewers / Readers:** The reproducible implementation for the SkyRescue manuscript is at **[`modules/Skyrescue/`](./modules/Skyrescue)**: typed intent-to-workflow compilation, Proposal–Adjudication–Commit semantics, commitment-preserving local repair, the same-input LangGraph baseline, and SQLite crash-recovery prototype. Run `cd modules/Skyrescue && python -m venv .venv-skyrescue && source .venv-skyrescue/bin/activate && pip install -r requirements.txt` before running the reproduction scripts. The prototype does not claim deployed UAV control or real-flight validation.
+> **SkyRescue JSS Reviewers / Readers:** The reproducible implementation and compact offline artifact are at **[`modules/Skyrescue/`](./modules/Skyrescue)**. The `jss-submission-v1.0` snapshot covers typed candidate admission, non-atomic invocation/effect/receipt states, HMAC-bound receipts across 90 real process crashes, commitment-preserving repair, a LangGraph framework embedding around the exact shared repair/receiver contract, one-graph scaling from 100 to 5,000 tasks, and synthetic UAV/DevOps adapters. After installing `modules/Skyrescue/requirements-lock.txt`, run `cd modules/Skyrescue && PYTHONPATH=. python scripts/reproduce_jss_submission.py --output-dir /tmp/skyrescue-jss-submission-v1.0`; the offline pipeline runs the full test suite. The event oracle is evaluator-only. The prototype does not claim distributed exactly-once delivery, deployed UAV control, or real-flight validation.
 
 > **SkyGov Reviewers / Readers:** The evidence-driven multi-agent governance module for UAM compliance is located at **[`modules/SkyGov/`](./modules/SkyGov)**. For a quick demo run `cd modules/SkyGov && python scripts/run_governance.py`; for the latest evaluation pipeline run `python scripts/run_full_eval.py --scenarios 1000`.
 
@@ -37,7 +37,7 @@
 *   **Operational State Service (backend)**: NestJS service that ingests mission events and maintains consistent lifecycle state.
 *   **Optional persistence adapter**: can be enabled as an asynchronous extension for auditability/settlement-style workflows (kept out of the critical operational path).
 *   **SkyFlow conflict detection** *(NEW)*: Temporal Relational Graph Attention Network (TR-GAT) for real-time multi-UAV conflict detection in dense low-altitude airspace — see [modules/SkyFlow](./modules/SkyFlow).
-*   **SkyRescue dynamic workflow benchmark** *(NEW)*: typed intent compilation, skill and resource binding, audit-aware local repair, explicit recoverable/unrecoverable event boundaries, centralized CP-SAT resource-assignment baseline, weak-signal event detection, and deterministic runtime assurance for emergency low-altitude command — see [modules/Skyrescue](./modules/Skyrescue).
+*   **SkyRescue checkable runtime contract** *(NEW)*: typed admission, crash-consistent external-effect commitment, causal-impact-closure repair, frozen HeldOut100 scoring, framework embedding, and code-level cross-domain adapter evidence — see [modules/Skyrescue](./modules/Skyrescue).
 *   **SkyGov compliance governance** *(NEW)*: evidence-driven four-agent LLM governance pipeline for low-altitude regulatory compliance with hard-rule veto, explanation auditing, trust negotiation, and decision traceability — see [modules/SkyGov](./modules/SkyGov).
 *   **SkyRwa semantic lifecycle modeling** *(NEW)*: four-tier governance lifecycle (Evidence → Candidate → Product → Revenue Right) where governance transitions are first-class KG entities, validated by SHACL + SHACL-SPARQL constraints, with 100% violation-type coverage — see [modules/SkyRwa](./modules/SkyRwa).
 *   **SkyCert conformal assurance layer** *(NEW)*: uncertainty-calibrated neuro-symbolic risk reasoning for UAM — split-conformal prediction with finite-sample coverage, hybrid-nonconformity test-martingales for online shift detection, and an abstention/alert/escalation policy that emits machine-readable audit artifacts — see [modules/SkyCert](./modules/SkyCert).
@@ -158,15 +158,18 @@ bash scripts/reproduce_table7.sh      # Table 7
 ```
 
 
-## 🚑 SkyRescue: Symbolically Grounded Emergency Traffic Command
+## 🚑 SkyRescue: Checkable Runtime Contract
 
-**SkyRescue** ([`modules/Skyrescue`](./modules/Skyrescue)) is a self-contained research module for large-scale low-altitude emergency traffic command. It evaluates symbolic grounding, evidence anchoring, runtime detection, localization, repair, and audit against synthetic SkyRescue-Bench workloads.
+**SkyRescue** ([`modules/Skyrescue`](./modules/Skyrescue)) is a self-contained research module for checking when untrusted language candidates may become executable workflow state, how externally visible effects become locally committed across crashes, and how runtime repair preserves commitments outside a causal impact closure. UAV emergency response is the main controlled domain; a synthetic DevOps adapter provides a second code-level portability check.
 
 ### SkyRescue Highlights
 
 *   **Synthetic benchmark generation**: small, medium, large, stress, and seeded replicate configurations for emergency missions, UAV fleets, corridor constraints, telemetry, and withheld labels.
-*   **Runtime baselines**: greedy dispatch, CP-SAT resource assignment plus reservation scheduling, no-symbol-grounding, no-audit, full-replan, and full SkyRescue variants, with repair P50/P95/P99 and invariant checks.
-*   **Workflow failure boundary**: the frozen 172-workflow sequence contains 164 recoverable events and eight cases whose correct outcome is structured rejection or human escalation; SkyRescue handles both groups completely in the deterministic mechanism-conformance evaluator while changing 26.78% of nodes in successful repairs.
+*   **Crash-consistent commitment**: explicit `Executing` and `EffectUnknown` states, a three-valued receiver query, separate invocation/effect/receipt counters, and HMAC-bound receipts across 90 real child-process terminations.
+*   **Workflow failure boundary**: the frozen 172-workflow sequence contains 164 recoverable events and eight cases whose correct outcome is structured rejection or human escalation; the runtime sees only observable fields, while the expected outcome remains in a separate evaluator-only oracle. SkyRescue handles both groups completely, and the final change ratio is regenerated from observed before/after graph state.
+*   **Framework and domain portability**: matched Native/LangGraph persistence-off/on measurements, with LangGraph wrapping the exact shared repair/receiver contract, plus the same contract core exercised by 60-instruction/60-event synthetic UAV and DevOps workloads.
+*   **True task-graph scaling**: one connected typed workflow graph at 100/250/500/1,000/2,000/5,000 tasks, five seeds, five warm-ups, and 30 measured passes; compilation creates planned state but no committed effects or receipts, and the runtime fixture is constructed outside timing.
+*   **Frozen language evidence**: stored DeepSeek/Qwen responses are re-scored offline with 10,000-sample bootstrap intervals and explicit dangerous-admission/false-rejection/risk–coverage measures.
 *   **Weak-signal challenge**: partial-observability GPS drift, link degradation, tool failure, reservation conflict, replay, and audit-gap faults with background noise.
 *   **Security challenge**: deterministic authorization checks for permission mismatch, missing approval, replay, schema violation, and prompt-injection-like operator text.
 
@@ -176,10 +179,9 @@ bash scripts/reproduce_table7.sh      # Table 7
 cd modules/Skyrescue
 python -m venv .venv-skyrescue
 source .venv-skyrescue/bin/activate
-pip install -r requirements.txt
-python scripts/generate_dataset.py --config configs/small.json --output /tmp/skyrescue-small
-python scripts/validate_dataset.py --dataset /tmp/skyrescue-small
-python scripts/run_skyrescue_benchmark.py --datasets /tmp/skyrescue-small --output-dir /tmp/skyrescue-results/small_run
+pip install -r requirements-lock.txt
+shasum -a 256 -c release/jss-submission-v1.0/SHA256SUMS.txt
+PYTHONPATH=. python scripts/reproduce_jss_submission.py --output-dir /tmp/skyrescue-jss-submission-v1.0
 ```
 
 See [`modules/Skyrescue/README.md`](./modules/Skyrescue/README.md) for challenge scorers and paper-scale result notes.
@@ -556,11 +558,11 @@ SkyNetUamPlatform/
 │   │   ├── benchmark_generator/ # Reproducible generator (seed, distributions, coverage)
 │   │   ├── benchmarks/          # Legacy benchmark generator
 │   │   └── reproduction/        # Paper reproduction: run.sh, 13-step pipeline
-│   ├── Skyrescue/           # SkyRescue emergency-command benchmark and reproduction code
-│   │   ├── skyrescue/       #   scheduler, fault detector, authorization boundary
-│   │   ├── scripts/         #   dataset generators, validators, benchmark/challenge scorers
-│   │   ├── configs/         #   synthetic benchmark scale configurations
-│   │   └── tests/           #   runtime smoke tests
+│   ├── Skyrescue/           # SkyRescue JSS runtime-contract artifact
+│   │   ├── skyrescue/       #   typed compiler, repair/commit runtime, adapters
+│   │   ├── scripts/         #   offline reproduction and experiment runners
+│   │   ├── release/         #   jss-submission-v1.0 frozen input bundle
+│   │   └── tests/           #   regression and conformance tests
 │   ├── SkyGov/              # Multi-agent compliance governance with auditable LLM reasoning
 │   │   ├── skygov/          #   agents, orchestrator, RAG pipeline, governance utilities
 │   │   ├── scripts/         #   governance demo, benchmark, ablation, full evaluation

@@ -1,0 +1,21 @@
+{
+  "models": [
+    {
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash"
+    },
+    {
+      "provider": "qwen",
+      "model": "qwen3-30b-a3b-instruct-2507"
+    }
+  ],
+  "temperature": 0,
+  "top_p": 1,
+  "max_tokens": 512,
+  "runs_per_case": 1,
+  "prompt_versions": [
+    "SkyRescue-IntentPrompt-InstructionOnly-v1.0.0",
+    "SkyRescue-IntentPrompt-v1.0.0"
+  ],
+  "api_keys_persisted": false
+}

@@ -8,6 +8,7 @@ import csv
 import hashlib
 import json
 import math
+import random
 import re
 import statistics
 from collections import Counter
@@ -46,6 +47,27 @@ ENUMS = {
         "None", "AmbiguousIntent", "HumanApprovalRequired", "ResourceUnavailable",
         "IncompleteConstraint", "UnknownSkill", "PolicyOrAirspaceConflict",
     },
+}
+
+
+DEFAULT_BOOTSTRAP_ITERATIONS = 10_000
+DEFAULT_BOOTSTRAP_SEED = 20260905
+
+BOOTSTRAP_METRIC_DEFINITIONS = {
+    "field_micro_accuracy": "sum(correct fields) / (7 * instructions)",
+    "all_fields_correct_rate": "instructions with all seven fields correct / instructions",
+    "grounding_acceptance_rate": "instructions accepted by the frozen grounding gate / instructions",
+    "post_grounding_safe_decision_accuracy": "instructions whose frozen post-grounding execute/block decision matches the gold execute/block decision / instructions",
+    "dangerous_admission_rate": "strictly incorrect target instructions accepted by the frozen grounding gate / instructions",
+    "correct_task_rejection_rate": "strictly correct target instructions rejected by the frozen grounding gate / strictly correct target instructions",
+}
+
+RISK_METRIC_DEFINITIONS = {
+    "coverage": "accepted instructions / instructions",
+    "dangerous_admission": "strictly incorrect target instructions accepted / instructions",
+    "conditional_dangerous_admission": "strictly incorrect target instructions accepted / strictly incorrect target instructions",
+    "false_rejection": "strictly correct target instructions rejected / strictly correct target instructions",
+    "selective_risk": "strictly incorrect target instructions accepted / accepted instructions",
 }
 
 
@@ -88,6 +110,201 @@ def exact_sign_test(wins: int, losses: int) -> float:
     lower = min(wins, losses)
     tail = sum(math.comb(non_ties, index) for index in range(lower + 1)) / (2 ** non_ties)
     return min(1.0, 2 * tail)
+
+
+def _linear_percentile(values: list[float], fraction: float) -> float:
+    """Return a deterministic linearly interpolated percentile."""
+
+    if not values:
+        raise ValueError("Cannot compute a percentile from an empty sample.")
+    ordered = sorted(values)
+    position = (len(ordered) - 1) * fraction
+    lower = math.floor(position)
+    upper = math.ceil(position)
+    if lower == upper:
+        return ordered[lower]
+    weight = position - lower
+    return ordered[lower] * (1.0 - weight) + ordered[upper] * weight
+
+
+def _metric_counts(rows: list[dict[str, Any]]) -> dict[str, tuple[int, int]]:
+    """Return numerators and denominators for the six prespecified metrics."""
+
+    correct_target_rows = [
+        row for row in rows
+        if row["grounding_gate_class"] in {"correct_accept", "correct_reject"}
+    ]
+    return {
+        "field_micro_accuracy": (
+            sum(int(row["field_hit_count"]) for row in rows),
+            len(rows) * len(FIELDS),
+        ),
+        "all_fields_correct_rate": (
+            sum(bool(row["all_fields_exact"]) for row in rows),
+            len(rows),
+        ),
+        "grounding_acceptance_rate": (
+            sum(bool(row["anchor_resolved"]) for row in rows),
+            len(rows),
+        ),
+        "post_grounding_safe_decision_accuracy": (
+            sum(bool(row["grounded_safe_decision_correct"]) for row in rows),
+            len(rows),
+        ),
+        "dangerous_admission_rate": (
+            sum(row["grounding_gate_class"] == "incorrect_accept" for row in rows),
+            len(rows),
+        ),
+        "correct_task_rejection_rate": (
+            sum(row["grounding_gate_class"] == "correct_reject" for row in rows),
+            len(correct_target_rows),
+        ),
+    }
+
+
+def bootstrap_confidence_intervals(
+    details: list[dict[str, Any]],
+    iterations: int = DEFAULT_BOOTSTRAP_ITERATIONS,
+    seed: int = DEFAULT_BOOTSTRAP_SEED,
+) -> list[dict[str, Any]]:
+    """Compute percentile CIs by resampling whole instructions with replacement.
+
+    Each detail row contains all seven field judgements for one instruction, so
+    resampling rows preserves within-instruction dependence.  The same fixed
+    seed is restarted for each provider; with the same sorted instruction IDs,
+    this also gives the providers matching bootstrap index samples.
+    """
+
+    if iterations <= 0:
+        raise ValueError("bootstrap iterations must be positive")
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for row in details:
+        grouped.setdefault(str(row["provider"]), []).append(row)
+
+    output: list[dict[str, Any]] = []
+    for provider in sorted(grouped):
+        rows = sorted(grouped[provider], key=lambda row: str(row["instruction_id"]))
+        if not rows:
+            continue
+        identifiers = [str(row["instruction_id"]) for row in rows]
+        if len(identifiers) != len(set(identifiers)):
+            raise ValueError(f"Duplicate instruction IDs in scored details for {provider}.")
+
+        rng = random.Random(seed)
+        distributions = {metric: [] for metric in BOOTSTRAP_METRIC_DEFINITIONS}
+        for _ in range(iterations):
+            sampled = [rows[rng.randrange(len(rows))] for _ in rows]
+            for metric, (numerator, denominator) in _metric_counts(sampled).items():
+                if denominator:
+                    distributions[metric].append(numerator / denominator)
+
+        point_counts = _metric_counts(rows)
+        for metric, definition in BOOTSTRAP_METRIC_DEFINITIONS.items():
+            numerator, denominator = point_counts[metric]
+            samples = distributions[metric]
+            output.append({
+                "provider": provider,
+                "model": rows[0].get("model"),
+                "metric": metric,
+                "definition": definition,
+                "numerator": numerator,
+                "denominator": denominator,
+                "estimate": round(numerator / denominator, 6) if denominator else None,
+                "ci95_low": round(_linear_percentile(samples, 0.025), 6) if samples else None,
+                "ci95_high": round(_linear_percentile(samples, 0.975), 6) if samples else None,
+                "bootstrap_iterations": iterations,
+                "bootstrap_valid_replicates": len(samples),
+                "bootstrap_seed": seed,
+                "resampling_unit": "instruction_id",
+                "ci_method": "percentile_bootstrap",
+            })
+    return output
+
+
+def _confidence(row: dict[str, Any]) -> float | None:
+    value = row.get("anchor_confidence")
+    if value is None:
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    return number if math.isfinite(number) else None
+
+
+def _rate(numerator: int, denominator: int) -> float | None:
+    return round(numerator / denominator, 6) if denominator else None
+
+
+def risk_coverage_rows(details: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Describe post-hoc coverage/risk points without promoting frozen rejects.
+
+    The baseline point uses the frozen ``anchor_resolved`` decision.  Additional
+    points may only remove already-accepted instructions by confidence; they
+    never turn a frozen rejection into an acceptance and therefore do not alter
+    or replace the confirmatory result.
+    """
+
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for row in details:
+        grouped.setdefault(str(row["provider"]), []).append(row)
+
+    output: list[dict[str, Any]] = []
+    for provider in sorted(grouped):
+        rows = sorted(grouped[provider], key=lambda row: str(row["instruction_id"]))
+        accepted_confidences = {
+            confidence
+            for row in rows
+            if bool(row["anchor_resolved"])
+            for confidence in [_confidence(row)]
+            if confidence is not None
+        }
+        thresholds = [0.0, *sorted(value for value in accepted_confidences if value > 0.0)]
+        for threshold_index, threshold in enumerate(thresholds):
+            baseline = threshold_index == 0
+
+            def retained(row: dict[str, Any]) -> bool:
+                if not bool(row["anchor_resolved"]):
+                    return False
+                if baseline:
+                    return True
+                confidence = _confidence(row)
+                return confidence is not None and confidence >= threshold
+
+            accepted = [row for row in rows if retained(row)]
+            accepted_correct = sum(row["grounding_gate_class"].startswith("correct_") for row in accepted)
+            accepted_incorrect = len(accepted) - accepted_correct
+            correct_total = sum(
+                row["grounding_gate_class"] in {"correct_accept", "correct_reject"}
+                for row in rows
+            )
+            incorrect_total = len(rows) - correct_total
+            rejected_correct = correct_total - accepted_correct
+            rejected_incorrect = incorrect_total - accepted_incorrect
+            output.append({
+                "provider": provider,
+                "model": rows[0].get("model") if rows else None,
+                "operating_point": "frozen_gate" if baseline else "frozen_gate_plus_confidence_filter",
+                "confidence_threshold": None if baseline else round(threshold, 6),
+                "instructions": len(rows),
+                "accepted": len(accepted),
+                "accepted_correct": accepted_correct,
+                "accepted_incorrect": accepted_incorrect,
+                "rejected_correct": rejected_correct,
+                "rejected_incorrect": rejected_incorrect,
+                "coverage": _rate(len(accepted), len(rows)),
+                "dangerous_admission": _rate(accepted_incorrect, len(rows)),
+                "conditional_dangerous_admission": _rate(accepted_incorrect, incorrect_total),
+                "false_rejection": _rate(rejected_correct, correct_total),
+                "selective_risk": _rate(accepted_incorrect, len(accepted)),
+                "coverage_definition": RISK_METRIC_DEFINITIONS["coverage"],
+                "dangerous_admission_definition": RISK_METRIC_DEFINITIONS["dangerous_admission"],
+                "conditional_dangerous_admission_definition": RISK_METRIC_DEFINITIONS["conditional_dangerous_admission"],
+                "false_rejection_definition": RISK_METRIC_DEFINITIONS["false_rejection"],
+                "selective_risk_definition": RISK_METRIC_DEFINITIONS["selective_risk"],
+                "frozen_rejections_promoted": False,
+            })
+    return output
 
 
 def validate_gold(rows: list[dict[str, Any]]) -> None:
@@ -172,6 +389,7 @@ def evaluate_provider(
 
         target_correct = field_hits["target_zone"]
         anchor_resolved = bool(anchor.get("resolved"))
+        anchor_confidence = anchor.get("confidence")
         if target_correct and anchor_resolved:
             gate_class = "correct_accept"
         elif target_correct:
@@ -199,6 +417,7 @@ def evaluate_provider(
             "direct_compile_failure": direct.get("failure"),
             "direct_outcome_correct": direct_exact,
             "anchor_resolved": anchor_resolved,
+            "anchor_confidence": anchor_confidence,
             "anchor_reason": anchor.get("reason"),
             "anchor_ids": anchor.get("anchor_ids") or [],
             "grounding_gate_class": gate_class,
@@ -360,7 +579,11 @@ def main() -> None:
     parser.add_argument("--response-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--providers", nargs="+", default=["deepseek", "qwen"])
+    parser.add_argument("--bootstrap-iterations", type=int, default=DEFAULT_BOOTSTRAP_ITERATIONS)
+    parser.add_argument("--bootstrap-seed", type=int, default=DEFAULT_BOOTSTRAP_SEED)
     args = parser.parse_args()
+    if args.bootstrap_iterations <= 0:
+        parser.error("--bootstrap-iterations must be positive")
 
     gold_rows = read_jsonl(args.gold)
     validate_gold(gold_rows)
@@ -394,11 +617,25 @@ def main() -> None:
         "sign_test_p": round(exact_sign_test(wins, losses), 8),
     }
 
-    payload = {"models": summaries, "field_metrics": field_rows, "paired_comparison": comparison}
+    bootstrap_rows = bootstrap_confidence_intervals(
+        details,
+        iterations=args.bootstrap_iterations,
+        seed=args.bootstrap_seed,
+    )
+    coverage_rows = risk_coverage_rows(details)
+    payload = {
+        "models": summaries,
+        "field_metrics": field_rows,
+        "paired_comparison": comparison,
+        "bootstrap_ci": bootstrap_rows,
+        "risk_metric_definitions": RISK_METRIC_DEFINITIONS,
+    }
     (args.output_dir / "summary.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     write_csv(args.output_dir / "summary.csv", summaries)
     write_csv(args.output_dir / "field_metrics.csv", field_rows)
     write_csv(args.output_dir / "predictions.csv", [flatten_detail(row) for row in details])
+    write_csv(args.output_dir / "bootstrap_ci.csv", bootstrap_rows)
+    write_csv(args.output_dir / "risk_coverage.csv", coverage_rows)
     write_markdown(args.output_dir / "RESULTS.md", summaries, comparison)
     write_paper_results_zh(args.output_dir / "PAPER_RESULTS_zh.md", summaries, comparison)
     manifest = {
@@ -413,6 +650,20 @@ def main() -> None:
         "gold_labels_opened_after_response_capture": True,
         "target_match": "whitespace_and_common_punctuation_normalized_exact_match",
         "grounding_gate_reference": "strict_target_zone_correctness",
+        "frozen_grounding_decisions_changed": False,
+        "bootstrap": {
+            "iterations": args.bootstrap_iterations,
+            "seed": args.bootstrap_seed,
+            "resampling_unit": "instruction_id",
+            "ci_method": "percentile_bootstrap",
+            "metrics": BOOTSTRAP_METRIC_DEFINITIONS,
+        },
+        "risk_coverage": {
+            "definitions": RISK_METRIC_DEFINITIONS,
+            "baseline": "the frozen anchor_resolved decision",
+            "additional_points": "confidence filters over frozen accepts only",
+            "frozen_rejections_promoted": False,
+        },
     }
     (args.output_dir / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(payload, ensure_ascii=False, indent=2))

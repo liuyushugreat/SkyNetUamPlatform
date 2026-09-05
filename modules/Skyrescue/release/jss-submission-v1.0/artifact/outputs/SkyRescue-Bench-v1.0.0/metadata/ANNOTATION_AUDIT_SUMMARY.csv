@@ -1,0 +1,4 @@
+dataset,records,annotation_design,disagreement_units,macro_cohen_kappa,micro_exact_agreement,public_boundary
+HumanInstructions-100,100,two independent experts plus third-expert adjudication,43,0.8730869416,0.9385714286,anonymous final labels only
+ManualInstructions-200,200,AI-assisted prelabel followed by two expert reviews and adjudication,22,0.9442,0.9843,anonymous final labels only
+EntityGrounding-HeldOut100,100,two independent experts plus third-expert adjudication,18,0.9533,0.9743,anonymous gold labels and protocol
